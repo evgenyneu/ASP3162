@@ -1,0 +1,11 @@
+build/
+.DS_Store
+
+# Latex
+*.log
+*.aux
+*.out
+assignment.pdf
+*.blg
+*.bbl
+*.toc
