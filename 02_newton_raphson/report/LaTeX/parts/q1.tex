@@ -3,7 +3,6 @@
 We write a Fortran program that finds a root of equation $\cos(x) - x = 0$ using Newton-Raphson method. We find the root to be $0.73909$. We investigate the dependence of the failure rate of the program on the initial value of $x$ and the maximum number of allowed iterations.
 
 \subsection{Overview}
-\fancyhead[LE,RO]{Lab 2 report}
 
 We created a Fortran program that estimates a single root of equation
 \begin{equation}
@@ -71,7 +70,7 @@ For $N_{max}=1$ all calculations failed (failure ratio of $1.0$). For $N_{max}=5
 \begin{figure}[H]
   \centering
   \includegraphics[width=0.8\textwidth]{figures/plot_max_iterations_5.pdf}
-  \caption{Failure ratio of Newton-Raphson root finding method for five maximum number of iterations. Failure ratio is close to zero in the interval $[0, 2.5]$}
+  \caption{Failure ratio of Newton-Raphson root finding method for five maximum number of iterations. Failure ratio is close to zero in the interval $[0, 2.5]$.}
   \label{fig_fail_rates_max_iterations_5}
 \end{figure}
 Increasing the number of iterations to $50$ has decreased the failure ratio for most values of $x_0$ to $0.6$ and lower (\autoref{fig_fail_rates_max_iterations_50}). However, we can still see that all calculation failed for $x_0$ between about $-1$ and $0$. Another peak in failure rates is visible around $x=5$. This could be cause of the small slope of $f(x)$ around $x=-1$ and $x=5$ (\autoref{fig_cos_x_minus_x}). In \autoref{eq_recurrence} the term $f'(x)$ is in the denominator, and small values of $f'(x)$ may cause overflow, or result in very large values of $x_{x+1}$ that are far away from the true root.
