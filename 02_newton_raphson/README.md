@@ -15,7 +15,7 @@ using Newton-Raphson method.
 make
 ```
 
-Gfortran compiler is required to build the program (tested with GCC 6.30 and 7.4.0). Alternatively, one can uncomment `FC=ifort` and `FFLAGS` in the Makefile and compile using ifort.
+Gfortran compiler is required to build the program (tested with GCC 6.3.0 and 7.4.0). Alternatively, one can uncomment `FC=ifort` and `FFLAGS` in the Makefile and compile using ifort.
 
 ## Run
 
