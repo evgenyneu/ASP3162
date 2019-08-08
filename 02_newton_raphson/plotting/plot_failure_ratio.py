@@ -167,7 +167,7 @@ def make_plots():
     plt.grid()
     plt.tight_layout()
     plotfile = os.path.join(plots_dir, "total_failure_ratio.pdf")
-    plt.savefig()
+    plt.savefig(plotfile)
     plt.show()
 
 

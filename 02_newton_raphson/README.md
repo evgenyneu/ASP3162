@@ -102,6 +102,9 @@ cd plotting
 python plot_failure_ratio.py
 ```
 
+The code requires the Fortran executable to be present.
+
+
 ### Plot `f(x) = cos(x) - x` function
 
 ```

@@ -1,10 +1,11 @@
-\part{Method}
+\part{Overview}
 \fancyhead[LE,RO]{Lab 2 report}
 
-In this project we estimate the single root of equation
-\[
+This is a Fortran program that estimates a single root of equation
+\begin{equation}
   \cos(x) - x = 0
-\]
+  \label{eq_root}
+\end{equation}
 using Newton-Raphson method. The method gives recurrence relation
 \begin{equation}
   x_{x+1} = x_n - f(x_n) / f'(x_n),
@@ -14,27 +15,40 @@ where
 \[
   f(x_n) = \cos(x_n) - x_n,
 \]
-and $x_n$ are the x values, and $n = 0, 1, 2, \dots, N$ is the iteration number with $N$ being the total number of iterations. 
+and $x_n$ are the x values, and $n = 0, 1, 2, \dots, N_{max}$ is the iteration number with $N_{max}$ being the maximum number of iterations.
 
-We begin the calculations by picking a starting $x_0$ and then use \autoref{eq_recurrence} to calculate $x_1$. Then we use $x_1$ to calculate $x_2$. The process is repeated until the absolute difference between two subsequent $x$ values is smaller than a chosen tolerance number $\epsilon$:
+We begin the calculations by picking a starting $x_0$ and then use \autoref{eq_recurrence} to calculate $x_1$. Then we use $x_1$ to calculate $x_2$. This calculation is repeated until the absolute difference between two subsequent $x$ values is smaller than a chosen tolerance number $\epsilon$:
 \[
   |{x_{n+1} - x_n}| < \epsilon.
 \]
 
-\section{Implementation}
+The calculations are stopped and the program is terminated with an error if the number of iterations exceeds a chosen maximum number of iterations. The program is also terminated if devision by zero or an overflow is detected as a result of calculating $x_{x+1}$ from \autoref{eq_recurrence}.
 
-We implemented a general
+Instructions for compiling and running the program are located in the README.md file.
+
+
+\section{Root finding function}
+
+We implemented a function \code{approximate\_root} with interface shown in \autoref{code_approximate_root}.
 
 \noindent\begin{minipage}{\linewidth}
-\begin{lstlisting}[caption={hello},frame=tlrb,label={code_q1_a_integral}]
+\begin{lstlisting}[caption={Definition of a function for approximating a root of equation that is passed as input parameter (\code{newton\_raphson.f90}).},frame=tlrb,label={code_approximate_root}]
 function approximate_root(x_start, func, derivative, tolerance, &
                           max_iterations, success) result(result)
 
 ...
-end module NewtonRaphson
+end function
 \end{lstlisting}
 \end{minipage}
 
+When calling \code{approximate\_root} function, we supply a function that calculates
+\[
+  f(x) = \cos(x) - x,
+\]
+as well as its derivative. This implementation allows to make \code{approximate\_root} function general and reuse it for calculating roots of other functions.
 
 
+\section{Choosing initial x value}
+
+We can estimate general location of the root of \autoref{eq_root} by evaluating $f(x) = \cos(x) - 1$ until we find two x values $x_a$ and $x_b$ for which $f$ has values of opposite signs. Intermediate value theorem guarantees that $f(x)=0$ for some $x \in [x_a, x_b]$, since $f$ is continuous. For example, we can chose our initial x value to be between $0$ and $\pi$, since $f(0)=1$ and $f(\pi/2) = -\pi/2$ have opposite signs.
 
