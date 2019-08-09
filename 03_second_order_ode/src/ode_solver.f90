@@ -43,11 +43,20 @@ contains
 ! Outputs:
 ! -------
 !
-! solution : solution to the ODE.
+! solution : solution to the ODE
 !
-subroutine solve_ode(t_start, t_end, delta_t, solution)
+! success : .true. if the ODE was solved succesfully
+!
+! error_message : contains the error message, if any errors occured
+!
+subroutine solve_ode(t_start, t_end, delta_t, solution, success, error_message)
     real(dp), intent(in) :: t_start, t_end, delta_t
     type(ode_solution), intent(out) :: solution
+    logical, intent(out) :: success
+    character(len=*), intent(out) :: error_message
+    integer :: size
+
+    ! size = (t_end - t_start) / delta_t
 end subroutine
 
 end module OdeSolver

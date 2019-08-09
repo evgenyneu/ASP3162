@@ -13,9 +13,12 @@ contains
 subroutine find_root_test(failures)
     integer, intent(inout) :: failures
     type(ode_solution) :: solution
+    logical :: success
+    character(len=1024) :: error_message
 
     call solve_ode(t_start=0._dp, t_end=2._dp*pi, delta_t=0.1_dp, &
-                   solution=solution)
+                   solution=solution, success=success, &
+                   error_message=error_message)
 
     call assert_true(.true., __FILE__, __LINE__, failures)
 end
