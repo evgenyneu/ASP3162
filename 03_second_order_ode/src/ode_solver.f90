@@ -10,18 +10,18 @@ private
 public :: solve_ode
 
 !
-! Stores program settings:
+! Data for the ODE solution
 !
-type, public :: program_settings
-    ! the starting value for x for the root finding algorithm.
-    real(dp) :: x_start
+type, public :: ode_solution
+    ! arrau of t values
+    real(dp), allocatable :: t_values(:)
 
-    ! convergence tolerance for Newton-Raphson method.
-    real(dp) :: tolerance
+    ! arrau of x values
+    real(dp), allocatable :: x_values(:)
 
-    ! the maximum number of iterations of the Newton-Raphson method.
-    integer :: max_iterations
-end type program_settings
+    ! the nubmer of elements in `t_values` and `x_values` arrays
+    integer :: size
+end type ode_solution
 
 contains
 
@@ -39,8 +39,15 @@ contains
 !
 ! delta_t : size of the time step
 !
-subroutine solve_ode(t_start, t_end, delta_t)
+!
+! Outputs:
+! -------
+!
+! solution : solution to the ODE.
+!
+subroutine solve_ode(t_start, t_end, delta_t, solution)
     real(dp), intent(in) :: t_start, t_end, delta_t
+    type(ode_solution), intent(out) :: solution
 end subroutine
 
 end module OdeSolver
