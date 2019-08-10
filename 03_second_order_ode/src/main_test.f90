@@ -5,6 +5,7 @@ program MainTest
     use StringTest, only: string_test_all
     use SettingsTest, only: settings_test_all
     use OdeSolverTest, only: ode_solver_test_all
+    use FloatUtilsTest, only: float_utils_test_all
     implicit none
 
     integer :: failures = 0
@@ -16,6 +17,7 @@ program MainTest
     call settings_test_all(failures)
 
     call ode_solver_test_all(failures)
+    call float_utils_test_all(failures)
 
     if (failures == 0) then
         print *, NEW_LINE('h')//'Tests finished successfully'

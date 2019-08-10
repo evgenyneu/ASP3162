@@ -20,7 +20,7 @@ subroutine find_root_test(failures)
                    solution=solution, success=success, &
                    error_message=error_message)
 
-    call assert_true(.true., __FILE__, __LINE__, failures)
+    call assert_true(success, __FILE__, __LINE__, failures)
 end
 
 subroutine ode_solver_test_all(failures)
