@@ -70,7 +70,7 @@ subroutine solve_ode(t_start, t_end, delta_t, solution, success, error_message)
         success=success, error_message=error_message)
 
     if (.not. success) return
-    solution%size = floor(size_real)
+    solution%size = ceiling(size_real)
     allocate(solution%t_values(solution%size))
     allocate(solution%x_values(solution%size))
 
