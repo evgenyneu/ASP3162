@@ -20,6 +20,9 @@ type, public :: ode_solution
     ! array of x values
     real(dp), allocatable :: x_values(:)
 
+    ! array of exact values
+    real(dp), allocatable :: x_values_exact(:)
+
     ! the number of elements in `t_values` and `x_values` arrays
     integer :: size
 end type ode_solution
@@ -73,6 +76,7 @@ subroutine solve_ode(t_start, t_end, delta_t, solution, success, error_message)
     solution%size = ceiling(size_real)
     allocate(solution%t_values(solution%size))
     allocate(solution%x_values(solution%size))
+    allocate(solution%x_values_exact(solution%size))
 
     solution%t_values(1) = t_start
     solution%t_values(2) = t_start + delta_t
@@ -86,6 +90,8 @@ subroutine solve_ode(t_start, t_end, delta_t, solution, success, error_message)
         solution%x_values(i) = -solution%x_values(i - 2) + &
             solution%x_values(i - 1) * (2 - delta_t**2)
     end do
+
+    solution%x_values_exact = cos(solution%t_values)
 end subroutine
 
 end module OdeSolver

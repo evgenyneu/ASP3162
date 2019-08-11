@@ -32,8 +32,16 @@ subroutine find_root_test(failures)
     call assert_approx(solution%x_values(1), 1._dp, 1e-5_dp, __FILE__, __LINE__, failures)
     call assert_approx(solution%x_values(2), 0.995_dp, 1e-5_dp, __FILE__, __LINE__, failures)
     call assert_approx(solution%x_values(3), 0.98005_dp, 1e-5_dp, __FILE__, __LINE__, failures)
+    call assert_approx(solution%x_values(4), 0.9552995_dp, 1e-5_dp, __FILE__, __LINE__, failures)
     call assert_approx(solution%x_values(62), 0.983728_dp, 1e-5_dp, __FILE__, __LINE__, failures)
     call assert_approx(solution%x_values(63), 0.996753_dp, 1e-5_dp, __FILE__, __LINE__, failures)
+
+    call assert_approx(solution%x_values_exact(1), 1._dp, 1e-5_dp, __FILE__, __LINE__, failures)
+    call assert_approx(solution%x_values_exact(2), 0.995_dp, 1e-5_dp, __FILE__, __LINE__, failures)
+    call assert_approx(solution%x_values_exact(3), 0.98006_dp, 1e-5_dp, __FILE__, __LINE__, failures)
+    call assert_approx(solution%x_values_exact(4), 0.95533_dp, 1e-5_dp, __FILE__, __LINE__, failures)
+    call assert_approx(solution%x_values_exact(62), 0.983268_dp, 1e-5_dp, __FILE__, __LINE__, failures)
+    call assert_approx(solution%x_values_exact(63), 0.9965420_dp, 1e-5_dp, __FILE__, __LINE__, failures)
 end
 
 subroutine ode_solver_test_all(failures)
