@@ -5,6 +5,7 @@
 !
 module OdeSolver
 use Types, only: dp
+use FloatUtils, only: can_convert_real_to_int
 implicit none
 private
 public :: solve_ode
@@ -55,39 +56,23 @@ subroutine solve_ode(t_start, t_end, delta_t, solution, success, error_message)
     logical, intent(out) :: success
     character(len=*), intent(out) :: error_message
     integer :: size
+    real(dp) :: size_real
 
     if (abs(delta_t) > .0_dp ) then
-        ! size_real = (t_end - t_start) / delta_t
 
-        ! size = real_to_integer(float=(t_end - t_start) / delta_t, &
-        !         success=success, error_message)
+        size_real = (t_end - t_start) / delta_t
 
-        ! if (.not. success) return
+        call can_convert_real_to_int(float=size_real, &
+            success=success, error_message=error_message)
 
-        ! if (.not. ieee_is_finite(size_real) .or. ieee_is_nan(size_real)) then
-        !     success = .false.
-        !     error_message = "float arithmetic overflow when calculating"&
-        !                    &"the number of points"
-        !     return
-        ! end if
+        if (.not. success) return
 
-        ! if (abs(size_real) > real(biggest_i2, dp)) then
-        !     success = .false.
-        !     error_message = "integer arithmetic overflow when calculating"&
-        !                    &"the number of points"
-        !     return
-        ! else
-        !     size = floor(size_real)
-        ! end if
+        size = floor(size_real)
+
+    else
+        success = .false.
+        error_message = "can not divide by zero"
     end if
-
-    ! if (.not. ieee_is_finite(size) .or. ieee_is_nan(size)) then
-    !     success = .false.
-    !     error_message = "arithmetic overflow when calculating"&
-    !                    &"the number of points"
-    !     return
-    ! end if
-
 end subroutine
 
 end module OdeSolver
