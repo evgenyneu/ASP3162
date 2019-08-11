@@ -55,24 +55,37 @@ subroutine solve_ode(t_start, t_end, delta_t, solution, success, error_message)
     type(ode_solution), intent(out) :: solution
     logical, intent(out) :: success
     character(len=*), intent(out) :: error_message
-    integer :: size
+    integer :: i
     real(dp) :: size_real
 
-    if (abs(delta_t) > .0_dp ) then
-
-        size_real = (t_end - t_start) / delta_t
-
-        call can_convert_real_to_int(float=size_real, &
-            success=success, error_message=error_message)
-
-        if (.not. success) return
-
-        size = floor(size_real)
-
-    else
+    if (.not. (abs(delta_t) > .0_dp )) then
         success = .false.
         error_message = "can not divide by zero"
+        return
     end if
+
+    size_real = (t_end - t_start) / delta_t
+
+    call can_convert_real_to_int(float=size_real, &
+        success=success, error_message=error_message)
+
+    if (.not. success) return
+    solution%size = floor(size_real)
+    allocate(solution%t_values(solution%size))
+    allocate(solution%x_values(solution%size))
+
+    solution%t_values(1) = t_start
+    solution%t_values(2) = t_start + delta_t
+
+    solution%x_values(1) = 1._dp
+    solution%x_values(2) = 1._dp - 0.5_dp * delta_t**2
+
+    do i = 3, solution%size
+        solution%t_values(i) = t_start + delta_t * (i - 1)
+
+        solution%x_values(i) = -solution%x_values(i - 2) + &
+            solution%x_values(i - 1) * (2 - delta_t**2)
+    end do
 end subroutine
 
 end module OdeSolver
