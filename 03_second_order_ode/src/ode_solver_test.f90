@@ -16,7 +16,7 @@ subroutine find_root_test(failures)
     logical :: success
     character(len=1024) :: error_message
 
-    call solve_ode(t_start=0._dp, t_end=2._dp*pi, delta_t=0.1_dp, &
+    call solve_ode(t_end=2._dp*pi, delta_t=0.1_dp, &
                    solution=solution, success=success, &
                    error_message=error_message)
 

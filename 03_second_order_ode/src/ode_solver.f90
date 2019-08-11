@@ -37,8 +37,6 @@ contains
 ! Inputs:
 ! -------
 !
-! t_start : initial value of t coordinate
-!
 ! t_end : final value of t coordinate
 !
 ! delta_t : size of the time step
@@ -53,13 +51,15 @@ contains
 !
 ! error_message : contains the error message, if any errors occurred
 !
-subroutine solve_ode(t_start, t_end, delta_t, solution, success, error_message)
-    real(dp), intent(in) :: t_start, t_end, delta_t
+subroutine solve_ode(t_end, delta_t, solution, success, error_message)
+    real(dp), intent(in) :: t_end, delta_t
     type(ode_solution), intent(out) :: solution
     logical, intent(out) :: success
     character(len=*), intent(out) :: error_message
     integer :: i
-    real(dp) :: size_real
+    real(dp) :: size_real, t_start
+
+    t_start = 0._dp
 
     if (.not. (abs(delta_t) > .0_dp )) then
         success = .false.
