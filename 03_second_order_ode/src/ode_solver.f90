@@ -4,8 +4,7 @@
 !   x''(t) + x(t) = 0.
 !
 module OdeSolver
-use Types, only: dp, biggest_i2
-use, intrinsic :: ieee_arithmetic, only: ieee_is_finite, ieee_is_nan
+use Types, only: dp
 implicit none
 private
 public :: solve_ode
@@ -14,13 +13,13 @@ public :: solve_ode
 ! Data for the ODE solution
 !
 type, public :: ode_solution
-    ! arrau of t values
+    ! array of t values
     real(dp), allocatable :: t_values(:)
 
-    ! arrau of x values
+    ! array of x values
     real(dp), allocatable :: x_values(:)
 
-    ! the nubmer of elements in `t_values` and `x_values` arrays
+    ! the number of elements in `t_values` and `x_values` arrays
     integer :: size
 end type ode_solution
 
@@ -31,10 +30,10 @@ contains
 !
 !   x''(t) + x(t) = 0.
 !
-! Outputs:
+! Inputs:
 ! -------
 !
-! t_start : intial value of t coordinate
+! t_start : initial value of t coordinate
 !
 ! t_end : final value of t coordinate
 !
@@ -46,9 +45,9 @@ contains
 !
 ! solution : solution to the ODE
 !
-! success : .true. if the ODE was solved succesfully
+! success : .true. if the ODE was solved successfully
 !
-! error_message : contains the error message, if any errors occured
+! error_message : contains the error message, if any errors occurred
 !
 subroutine solve_ode(t_start, t_end, delta_t, solution, success, error_message)
     real(dp), intent(in) :: t_start, t_end, delta_t
@@ -60,10 +59,10 @@ subroutine solve_ode(t_start, t_end, delta_t, solution, success, error_message)
     if (abs(delta_t) > .0_dp ) then
         ! size_real = (t_end - t_start) / delta_t
 
-        size = real_to_integer(float=(t_end - t_start) / delta_t, &
-                success=success, error_message)
+        ! size = real_to_integer(float=(t_end - t_start) / delta_t, &
+        !         success=success, error_message)
 
-        if (.not. success) return
+        ! if (.not. success) return
 
         ! if (.not. ieee_is_finite(size_real) .or. ieee_is_nan(size_real)) then
         !     success = .false.
@@ -80,12 +79,6 @@ subroutine solve_ode(t_start, t_end, delta_t, solution, success, error_message)
         ! else
         !     size = floor(size_real)
         ! end if
-    end if
-
-    if (1.e3_dp > real(biggest_i2, dp)) then
-        print *, 'hey overflow'
-    else
-        size = floor(2.2_dp)
     end if
 
     ! if (.not. ieee_is_finite(size) .or. ieee_is_nan(size)) then
