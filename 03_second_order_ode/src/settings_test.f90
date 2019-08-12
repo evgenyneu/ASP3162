@@ -123,23 +123,23 @@ subroutine show_help_test(failures)
     call assert_true(.not. string_is_empty(error_message), __FILE__, __LINE__, failures)
 
     call assert_string_starts_with(error_message, &
-                                   NEW_LINE('h')//"This program finds", &
+                                   NEW_LINE('h')//"This program solves ODE", &
                                    __FILE__, __LINE__, failures)
 end
 
 
-! ! read_from_parsed_command_line
-! ! --------------
+! read_from_parsed_command_line
+! --------------
 
-! subroutine read_from_command_line_test(failures)
-!     integer, intent(inout) :: failures
-!     type(program_settings) :: settings
-!     logical :: success
+subroutine read_from_command_line_test(failures)
+    integer, intent(inout) :: failures
+    type(program_settings) :: settings
+    logical :: success
 
-!     call read_from_command_line(silent=.true., settings=settings, success=success)
+    call read_from_command_line(silent=.true., settings=settings, success=success)
 
-!     call assert_true(.not. success, __FILE__, __LINE__, failures)
-! end
+    call assert_true(success, __FILE__, __LINE__, failures)
+end
 
 
 subroutine settings_test_all(failures)
@@ -150,9 +150,9 @@ subroutine settings_test_all(failures)
     call read_from_parsed_command_line_test__t_end_not_a_number(failures)
     call read_from_parsed_command_line_test__delta_t_not_a_number(failures)
 
-    ! call show_help_test(failures)
+    call show_help_test(failures)
 
-    ! call read_from_command_line_test(failures)
+    call read_from_command_line_test(failures)
 end
 
 end module SettingsTest
