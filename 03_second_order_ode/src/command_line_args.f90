@@ -294,7 +294,7 @@ end subroutine
 ! Then `extract_value_from_argument_at_index` will be called with `start_index=2'
 ! which corresponds to the `--quality=23` element of `arguments` array.
 ! The function will then search for separator `=` in `--quality=23`, and use the text `23`
-! after `=` as the output `value` arguement. This is a simple case.
+! after `=` as the output `value` argument. This is a simple case.
 !
 ! Case 2:
 ! -------
@@ -661,6 +661,26 @@ function is_named(str) result(result)
     end if
 end function
 
+!
+! Check if there are parsed named arguments that are not expected.
+!
+! Inputs:
+! --------
+!
+! valid : array of valid named arguments.
+!
+! parsed : parsed arguments.
+!
+!             See parse_command_line_arguments documentation for more info.
+!
+! Outputs:
+! -------
+!
+! unrecognized : array of parsed arguments that are not
+!                present in `valid` array.
+!
+! count : size of `unrecognized` array.
+!
 subroutine unrecognized_named_args(valid, parsed, unrecognized, count)
     character(len=*), intent(in) :: valid(:)
     type(parsed_args), intent(in) :: parsed
