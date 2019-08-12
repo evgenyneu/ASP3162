@@ -139,6 +139,8 @@ subroutine read_from_command_line_test(failures)
     call read_from_command_line(silent=.true., settings=settings, success=success)
 
     call assert_true(success, __FILE__, __LINE__, failures)
+    call assert_approx(settings%t_end, 6.283185_dp, 1e-5_dp, __FILE__, __LINE__, failures)
+    call assert_approx(settings%delta_t, 0.1_dp, 1e-5_dp, __FILE__, __LINE__, failures)
 end
 
 
