@@ -8,7 +8,8 @@ implicit none
 private
 public ::   parse_command_line_arguments, get_positional_value, get_named_value, &
             ARGUMENT_MAX_LENGTH, allocate_parsed, parse_current_command_line_arguments, &
-            get_named_value_or_default, has_flag, is_named
+            get_named_value_or_default, has_flag, is_named, &
+            unrecognized_named_args
 
 ! The maximum length of a single parameter
 integer, parameter :: ARGUMENT_MAX_LENGTH = 1024 * 10
@@ -660,5 +661,29 @@ function is_named(str) result(result)
     end if
 end function
 
+subroutine unrecognized_named_args(valid, parsed, unrecognized, count)
+    character(len=*), intent(in) :: valid(:)
+    type(parsed_args), intent(in) :: parsed
+    character(len=ARGUMENT_MAX_LENGTH), allocatable, intent(out) :: unrecognized(:)
+    integer, intent(out) :: count
+    integer :: i, j
+    character(len=ARGUMENT_MAX_LENGTH) :: parsed_name
+
+    count = 0
+
+    allocate(unrecognized(parsed%named_count))
+
+    named_loop: do i = 1, parsed%named_count
+        parsed_name = parsed%named_name(i)
+
+        do j = 1, size(valid)
+            if (parsed_name == valid(j)) cycle named_loop
+        end do
+
+        ! Have not found parsed_name in the list of valid names
+        count = count + 1
+        unrecognized(count) = parsed_name
+    end do named_loop
+end subroutine
 
 end module CommandLineArgs

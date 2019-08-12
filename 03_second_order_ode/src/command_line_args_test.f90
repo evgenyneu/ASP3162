@@ -6,7 +6,8 @@ use AssertsTest, only: assert_equal, assert_true, assert_approx
 use CommandLineArgs, only: parse_command_line_arguments, parsed_args, get_positional_value, &
                             get_named_value, ARGUMENT_MAX_LENGTH, allocate_parsed, &
                             parse_current_command_line_arguments, &
-                            get_named_value_or_default, has_flag, is_named
+                            get_named_value_or_default, has_flag, is_named, &
+                            unrecognized_named_args
 implicit none
 private
 public command_line_args_test_all
@@ -384,6 +385,68 @@ subroutine is_named_test(failures)
     call assert_true(.not. is_named('-9'), __FILE__, __LINE__, failures)
 end
 
+! unrecognized_named_args
+! ---------------------
+
+subroutine unrecognized_named_args_test__all_decognized(failures)
+   integer, intent(inout) :: failures
+    type(parsed_args) :: parsed
+    logical :: result
+    character(len=ARGUMENT_MAX_LENGTH) :: valid_args(2)
+    character(len=ARGUMENT_MAX_LENGTH), allocatable :: unrecognized(:)
+    integer :: count
+
+    valid_args(1) = "name_one_key"
+    valid_args(2) = "help"
+
+    call allocate_parsed(size=2, parsed=parsed)
+
+    parsed%positional_count = 0
+
+    parsed%named_count = 2
+    parsed%named_name(1) = "name_one_key"
+    parsed%named_value(1) = "32"
+
+    parsed%named_name(2) = "help"
+    parsed%named_value(2) = ""
+
+    call unrecognized_named_args(valid=valid_args, parsed=parsed, &
+        unrecognized=unrecognized, count=count)
+
+    call assert_equal(count, 0, __FILE__, __LINE__, failures)
+end
+
+subroutine unrecognized_named_args_test__unrecognized(failures)
+   integer, intent(inout) :: failures
+    type(parsed_args) :: parsed
+    logical :: result
+    character(len=ARGUMENT_MAX_LENGTH) :: valid_args(2)
+    character(len=ARGUMENT_MAX_LENGTH), allocatable :: unrecognized(:)
+    integer :: count
+
+    valid_args(1) = "name_one_key"
+    valid_args(2) = "help"
+
+    call allocate_parsed(size=3, parsed=parsed)
+
+    parsed%positional_count = 0
+
+    parsed%named_count = 3
+    parsed%named_name(1) = "name_one_key"
+    parsed%named_value(1) = "32"
+
+    parsed%named_name(2) = "possum"
+    parsed%named_value(2) = "32"
+
+    parsed%named_name(3) = "help"
+    parsed%named_value(3) = ""
+
+    call unrecognized_named_args(valid=valid_args, parsed=parsed, &
+        unrecognized=unrecognized, count=count)
+
+    call assert_equal(count, 1, __FILE__, __LINE__, failures)
+end
+
 
 subroutine command_line_args_test_all(failures)
     integer, intent(inout) :: failures
@@ -407,6 +470,9 @@ subroutine command_line_args_test_all(failures)
     call has_flag_test(failures)
 
     call is_named_test(failures)
+
+    call unrecognized_named_args_test__all_decognized(failures)
+    call unrecognized_named_args_test__unrecognized(failures)
 end
 
 end module CommandLineArgsTest
