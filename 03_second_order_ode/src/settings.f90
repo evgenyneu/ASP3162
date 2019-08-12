@@ -139,7 +139,7 @@ subroutine read_from_parsed_command_line(parsed, settings, error_message)
     end if
 
     valid_args(1) = "t_end"
-    valid_args(1) = "delta_t"
+    valid_args(2) = "delta_t"
 
     call unrecognized_named_args(valid=valid_args, parsed=parsed, &
         unrecognized=unrecognized, count=unrecognized_count)

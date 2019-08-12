@@ -69,7 +69,7 @@ subroutine read_from_parsed_command_line_test__t_end_not_a_number(failures)
     parsed%named_name(1) = "t_end"
     parsed%named_value(1) = "not a number"
 
-    parsed%named_name(2) = "max_iterations"
+    parsed%named_name(2) = "delta_t"
     parsed%named_value(2) = "17"
 
     call read_from_parsed_command_line(parsed=parsed, settings=settings, error_message=error_message)
