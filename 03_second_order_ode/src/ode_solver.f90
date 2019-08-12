@@ -6,10 +6,11 @@
 module OdeSolver
 use Types, only: dp
 use FloatUtils, only: can_convert_real_to_int
-use Settings, only: program_settings
+use Settings, only: program_settings, read_from_command_line
 implicit none
 private
-public :: solve_ode, print_solution, solve_and_print
+public :: solve_ode, print_solution, solve_and_print, &
+            read_settings_solve_and_print
 
 !
 ! Data for the ODE solution
@@ -41,9 +42,7 @@ contains
 ! Inputs:
 ! -------
 !
-! t_end : final value of t coordinate
-!
-! delta_t : size of the timestep
+! options : program options
 !
 !
 ! Outputs:
@@ -106,13 +105,12 @@ end subroutine
 
 
 !
-! Solves the ODE and prints result to o
+! Prints ODE solution to string
 !
 ! Inputs:
 ! -------
 !
 ! solution : solution to the ODE
-!
 !
 ! Outputs:
 ! -------
@@ -151,6 +149,17 @@ subroutine print_solution(solution, output)
     end do
 end subroutine
 
+
+!
+! Solves the ODE and prints result to output
+!
+! Inputs:
+! -------
+!
+! options : program options
+!
+! silent : if .true. do not show any output (used in unit test)
+!
 subroutine solve_and_print(options, silent)
     type(program_settings), intent(in) :: options
     logical, intent(in) :: silent
@@ -176,5 +185,31 @@ subroutine solve_and_print(options, silent)
         print *, output
     end if
 end subroutine
+
+
+!
+! Read program settings, solve the ODE and print out the results
+!
+! Inputs:
+! -------
+!
+! silent : if .true. do not show any output (used in unit test)
+!
+subroutine read_settings_solve_and_print(silent)
+    logical, intent(in) :: silent
+    type(program_settings) :: settings
+    logical :: success
+
+    call read_from_command_line(silent=silent, settings=settings, &
+                                success=success)
+
+    if (.not. success) then
+        if (.not. silent) call exit(41)
+        return
+    end if
+
+    call solve_and_print(options=settings, silent=silent)
+end subroutine
+
 
 end module OdeSolver

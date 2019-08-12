@@ -2,7 +2,9 @@ module OdeSolverTest
 use Types, only: dp
 use Constants, only: pi
 use Settings, only: program_settings
-use OdeSolver, only: solve_ode, ode_solution, print_solution, solve_and_print
+
+use OdeSolver, only: solve_ode, ode_solution, print_solution, solve_and_print, &
+                        read_settings_solve_and_print
 
 use AssertsTest, only: assert_true, assert_equal, assert_approx, &
                         assert_string_starts_with
@@ -84,12 +86,21 @@ subroutine solve_and_print_test(failures)
     call assert_true(.true., __FILE__, __LINE__, failures)
 end
 
+subroutine read_settings_solve_and_print_test(failures)
+    integer, intent(inout) :: failures
+
+    call read_settings_solve_and_print(silent=.true.)
+
+    call assert_true(.true., __FILE__, __LINE__, failures)
+end
+
 subroutine ode_solver_test_all(failures)
     integer, intent(inout) :: failures
 
     call solve_ode_test(failures)
     call print_solution_test(failures)
     call solve_and_print_test(failures)
+    call read_settings_solve_and_print_test(failures)
 end
 
 end module OdeSolverTest
