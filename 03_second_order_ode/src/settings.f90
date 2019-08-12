@@ -4,6 +4,7 @@
 module Settings
 use Types, only: dp
 use String, only: string_is_empty
+use Constants, only: pi
 
 use CommandLineArgs, only: parsed_args, get_positional_value,&
                             get_named_value_or_default, has_flag, &
@@ -16,46 +17,40 @@ public :: read_from_parsed_command_line, read_from_command_line
 ! Stores program settings:
 !
 type, public :: program_settings
-    ! the starting value for x for the root finding algorithm.
-    real(dp) :: x_start
+    ! inal value of t coordinate
+    real(dp) :: t_end
 
-    ! convergence tolerance for Newton-Raphson method.
-    real(dp) :: tolerance
-
-    ! the maximum number of iterations of the Newton-Raphson method.
-    integer :: max_iterations
+    ! size of the timestep
+    real(dp) :: delta_t
 end type program_settings
 
 ! Help message to be shown
 character(len=1024), parameter :: HELP_MESSAGE = NEW_LINE('h')//"&
-    &This program finds a single root of equation "//NEW_LINE('h')//"&
+    &This program solves ODE"//NEW_LINE('h')//"&
     &"//NEW_LINE('h')//"&
-    &    cos(x) - x = 0"//NEW_LINE('h')//"&
+    &  x''(t) + x(t) = 0"//NEW_LINE('h')//"&
     &"//NEW_LINE('h')//"&
-    &using Newton-Raphson method.&
+    &with initial conditions x(0) = 1, x'(0) = 0."//NEW_LINE('h')//"&
     &"//NEW_LINE('h')//"&
     &"//NEW_LINE('h')//"&
     &Usage:&
     &"//NEW_LINE('h')//"&
     &"//NEW_LINE('h')//"&
-    & ./build/main XSTART [--tolerance=1e-5] [--max_iterations=20]"//NEW_LINE('h')//"&
+    & ./build/main [--t_end=6.2] [--delta_t=0.1]"//NEW_LINE('h')//"&
     &"//NEW_LINE('h')//"&
-    &    XSTART : the starting x value for finding the root. Ex: 0.5."//NEW_LINE('h')//"&
+    &    t_end   : the end value for t,"//NEW_LINE('h')//"&
+    &               Default: 6.28."//NEW_LINE('h')//"&
     &"//NEW_LINE('h')//"&
-    &    tolerance : convergence tolerance for Newton-Raphson method."//NEW_LINE('h')//"&
-    &                Default: 1.e-5."//NEW_LINE('h')//"&
+    &    delta_t : size of the timestep,"//NEW_LINE('h')//"&
+    &               Default: 0.1."//NEW_LINE('h')//"&
     &"//NEW_LINE('h')//"&
-    &    max_iterations : the maximum number of iterations of "//NEW_LINE('h')//"&
-    &                     the Newton-Raphson method."//NEW_LINE('h')//"&
-    &                     Default: 20."//NEW_LINE('h')//"&
-    &"//NEW_LINE('h')//"&
-    &    --help : show this message"//NEW_LINE('h')
+    &    --help  : show this message."//NEW_LINE('h')
 
 ! Default values for the settings
 ! ------
 
-real(dp), parameter :: DEFAULT_TOLERANCE = 1.e-5
-integer, parameter :: DEFAULT_MAX_ITERATIONS = 20
+real(dp), parameter :: DEFAULT_T_END = 2._dp * pi
+real(dp), parameter :: DEFAULT_DELTA_T = 0.1_dp
 
 contains
 
@@ -118,9 +113,6 @@ subroutine read_from_parsed_command_line(parsed, settings, error_message)
     character(len=*), intent(out) :: error_message
     logical :: success
     error_message = ""
-    settings%x_start = 0
-    settings%tolerance = 0
-    settings%max_iterations = 0
 
     ! help
     ! --------------
@@ -132,46 +124,35 @@ subroutine read_from_parsed_command_line(parsed, settings, error_message)
         return
     end if
 
-    ! x-value
-    ! --------------
-
-    if (parsed%positional_count /= 1) then
-        error_message = "ERROR: XSTART is missing."//NEW_LINE('h')//" &
+    if (parsed%positional_count /= 0) then
+        error_message = "ERROR: Unrecognized parameters."//NEW_LINE('h')//" &
                         &Run with --help for help."
         return
     end if
 
-    call get_positional_value(index=1, parsed=parsed, value=settings%x_start, success=success)
-
-    if (.not. success) then
-        error_message = "ERROR: XSTART is not a number."//NEW_LINE('h')//"&
-                        &Run with --help for help."
-        return
-    end if
-
-    ! tolerance
+    ! t_end
     ! --------------
 
-    call get_named_value_or_default(name='tolerance', parsed=parsed, &
-                                    default=DEFAULT_TOLERANCE, &
-                                    value=settings%tolerance, success=success)
+    call get_named_value_or_default(name='t_end', parsed=parsed, &
+                                    default=DEFAULT_T_END, &
+                                    value=settings%t_end, success=success)
 
     if (.not. success) then
-        error_message = "ERROR: tolerance is not a number."//NEW_LINE('h')//"&
+        error_message = "ERROR: t_end is not a number."//NEW_LINE('h')//"&
                         &Run with --help for help."
         return
     end if
 
 
-    ! max_iterations
+    ! delta_t
     ! --------------
 
-    call get_named_value_or_default(name='max_iterations', parsed=parsed, &
-                                    default=DEFAULT_MAX_ITERATIONS, &
-                                    value=settings%max_iterations, success=success)
+    call get_named_value_or_default(name='delta_t', parsed=parsed, &
+                                    default=DEFAULT_DELTA_T, &
+                                    value=settings%delta_t, success=success)
 
     if (.not. success) then
-        error_message = "ERROR: max_iterations is not an integer number."//NEW_LINE('h')//"&
+        error_message = "ERROR: delta_t is not an integer number."//NEW_LINE('h')//"&
                         &Run with --help for help."
         return
     end if

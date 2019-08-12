@@ -39,7 +39,7 @@ contains
 !
 ! t_end : final value of t coordinate
 !
-! delta_t : size of the time step
+! delta_t : size of the timestep
 !
 !
 ! Outputs:
