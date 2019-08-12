@@ -152,7 +152,7 @@ subroutine read_from_parsed_command_line(parsed, settings, error_message)
                                     value=settings%delta_t, success=success)
 
     if (.not. success) then
-        error_message = "ERROR: delta_t is not an integer number."//NEW_LINE('h')//"&
+        error_message = "ERROR: delta_t is not a number."//NEW_LINE('h')//"&
                         &Run with --help for help."
         return
     end if
