@@ -8,7 +8,7 @@ use Types, only: dp
 use FloatUtils, only: can_convert_real_to_int
 implicit none
 private
-public :: solve_ode
+public :: solve_ode, print_solution
 
 !
 ! Data for the ODE solution
@@ -22,6 +22,9 @@ type, public :: ode_solution
 
     ! array of exact values
     real(dp), allocatable :: x_values_exact(:)
+
+    ! errors
+    real(dp), allocatable :: abs_errors(:)
 
     ! the number of elements in `t_values` and `x_values` arrays
     integer :: size
@@ -77,6 +80,7 @@ subroutine solve_ode(t_end, delta_t, solution, success, error_message)
     allocate(solution%t_values(solution%size))
     allocate(solution%x_values(solution%size))
     allocate(solution%x_values_exact(solution%size))
+    allocate(solution%abs_errors(solution%size))
 
     solution%t_values(1) = t_start
     solution%t_values(2) = t_start + delta_t
@@ -92,6 +96,39 @@ subroutine solve_ode(t_end, delta_t, solution, success, error_message)
     end do
 
     solution%x_values_exact = cos(solution%t_values)
+    solution%abs_errors = abs(solution%x_values - solution%x_values_exact)
+end subroutine
+
+subroutine print_solution(solution, output)
+    type(ode_solution), intent(in) :: solution
+    character(len=:), allocatable :: output
+    character(len=:), allocatable :: tmp_arr
+    integer :: i
+    character(len=1024) :: buffer
+    integer :: allocated = 100
+
+    allocate(character(len=allocated) :: output)
+    output = ""
+
+    write(buffer, "(3(a, ', '), a)") "t", "x", "exact", "abs_error"
+    output = output // trim(buffer) // new_line('A')
+
+    do i = 1, solution%size
+        write(buffer, "(3(ES24.17, ','), ES24.17)") solution%t_values(i), &
+            solution%x_values(i), solution%x_values_exact(i), &
+            solution%abs_errors(i)
+
+        output = output // trim(buffer) // new_line('A')
+
+        ! Resize the string array if two small
+        if (len(output) > allocated / 2) then
+            allocated = 2 * allocated
+            allocate(character(len=allocated) :: tmp_arr)
+            tmp_arr = output
+            deallocate(output)
+            call move_alloc(tmp_arr, output)
+        end if
+    end do
 end subroutine
 
 end module OdeSolver

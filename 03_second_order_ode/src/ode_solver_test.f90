@@ -1,8 +1,10 @@
 module OdeSolverTest
 use Types, only: dp
 use Constants, only: pi
-use OdeSolver, only: solve_ode, ode_solution
-use AssertsTest, only: assert_true, assert_equal, assert_approx
+use OdeSolver, only: solve_ode, ode_solution, print_solution
+
+use AssertsTest, only: assert_true, assert_equal, assert_approx, &
+                        assert_string_starts_with
 implicit none
 private
 public ode_solver_test_all
@@ -44,10 +46,29 @@ subroutine find_root_test(failures)
     call assert_approx(solution%x_values_exact(63), 0.9965420_dp, 1e-5_dp, __FILE__, __LINE__, failures)
 end
 
+subroutine print_solution_test(failures)
+    integer, intent(inout) :: failures
+    type(ode_solution) :: solution
+    logical :: success
+    character(len=1024) :: error_message
+    character(len=:), allocatable :: output
+
+
+    call solve_ode(t_end=0.4_dp, delta_t=0.1_dp, &
+                   solution=solution, success=success, &
+                   error_message=error_message)
+
+    call print_solution(solution=solution, output=output)
+
+    call assert_string_starts_with(output, "t, x, exact, abs_error", &
+        __FILE__, __LINE__, failures)
+end
+
 subroutine ode_solver_test_all(failures)
     integer, intent(inout) :: failures
 
     call find_root_test(failures)
+    call print_solution_test(failures)
 end
 
 end module OdeSolverTest
