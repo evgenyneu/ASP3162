@@ -8,7 +8,8 @@ use Constants, only: pi
 
 use CommandLineArgs, only: parsed_args, get_positional_value,&
                             get_named_value_or_default, has_flag, &
-                            parse_current_command_line_arguments
+                            parse_current_command_line_arguments, &
+                            unrecognized_named_args, ARGUMENT_MAX_LENGTH
 implicit none
 private
 public :: read_from_parsed_command_line, read_from_command_line
@@ -112,6 +113,10 @@ subroutine read_from_parsed_command_line(parsed, settings, error_message)
     type(program_settings), intent(out) :: settings
     character(len=*), intent(out) :: error_message
     logical :: success
+    character(len=ARGUMENT_MAX_LENGTH), allocatable :: unrecognized(:)
+    integer :: unrecognized_count
+    character(len=ARGUMENT_MAX_LENGTH) :: valid_args(2)
+
     error_message = ""
 
     ! help
@@ -124,11 +129,29 @@ subroutine read_from_parsed_command_line(parsed, settings, error_message)
         return
     end if
 
+    ! Check unrecognized parameters
+    ! ----------
+
     if (parsed%positional_count /= 0) then
         error_message = "ERROR: Unrecognized parameters."//NEW_LINE('h')//" &
                         &Run with --help for help."
         return
     end if
+
+    valid_args(1) = "t_end"
+    valid_args(1) = "delta_t"
+
+    call unrecognized_named_args(valid=valid_args, parsed=parsed, &
+        unrecognized=unrecognized, count=unrecognized_count)
+
+    if (unrecognized_count > 0) then
+        write(error_message, '(a, a, a)') &
+            "ERROR: Unrecognized parameter '", &
+            trim(unrecognized(1)), &
+            "'. Run with --help for help."
+        return
+    end if
+
 
     ! t_end
     ! --------------
