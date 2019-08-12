@@ -133,8 +133,10 @@ subroutine read_from_parsed_command_line(parsed, settings, error_message)
     ! ----------
 
     if (parsed%positional_count /= 0) then
-        error_message = "ERROR: Unrecognized parameters."//NEW_LINE('h')//" &
-                        &Run with --help for help."
+        write(error_message, '(a, a, a)') &
+            "ERROR: Unrecognized parameter '", &
+            trim(parsed%positional(1)), &
+            "'. Run with --help for help."
         return
     end if
 

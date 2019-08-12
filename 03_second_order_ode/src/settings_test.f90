@@ -103,6 +103,57 @@ subroutine read_from_parsed_command_line_test__delta_t_not_a_number(failures)
         __FILE__, __LINE__, failures)
 end
 
+subroutine read_from_parsed_command_line_test__unrecognized_named(failures)
+    integer, intent(inout) :: failures
+    type(parsed_args) :: parsed
+    type(program_settings) :: settings
+    character(len=1024) :: error_message
+
+    call allocate_parsed(size=2, parsed=parsed)
+
+    parsed%positional_count = 0
+
+    parsed%named_count = 2
+    parsed%named_name(1) = "possum"
+    parsed%named_value(1) = "2.32"
+
+    parsed%named_name(2) = "delta_t"
+    parsed%named_value(2) = "not a number"
+
+    call read_from_parsed_command_line(parsed=parsed, settings=settings, error_message=error_message)
+
+    call assert_true(.not. string_is_empty(error_message), __FILE__, __LINE__, failures)
+    call assert_string_starts_with(error_message, &
+        "ERROR: Unrecognized parameter 'possum'", &
+        __FILE__, __LINE__, failures)
+end
+
+subroutine read_from_parsed_command_line_test__unrecognized_positional(failures)
+    integer, intent(inout) :: failures
+    type(parsed_args) :: parsed
+    type(program_settings) :: settings
+    character(len=1024) :: error_message
+
+    call allocate_parsed(size=2, parsed=parsed)
+
+    parsed%positional_count = 1
+    parsed%positional(1) = "1234"
+
+    parsed%named_count = 2
+    parsed%named_name(1) = "t_end"
+    parsed%named_value(1) = "2.32"
+
+    parsed%named_name(2) = "delta_t"
+    parsed%named_value(2) = "not a number"
+
+    call read_from_parsed_command_line(parsed=parsed, settings=settings, error_message=error_message)
+
+    call assert_true(.not. string_is_empty(error_message), __FILE__, __LINE__, failures)
+    call assert_string_starts_with(error_message, &
+        "ERROR: Unrecognized parameter '1234'", &
+        __FILE__, __LINE__, failures)
+end
+
 
 subroutine show_help_test(failures)
     integer, intent(inout) :: failures
@@ -151,6 +202,8 @@ subroutine settings_test_all(failures)
     call read_from_parsed_command_line_test__named(failures)
     call read_from_parsed_command_line_test__t_end_not_a_number(failures)
     call read_from_parsed_command_line_test__delta_t_not_a_number(failures)
+    call read_from_parsed_command_line_test__unrecognized_named(failures)
+    call read_from_parsed_command_line_test__unrecognized_positional(failures)
 
     call show_help_test(failures)
 
