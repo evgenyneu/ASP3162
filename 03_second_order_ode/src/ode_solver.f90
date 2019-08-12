@@ -6,6 +6,7 @@
 module OdeSolver
 use Types, only: dp
 use FloatUtils, only: can_convert_real_to_int
+use Settings, only: program_settings
 implicit none
 private
 public :: solve_ode, print_solution, solve_and_print
@@ -54,13 +55,17 @@ contains
 !
 ! error_message : contains the error message, if any errors occurred
 !
-subroutine solve_ode(t_end, delta_t, solution, success, error_message)
-    real(dp), intent(in) :: t_end, delta_t
+subroutine solve_ode(options, solution, success, error_message)
+    type(program_settings), intent(in) :: options
     type(ode_solution), intent(out) :: solution
     logical, intent(out) :: success
     character(len=*), intent(out) :: error_message
+    real(dp) :: t_end, delta_t
     integer :: i
     real(dp) :: size_real, t_start
+
+    t_end = options%t_end
+    delta_t = options%delta_t
 
     t_start = 0._dp
 
@@ -146,15 +151,15 @@ subroutine print_solution(solution, output)
     end do
 end subroutine
 
-subroutine solve_and_print(t_end, delta_t, silent)
-    real(dp), intent(in) :: t_end, delta_t
+subroutine solve_and_print(options, silent)
+    type(program_settings), intent(in) :: options
     logical, intent(in) :: silent
     type(ode_solution) :: solution
     logical :: success
     character(len=1024) :: error_message
     character(len=:), allocatable :: output
 
-    call solve_ode(t_end=t_end, delta_t=delta_t, &
+    call solve_ode(options=options, &
                    solution=solution, success=success, &
                    error_message=error_message)
 

@@ -1,6 +1,7 @@
 module OdeSolverTest
 use Types, only: dp
 use Constants, only: pi
+use Settings, only: program_settings
 use OdeSolver, only: solve_ode, ode_solution, print_solution, solve_and_print
 
 use AssertsTest, only: assert_true, assert_equal, assert_approx, &
@@ -15,10 +16,14 @@ contains
 subroutine solve_ode_test(failures)
     integer, intent(inout) :: failures
     type(ode_solution) :: solution
+    type(program_settings) :: options
     logical :: success
     character(len=1024) :: error_message
 
-    call solve_ode(t_end=2._dp*pi, delta_t=0.1_dp, &
+    options%t_end = 2 * pi
+    options%delta_t = 0.1_dp
+
+    call solve_ode(options=options, &
                    solution=solution, success=success, &
                    error_message=error_message)
 
@@ -52,9 +57,12 @@ subroutine print_solution_test(failures)
     logical :: success
     character(len=1024) :: error_message
     character(len=:), allocatable :: output
+    type(program_settings) :: options
 
+    options%t_end = 2 * pi
+    options%delta_t = 0.1_dp
 
-    call solve_ode(t_end=0.4_dp, delta_t=0.1_dp, &
+    call solve_ode(options=options, &
                    solution=solution, success=success, &
                    error_message=error_message)
 
@@ -66,8 +74,12 @@ end
 
 subroutine solve_and_print_test(failures)
     integer, intent(inout) :: failures
+    type(program_settings) :: options
 
-    call solve_and_print(t_end=2 * pi, delta_t=0.1_dp, silent=.false.)
+    options%t_end = 2 * pi
+    options%delta_t = 0.1_dp
+
+    call solve_and_print(options=options, silent=.true.)
 
     call assert_true(.true., __FILE__, __LINE__, failures)
 end
