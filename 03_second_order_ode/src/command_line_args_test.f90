@@ -391,7 +391,6 @@ end
 subroutine unrecognized_named_args_test__all_decognized(failures)
    integer, intent(inout) :: failures
     type(parsed_args) :: parsed
-    logical :: result
     character(len=ARGUMENT_MAX_LENGTH) :: valid_args(2)
     character(len=ARGUMENT_MAX_LENGTH), allocatable :: unrecognized(:)
     integer :: count
@@ -419,7 +418,6 @@ end
 subroutine unrecognized_named_args_test__unrecognized(failures)
    integer, intent(inout) :: failures
     type(parsed_args) :: parsed
-    logical :: result
     character(len=ARGUMENT_MAX_LENGTH) :: valid_args(2)
     character(len=ARGUMENT_MAX_LENGTH), allocatable :: unrecognized(:)
     integer :: count
