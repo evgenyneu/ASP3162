@@ -1,7 +1,7 @@
 module OdeSolverTest
 use Types, only: dp
 use Constants, only: pi
-use OdeSolver, only: solve_ode, ode_solution, print_solution
+use OdeSolver, only: solve_ode, ode_solution, print_solution, solve_and_print
 
 use AssertsTest, only: assert_true, assert_equal, assert_approx, &
                         assert_string_starts_with
@@ -12,7 +12,7 @@ public ode_solver_test_all
 contains
 
 
-subroutine find_root_test(failures)
+subroutine solve_ode_test(failures)
     integer, intent(inout) :: failures
     type(ode_solution) :: solution
     logical :: success
@@ -64,11 +64,20 @@ subroutine print_solution_test(failures)
         __FILE__, __LINE__, failures)
 end
 
+subroutine solve_and_print_test(failures)
+    integer, intent(inout) :: failures
+
+    call solve_and_print(t_end=2 * pi, delta_t=0.1_dp, silent=.false.)
+
+    call assert_true(.true., __FILE__, __LINE__, failures)
+end
+
 subroutine ode_solver_test_all(failures)
     integer, intent(inout) :: failures
 
-    call find_root_test(failures)
+    call solve_ode_test(failures)
     call print_solution_test(failures)
+    call solve_and_print_test(failures)
 end
 
 end module OdeSolverTest

@@ -8,7 +8,7 @@ use Types, only: dp
 use FloatUtils, only: can_convert_real_to_int
 implicit none
 private
-public :: solve_ode, print_solution
+public :: solve_ode, print_solution, solve_and_print
 
 !
 ! Data for the ODE solution
@@ -99,13 +99,28 @@ subroutine solve_ode(t_end, delta_t, solution, success, error_message)
     solution%abs_errors = abs(solution%x_values - solution%x_values_exact)
 end subroutine
 
+
+!
+! Solves the ODE and prints result to o
+!
+! Inputs:
+! -------
+!
+! solution : solution to the ODE
+!
+!
+! Outputs:
+! -------
+!
+! output : output text
+!
 subroutine print_solution(solution, output)
     type(ode_solution), intent(in) :: solution
-    character(len=:), allocatable :: output
+    character(len=:), allocatable, intent(out) :: output
     character(len=:), allocatable :: tmp_arr
     integer :: i
     character(len=1024) :: buffer
-    integer :: allocated = 100
+    integer :: allocated = 2024
 
     allocate(character(len=allocated) :: output)
     output = ""
@@ -129,6 +144,32 @@ subroutine print_solution(solution, output)
             call move_alloc(tmp_arr, output)
         end if
     end do
+end subroutine
+
+subroutine solve_and_print(t_end, delta_t, silent)
+    real(dp), intent(in) :: t_end, delta_t
+    logical, intent(in) :: silent
+    type(ode_solution) :: solution
+    logical :: success
+    character(len=1024) :: error_message
+    character(len=:), allocatable :: output
+
+    call solve_ode(t_end=t_end, delta_t=delta_t, &
+                   solution=solution, success=success, &
+                   error_message=error_message)
+
+    if (.not. success) then
+        if (.not. silent) then
+            write (0, *) error_message
+            call exit(40)
+        end if
+    end if
+
+    call print_solution(solution=solution, output=output)
+
+    if (.not. silent) then
+        print *, output
+    end if
 end subroutine
 
 end module OdeSolver
