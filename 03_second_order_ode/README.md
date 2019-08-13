@@ -1,12 +1,17 @@
-# Finding a single root of equation with Newton-Raphson method
+# Solving differential equation
 
-This this a Fortran program that finds a single root of equation
+This this a Fortran program that solves the equation
 
 ```
-cos(x) - x = 0
+x''(t) + x(t) = 0
 ```
 
-using Newton-Raphson method.
+with initial conditions
+
+```
+x(0) = 1
+x'(0) = 0.
+```
 
 
 ## Compile
@@ -22,21 +27,28 @@ Gfortran compiler is required to build the program (tested with GCC 6.3.0 and 7.
 Running the program:
 
 ```
-./build/main 0.5
+./build/main 
 ```
 
-where `0.5` is the initial x-value for the root finding method. The program will return the approximated root value:
+The program will return the solution an CSV format:
 
 ```
- 0.73908513321516067
+t, x, exact, abs_error
+ 0.00000000000000000E+00, 1.00000000000000000E+00, 1.00000000000000000E+00, 0.00000000000000000E+00
+ 1.00000000000000006E-01, 9.94999999999999996E-01, 9.95004165278025710E-01, 4.16527802571398098E-06
+ 2.00000000000000011E-01, 9.80050000000000088E-01, 9.80066577841241626E-01, 1.65778412415384935E-05
+ 3.00000000000000044E-01, 9.55299500000000079E-01, 9.55336489125605981E-01, 3.69891256059018403E-05
+ ...
 ```
+
+where, `x` is the approximate solution, `exact` is the exact solution, and `abs_error` is the basolute difference between the two.
 
  ## Run with settings
 
 One can also configure parameters of the program:
 
 ```
-./build/main 1.3 --tolerance=1e-5 --max_iterations=15
+./build/main --t_end=12.56 --delta_t=0.05 >> solution.csv
 ```
 
 Run the program with `--help` flag to see the description of the parameters:
@@ -44,26 +56,24 @@ Run the program with `--help` flag to see the description of the parameters:
 ```
 ./build/main --help
 
-This program finds a single root of equation 
+This program solves ODE
 
-    cos(x) - x = 0
+  x''(t) + x(t) = 0
 
-using Newton-Raphson method.
+with initial conditions x(0) = 1, x'(0) = 0.
+
 
 Usage:
 
- ./build/main XSTART [--tolerance=1e-5] [--max_iterations=20]
+ ./build/main [--t_end=6.2] [--delta_t=0.1]
 
-    XSTART : the starting x value for finding the root. Ex: 0.5.
+    t_end   : the end value for t,
+               Default: 6.28.
 
-    tolerance : convergence tolerance for Newton-Raphson method.
-                Default: 1.e-5.
+    delta_t : size of the timestep,
+               Default: 0.1.
 
-    max_iterations : the maximum number of iterations of 
-                     the Newton-Raphson method.
-                     Default: 20.
-
-    --help : show this message
+    --help  : show this message.
 ```
 
 ## Run unit tests

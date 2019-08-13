@@ -1,8 +1,8 @@
 ! Contains the entry point to the program
 program Main
-use RootFinder, only: do_it
+use OdeSolver, only: read_settings_solve_and_print
 implicit none
 
-call do_it(silent=.false.)
+call read_settings_solve_and_print(silent=.false.)
 
 end program Main
