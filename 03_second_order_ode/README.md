@@ -22,6 +22,7 @@ make
 
 Gfortran compiler is required to build the program (tested with GCC 6.3.0 and 7.4.0). Alternatively, one can uncomment `FC=ifort` and `FFLAGS` in the Makefile and compile using ifort.
 
+
 ## Run
 
 Running the program:
@@ -48,7 +49,7 @@ where, `x` is the approximate solution, `exact` is the exact solution, and `abs_
 One can also configure parameters of the program:
 
 ```
-./build/main --t_end=12.56 --delta_t=0.05 >> solution.csv
+./build/main --t_end=12.56 --delta_t=0.05
 ```
 
 Run the program with `--help` flag to see the description of the parameters:
