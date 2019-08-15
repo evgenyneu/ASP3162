@@ -9,7 +9,7 @@ We want to use a finite-difference method in order to numerically solve the seco
   \ddot{x} + x = 0,
   \label{eq_ode}
 \end{equation}
-that has initial conditions
+given the initial conditions
 \begin{align}
   x(0) &= 1 \label{eq_ode_condition_one} \\
   \dot{x}(0) &= 0. \label{eq_ode_condition_two}
@@ -19,11 +19,11 @@ that has initial conditions
 
 \subsection{Finding exact solution}
 
-We will first find the general solution to \autoref{eq_ode}. The corresponding characteristic equation is:
+We will first find the general solution to \autoref{eq_ode}. The corresponding characteristic equation is
 \[
   \lambda^2 + 1 = 0
 \]
-with roots:
+with roots
 \[
   \lambda = \pm i.
 \]
@@ -42,7 +42,7 @@ Therefore,
 \[
   A = 1.
 \]
-Next, we calculate the derivative of $x$ using \autoref{eq_general_solution}:
+Next, we calculate the derivative of $x$ using \autoref{eq_general_solution} and $A=1$:
 \begin{align*}
   \dot{x} &= -\sin t + B \cos t.
 \end{align*}
@@ -56,7 +56,7 @@ We have found that
 \[
   B = 0.
 \]
-Finally, we substitute the values of $A$ and $B$ back into \autoref{eq_general_solution} and find the solution we desired:
+Finally, we substitute the values of $A$ and $B$ back into \autoref{eq_general_solution} and find the unique solution we desired:
 \[
   \boxed{x = \cos t.}
 \]
@@ -64,7 +64,7 @@ Finally, we substitute the values of $A$ and $B$ back into \autoref{eq_general_s
 
 \subsection{Deriving a recurrence relation}
 
-Next, we want to find a recurrence relation for solving \autoref{eq_ode} numerically. We begin by writing an approximation of the second derivative:
+Next, we want to find a recurrence relation for \autoref{eq_ode} that will be used to solve the equation numerically. We begin by writing an approximation of the second derivative:
 \[
   \ddot{x} \approx \frac{x(t + \Delta t) - 2 x(t) + x(t - \Delta t)}{\Delta t^2}.
 \]
@@ -94,11 +94,7 @@ Finally, we replace $i$ with $i+1$ in order to make the indexes start from $0$ a
 
 \subsection{Calculating $x_1$}
 
-We have found out recurrence relation but we can't use it yet: we know
-\[
-  x_0 = 1 \tag{from \autoref{eq_ode_condition_one}},
-\]
-but we don't know $x_1$. In order to estimate $x_1$, we use a power series expansion around $t=0$:
+We have found out recurrence relation but we can't use it yet. We know from \autoref{eq_ode_condition_one} that $x_0 = 1$, but we don't know $x_1$. In order to estimate $x_1$, we use a power series expansion around $t=0$:
 \[
   x(0 + \Delta t) \approx x(0) + \dot{x}(0) \Delta t + \frac{1}{2} \ddot{x}(0) \Delta t^2.
 \]
@@ -106,7 +102,7 @@ Next, we substitute $\ddot{x}$ from \autoref{eq_ode}, as well as $x$ and $\dot{x
 \[
   x(\Delta t) \approx 1 - \frac{1}{2} \Delta t^2
 \]
-Finally, we substitute approximation
+Finally, we substitute the approximation
 \[
   x_1 \approx x(\Delta t)
 \]
@@ -132,7 +128,7 @@ Instructions for compiling and running the program are located in the README.md 
 
 \subsection{Plotting approximate and exact solutions}
 
-We plot the approximate and exact solutions of \autoref{eq_ode} on \autoref{fig_approx_vs_exact_dt_1} for $\Delta t = 1$. We can see that this time step does not result in good agreement between two solutions. Next, we decrease the time step to $\Delta t = 0.1$, as shown on \autoref{approx_vs_exact_dt_0_1}. Now the approximate solution looks indistinguishable from the exact one on this scale.
+We plot the approximate and exact solutions of \autoref{eq_ode} on \autoref{fig_approx_vs_exact_dt_1} for $\Delta t = 1$. We can see that this time step does not result in good agreement between two solutions. Next, we decrease the time step to $\Delta t = 0.1$, the results are shown on \autoref{approx_vs_exact_dt_0_1}. Now the approximate solution looks indistinguishable from the exact one on this scale.
 \begin{figure}[H]
   \centering
   \includegraphics[width=0.8\textwidth]{figures/approx_vs_exact_dt_1.pdf}
@@ -149,7 +145,7 @@ We plot the approximate and exact solutions of \autoref{eq_ode} on \autoref{fig_
 
 \subsection{Plotting error dependence on $t$}
 
-Next, we want to see how absolute errors -- an absolute value of the difference between the approximate and exact solution at each $t$ -- depends on $t$. The absolute errors for $\Delta t = 1$ and $\Delta t = 0.1$ are shown on Figures \ref{abs_error_dt_1} and \ref{abs_error_dt_0_1}. We can see that globally the absolute error increases with $t$ (we ignore the periodic oscillations that make the error oscillate locally) for both time steps. We can also see that absolute errors from $\Delta t = 1$ solution are about $100$ times larger than those from $\Delta t = 0.1$ solution.
+Next, we want to see how absolute errors -- an absolute value of the difference between the approximate and exact solution at each $t$ -- depend on $t$. The absolute errors for $\Delta t = 1$ and $\Delta t = 0.1$ are shown on Figures \ref{abs_error_dt_1} and \ref{abs_error_dt_0_1}. We can see that globally the absolute error increases with $t$ (we ignore local periodic oscillations) for both time steps. We can also see that absolute errors from $\Delta t = 1$ solution are about $100$ times larger than those from $\Delta t = 0.1$ solution.
 
 \begin{figure}[H]
   \centering
@@ -167,11 +163,11 @@ Next, we want to see how absolute errors -- an absolute value of the difference 
 
 \subsection{Dependence of errors on $\Delta t$}
 
-Finally, we want to see how the choice of the time step affects the absolute errors. We run our Fortran program repeatedly for the following values of timesteps:
+Finally, we want to see how the choice of the time step affects the absolute errors. We run our Fortran program repeatedly using the following values of time steps:
 \[
   \Delta t = 1, 0.5, 0.2, 0.1, 0.05, 0.02, 0.01, 0.005, 0.002, 0.001, 0.0005.
 \]
-Next we calculate the absolute errors of the numerical solutions at $t=11$ on \autoref{abs_error_vs_dt}. The value $t=11$ was chosen because it corresponds to a large error on \autoref{abs_error_dt_0_1}. The log-log plot of the errors is shown on \autoref{abs_error_vs_dt}.
+Next we calculate the absolute errors of the numerical solutions for different time steps at $t=11$. The value $t=11$ was chosen because it corresponds to a large error on \autoref{abs_error_dt_0_1}. The log-log plot of the errors is shown on \autoref{abs_error_vs_dt}.
 
 \begin{figure}[H]
   \centering
@@ -180,11 +176,11 @@ Next we calculate the absolute errors of the numerical solutions at $t=11$ on \a
   \label{abs_error_vs_dt}
 \end{figure}
 
-We can see from \autoref{abs_error_vs_dt} that there is a strong increasing linear relationship between the logarithms of the error and the time step. In order to find its slope, we calculate an equation for the line of best fit using \emph{linregress} function from the \emph{scipy} package:
+We can see from \autoref{abs_error_vs_dt} that there is a strong increasing linear relationship between the logarithms of the error and the time step. In order to calculate its slope, we find an equation for the line of best fit using \emph{linregress} function from the \emph{scipy} package:
 \[
   \log(\textrm{error}) = (2.006 \pm 0.002) \log(\Delta t) + b,
 \]
-where $b$ is some value for the $y$-intercept. We can see that the slope is within three standard errors from $2$. Therefore, relation between the maximum error and the time step is, approximately:
+where $b$ is some value for the $y$-intercept. We can see that the slope is within three standard errors from $2$, and the standard error is smaller than $0.001$ of the slope value. Therefore, relation between the maximum error and the time step is, approximately:
 \[
   \textrm{Global error} \sim \Delta t^2.
 \]
@@ -201,7 +197,7 @@ The corresponding errors are shown on \autoref{abs_error_vs_dt_small_delta_t}. W
 \[
   \textrm{Global error} \sim \Delta t^2.
 \]
-no longer holds for $\Delta t < 0.0005$. Is we decrease $\Delta t$ past $\Delta t < 0.0005$, the errors start to increase, not decrease. The increasing errors could be caused by the rounding errors of the floating point numbers and arithmetic operations with those numbers. These error accumulate with each time step and may become significant for small values of $\Delta t$ and large number of time steps.
+no longer holds for $\Delta t < 0.0005$. Is we make $\Delta t$ smaller than $0.0005$, the errors start to increase, not decrease. The increase of errors could be caused by the rounding errors of the floating point numbers and arithmetic operations with those numbers. These errors accumulate with each time step and may become significant for small values of $\Delta t$ and large number of time steps.
 
 Our conjecture could be tested by modifying the Fortran program and using quadruple precision for real variables instead of the currently used double precision. If the errors for very small $\Delta t$ are indeed caused by the limitations of the floating point number system, then we expect that quadruple precision will decrease the errors for $\Delta t = 0.0002, 0.0001, 0.00001$ and maintain the proportionality
 \[
@@ -218,4 +214,4 @@ Our conjecture could be tested by modifying the Fortran program and using quadru
 
 \subsection{Conclusion}
 
-We wrote a Fortran program for solving the $\ddot{x} - x = 0, x(0)=1, \dot{x}(0)=0$ problem numerically. We analyzed the absolute errors of our numerical approximation of the solution. We found that global errors of our numerical method were proportional to the square of the time step when using the time steps between $0.0005$ and $1$. Time steps smaller than $0.0005$ caused the error to increase.
+We wrote a Fortran program for solving the $\ddot{x} - x = 0, x(0)=1, \dot{x}(0)=0$ problem numerically. We analyzed the absolute errors of our numerical approximation of the solution. We found that global errors of our numerical method were proportional to the square of the time step when using the time steps between $0.0005$ and $1$. Time steps smaller than $0.0005$ caused the errors to increase.
