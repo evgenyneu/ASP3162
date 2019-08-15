@@ -1,6 +1,6 @@
 # Plotting errors vs the timesteps
 # for approximation of solutions of
-# of x''(t) + x(t) = 0, x(0)=1, x'(0)=0.
+# of x''(t) + x(t) = 0, x(0)=1, x'(0)=0 problem.
 import os
 from io import StringIO
 import matplotlib.pyplot as plt
@@ -14,7 +14,7 @@ from scipy.stats import linregress
 def find_abs_errors_at_t(at_t, delta_ts):
     """
     Calculates absolute errors of numerical solution
-    of ODE for given values of timesteps
+    of ODE for given values of time steps
 
     Parameters
     ----------
@@ -27,7 +27,7 @@ def find_abs_errors_at_t(at_t, delta_ts):
     Returns
     -------
         list of float
-            Absolute errors of the numerical solution corresponding to the timesteps `delta_ts`.
+            Absolute errors of the numerical solution corresponding to the time steps `delta_ts`.
 
     """
 
@@ -60,10 +60,10 @@ def calculate_linear_fit_equation(delta_ts, errors):
     Parameters
     ----------
     delta_ts : list of float
-        Timestep values
+        Time step values
 
     errors : list of float
-        Absolute errors corresponding to the timesteps.
+        Absolute errors corresponding to the time steps.
 
     Returns
     -------

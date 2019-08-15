@@ -1,5 +1,5 @@
 !
-! Helper functions to deal with float numbers
+! Helper functions to deal with floating point numbers
 !
 module FloatUtils
 use Types, only: dp, biggest_i4
@@ -12,8 +12,9 @@ public :: can_convert_real_to_int
 contains
 
 !
-! Check if the real number can be converted to. We check if the real
-! number is finite and ensure there is no arithmetic overflow.
+! Check if the real number can be converted to integer. We check if the real
+! number is finite and ensure there is no overflow
+! (i.e. check the real number is not larger than the largest integer).
 !
 ! Inputs:
 ! -------
@@ -23,7 +24,7 @@ contains
 !
 ! Outputs:
 ! -------
-!!
+!
 ! success : .true. if the real number can be converted to integer
 !
 ! error_message : contains the error message, if any errors occurred

@@ -1,5 +1,5 @@
 # Plotting relative errors of approximation of solutions of
-# of x''(t) + x(t) = 0, x(0)=1, x'(0)=0 equation.
+# of x''(t) + x(t) = 0, x(0)=1, x'(0)=0 problem.
 import os
 from io import StringIO
 import matplotlib.pyplot as plt

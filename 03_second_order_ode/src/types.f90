@@ -14,7 +14,6 @@ integer, parameter :: i2 = selected_int_kind(4) ! 2 bytes
 integer, parameter :: i4 = selected_int_kind(8) ! 4 bytes
 integer, parameter :: i8 = selected_int_kind(15) ! 8 bytes
 
-
 !The largest number for given precision
 integer(i1), parameter ::  biggest_i1  = huge(1_i1)
 integer(i2), parameter ::  biggest_i2  = huge(1_i2)

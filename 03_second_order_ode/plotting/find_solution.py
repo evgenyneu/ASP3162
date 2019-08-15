@@ -1,4 +1,4 @@
-# Finds solution of x''(t) + x(t) = 0, x(0)=1, x'(0)=0 equation
+# Finds solution of x''(t) + x(t) = 0, x(0)=1, x'(0)=0 problem
 import subprocess
 
 
@@ -14,7 +14,7 @@ def find_solution(t_end, delta_t, print_last):
         The end interval for t.
 
     delta_t : float
-        The timestep.
+        The time step.
 
     print_last : bool
         If true, returns only the solution for the final value of t.
