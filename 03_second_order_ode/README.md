@@ -1,4 +1,4 @@
-# Solving differential equation
+# A Fortran program for solving a 2nd order linear ODE
 
 This this a Fortran program that solves the equation
 
@@ -6,7 +6,7 @@ This this a Fortran program that solves the equation
 x''(t) + x(t) = 0
 ```
 
-with initial conditions
+using the initial conditions
 
 ```
 x(0) = 1
@@ -23,15 +23,16 @@ make
 Gfortran compiler is required to build the program (tested with GCC 6.3.0 and 7.4.0). Alternatively, one can uncomment `FC=ifort` and `FFLAGS` in the Makefile and compile using ifort.
 
 
+
 ## Run
 
 Running the program:
 
 ```
-./build/main 
+./build/main
 ```
 
-The program will return the solution in CSV format:
+The program will print the solution in CSV format to the standard output:
 
 ```
 t, x, exact, abs_error
@@ -42,18 +43,19 @@ t, x, exact, abs_error
  ...
 ```
 
-where, `x` is the approximate solution, `exact` is the exact solution, and `abs_error` is the absolute value of the difference between the two.
+where, `t` is the time variable, `x` is the approximate solution, `exact` is the exact solution, and `abs_error` is the absolute value of the difference between `x` and `exact`.
+
 
 
 ## Run with settings
 
-One can also configure parameters of the program:
+One can also customize program settings:
 
 ```
 ./build/main --t_end=12.56 --delta_t=0.05
 ```
 
-Run the program with `--help` flag to see the description of the parameters:
+Run the program with `--help` flag to see the description of parameters:
 
 ```
 ./build/main --help
@@ -102,6 +104,7 @@ You will see the following output, if tests are successful:
 Tests finished successfully
 ```
 
+
 ## Plotting
 
 To make plots, first cd into plotting directory:
@@ -125,7 +128,8 @@ python plot_solution.py
 python plot_absolute_errors.py
 ```
 
-### Plot error vs timestep
+
+### Plot error vs time step
 
 ```
 python plot_errors_vs_delta_t.py
