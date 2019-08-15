@@ -74,6 +74,8 @@ Usage:
     delta_t : size of the timestep,
                Default: 0.1.
 
+    print_last : print only solution for the final t,
+
     --help  : show this message.
 ```
 
@@ -107,17 +109,17 @@ To make plots, first cd into plotting directory:
 cd plotting
 ```
 
-### Plot failure ratio
+The plotting codes require the Fortran executable to be present.
+
+
+### Plot absolute errors
 
 ```
-python plot_failure_ratio.py
+python plot_absolute_errors.py
 ```
 
-The code requires the Fortran executable to be present.
-
-
-### Plot `f(x) = cos(x) - x` function
+### Plot error vs timestep
 
 ```
-python plot_function.py
+plot plot_errors_vs_delta_t.py
 ```
