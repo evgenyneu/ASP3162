@@ -18,7 +18,7 @@ public :: read_from_parsed_command_line, read_from_command_line
 ! Stores program settings:
 !
 type, public :: program_settings
-    ! inal value of t coordinate
+    ! Final value of t coordinate
     real(dp) :: t_end
 
     ! size of the timestep
@@ -120,10 +120,9 @@ subroutine read_from_parsed_command_line(parsed, settings, error_message)
     logical :: success
     character(len=ARGUMENT_MAX_LENGTH), allocatable :: unrecognized(:)
     integer :: unrecognized_count
-    character(len=ARGUMENT_MAX_LENGTH) :: valid_args(2)
+    character(len=ARGUMENT_MAX_LENGTH) :: valid_args(3)
 
     error_message = ""
-    ! settings%print_last = .false.
 
     ! help
     ! --------------
@@ -134,6 +133,8 @@ subroutine read_from_parsed_command_line(parsed, settings, error_message)
         error_message = HELP_MESSAGE
         return
     end if
+
+    settings%print_last = has_flag(name='print_last', parsed=parsed)
 
     ! Check unrecognized parameters
     ! ----------
@@ -148,6 +149,7 @@ subroutine read_from_parsed_command_line(parsed, settings, error_message)
 
     valid_args(1) = "t_end"
     valid_args(2) = "delta_t"
+    valid_args(3) = "print_last"
 
     call unrecognized_named_args(valid=valid_args, parsed=parsed, &
         unrecognized=unrecognized, count=unrecognized_count)

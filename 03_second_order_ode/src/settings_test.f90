@@ -56,6 +56,29 @@ subroutine read_from_parsed_command_line_test__named(failures)
     call assert_approx(settings%delta_t, 0.01_dp, 1e-5_dp, __FILE__, __LINE__, failures)
 end
 
+
+subroutine read_from_parsed_command_line_test__print_last(failures)
+    integer, intent(inout) :: failures
+    type(parsed_args) :: parsed
+    type(program_settings) :: settings
+    character(len=1024) :: error_message
+
+    call allocate_parsed(size=2, parsed=parsed)
+
+    parsed%positional_count = 0
+
+    parsed%named_count = 2
+    parsed%named_name(1) = "t_end"
+    parsed%named_value(1) = "2.31"
+
+    parsed%named_name(2) = "print_last"
+
+    call read_from_parsed_command_line(parsed=parsed, settings=settings, error_message=error_message)
+
+    call assert_true(string_is_empty(error_message), __FILE__, __LINE__, failures)
+    call assert_true(settings%print_last, __FILE__, __LINE__, failures)
+end
+
 subroutine read_from_parsed_command_line_test__t_end_not_a_number(failures)
     integer, intent(inout) :: failures
     type(parsed_args) :: parsed
@@ -201,6 +224,7 @@ subroutine settings_test_all(failures)
 
     call read_from_parsed_command_line_test__no_args(failures)
     call read_from_parsed_command_line_test__named(failures)
+    call read_from_parsed_command_line_test__print_last(failures)
     call read_from_parsed_command_line_test__t_end_not_a_number(failures)
     call read_from_parsed_command_line_test__delta_t_not_a_number(failures)
     call read_from_parsed_command_line_test__unrecognized_named(failures)
