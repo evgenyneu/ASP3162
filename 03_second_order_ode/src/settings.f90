@@ -42,13 +42,13 @@ character(len=1024), parameter :: HELP_MESSAGE = NEW_LINE('h')//"&
     &"//NEW_LINE('h')//"&
     & ./build/main [--t_end=6.2] [--delta_t=0.1]"//NEW_LINE('h')//"&
     &"//NEW_LINE('h')//"&
-    &    t_end   : the end value for t,"//NEW_LINE('h')//"&
+    &    --t_end=NUMBER   : the end value for t,"//NEW_LINE('h')//"&
     &               Default: 6.28."//NEW_LINE('h')//"&
     &"//NEW_LINE('h')//"&
-    &    delta_t : size of the timestep,"//NEW_LINE('h')//"&
+    &    --delta_t=NUMBER : size of the timestep,"//NEW_LINE('h')//"&
     &               Default: 0.1."//NEW_LINE('h')//"&
     &"//NEW_LINE('h')//"&
-    &    print_last : print only solution for the final t,"//NEW_LINE('h')//"&
+    &    --print_last : print only solution for the final t,"//NEW_LINE('h')//"&
     &"//NEW_LINE('h')//"&
     &    --help  : show this message."//NEW_LINE('h')
 

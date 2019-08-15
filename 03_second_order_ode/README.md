@@ -71,13 +71,13 @@ Usage:
 
  ./build/main [--t_end=6.2] [--delta_t=0.1]
 
-    t_end   : the end value for t,
+    --t_end=NUMBER   : the end value for t,
                Default: 6.28.
 
-    delta_t : size of the timestep,
+    --delta_t=NUMBER : size of the timestep,
                Default: 0.1.
 
-    print_last : print only solution for the final t,
+    --print_last : print only solution for the final t,
 
     --help  : show this message.
 ```
