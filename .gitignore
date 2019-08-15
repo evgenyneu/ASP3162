@@ -1,6 +1,9 @@
 build/
 .DS_Store
 
+# Python
+__pycache__
+
 # Latex
 *.log
 *.aux
