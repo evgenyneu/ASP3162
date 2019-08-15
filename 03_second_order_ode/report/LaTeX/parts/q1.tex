@@ -1,130 +1,221 @@
 \subsection{Abstract}
 
-We write a Fortran program that finds a root of equation $\cos(x) - x = 0$ using Newton-Raphson method. We find the root to be $0.73909$. We investigate the dependence of the failure rate of the program on the initial value of $x$ and the maximum number of allowed iterations.
+We write a Fortran program that solves $\ddot{x} - x = 0, x(0)=1, \dot{x}(0)=0$ problem numerically using a finite-difference method. We plot the numerical solution and compare it with the exact solution. We look at absolute errors of numerical solutions and investigate their dependence on the size of the time step. We find that global errors of our numerical method are proportional to the square of the time step for time steps between $0.0005$ and $1$. Using time steps smaller than $0.0005$ result in increase of the errors.
 
-\subsection{Overview}
+\subsection{The ODE}
 
-We created a Fortran program that estimates a single root of equation
+We want to use a finite-difference method in order to numerically solve the second order linear homogeneous ordinary differential equation
 \begin{equation}
-  \cos(x) - x = 0
-  \label{eq_root}
+  \ddot{x} + x = 0,
+  \label{eq_ode}
 \end{equation}
-using Newton-Raphson method. The method gives recurrence relation
+that has initial conditions
+\begin{align}
+  x(0) &= 1 \label{eq_ode_condition_one} \\
+  \dot{x}(0) &= 0. \label{eq_ode_condition_two}
+\end{align}
+
+
+
+\subsection{Finding exact solution}
+
+We will first find the general solution to \autoref{eq_ode}. The corresponding characteristic equation is:
+\[
+  \lambda^2 + 1 = 0
+\]
+with roots:
+\[
+  \lambda = \pm i.
+\]
+Therefore, the general solution to \autoref{eq_ode} is
 \begin{equation}
-  x_{x+1} = x_n - f(x_n) / f'(x_n),
-  \label{eq_recurrence}
+  x = A \cos t + B \sin t, \quad A, B \in \mathbb{R}.
+  \label{eq_general_solution}
 \end{equation}
-where
+Next, we use the initial conditions to find the values of constants $A$ and $B$. Using \autoref{eq_ode_condition_one} gives
+\begin{align*}
+  x(0) &= 1 \\
+      &= A \cos 0 + B \sin 0 \\
+      &= A.
+\end{align*}
+Therefore,
 \[
-  f(x_n) = \cos(x_n) - x_n,
+  A = 1.
 \]
-and $x_n$ are the x values, and $n = 0, 1, 2, \dots, N_{max}$ is the iteration number with $N_{max}$ being the maximum number of iterations.
-
-We begin the calculations by choosing a starting $x_0$ and then use \autoref{eq_recurrence} to calculate $x_1$. Then we use $x_1$ to calculate $x_2$. This calculation is repeated until the absolute difference between two subsequent $x$ values is smaller than a chosen tolerance number $\epsilon$:
+Next, we calculate the derivative of $x$ using \autoref{eq_general_solution}:
+\begin{align*}
+  \dot{x} &= -\sin t + B \cos t.
+\end{align*}
+Applying condition from \autoref{eq_ode_condition_two} gives
+\begin{align*}
+  \dot{x}(0) &= 0 \\
+      &= -\sin 0 + B \cos 0 \\
+      &= B.
+\end{align*}
+We have found that
 \[
-  |{x_{n+1} - x_n}| < \epsilon.
+  B = 0.
+\]
+Finally, we substitute the values of $A$ and $B$ back into \autoref{eq_general_solution} and find the solution we desired:
+\[
+  \boxed{x = \cos t.}
 \]
 
-The calculations are stopped and the program is terminated with an error if the number of iterations exceeds a chosen maximum number of iterations. The program is also terminated if devision by zero or an overflow is detected as a result of calculating $x_{x+1}$ from \autoref{eq_recurrence}.
+
+\subsection{Deriving a recurrence relation}
+
+Next, we want to find a recurrence relation for solving \autoref{eq_ode} numerically. We begin by writing an approximation of the second derivative:
+\[
+  \ddot{x} \approx \frac{x(t + \Delta t) - 2 x(t) + x(t - \Delta t)}{\Delta t^2}.
+\]
+Solving for $ x(t + \Delta t)$ gives
+\begin{equation}
+  x(t + \Delta t) \approx - x(t - \Delta t) + 2 x(t) + \Delta t^2 \ddot{x}
+  \label{eq_exact}
+\end{equation}
+Next, we use approximations
+\begin{align*}
+  x_{i-1} &\approx x(t - \Delta t) \\
+  x_{i} &\approx x(t) \\
+  x_{i+1} &\approx x(t + \Delta t), \quad \textrm{for} \ i = 0, 1, \dots , n_t,
+\end{align*}
+where $n_t$ is the number of time steps.
+With the approximations \autoref{eq_exact} becomes
+\begin{align*}
+  x_{i+1} &= - x_{i-1} + 2 x_{i} + \Delta t^2 \ddot{x_{i}} \\
+    &= - x_{i-1} + 2 x_{i} - \Delta t^2 x_{i} \tag{Use \autoref{eq_ode}}\\
+    &= - x_{i-1} + x_{i} (2 - \Delta t^2 ).
+\end{align*}
+Finally, we replace $i$ with $i+1$ in order to make the indexes start from $0$ and not from $-1$ and get the recurrence relation we wanted:
+\begin{equation}
+  \boxed{ x_{i+2} = - x_{i} + x_{i+1} (2 - \Delta t^2 ), \ i = 0, 1, \dots , n_t }
+  \label{eq_reccurence_relation}
+\end{equation}
+
+\subsection{Calculating $x_1$}
+
+We have found out recurrence relation but we can't use it yet: we know
+\[
+  x_0 = 1 \tag{from \autoref{eq_ode_condition_one}},
+\]
+but we don't know $x_1$. In order to estimate $x_1$, we use a power series expansion around $t=0$:
+\[
+  x(0 + \Delta t) \approx x(0) + \dot{x}(0) \Delta t + \frac{1}{2} \ddot{x}(0) \Delta t^2.
+\]
+Next, we substitute $\ddot{x}$ from \autoref{eq_ode}, as well as $x$ and $\dot{x}$ from Equations \ref{eq_ode_condition_one} and \ref{eq_ode_condition_two}:
+\[
+  x(\Delta t) \approx 1 - \frac{1}{2} \Delta t^2
+\]
+Finally, we substitute approximation
+\[
+  x_1 \approx x(\Delta t)
+\]
+and find the expression for $x_1$ that we wanted
+\[
+    \boxed{ x_1 = 1 - \frac{1}{2} \Delta t^2. }
+\]
+
+
+\subsection{Calculating full numerical solution}
+
+
+Next, we write a Fortran program that solves \autoref{eq_ode} numerically. The program is given the size of the time step $\Delta t$, as well as the final value of $t$. The starting value of $t$ is set to be zero by the initial value conditions. The first two values of $x$ are
+\begin{align*}
+  x_0 &= 1 \\
+  x_1 &= 1 - \frac{1}{2} \Delta t^2.
+\end{align*}
+The remaining values are calculated iteratively using the recurrence relation from \autoref{eq_reccurence_relation}.
+
 
 Instructions for compiling and running the program are located in the README.md file that comes with the source code.
 
 
-\section{Root finding function}
+\subsection{Plotting approximate and exact solutions}
 
-We implemented a function \code{approximate\_root} with interface shown in \autoref{code_approximate_root}.
+We plot the approximate and exact solutions of \autoref{eq_ode} on \autoref{fig_approx_vs_exact_dt_1} for $\Delta t = 1$. We can see that this time step does not result in good agreement between two solutions. Next, we decrease the time step to $\Delta t = 0.1$, as shown on \autoref{approx_vs_exact_dt_0_1}. Now the approximate solution looks indistinguishable from the exact one on this scale.
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.8\textwidth]{figures/approx_vs_exact_dt_1.pdf}
+  \caption{Approximate and exact solutions of the problem $\ddot{x} - x = 0, x(0)=1, \dot{x}(0)=0$ for $\Delta t = 1$.}
+  \label{fig_approx_vs_exact_dt_1}
+\end{figure}
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.8\textwidth]{figures/approx_vs_exact_dt_0_1.pdf}
+  \caption{Approximate and exact solutions of the problem $\ddot{x} - x = 0, x(0)=1, \dot{x}(0)=0$ for $\Delta t = 0.1$.}
+  \label{approx_vs_exact_dt_0_1}
+\end{figure}
 
-\noindent\begin{minipage}{\linewidth}
-\begin{lstlisting}[caption={Definition of a function for approximating a root of equation that is passed as input parameter (\code{newton\_raphson.f90}).},frame=tlrb,label={code_approximate_root}]
-function approximate_root(x_start, func, derivative, tolerance, &
-                          max_iterations, success) result(result)
 
-...
-end function
-\end{lstlisting}
-\end{minipage}
+\subsection{Plotting error dependence on $t$}
 
-When calling \code{approximate\_root} function, we supply a function that calculates
+Next, we want to see how absolute errors -- an absolute value of the difference between the approximate and exact solution at each $t$ -- depends on $t$. The absolute errors for $\Delta t = 1$ and $\Delta t = 0.1$ are shown on Figures \ref{abs_error_dt_1} and \ref{abs_error_dt_0_1}. We can see that globally the absolute error increases with $t$ (we ignore the periodic oscillations that make the error oscillate locally) for both time steps. We can also see that absolute errors from $\Delta t = 1$ solution are about $100$ times larger than those from $\Delta t = 0.1$ solution.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.8\textwidth]{figures/abs_error_dt_1.pdf}
+  \caption{Absolute error of numerical solution of the problem $\ddot{x} - x = 0, x(0)=1, \dot{x}(0)=0$ for $\Delta t = 1$.}
+  \label{abs_error_dt_1}
+\end{figure}
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.8\textwidth]{figures/abs_error_dt_0_1.pdf}
+  \caption{Absolute error of numerical solution of the problem $\ddot{x} - x = 0, x(0)=1, \dot{x}(0)=0$ for $\Delta t = 0.1$.}
+  \label{abs_error_dt_0_1}
+\end{figure}
+
+
+\subsection{Dependence of errors on $\Delta t$}
+
+Finally, we want to see how the choice of the time step affects the absolute errors. We run our Fortran program repeatedly for the following values of timesteps:
 \[
-  f(x) = \cos(x) - x,
+  \Delta t = 1, 0.5, 0.2, 0.1, 0.05, 0.02, 0.01, 0.005, 0.002, 0.001, 0.0005.
 \]
-as well as its derivative. This implementation allows to make \code{approximate\_root} function general and reuse it for calculating roots of other functions.
+Next we calculate the absolute errors of the numerical solutions at $t=11$ on \autoref{abs_error_vs_dt}. The value $t=11$ was chosen because it corresponds to a large error on \autoref{abs_error_dt_0_1}. The log-log plot of the errors is shown on \autoref{abs_error_vs_dt}.
 
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.8\textwidth]{figures/abs_error_vs_dt.pdf}
+  \caption{Dependence of absolute errors of numerical solution of the problem $\ddot{x} - x = 0, x(0)=1, \dot{x}(0)=0$ on time step.}
+  \label{abs_error_vs_dt}
+\end{figure}
 
-\section{Choosing initial x value}
-
-We can estimate approximate location of the root of \autoref{eq_root} by evaluating $f(x) = \cos(x) - 1$ until we find two x values $x_a$ and $x_b$ for which $f$ has values of opposite signs. Intermediate value theorem guarantees that $f(x)=0$ for some $x \in [x_a, x_b]$, since $f$ is continuous. Therefore, we can chose initial x value $x_0$ to be somewhere between $x_a$ and $x_b$ because it will be close to a root. For example, we can chose $x_0$ to be between $0$ and $\pi$, since $f(0)=1$ and $f(\pi/2) = -\pi/2$ have opposite signs.
-
-
-\section{Failure ratio dependence on $x_0$}
-
-We wanted to know how the failure ratio of our program depends on the initial value $x_0$. We ran the program using multiple values of $x_0$ with the interval $[-10, 10]$ using tolerance $\epsilon=\num{1e-5}$ and calculated the failure ratio
+We can see from \autoref{abs_error_vs_dt} that there is a strong increasing linear relationship between the logarithms of the error and the time step. In order to find its slope, we calculate an equation for the line of best fit using \emph{linregress} function from the \emph{scipy} package:
 \[
-  \textrm{failure ratio} = \frac{\textrm{number of failures}}{\textrm{total number of runs}}.
+  \log(\textrm{error}) = (2.006 \pm 0.002) \log(\Delta t) + b,
 \]
-We have repeated this method using different number of $N_{max}$:
+where $b$ is some value for the $y$-intercept. We can see that the slope is within three standard errors from $2$. Therefore, relation between the maximum error and the time step is, approximately:
 \[
-  N_{max} \in \{1, 5, 10, 20, 50, 100, \num{1000}, \num{10000}, \num{100000}, \num{1000000} \}.
+  \textrm{Global error} \sim \Delta t^2.
 \]
-For $N_{max}=1$ all calculations failed (failure ratio of $1.0$). For $N_{max}=5$ some of the calculations succeeded, as shown in \autoref{fig_fail_rates_max_iterations_5}. We can see that even five iterations were enough to reach nearly zero failure ratio in the interval between $0$ and $2.5$.
+Hence, we conclude that our numerical solution method is of the order $O(\Delta t^2)$.
+
+
+\subsection{Errors for very small $\Delta t$}
+
+We have found that errors are proportional to $\Delta t^2$. We want to see if this remains true for very small values of $\Delta t$, such as:
+\[
+  \Delta t = 0.0002, 0.0001, 0.00001, 0.000001, 0.0000001.
+\]
+The corresponding errors are shown on \autoref{abs_error_vs_dt_small_delta_t}. We can see that proportionality
+\[
+  \textrm{Global error} \sim \Delta t^2.
+\]
+no longer holds for $\Delta t < 0.0005$. Is we decrease $\Delta t$ past $\Delta t < 0.0005$, the errors start to increase, not decrease. The increasing errors could be caused by the rounding errors of the floating point numbers and arithmetic operations with those numbers. These error accumulate with each time step and may become significant for small values of $\Delta t$ and large number of time steps.
+
+Our conjecture could be tested by modifying the Fortran program and using quadruple precision for real variables instead of the currently used double precision. If the errors for very small $\Delta t$ are indeed caused by the limitations of the floating point number system, then we expect that quadruple precision will decrease the errors for $\Delta t = 0.0002, 0.0001, 0.00001$ and maintain the proportionality
+\[
+  \textrm{Global error} \sim \Delta t^2.
+\].
 \begin{figure}[H]
   \centering
-  \includegraphics[width=0.8\textwidth]{figures/plot_max_iterations_5.pdf}
-  \caption{Failure ratio of Newton-Raphson root finding method for five maximum number of iterations. Failure ratio is close to zero in the interval $[0, 2.5]$.}
-  \label{fig_fail_rates_max_iterations_5}
-\end{figure}
-Increasing the number of iterations to $50$ has decreased the failure ratio for most values of $x_0$ to $0.6$ and lower (\autoref{fig_fail_rates_max_iterations_50}). However, we can still see that all calculation failed for $x_0$ between about $-1$ and $0$. Another peak in failure rates is visible around $x=5$. This could be cause of the small slope of $f(x)$ around $x=-1$ and $x=5$ (\autoref{fig_cos_x_minus_x}). In \autoref{eq_recurrence} the term $f'(x)$ is in the denominator, and small values of $f'(x)$ may cause overflow, or result in very large values of $x_{x+1}$ that are far away from the true root.
-\begin{figure}[H]
-  \centering
-  \includegraphics[width=0.8\textwidth]{figures/plot_max_iterations_50.pdf}
-  \caption{Failure ratio of Newton-Raphson root finding method for $50$ maximum number of iterations. Failure ratio is close to zero in the interval $[0, 2.5]$}
-  \label{fig_fail_rates_max_iterations_50}
-\end{figure}
-\begin{figure}[H]
-  \centering
-  \includegraphics[width=0.8\textwidth]{figures/cos_x_minus_x.pdf}
-  \caption{Function $f(x) = \cos(x) - x$.}
-  \label{fig_cos_x_minus_x}
-\end{figure}
-We have found that the failure ratio decreased as we increased $N_{max}$. On \autoref{fig_fail_rates_max_iterations_100000} we can see the failure rate below $0.1$ for most values of $x_0$ when we used very large number of maximum iterations ($N_{max}=\num{100000}$). Interestingly, almost all calculations were still failing for $x_0 \in [-1, 0]$, while values of $x_0$ from the other two regions of small slope of $f(x)$ (for $x_0 \approx -7.5$ and $x_0 \approx 5$) had very low failure rates below $0.1$. It is unclear why we saw such a difference in failure rates for regions of $f(x)$ that have same rates of change.
-\begin{figure}[H]
-  \centering
-  \includegraphics[width=0.8\textwidth]{figures/plot_max_iterations_100000.pdf}
-  \caption{Failure ratio of Newton-Raphson root finding method for $\num{100000}$ maximum number of iterations. Failure ratio is close to zero in the interval $[0, 2.5]$}
-  \label{fig_fail_rates_max_iterations_100000}
+  \includegraphics[width=0.8\textwidth]{figures/abs_error_vs_dt_small_delta_t.pdf}
+  \caption{Dependence of absolute errors of numerical solution of the problem $\ddot{x} - x = 0, x(0)=1, \dot{x}(0)=0$ on time step including $\Delta t < 0.0005$.}
+  \label{abs_error_vs_dt_small_delta_t}
 \end{figure}
 
-\section{Failure ratio dependence on $N_{max}$}
-
-Here we investigate how the failure ratio depends on the maximum number of iterations (\autoref{fig_total_failure_ratio}). We can see that the failure ratio is lower with higher $N_{max}$. This is not an unexpected result. When we allow the program to run the calculation from \autoref{eq_recurrence} more times, it might make it more likely for the program to converge.
-\begin{figure}[H]
-  \centering
-  \includegraphics[width=0.8\textwidth]{figures/total_failure_ratio.pdf}
-  \caption{Failure ratio of Newton-Raphson root finding method different values of maximum number of iterations.}
-  \label{fig_total_failure_ratio}
-\end{figure}
-
-\section{Result}
-
-We ran the program with initial value $x_0 = 0.5$, maximum number of iterations $N_{max}=20$ and tolerance $\epsilon=\num{1e-5}$. The program approximated the root to be $0.73909$. Our result agrees with the root calculated by Mathematica code shown in  \autoref{code_find_root_mathematica}.
 
 
-\noindent\begin{minipage}{\linewidth}
-\begin{lstlisting}[caption={Finding root of $\cos(x)-x = 0$ using Mathematica.},frame=tlrb,label={code_find_root_mathematica}]
-FindRoot[Cos[x] - x, {x, 0.5}]
-{x -> 0.739085}
-\end{lstlisting}
-\end{minipage}
+\subsection{Conclusion}
 
-
-
-
-
-
-
-
-
-
-
-
-
+We wrote a Fortran program for solving the $\ddot{x} - x = 0, x(0)=1, \dot{x}(0)=0$ problem numerically. We analyzed the absolute errors of our numerical approximation of the solution. We found that global errors of our numerical method were proportional to the square of the time step when using the time steps between $0.0005$ and $1$. Time steps smaller than $0.0005$ caused the error to increase.
