@@ -29,6 +29,7 @@ subroutine read_from_parsed_command_line_test__no_args(failures)
     call assert_true(string_is_empty(error_message), __FILE__, __LINE__, failures)
     call assert_approx(settings%t_end, 6.283185_dp, 1e-5_dp, __FILE__, __LINE__, failures)
     call assert_approx(settings%delta_t, 0.1_dp, 1e-5_dp, __FILE__, __LINE__, failures)
+    call assert_true(.not. settings%print_last, __FILE__, __LINE__, failures)
 end
 
 subroutine read_from_parsed_command_line_test__named(failures)

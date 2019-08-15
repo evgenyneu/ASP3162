@@ -174,7 +174,7 @@ subroutine solve_and_print(options, silent)
 
     if (.not. success) then
         if (.not. silent) then
-            write (0, *) error_message
+            write (0, *) trim(error_message)
             call exit(40)
         end if
     end if

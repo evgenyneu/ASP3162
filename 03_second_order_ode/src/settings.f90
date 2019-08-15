@@ -23,6 +23,9 @@ type, public :: program_settings
 
     ! size of the timestep
     real(dp) :: delta_t
+
+    ! Prints only solution for the final value of t
+    logical :: print_last
 end type program_settings
 
 ! Help message to be shown
@@ -44,6 +47,8 @@ character(len=1024), parameter :: HELP_MESSAGE = NEW_LINE('h')//"&
     &"//NEW_LINE('h')//"&
     &    delta_t : size of the timestep,"//NEW_LINE('h')//"&
     &               Default: 0.1."//NEW_LINE('h')//"&
+    &"//NEW_LINE('h')//"&
+    &    print_last : print only solution for the final t,"//NEW_LINE('h')//"&
     &"//NEW_LINE('h')//"&
     &    --help  : show this message."//NEW_LINE('h')
 
@@ -118,6 +123,7 @@ subroutine read_from_parsed_command_line(parsed, settings, error_message)
     character(len=ARGUMENT_MAX_LENGTH) :: valid_args(2)
 
     error_message = ""
+    ! settings%print_last = .false.
 
     ! help
     ! --------------

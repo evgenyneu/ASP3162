@@ -2,7 +2,7 @@
 ! Helper functions to deal with float numbers
 !
 module FloatUtils
-use Types, only: dp, biggest_i2
+use Types, only: dp, biggest_i4
 use, intrinsic :: ieee_arithmetic, only: ieee_is_finite, ieee_is_nan
 implicit none
 private
@@ -39,7 +39,7 @@ subroutine can_convert_real_to_int(float, success, error_message)
         return
     end if
 
-    if (abs(float) > real(biggest_i2, dp)) then
+    if (abs(float) > real(biggest_i4, dp)) then
         success = .false.
         write(error_message, '(a, x, ES23.15, x, a)') &
             "Can not convert", float, "to integer"
