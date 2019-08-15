@@ -31,7 +31,7 @@ Running the program:
 ./build/main 
 ```
 
-The program will return the solution an CSV format:
+The program will return the solution in CSV format:
 
 ```
 t, x, exact, abs_error
@@ -42,9 +42,10 @@ t, x, exact, abs_error
  ...
 ```
 
-where, `x` is the approximate solution, `exact` is the exact solution, and `abs_error` is the basolute difference between the two.
+where, `x` is the approximate solution, `exact` is the exact solution, and `abs_error` is the absolute value of the difference between the two.
 
- ## Run with settings
+
+## Run with settings
 
 One can also configure parameters of the program:
 
