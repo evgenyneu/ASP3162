@@ -17,7 +17,6 @@ def plot_solution(plot_dir, t_end, delta_t):
         return
 
     df = pd.read_csv(StringIO(data), skipinitialspace=True)
-    print(df.columns)
     plt.plot(df['t'], df['x'], label='Approximation')
 
     exact_t = np.arange(0.0, t_end, 0.01)
