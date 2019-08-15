@@ -34,7 +34,7 @@ def find_abs_errors_at_t(at_t, delta_ts):
     errors = []
 
     for delta_t in delta_ts:
-        data = find_solution(t_end=at_t, delta_t=delta_t)
+        data = find_solution(t_end=at_t, delta_t=delta_t, print_last=True)
 
         if data is None:
             return
@@ -79,7 +79,7 @@ def calculate_linear_fit_equation(delta_ts, errors):
     return text
 
 
-def plot_errors_vs_dt(plot_dir, at_t, delta_ts):
+def plot_errors_vs_dt(plot_dir, at_t, delta_ts, plot_file):
     errors = find_abs_errors_at_t(at_t=at_t, delta_ts=delta_ts)
 
     if errors is None:
@@ -111,14 +111,19 @@ def plot_errors_vs_dt(plot_dir, at_t, delta_ts):
     plt.tight_layout()
     plt.xscale("log")
     plt.yscale("log")
-    plotfile = os.path.join(plot_dir, f"abs_error_vs_dt.pdf")
+    plotfile = os.path.join(plot_dir, plot_file)
     plt.savefig(plotfile)
     plt.show()
 
 
 if __name__ == '__main__':
-    delta_ts = [1, 0.5, 0.2, 0.1, 0.05, 0.02, 0.01, 0.005, 0.002, 0.001, 0.0005, 0.0002]
-    # delta_ts = [1, 0.5, 0.2, 0.1, 0.05, 0.02, 0.01]
-    # delta_ts = [1, 0.5, 0.2, 0.1]
-    # delta_ts = [1, 0.5]
-    plot_errors_vs_dt(plot_dir="plots", at_t=11.000001, delta_ts=delta_ts)
+    delta_ts = [1, 0.5, 0.2, 0.1, 0.05, 0.02, 0.01, 0.005, 0.002, 0.001, 0.0005]
+
+    plot_errors_vs_dt(plot_dir="plots", at_t=11.000001, delta_ts=delta_ts,
+                      plot_file="abs_error_vs_dt.pdf")
+
+    delta_ts = [1, 0.5, 0.2, 0.1, 0.05, 0.02, 0.01, 0.005, 0.002, 0.001, 0.0005,
+                0.0002, 0.0001, 0.00001, 0.000001, 0.0000001]
+
+    plot_errors_vs_dt(plot_dir="plots", at_t=11.000001, delta_ts=delta_ts,
+                      plot_file="abs_error_vs_dt_small_delta_t.pdf")

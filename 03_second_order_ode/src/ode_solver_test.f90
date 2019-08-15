@@ -68,10 +68,38 @@ subroutine print_solution_test(failures)
                    solution=solution, success=success, &
                    error_message=error_message)
 
-    call print_solution(solution=solution, output=output)
+    call print_solution(solution=solution, output=output, print_last=.false.)
 
     call assert_string_starts_with(output, "t,x,exact,abs_error", &
         __FILE__, __LINE__, failures)
+
+    call assert_equal(len(trim(output)), 6320, __FILE__, __LINE__, failures)
+    call assert_true(index(output, "1.20000000") > 0, __FILE__, __LINE__, failures)
+    call assert_true(index(output, "6.2000000") > 0, __FILE__, __LINE__, failures)
+end
+
+subroutine print_solution_test__print_last(failures)
+    integer, intent(inout) :: failures
+    type(ode_solution) :: solution
+    logical :: success
+    character(len=1024) :: error_message
+    character(len=:), allocatable :: output
+    type(program_settings) :: options
+
+    options%t_end = 2 * pi
+    options%delta_t = 0.1_dp
+
+    call solve_ode(options=options, &
+                   solution=solution, success=success, &
+                   error_message=error_message)
+
+    call print_solution(solution=solution, output=output, print_last=.true.)
+
+    call assert_string_starts_with(output, "t,x,exact,abs_error", &
+        __FILE__, __LINE__, failures)
+
+    call assert_equal(len(trim(output)), 120, __FILE__, __LINE__, failures)
+    call assert_true(index(output, "6.2000000") > 0, __FILE__, __LINE__, failures)
 end
 
 subroutine solve_and_print_test(failures)
@@ -100,6 +128,7 @@ subroutine ode_solver_test_all(failures)
     call solve_ode_test(failures)
     call print_solution_test(failures)
     call solve_and_print_test(failures)
+    call print_solution_test__print_last(failures)
     call read_settings_solve_and_print_test(failures)
 end
 

@@ -9,7 +9,7 @@ from plot_utils import create_dir
 
 
 def plot_absolute_errors(plot_dir, t_end, delta_t):
-    data = find_solution(t_end=t_end, delta_t=delta_t)
+    data = find_solution(t_end=t_end, delta_t=delta_t, print_last=False)
 
     create_dir(plot_dir)
 

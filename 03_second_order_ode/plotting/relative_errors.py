@@ -9,8 +9,8 @@ from plot_utils import create_dir
 
 
 def plot_absolute_errors(plot_dir, t_end):
-    data_dt_1 = find_solution(t_end=t_end, delta_t=1)
-    data_dt_0_1 = find_solution(t_end=t_end, delta_t=0.1)
+    data_dt_1 = find_solution(t_end=t_end, delta_t=1, print_last=False)
+    data_dt_0_1 = find_solution(t_end=t_end, delta_t=0.1, print_last=False)
 
     create_dir(plot_dir)
 

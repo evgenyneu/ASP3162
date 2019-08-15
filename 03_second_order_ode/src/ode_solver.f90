@@ -112,16 +112,19 @@ end subroutine
 !
 ! solution : solution to the ODE
 !
+! print_last : when .true. prints only the solution for the final value of t
+!
 ! Outputs:
 ! -------
 !
 ! output : output text
 !
-subroutine print_solution(solution, output)
+subroutine print_solution(solution, print_last, output)
     type(ode_solution), intent(in) :: solution
+    logical, intent(in) :: print_last
     character(len=:), allocatable, intent(out) :: output
     character(len=:), allocatable :: tmp_arr
-    integer :: i
+    integer :: i, i_start
     character(len=1024) :: buffer
     integer :: allocated = 2024
 
@@ -131,7 +134,13 @@ subroutine print_solution(solution, output)
     write(buffer, "(3(a, ','), a)") "t", "x", "exact", "abs_error"
     output = output // trim(buffer) // new_line('A')
 
-    do i = 1, solution%size
+    if (print_last) then
+        i_start = solution%size
+    else
+        i_start = 1
+    end if
+
+    do i = i_start, solution%size
         write(buffer, "(3(ES24.17, ','), ES24.17)") solution%t_values(i), &
             solution%x_values(i), solution%x_values_exact(i), &
             solution%abs_errors(i)
@@ -179,7 +188,8 @@ subroutine solve_and_print(options, silent)
         end if
     end if
 
-    call print_solution(solution=solution, output=output)
+    call print_solution(solution=solution, output=output, &
+                        print_last=options%print_last)
 
     if (.not. silent) then
         print *, output
