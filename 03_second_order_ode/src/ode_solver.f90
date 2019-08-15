@@ -128,7 +128,7 @@ subroutine print_solution(solution, output)
     allocate(character(len=allocated) :: output)
     output = ""
 
-    write(buffer, "(3(a, ', '), a)") "t", "x", "exact", "abs_error"
+    write(buffer, "(3(a, ','), a)") "t", "x", "exact", "abs_error"
     output = output // trim(buffer) // new_line('A')
 
     do i = 1, solution%size

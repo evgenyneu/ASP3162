@@ -70,7 +70,7 @@ subroutine print_solution_test(failures)
 
     call print_solution(solution=solution, output=output)
 
-    call assert_string_starts_with(output, "t, x, exact, abs_error", &
+    call assert_string_starts_with(output, "t,x,exact,abs_error", &
         __FILE__, __LINE__, failures)
 end
 
