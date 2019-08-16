@@ -19,7 +19,7 @@ def plot_absolute_errors(plot_dir, t_end, delta_t):
     df = pd.read_csv(StringIO(data), skipinitialspace=True)
     plt.plot(df['t'], df['abs_error'])
 
-    plt.title(r'Absolute error for approximage solution of'
+    plt.title(r'Absolute error for approximate solution of'
               '\n'
               r'$\ddot{x} + x = 0, x(0)=1, \dot{x}(0)=0$ for dt=' + f'{delta_t}')
 
