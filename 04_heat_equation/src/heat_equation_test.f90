@@ -178,6 +178,7 @@ subroutine read_settings_solve_and_create_output_test(failures)
     integer, intent(inout) :: failures
 
     call read_settings_solve_and_create_output(.true.)
+    call assert_true(.true., __FILE__, __LINE__, failures)
 end
 
 
