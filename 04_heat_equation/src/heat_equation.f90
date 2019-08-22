@@ -4,11 +4,12 @@
 module HeatEquation
 use Types, only: dp
 use Constants, only: pi
-use Settings, only: program_settings
+use Settings, only: program_settings, read_from_command_line
 use FloatUtils, only: linspace
 implicit none
 private
-public :: solve_heat_equation, print_data, solve_and_create_output
+public :: solve_heat_equation, print_data, solve_and_create_output, &
+          read_settings_solve_and_create_output
 
 contains
 
@@ -173,7 +174,7 @@ subroutine write_to_file(text, path)
 end subroutine
 
 !
-! Solves PDE and print solutions and errors to files
+! Solves PDE and prints solutions and errors to files
 !
 ! Inputs:
 ! -------
@@ -191,6 +192,31 @@ subroutine solve_and_create_output(options)
     call print_data(errors, x_points, t_points, errors_output)
     call write_to_file(data_output, options%output_path)
     call write_to_file(errors_output, options%errors_path)
+end subroutine
+
+!
+! Reads program settings from command line arguments,
+! solves PDE and prints solutions and errors to files
+!
+! Inputs:
+! -------
+!
+! silent : do not show any output if .true. (used in unit tests)
+!
+subroutine read_settings_solve_and_create_output(silent)
+    logical, intent(in) :: silent
+    type(program_settings) :: settings
+    logical :: success
+
+    call read_from_command_line(silent=silent, settings=settings, &
+                                success=success)
+
+    if (.not. success) then
+        if (.not. silent) call exit(41)
+        return
+    end if
+
+    call solve_and_create_output(options=settings)
 end subroutine
 
 

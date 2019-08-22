@@ -58,30 +58,28 @@ character(len=1024), parameter :: HELP_MESSAGE = NEW_LINE('h')//"&
     &Usage:&
     &"//NEW_LINE('h')//"&
     &"//NEW_LINE('h')//"&
-    & ./build/main OUTPUT ERRORS [--nx=20] [--nt=300] "&
-    &"[--alpha=0.2] [--k=2.28e-5]"//NEW_LINE('h')//"&
+    & ./build/main OUTPUT ERRORS [--nx=20] [--nt=300] &
+    &[--alpha=0.2] [--k=2.28e-5]"//NEW_LINE('h')//"&
     &"//NEW_LINE('h')//"&
-    &    OUTPUT   : path to the output data file,"//NEW_LINE('h')//"&
-    &"//NEW_LINE('h')//"&
-    &"//NEW_LINE('h')//"&
-    &    ERRORS   : path to the output errors file,"//NEW_LINE('h')//"&
+    &    OUTPUT : path to the output data file"//NEW_LINE('h')//"&
     &"//NEW_LINE('h')//"&
     &"//NEW_LINE('h')//"&
-    &    --nx=NUMBER   : number of x points in the grid,"//NEW_LINE('h')//"&
-    &               Default: 20."//NEW_LINE('h')//"&
+    &    ERRORS : path to the output errors file"//NEW_LINE('h')//"&
+    &"//NEW_LINE('h')//"&
+    &"//NEW_LINE('h')//"&
+    &    --nx=NUMBER : number of x points in the grid,"//NEW_LINE('h')//"&
+    &                  Default: 20."//NEW_LINE('h')//"&
     &"//NEW_LINE('h')//"&
     &    --nt=NUMBER : number of t points in the grid,"//NEW_LINE('h')//"&
-    &               Default: 300."//NEW_LINE('h')//"&
+    &                  Default: 300."//NEW_LINE('h')//"&
     &"//NEW_LINE('h')//"&
     &    --alpha=NUMBER : The alpha parameter of the numerical"//NEW_LINE('h')//"&
-    &               solution of the heat euqation."//NEW_LINE('h')//"&
-    &               Values larger than 0.5 result in"//NEW_LINE('h')//"&
-    &               unstable solutions."//NEW_LINE('h')//"&
-    &               Default: 0.25."//NEW_LINE('h')//"&
+    &     solution of the heat equation. Values larger than"//NEW_LINE('h')//"&
+    &     0.5 results in unstable solutions. Default: 0.25."//NEW_LINE('h')//"&
     &"//NEW_LINE('h')//"&
-    &    --k=NUMBER : Thermal diffusivity of the rod"//NEW_LINE('h')//"&
-    &               in m^2 s^{-1} units."//NEW_LINE('h')//"&
-    &               Default: 2.28e-5."//NEW_LINE('h')//"&
+    &    --k=NUMBER : Thermal diffusivity of the rod in m^2 s^{-1}&
+    & units."//NEW_LINE('h')//"&
+    &                 Default: 2.28e-5."//NEW_LINE('h')//"&
     &"//NEW_LINE('h')//"&
     &    --help  : show this message."//NEW_LINE('h')
 

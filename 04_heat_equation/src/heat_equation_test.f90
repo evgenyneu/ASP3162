@@ -1,7 +1,10 @@
 module HeatEquationTest
 use Types, only: dp
 use AssertsTest, only: assert_true, assert_approx, assert_equal
-use HeatEquation, only: solve_heat_equation, print_data, solve_and_create_output
+
+use HeatEquation, only: solve_heat_equation, print_data, &
+    solve_and_create_output, read_settings_solve_and_create_output
+
 use Settings, only: program_settings
 use FileUtils, only: file_exists, delete_file
 implicit none
@@ -171,6 +174,13 @@ subroutine solve_and_create_output_test(failures)
     call delete_file("test_errors.txt")
 end
 
+subroutine read_settings_solve_and_create_output_test(failures)
+    integer, intent(inout) :: failures
+
+    call read_settings_solve_and_create_output(.true.)
+end
+
+
 subroutine heat_equation_test_all(failures)
     integer, intent(inout) :: failures
 
@@ -179,6 +189,8 @@ subroutine heat_equation_test_all(failures)
     call print_data_test(failures)
 
     call solve_and_create_output_test(failures)
+
+    call read_settings_solve_and_create_output_test(failures)
 end
 
 end module HeatEquationTest
