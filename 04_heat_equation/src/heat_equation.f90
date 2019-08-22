@@ -52,8 +52,7 @@ subroutine solve_heat_equation(options, data, errors, x_points, t_points)
     real(dp), allocatable, intent(out) :: x_points(:), t_points(:)
     real(dp) :: l, x0, x1, dx, t0, dt, alpha, k, t
     real(dp), allocatable :: exact(:,:)
-    integer :: nx, nt, n, j
-    character(len=1024) :: rowfmt
+    integer :: nx, nt, n
 
     k = options%k
     l = 1._dp
@@ -99,31 +98,6 @@ subroutine solve_heat_equation(options, data, errors, x_points, t_points)
 
     ! Calculate the errors
     errors = abs(exact - data)
-
-    ! print *, x_points
-
-    ! print *, exact(:, 10)
-    ! print *, errors(:, 100)
-
-    ! ! Print to a file
-    ! print *, data
-
-    ! write(rowfmt,'(A,I4,A)') '(',nx + 1,'(1X,ES24.17))'
-    ! open(unit=12, file="heat_eqn_output.txt", action="write", &
-    !     status="replace")
-
-    ! write(12, fmt = rowfmt) 0._dp, (x_points(j), j=1, nx)
-
-    ! do n = 1, nt
-    !     write(12, fmt = rowfmt) t_points(t), (data(j, n), j=1, nx)
-    ! end do
-    ! close(unit=12)
-
-    ! print *, 'dx=', dx, ' dt=', dt
-    ! print *, 'xpoints=', x_points
-    ! print *, 'data(:,1)=', data(:, 1)
-
-    ! print *, trim(rowfmt)
 end subroutine
 
 subroutine print_data(data, x_points, t_points, output)
@@ -134,6 +108,7 @@ subroutine print_data(data, x_points, t_points, output)
     integer :: n, nx, j, allocated = 2024
     character(len=1024) :: rowfmt
 
+    allocate(character(len=allocated) :: output)
     output = ""
     nx = size(x_points)
     write(rowfmt,'(A,I4,A)') '(',nx + 1,'(1X,ES24.17))'
