@@ -139,21 +139,8 @@ cd plotting
 The plotting codes require the Fortran executable to be present.
 
 
-### Plot numerical and exact solutions
+### Plot approximate solution and the errors
 
 ```
 python plot_solution.py
-```
-
-### Plot absolute errors
-
-```
-python plot_absolute_errors.py
-```
-
-
-### Plot error vs time step
-
-```
-python plot_errors_vs_delta_t.py
 ```
