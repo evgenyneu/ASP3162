@@ -64,6 +64,7 @@ subroutine solve_heat_equation()
     nt = 300
     allocate(data(nx, nt))
     allocate(exact(nx, nt))
+    allocate(errors(nx, nt))
     allocate(x_points(nx))
     call linspace(x0, x1, x_points)
 
@@ -86,7 +87,7 @@ subroutine solve_heat_equation()
     end do
 
     ! Calculate exact values
-    do n = 1, nt - 1
+    do n = 1, nt
         t = t0 + real(n - 1, dp) * dt
 
         exact(:, n) = 100 * exp(-(pi**2)*k*t / (l**2)) * sin(pi * x_points / l)
@@ -98,7 +99,7 @@ subroutine solve_heat_equation()
     ! print *, x_points
 
     ! print *, exact(:, 10)
-    print *, errors(:, 100)
+    ! print *, errors(:, 100)
 
     ! ! Print to a file
     ! print *, data
@@ -111,7 +112,7 @@ subroutine solve_heat_equation()
 
     do n = 1, nt
         t = t0 + real(n - 1, dp) * dt
-        write(12, fmt = rowfmt) t, (data(j, n), j=1, nx)
+        write(12, fmt = rowfmt) t, (errors(j, n), j=1, nx)
     end do
     close(unit=12)
 
