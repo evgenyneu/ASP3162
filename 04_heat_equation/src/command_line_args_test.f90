@@ -165,6 +165,30 @@ subroutine get_positional_test__integer(failures)
     call assert_true(.not. success, __FILE__, __LINE__, failures)
 end
 
+subroutine get_positional_test__string(failures)
+    integer, intent(inout) :: failures
+    type(parsed_args) :: parsed
+    character(len=1024) :: result
+    logical :: success
+
+    call allocate_parsed(size=2, parsed=parsed)
+
+    parsed%positional_count = 1
+    parsed%positional(1) = "marmite.jpg"
+
+    parsed%named_count = 1
+    parsed%named_name(1) = "name_one_key"
+    parsed%named_value(1) = "name_one_value"
+
+    call get_positional_value(index=1, parsed=parsed, value=result, success=success)
+    call assert_true(success, __FILE__, __LINE__, failures)
+    call assert_equal(result, "marmite.jpg", __FILE__, __LINE__, failures)
+
+    call get_positional_value(index=2, parsed=parsed, value=result, success=success)
+    call assert_true(.not. success, __FILE__, __LINE__, failures)
+end
+
+
 ! get_named_value
 ! ---------------
 
@@ -457,6 +481,7 @@ subroutine command_line_args_test_all(failures)
 
     call get_positional_test__real_dp(failures)
     call get_positional_test__integer(failures)
+    call get_positional_test__string(failures)
 
     call get_named_value_test__string(failures)
     call get_named_value_test__real_dp(failures)

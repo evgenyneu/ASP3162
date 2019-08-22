@@ -85,7 +85,8 @@ end type parsed_args
 ! success : .true. if the value was successfuly extracted from the command line arguments.
 !
 interface get_positional_value
-    module procedure get_positional_value_real_dp, get_positional_value_integer
+    module procedure get_positional_value_real_dp, &
+        get_positional_value_integer, get_positional_value_string
 end interface
 
 !
@@ -510,6 +511,23 @@ subroutine get_positional_value_integer(index, parsed, value, success)
 
     call string_to_number(parsed%positional(index), value, success)
 end subroutine
+
+subroutine get_positional_value_string(index, parsed, value, success)
+    integer, intent(in) :: index
+    type(parsed_args), intent(in) :: parsed
+    character(len=*), intent(out) :: value
+    logical, intent(out) :: success
+
+    success = .true.
+
+    if (index > parsed%positional_count .or. index < 0) then
+        success = .false.
+        return
+    end if
+
+    value = parsed%positional(index)
+end subroutine
+
 
 
 ! get_named_value
