@@ -63,14 +63,17 @@ subroutine solve_heat_equation(options, data, errors, x_points, t_points)
     dx = (x1 - x0) / nx
     alpha = options%alpha
     dt =  alpha * dx**2 / k
-
     t0 = 0
     nt = options%nt
+
+    ! Allocate the arrays
     allocate(data(nx, nt))
     allocate(exact(nx, nt))
     allocate(errors(nx, nt))
     allocate(x_points(nx))
     allocate(t_points(nt))
+
+    ! The evenly spaced x values
     call linspace(x0, x1, x_points)
 
     ! Set intial conditions
