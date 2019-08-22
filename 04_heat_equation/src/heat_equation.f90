@@ -46,12 +46,12 @@ subroutine linspace(from, to, array)
     end do
 end subroutine
 
-subroutine solve_heat_equation(options, data, errors)
+subroutine solve_heat_equation(options, data, errors, x_points, t_points)
     type(program_settings), intent(in) :: options
-    real(dp), intent(out) :: data(options%nx, options%nt), &
-        errors(options%nx, options%nt)
+    real(dp), allocatable, intent(out) :: data(:,:), errors(:,:)
+    real(dp), allocatable, intent(out) :: x_points(:), t_points(:)
     real(dp) :: l, x0, x1, dx, t0, dt, alpha, k, t
-    real(dp) :: exact(options%nx, options%nt), x_points(options%nx)
+    real(dp), allocatable :: exact(:,:)
     integer :: nx, nt, n, j
     character(len=1024) :: rowfmt
 
@@ -66,10 +66,11 @@ subroutine solve_heat_equation(options, data, errors)
 
     t0 = 0
     nt = options%nt
-    ! allocate(data(nx, nt))
-    ! allocate(exact(nx, nt))
-    ! allocate(errors(nx, nt))
-    ! allocate(x_points(nx))
+    allocate(data(nx, nt))
+    allocate(exact(nx, nt))
+    allocate(errors(nx, nt))
+    allocate(x_points(nx))
+    allocate(t_points(nt))
     call linspace(x0, x1, x_points)
 
     ! Set intial conditions
@@ -87,6 +88,7 @@ subroutine solve_heat_equation(options, data, errors)
     ! Calculate exact values
     do n = 1, nt
         t = t0 + real(n - 1, dp) * dt
+        t_points(n) = t
 
         exact(:, n) = 100 * exp(-(pi**2)*k*t / (l**2)) * sin(pi * x_points / l)
     end do
@@ -108,8 +110,7 @@ subroutine solve_heat_equation(options, data, errors)
     write(12, fmt = rowfmt) 0._dp, (x_points(j), j=1, nx)
 
     do n = 1, nt
-        t = t0 + real(n - 1, dp) * dt
-        write(12, fmt = rowfmt) t, (data(j, n), j=1, nx)
+        write(12, fmt = rowfmt) t_points(t), (data(j, n), j=1, nx)
     end do
     close(unit=12)
 
