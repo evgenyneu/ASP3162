@@ -27,8 +27,8 @@ def solve_pde(nx, nt, alpha, k):
 
     Returns
     -------
-        str
-            the solution in CSV format, or None if error occured.
+        dict
+            solution and its errors.
     """
 
     create_dir("tmp")
@@ -54,11 +54,13 @@ def solve_pde(nx, nt, alpha, k):
     x_values = [df.values[0, 1:]]
     t_values = np.transpose([df.values[1:, 0]])
     temperatures = df.values[1:, 1:]
+    temperatures = np.clip(temperatures, 0, 100)
 
     df = pd.read_table("tmp/errors", sep='\s+', header=None)
     x_values_errors = [df.values[0, 1:]]
     t_values_errors = np.transpose([df.values[1:, 0]])
     temperatures_errors = df.values[1:, 1:]
+    temperatures_errors = np.clip(temperatures_errors, 0, 100)
 
     os.remove("tmp/data")
     os.remove("tmp/errors")
