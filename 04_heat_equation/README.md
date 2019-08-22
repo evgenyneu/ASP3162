@@ -18,7 +18,7 @@ and boundary conditions
 T(0,t) = T(L,t) = 0,
 ```
 
-where `L=1`.
+where `L=1 m`.
 
 
 ## Compile
