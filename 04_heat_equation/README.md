@@ -68,24 +68,39 @@ Run the program with `--help` flag to see the description of parameters:
 ```
 ./build/main --help
 
-This program solves ODE
+This program solves the heat equation
 
-  x''(t) + x(t) = 0
+  dT/dt = k d^2T/dx^2
 
-with initial conditions x(0) = 1, x'(0) = 0.
+with initial condition
+  T(x,0) = 100 sin(pi x / L)
+and boundary conditions
+   T(0,t) = T(L,t) = 0,
+ where L = 1 m.
 
 
 Usage:
 
- ./build/main [--t_end=6.2] [--delta_t=0.1]
+ ./build/main OUTPUT ERRORS [--nx=20] [--nt=300] [--alpha=0.2] [--k=2.28e-5]
 
-    --t_end=NUMBER   : the end value for t,
-               Default: 6.28.
+    OUTPUT : path to the output data file
 
-    --delta_t=NUMBER : size of the timestep,
-               Default: 0.1.
 
-    --print_last : print only solution for the final t,
+    ERRORS : path to the output errors file
+
+
+    --nx=NUMBER : number of x points in the grid,
+                  Default: 20.
+
+    --nt=NUMBER : number of t points in the grid,
+                  Default: 300.
+
+    --alpha=NUMBER : The alpha parameter of the numerical
+     solution of the heat equation. Values larger than
+     0.5 results in unstable solutions. Default: 0.25.
+
+    --k=NUMBER : Thermal diffusivity of the rod in m^2 s^{-1} units.
+                 Default: 2.28e-5.
 
     --help  : show this message.
 ```

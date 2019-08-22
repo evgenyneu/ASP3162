@@ -48,11 +48,15 @@ end type program_settings
 
 ! Help message to be shown
 character(len=1024), parameter :: HELP_MESSAGE = NEW_LINE('h')//"&
-    &This program solves ODE"//NEW_LINE('h')//"&
+    &This program solves the heat equation"//NEW_LINE('h')//"&
     &"//NEW_LINE('h')//"&
-    &  x''(t) + x(t) = 0"//NEW_LINE('h')//"&
+    &  dT/dt = k d^2T/dx^2"//NEW_LINE('h')//"&
     &"//NEW_LINE('h')//"&
-    &with initial conditions x(0) = 1, x'(0) = 0."//NEW_LINE('h')//"&
+    &with initial condition"//NEW_LINE('h')//"&
+    &  T(x,0) = 100 sin(pi x / L)"//NEW_LINE('h')//"&
+    &and boundary conditions"//NEW_LINE('h')//"&
+    &   T(0,t) = T(L,t) = 0,"//NEW_LINE('h')//"&
+    & where L = 1 m."//NEW_LINE('h')//"&
     &"//NEW_LINE('h')//"&
     &"//NEW_LINE('h')//"&
     &Usage:&
