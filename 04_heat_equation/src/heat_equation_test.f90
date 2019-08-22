@@ -1,8 +1,9 @@
 module HeatEquationTest
 use Types, only: dp
 use AssertsTest, only: assert_true, assert_approx, assert_equal
-use HeatEquation, only: solve_heat_equation, print_data
+use HeatEquation, only: solve_heat_equation, print_data, solve_and_create_output
 use Settings, only: program_settings
+use FileUtils, only: file_exists, delete_file
 implicit none
 private
 public heat_equation_test_all
@@ -50,7 +51,6 @@ end
 
 subroutine print_data_test(failures)
     integer, intent(inout) :: failures
-    type(program_settings) :: options
     real(dp) :: data(3,3)
     real(dp) :: x_points(3), t_points(3), read_data(16)
     character(len=:), allocatable :: output
@@ -84,12 +84,101 @@ subroutine print_data_test(failures)
     call assert_approx(read_data(16), 9._dp, 1e-5_dp, __FILE__, __LINE__, failures)
 end
 
+subroutine solve_and_create_output_test(failures)
+    integer, intent(inout) :: failures
+    type(program_settings) :: options
+    real(dp) :: data(4)
+    integer :: unit=15
+
+    options%nx = 3
+    options%nt = 3
+    options%alpha = 0.25_dp
+    options%k = 2.28e-5
+    options%output_path = "test_output.txt"
+    options%errors_path = "test_errors.txt"
+
+    call solve_and_create_output(options)
+
+    call assert_true(file_exists("test_output.txt"), __FILE__, __LINE__, failures)
+    call assert_true(file_exists("test_errors.txt"), __FILE__, __LINE__, failures)
+
+    ! Check output file
+    ! ----------
+
+    open (unit=unit, file="test_output.txt", status='old',    &
+        access='sequential', form='formatted', action='read' )
+
+    read (unit, *) data
+    call assert_approx(data(1), 0._dp, 1e-5_dp, __FILE__, __LINE__, failures)
+    call assert_approx(data(2), 0._dp, 1e-5_dp, __FILE__, __LINE__, failures)
+    call assert_approx(data(3), 0.5_dp, 1e-5_dp, __FILE__, __LINE__, failures)
+    call assert_approx(data(4), 1._dp, 1e-5_dp, __FILE__, __LINE__, failures)
+
+    read (unit, *) data
+    call assert_approx(data(1), 0._dp, 1e-5_dp, __FILE__, __LINE__, failures)
+    call assert_approx(data(2), 0._dp, 1e-5_dp, __FILE__, __LINE__, failures)
+    call assert_approx(data(3), 100._dp, 1e-5_dp, __FILE__, __LINE__, failures)
+    call assert_approx(data(4), 0._dp, 1e-5_dp, __FILE__, __LINE__, failures)
+
+    read (unit, *) data
+    call assert_approx(data(1), 1218.32354_dp, 1e-5_dp, __FILE__, __LINE__, failures)
+    call assert_approx(data(2), 0._dp, 1e-5_dp, __FILE__, __LINE__, failures)
+    call assert_approx(data(3), 50._dp, 1e-5_dp, __FILE__, __LINE__, failures)
+    call assert_approx(data(4), 0._dp, 1e-5_dp, __FILE__, __LINE__, failures)
+
+    read (unit, *) data
+    call assert_approx(data(1), 2436.647087_dp, 1e-5_dp, __FILE__, __LINE__, failures)
+    call assert_approx(data(2), 0._dp, 1e-5_dp, __FILE__, __LINE__, failures)
+    call assert_approx(data(3), 25._dp, 1e-5_dp, __FILE__, __LINE__, failures)
+    call assert_approx(data(4), 0._dp, 1e-5_dp, __FILE__, __LINE__, failures)
+
+    close(unit=unit)
+
+
+    ! Check errors file
+    ! ----------
+
+    open (unit=unit, file="test_errors.txt", status='old',    &
+        access='sequential', form='formatted', action='read' )
+
+    read (unit, *) data
+    call assert_approx(data(1), 0._dp, 1e-5_dp, __FILE__, __LINE__, failures)
+    call assert_approx(data(2), 0._dp, 1e-5_dp, __FILE__, __LINE__, failures)
+    call assert_approx(data(3), 0.5_dp, 1e-5_dp, __FILE__, __LINE__, failures)
+    call assert_approx(data(4), 1._dp, 1e-5_dp, __FILE__, __LINE__, failures)
+
+    read (unit, *) data
+    call assert_approx(data(1), 0._dp, 1e-5_dp, __FILE__, __LINE__, failures)
+    call assert_approx(data(2), 0._dp, 1e-5_dp, __FILE__, __LINE__, failures)
+    call assert_approx(data(3), 0._dp, 1e-5_dp, __FILE__, __LINE__, failures)
+    call assert_approx(data(4), 0._dp, 1e-5_dp, __FILE__, __LINE__, failures)
+
+    read (unit, *) data
+    call assert_approx(data(1), 1218.32354_dp, 1e-5_dp, __FILE__, __LINE__, failures)
+    call assert_approx(data(2), 0._dp, 1e-5_dp, __FILE__, __LINE__, failures)
+    call assert_approx(data(3), 26.021371_dp, 1e-5_dp, __FILE__, __LINE__, failures)
+    call assert_approx(data(4), 0._dp, 1e-5_dp, __FILE__, __LINE__, failures)
+
+    read (unit, *) data
+    call assert_approx(data(1), 2436.647087_dp, 1e-5_dp, __FILE__, __LINE__, failures)
+    call assert_approx(data(2), 0._dp, 1e-5_dp, __FILE__, __LINE__, failures)
+    call assert_approx(data(3), 32.79248_dp, 1e-5_dp, __FILE__, __LINE__, failures)
+    call assert_approx(data(4), 0._dp, 1e-5_dp, __FILE__, __LINE__, failures)
+
+    close(unit=unit)
+
+    call delete_file("test_output.txt")
+    call delete_file("test_errors.txt")
+end
+
 subroutine heat_equation_test_all(failures)
     integer, intent(inout) :: failures
 
     call solve_heat_eqn_test(failures)
 
     call print_data_test(failures)
+
+    call solve_and_create_output_test(failures)
 end
 
 end module HeatEquationTest

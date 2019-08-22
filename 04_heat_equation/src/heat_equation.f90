@@ -7,7 +7,7 @@ use Constants, only: pi
 use Settings, only: program_settings
 implicit none
 private
-public :: solve_heat_equation, print_data
+public :: solve_heat_equation, print_data, solve_and_create_output
 
 contains
 
@@ -155,6 +155,27 @@ subroutine print_data(data, x_points, t_points, output)
     end do
 end subroutine
 
+subroutine write_to_file(text, path)
+    character(len=*), intent(in) :: text, path
+    integer, parameter :: out_unit=20
+
+    open(unit=out_unit, file=path, action="write", status="replace")
+    write(out_unit, "(a)") text
+    close(unit=out_unit)
+end subroutine
+
+subroutine solve_and_create_output(options)
+    type(program_settings), intent(in) :: options
+    real(dp), allocatable :: data(:,:), errors(:,:)
+    real(dp), allocatable :: x_points(:), t_points(:)
+    character(len=:), allocatable :: data_output, errors_output
+
+    call solve_heat_equation(options, data, errors, x_points, t_points)
+    call print_data(data, x_points, t_points, data_output)
+    call print_data(errors, x_points, t_points, errors_output)
+    call write_to_file(data_output, options%output_path)
+    call write_to_file(errors_output, options%errors_path)
+end subroutine
 
 
 end module HeatEquation

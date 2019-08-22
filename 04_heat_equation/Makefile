@@ -46,6 +46,8 @@ SOURCE_FILES = 	types.f90 \
 							float_utils.f90 \
 							float_utils_test.f90 \
 							string_test.f90 \
+							file_utils.f90 \
+							file_utils_test.f90 \
 							command_line_args.f90 \
 							command_line_args_test.f90 \
 							settings.f90 \
