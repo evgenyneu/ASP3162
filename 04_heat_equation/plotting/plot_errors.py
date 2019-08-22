@@ -9,10 +9,10 @@ from mpl_toolkits.mplot3d import Axes3D
 def plot_errors(plot_dir):
     create_dir(plot_dir)
 
-    nx = 20
-    alpha = 0.25
+    nx = 60
+    alpha = 0.15
     k = 2.28e-5
-    result = solve_pde(nx=nx, nt=300, alpha=alpha, k=k)
+    result = solve_pde(nx=nx, nt=2000, alpha=alpha, k=k)
 
     if result is None:
         return
