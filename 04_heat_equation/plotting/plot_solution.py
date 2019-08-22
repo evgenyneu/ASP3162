@@ -22,10 +22,13 @@ def plot_solution(plot_dir):
     t_values = np.transpose([df.values[1:, 0]])
     temperatures = df.values[1:,1:]
 
+    temperatures = np.clip(temperatures, 0, 100)
+
     fig = plt.figure()
     ax = fig.gca(projection='3d')
     ax.plot_surface(x_values, t_values, temperatures, cmap=plt.cm.jet)
     ax.set_xlabel("Length x [m]")
+    # ax.set_zlim(0, 100)
     ax.set_ylabel("Time t [s]")
     ax.set_zlabel("Temperature T [K]")
     ax.set_title("Z-component of curl of velocity")

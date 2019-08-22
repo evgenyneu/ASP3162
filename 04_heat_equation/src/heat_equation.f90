@@ -61,14 +61,12 @@ subroutine solve_heat_equation()
     dt =  alpha * dx**2 / k
 
     t0 = 0
-    nt = 300
+    nt = 100
     allocate(data(nx, nt))
     allocate(exact(nx, nt))
     allocate(errors(nx, nt))
     allocate(x_points(nx))
     call linspace(x0, x1, x_points)
-
-    print *, 4._dp*atan(1._dp)
 
     ! Set intial conditions
     data(:, 1) = 100._dp * sin(pi * x_points / l)
@@ -78,10 +76,6 @@ subroutine solve_heat_equation()
     data(nx, :) = 0
 
     do n = 1, nt - 1
-        ! do j = 2, nx - 1
-        !     data(j, n + 1) = data(j, n) + &
-        !         alpha * (data(j + 1, n) - 2 * data(j, n) + data(j - 1, n))
-        ! end do
         data(2:nx-1, n + 1) = data(2:nx-1, n) + &
                 alpha * (data(3:nx, n) - 2 * data(2:nx-1, n) + data(1:nx-2, n))
     end do
@@ -91,7 +85,6 @@ subroutine solve_heat_equation()
         t = t0 + real(n - 1, dp) * dt
 
         exact(:, n) = 100 * exp(-(pi**2)*k*t / (l**2)) * sin(pi * x_points / l)
-        ! exact(:, n) = sin(pi * x_points / l)
     end do
 
     errors = abs(exact - data)
@@ -112,7 +105,7 @@ subroutine solve_heat_equation()
 
     do n = 1, nt
         t = t0 + real(n - 1, dp) * dt
-        write(12, fmt = rowfmt) t, (errors(j, n), j=1, nx)
+        write(12, fmt = rowfmt) t, (data(j, n), j=1, nx)
     end do
     close(unit=12)
 

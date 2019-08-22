@@ -18,14 +18,32 @@ public :: read_from_parsed_command_line, read_from_command_line
 ! Stores program settings:
 !
 type, public :: program_settings
-    ! Final value of t coordinate
-    real(dp) :: t_end
+    ! Path to the output file that will be filled with
+    ! solution data
+    character(len=4096) :: output_path
 
-    ! size of the timestep
-    real(dp) :: delta_t
+    ! Path to the errors file that will be filled with
+    ! the errors data
+    character(len=4096) :: errors_path
 
-    ! Prints only solution for the final value of t
-    logical :: print_last
+    ! The number of x point in the grid
+    integer :: nx
+
+    ! The number of time points in the grid
+    integer :: nt
+
+    ! The alpha parameter of the numerical solution
+    ! of the heat equation
+    !
+    ! alpha = k dt / dx^2
+    !
+    ! Values greater than 0.5 produce numerically unstable solutions
+    ! for forward differencing method.
+    !
+    real(dp) :: alpha
+
+    ! Thermal diffusivity of the rod in m^2 s^{-1} units
+    real(dp) :: k
 end type program_settings
 
 ! Help message to be shown
@@ -40,23 +58,40 @@ character(len=1024), parameter :: HELP_MESSAGE = NEW_LINE('h')//"&
     &Usage:&
     &"//NEW_LINE('h')//"&
     &"//NEW_LINE('h')//"&
-    & ./build/main [--t_end=6.2] [--delta_t=0.1]"//NEW_LINE('h')//"&
+    & ./build/main OUTPUT ERRORS [--nx=20] [--nt=300] "&
+    &"[--alpha=0.2] [--k=2.28e-5]"//NEW_LINE('h')//"&
     &"//NEW_LINE('h')//"&
-    &    --t_end=NUMBER   : the end value for t,"//NEW_LINE('h')//"&
-    &               Default: 6.28."//NEW_LINE('h')//"&
+    &    OUTPUT   : path to the output data file,"//NEW_LINE('h')//"&
     &"//NEW_LINE('h')//"&
-    &    --delta_t=NUMBER : size of the timestep,"//NEW_LINE('h')//"&
-    &               Default: 0.1."//NEW_LINE('h')//"&
     &"//NEW_LINE('h')//"&
-    &    --print_last : print only solution for the final t,"//NEW_LINE('h')//"&
+    &    ERRORS   : path to the output errors file,"//NEW_LINE('h')//"&
+    &"//NEW_LINE('h')//"&
+    &"//NEW_LINE('h')//"&
+    &    --nx=NUMBER   : number of x points in the grid,"//NEW_LINE('h')//"&
+    &               Default: 20."//NEW_LINE('h')//"&
+    &"//NEW_LINE('h')//"&
+    &    --nt=NUMBER : number of t points in the grid,"//NEW_LINE('h')//"&
+    &               Default: 300."//NEW_LINE('h')//"&
+    &"//NEW_LINE('h')//"&
+    &    --alpha=NUMBER : The alpha parameter of the numerical"//NEW_LINE('h')//"&
+    &               solution of the heat euqation."//NEW_LINE('h')//"&
+    &               Values larger than 0.5 result in"//NEW_LINE('h')//"&
+    &               unstable solutions."//NEW_LINE('h')//"&
+    &               Default: 0.25."//NEW_LINE('h')//"&
+    &"//NEW_LINE('h')//"&
+    &    --k=NUMBER : Thermal diffusivity of the rod"//NEW_LINE('h')//"&
+    &               in m^2 s^{-1} units."//NEW_LINE('h')//"&
+    &               Default: 2.28e-5."//NEW_LINE('h')//"&
     &"//NEW_LINE('h')//"&
     &    --help  : show this message."//NEW_LINE('h')
 
 ! Default values for the settings
 ! ------
 
-real(dp), parameter :: DEFAULT_T_END = 2._dp * pi
-real(dp), parameter :: DEFAULT_DELTA_T = 0.1_dp
+integer, parameter :: DEFAULT_NX = 20
+integer, parameter :: DEFAULT_NT = 300
+real(dp), parameter :: DEFAULT_ALPHA = 0.25
+real(dp), parameter :: DEFAULT_K = 2.28e-5
 
 contains
 
@@ -120,7 +155,7 @@ subroutine read_from_parsed_command_line(parsed, settings, error_message)
     logical :: success
     character(len=ARGUMENT_MAX_LENGTH), allocatable :: unrecognized(:)
     integer :: unrecognized_count
-    character(len=ARGUMENT_MAX_LENGTH) :: valid_args(3)
+    character(len=ARGUMENT_MAX_LENGTH) :: valid_args(4)
 
     error_message = ""
 
@@ -134,8 +169,6 @@ subroutine read_from_parsed_command_line(parsed, settings, error_message)
         return
     end if
 
-    settings%print_last = has_flag(name='print_last', parsed=parsed)
-
     ! Check unrecognized parameters
     ! ----------
 
@@ -147,9 +180,10 @@ subroutine read_from_parsed_command_line(parsed, settings, error_message)
         return
     end if
 
-    valid_args(1) = "t_end"
-    valid_args(2) = "delta_t"
-    valid_args(3) = "print_last"
+    valid_args(1) = "nx"
+    valid_args(2) = "nt"
+    valid_args(3) = "alpha"
+    valid_args(4) = "k"
 
     call unrecognized_named_args(valid=valid_args, parsed=parsed, &
         unrecognized=unrecognized, count=unrecognized_count)
@@ -162,33 +196,53 @@ subroutine read_from_parsed_command_line(parsed, settings, error_message)
         return
     end if
 
+    ! ! OUTPUT
+    ! ! --------------
 
-    ! t_end
-    ! --------------
+    ! if (parsed%positional_count /= 2) then
+    !     error_message = "ERROR: OUTPUT and ERRORS parameters are missing."&
+    !         //NEW_LINE('h')//" &
+    !         &Run with --help for help."
+    !     return
+    ! end if
 
-    call get_named_value_or_default(name='t_end', parsed=parsed, &
-                                    default=DEFAULT_T_END, &
-                                    value=settings%t_end, success=success)
+    ! call get_positional_value(index=1, parsed=parsed, &
+    !                           value=settings%output_path, &
+    !                           success=success)
 
-    if (.not. success) then
-        error_message = "ERROR: t_end is not a number."//NEW_LINE('h')//"&
-                        &Run with --help for help."
-        return
-    end if
+    ! ! if (.not. success) then
+    ! !     error_message = "ERROR: XSTART is not a number."//NEW_LINE('h')//"&
+    ! !                     &Run with --help for help."
+    ! !     return
+    ! ! end if
 
 
-    ! delta_t
-    ! --------------
+    ! ! t_end
+    ! ! --------------
 
-    call get_named_value_or_default(name='delta_t', parsed=parsed, &
-                                    default=DEFAULT_DELTA_T, &
-                                    value=settings%delta_t, success=success)
+    ! call get_named_value_or_default(name='t_end', parsed=parsed, &
+    !                                 default=DEFAULT_T_END, &
+    !                                 value=settings%t_end, success=success)
 
-    if (.not. success) then
-        error_message = "ERROR: delta_t is not a number."//NEW_LINE('h')//"&
-                        &Run with --help for help."
-        return
-    end if
+    ! if (.not. success) then
+    !     error_message = "ERROR: t_end is not a number."//NEW_LINE('h')//"&
+    !                     &Run with --help for help."
+    !     return
+    ! end if
+
+
+    ! ! delta_t
+    ! ! --------------
+
+    ! call get_named_value_or_default(name='delta_t', parsed=parsed, &
+    !                                 default=DEFAULT_DELTA_T, &
+    !                                 value=settings%delta_t, success=success)
+
+    ! if (.not. success) then
+    !     error_message = "ERROR: delta_t is not a number."//NEW_LINE('h')//"&
+    !                     &Run with --help for help."
+    !     return
+    ! end if
 
 end subroutine
 
