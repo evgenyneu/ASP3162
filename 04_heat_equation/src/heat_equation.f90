@@ -80,12 +80,13 @@ subroutine solve_heat_equation(options, data, errors, x_points, t_points)
     data(1, :) = 0
     data(nx, :) = 0
 
+    ! Calculate numerical solution using forward differencing method
     do n = 1, nt - 1
         data(2:nx-1, n + 1) = data(2:nx-1, n) + &
                 alpha * (data(3:nx, n) - 2 * data(2:nx-1, n) + data(1:nx-2, n))
     end do
 
-    ! Calculate exact values
+    ! Calculate exact solution
     do n = 1, nt
         t = t0 + real(n - 1, dp) * dt
         t_points(n) = t
@@ -93,6 +94,7 @@ subroutine solve_heat_equation(options, data, errors, x_points, t_points)
         exact(:, n) = 100 * exp(-(pi**2)*k*t / (l**2)) * sin(pi * x_points / l)
     end do
 
+    ! Calculate the errors
     errors = abs(exact - data)
 
     ! print *, x_points
@@ -103,16 +105,16 @@ subroutine solve_heat_equation(options, data, errors, x_points, t_points)
     ! ! Print to a file
     ! print *, data
 
-    write(rowfmt,'(A,I4,A)') '(',nx + 1,'(1X,ES24.17))'
-    open(unit=12, file="heat_eqn_output.txt", action="write", &
-        status="replace")
+    ! write(rowfmt,'(A,I4,A)') '(',nx + 1,'(1X,ES24.17))'
+    ! open(unit=12, file="heat_eqn_output.txt", action="write", &
+    !     status="replace")
 
-    write(12, fmt = rowfmt) 0._dp, (x_points(j), j=1, nx)
+    ! write(12, fmt = rowfmt) 0._dp, (x_points(j), j=1, nx)
 
-    do n = 1, nt
-        write(12, fmt = rowfmt) t_points(t), (data(j, n), j=1, nx)
-    end do
-    close(unit=12)
+    ! do n = 1, nt
+    !     write(12, fmt = rowfmt) t_points(t), (data(j, n), j=1, nx)
+    ! end do
+    ! close(unit=12)
 
     ! print *, 'dx=', dx, ' dt=', dt
     ! print *, 'xpoints=', x_points
