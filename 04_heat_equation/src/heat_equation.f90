@@ -47,7 +47,7 @@ end subroutine
 
 subroutine solve_heat_equation()
     real(dp) :: l, x0, x1, dx, t0, dt, alpha, k, t
-    real(dp), allocatable :: data(:,:), x_points(:)
+    real(dp), allocatable :: data(:,:), exact(:,:), errors(:,:), x_points(:)
     integer :: nx, nt, n, j
     character(len=1024) :: rowfmt
 
@@ -63,8 +63,11 @@ subroutine solve_heat_equation()
     t0 = 0
     nt = 300
     allocate(data(nx, nt))
+    allocate(exact(nx, nt))
     allocate(x_points(nx))
     call linspace(x0, x1, x_points)
+
+    print *, 4._dp*atan(1._dp)
 
     ! Set intial conditions
     data(:, 1) = 100._dp * sin(pi * x_points / l)
@@ -81,6 +84,21 @@ subroutine solve_heat_equation()
         data(2:nx-1, n + 1) = data(2:nx-1, n) + &
                 alpha * (data(3:nx, n) - 2 * data(2:nx-1, n) + data(1:nx-2, n))
     end do
+
+    ! Calculate exact values
+    do n = 1, nt - 1
+        t = t0 + real(n - 1, dp) * dt
+
+        exact(:, n) = 100 * exp(-(pi**2)*k*t / (l**2)) * sin(pi * x_points / l)
+        ! exact(:, n) = sin(pi * x_points / l)
+    end do
+
+    errors = abs(exact - data)
+
+    ! print *, x_points
+
+    ! print *, exact(:, 10)
+    print *, errors(:, 100)
 
     ! ! Print to a file
     ! print *, data
