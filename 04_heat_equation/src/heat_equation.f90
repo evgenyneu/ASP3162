@@ -46,14 +46,15 @@ subroutine linspace(from, to, array)
 end subroutine
 
 subroutine solve_heat_equation()
-    real(dp) :: l, x0, x1, dx, t0, tf, dt, alpha, k
+    real(dp) :: l, x0, x1, dx, t0, dt, alpha, k, t
     real(dp), allocatable :: data(:,:), x_points(:)
-    integer :: nx, nt, in
+    integer :: nx, nt, n, j
+    character(len=1024) :: rowfmt
 
     k = 2.28e-5_dp
     l = 1._dp
     x0 = 0._dp
-    x1 = x1 + l
+    x1 = x0 + l
     nx = 20
     dx = (x1 - x0) / nx
     alpha = 0.25_dp
@@ -66,15 +67,39 @@ subroutine solve_heat_equation()
     call linspace(x0, x1, x_points)
 
     ! Set intial conditions
-    data(:, 1) = sin(pi * x_points / l)
+    data(:, 1) = 100._dp * sin(pi * x_points / l)
 
-    do in = 1, nt - 1
+    ! Set boundary conditions
+    data(1, :) = 0
+    data(nx, :) = 0
 
+    do n = 1, nt - 1
+        do j = 2, nx - 1
+            data(j, n + 1) = data(j, n) + &
+                alpha * (data(j + 1, n) - 2 * data(j, n) + data(j - 1, n))
+        end do
     end do
 
-    print *, 'dx=', dx, ' dt=', dt
-    print *, 'xpoints=', x_points
-    print *, 'data(:,1)=', data(:, 1)
+    ! ! Print to a file
+    ! print *, data
+
+    write(rowfmt,'(A,I4,A)') '(',nx + 1,'(1X,ES24.17))'
+    open(unit=12, file="heat_eqn_output.txt", action="write", &
+        status="replace")
+
+    write(12, fmt = rowfmt) 0._dp, (x_points(j), j=1, nx)
+
+    do n = 1, nt
+        t = t0 + real(n - 1, dp) * dt
+        write(12, fmt = rowfmt) t, (data(j, n), j=1, nx)
+    end do
+    close(unit=12)
+
+    ! print *, 'dx=', dx, ' dt=', dt
+    ! print *, 'xpoints=', x_points
+    ! print *, 'data(:,1)=', data(:, 1)
+
+    ! print *, trim(rowfmt)
 end subroutine
 
 end module HeatEquation
