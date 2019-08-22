@@ -5,46 +5,12 @@ module HeatEquation
 use Types, only: dp
 use Constants, only: pi
 use Settings, only: program_settings
+use FloatUtils, only: linspace
 implicit none
 private
 public :: solve_heat_equation, print_data, solve_and_create_output
 
 contains
-
-
-!
-! Generates evenly spaced numbers from `from` to `to` (inclusive).
-!
-! Inputs:
-! -------
-!
-! from, to : the lower and upper boundaries of the numbers to generate
-!
-! Outputs:
-! -------
-!
-! array : Array of evenly spaced numbers
-!
-subroutine linspace(from, to, array)
-    real(dp), intent(in) :: from, to
-    real(dp), intent(out) :: array(:)
-    real(dp) :: range
-    integer :: n, i
-    n = size(array)
-    range = to - from
-
-    if (n == 0) return
-
-    if (n == 1) then
-        array(1) = from
-        return
-    end if
-
-
-    do i=1, n
-        array(i) = from + range * (i - 1) / (n - 1)
-    end do
-end subroutine
 
 subroutine solve_heat_equation(options, data, errors, x_points, t_points)
     type(program_settings), intent(in) :: options
@@ -119,7 +85,7 @@ subroutine print_data(data, x_points, t_points, output)
         write(buffer, fmt = rowfmt) t_points(n), (data(j, n), j=1, nx)
         output = output // trim(buffer) // new_line('A')
 
-        ! Resize the string array if two small
+        ! Resize the string array if too small
         if (len(output) > allocated / 2) then
             allocated = 2 * allocated
             allocate(character(len=allocated) :: tmp_arr)

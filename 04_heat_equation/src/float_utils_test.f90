@@ -1,7 +1,7 @@
 module FloatUtilsTest
 use Types, only: dp
-use FloatUtils, only: can_convert_real_to_int
-use AssertsTest, only: assert_true, assert_equal
+use FloatUtils, only: can_convert_real_to_int, linspace
+use AssertsTest, only: assert_true, assert_equal, assert_approx
 implicit none
 private
 public float_utils_test_all
@@ -28,11 +28,43 @@ subroutine can_convert_real_to_int_test(failures)
             __FILE__, __LINE__, failures)
 end
 
+! linspace
+! -----------
+
+subroutine linspace_test(failures)
+    integer, intent(inout) :: failures
+    logical :: success
+    real(dp) :: list(5)
+
+    call linspace(from=0._dp, to=1._dp, array=list)
+
+    call assert_approx(list(1), 0.0_dp, 1e-5_dp, __FILE__, __LINE__, failures)
+    call assert_approx(list(2), 0.25_dp, 1e-5_dp, __FILE__, __LINE__, failures)
+    call assert_approx(list(3), 0.5_dp, 1e-5_dp, __FILE__, __LINE__, failures)
+    call assert_approx(list(4), 0.75_dp, 1e-5_dp, __FILE__, __LINE__, failures)
+    call assert_approx(list(5), 1._dp, 1e-5_dp, __FILE__, __LINE__, failures)
+end
+
+subroutine linspace_test2(failures)
+    integer, intent(inout) :: failures
+    logical :: success
+    real(dp) :: list(5)
+
+    call linspace(from=10._dp, to=20._dp, array=list)
+
+    call assert_approx(list(1), 10.0_dp, 1e-5_dp, __FILE__, __LINE__, failures)
+    call assert_approx(list(2), 12.5_dp, 1e-5_dp, __FILE__, __LINE__, failures)
+    call assert_approx(list(3), 15.0_dp, 1e-5_dp, __FILE__, __LINE__, failures)
+    call assert_approx(list(4), 17.5_dp, 1e-5_dp, __FILE__, __LINE__, failures)
+    call assert_approx(list(5), 20._dp, 1e-5_dp, __FILE__, __LINE__, failures)
+end
 
 subroutine float_utils_test_all(failures)
     integer, intent(inout) :: failures
 
     call can_convert_real_to_int_test(failures)
+    call linspace_test(failures)
+    call linspace_test2(failures)
 end
 
 end module FloatUtilsTest
