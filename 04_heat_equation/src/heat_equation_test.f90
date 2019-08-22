@@ -12,13 +12,14 @@ contains
 subroutine solve_heat_eqn_test(failures)
     integer, intent(inout) :: failures
     type(program_settings) :: options
+    real(dp), allocatable :: data(:,:), errors(:,:)
 
     options%nx = 20
     options%nt = 100
     options%alpha = 0.25_dp
     options%k = 2.28e-5
 
-    call solve_heat_equation(options)
+    call solve_heat_equation(options, data, errors)
 
     call assert_true(.true., __FILE__, __LINE__, failures)
 end

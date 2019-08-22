@@ -46,10 +46,12 @@ subroutine linspace(from, to, array)
     end do
 end subroutine
 
-subroutine solve_heat_equation(options)
+subroutine solve_heat_equation(options, data, errors)
     type(program_settings), intent(in) :: options
+    real(dp), intent(out) :: data(options%nx, options%nt), &
+        errors(options%nx, options%nt)
     real(dp) :: l, x0, x1, dx, t0, dt, alpha, k, t
-    real(dp), allocatable :: data(:,:), exact(:,:), errors(:,:), x_points(:)
+    real(dp) :: exact(options%nx, options%nt), x_points(options%nx)
     integer :: nx, nt, n, j
     character(len=1024) :: rowfmt
 
@@ -64,10 +66,10 @@ subroutine solve_heat_equation(options)
 
     t0 = 0
     nt = options%nt
-    allocate(data(nx, nt))
-    allocate(exact(nx, nt))
-    allocate(errors(nx, nt))
-    allocate(x_points(nx))
+    ! allocate(data(nx, nt))
+    ! allocate(exact(nx, nt))
+    ! allocate(errors(nx, nt))
+    ! allocate(x_points(nx))
     call linspace(x0, x1, x_points)
 
     ! Set intial conditions
