@@ -9,7 +9,7 @@ dT/dt = k d^2T/dx^2
 using the initial condition
 
 ```
-T(x, 0) = 100 sin􏰄 (pi x􏰅 / L)
+T(x, 0) = 100 sin(pi x / L)
 ```
 
 and boundary conditions
