@@ -13,10 +13,16 @@ from matplotlib import cm
 def plot_solution(plot_dir):
     create_dir(plot_dir)
 
-    result = solve_pde(nx=20, nt=300, alpha=0.25, k=2.28e-5)
+    nx = 20
+    alpha = 0.25
+    k = 2.28e-5
+    result = solve_pde(nx=nx, nt=300, alpha=alpha, k=k)
 
     if result is None:
         return
+
+    dx = 1/20
+    dt = alpha * dx**2 / k
 
     data = result["data"]
     x_values = data["x_values"]
@@ -29,7 +35,7 @@ def plot_solution(plot_dir):
     ax.set_xlabel("Length x [m]")
     ax.set_ylabel("Time t [s]")
     ax.set_zlabel("Temperature T [K]")
-    ax.set_title("Z-component of curl of velocity")
+    ax.set_title(f"Solution of heat equation\ndx={dx:.2e} m, dt={dt:.2e} s, $\\alpha$={alpha:.2e}")
     pdf_file = os.path.join(plot_dir, "plot_solution.pdf")
     plt.savefig(pdf_file)
     plt.show()

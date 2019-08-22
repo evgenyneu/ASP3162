@@ -127,8 +127,8 @@ subroutine print_data(data, x_points, t_points, output)
     real(dp), intent(in) :: data(:,:),  x_points(:), t_points(:)
     character(len=:), allocatable, intent(out) :: output
     character(len=:), allocatable :: tmp_arr
-    character(len=1024) :: buffer
-    integer :: n, nx, j, allocated = 2024
+    character(len=1024*10) :: buffer
+    integer :: n, nx, j, allocated = 1024*10
     character(len=1024) :: rowfmt
 
     allocate(character(len=allocated) :: output)
