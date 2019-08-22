@@ -217,6 +217,12 @@ subroutine read_settings_solve_and_create_output(silent)
     end if
 
     call solve_and_create_output(options=settings)
+
+    if (.not. silent) then
+        print "(a, a, a)", "Solution savedm to '", &
+            trim(settings%output_path), "'"
+    end if
+
 end subroutine
 
 
