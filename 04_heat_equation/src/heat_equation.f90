@@ -9,7 +9,7 @@ use FloatUtils, only: linspace
 implicit none
 private
 public :: solve_heat_equation, print_data, solve_and_create_output, &
-          read_settings_solve_and_create_output
+          read_settings_solve_and_create_output, write_to_file
 
 contains
 
