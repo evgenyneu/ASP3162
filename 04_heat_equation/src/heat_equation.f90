@@ -7,7 +7,7 @@ use Constants, only: pi
 use Settings, only: program_settings
 implicit none
 private
-public :: solve_heat_equation
+public :: solve_heat_equation, print_data
 
 contains
 
@@ -125,5 +125,36 @@ subroutine solve_heat_equation(options, data, errors, x_points, t_points)
 
     ! print *, trim(rowfmt)
 end subroutine
+
+subroutine print_data(data, x_points, t_points, output)
+    real(dp), intent(in) :: data(:,:),  x_points(:), t_points(:)
+    character(len=:), allocatable, intent(out) :: output
+    character(len=:), allocatable :: tmp_arr
+    character(len=1024) :: buffer
+    integer :: n, nx, j, allocated = 2024
+    character(len=1024) :: rowfmt
+
+    output = ""
+    nx = size(x_points)
+    write(rowfmt,'(A,I4,A)') '(',nx + 1,'(1X,ES24.17))'
+    write(buffer, fmt = rowfmt) 0._dp, (x_points(j), j=1, nx)
+    output = output // trim(buffer) // new_line('A')
+
+    do n = 1, size(t_points)
+        write(buffer, fmt = rowfmt) t_points(n), (data(j, n), j=1, nx)
+        output = output // trim(buffer) // new_line('A')
+
+        ! Resize the string array if two small
+        if (len(output) > allocated / 2) then
+            allocated = 2 * allocated
+            allocate(character(len=allocated) :: tmp_arr)
+            tmp_arr = output
+            deallocate(output)
+            call move_alloc(tmp_arr, output)
+        end if
+    end do
+end subroutine
+
+
 
 end module HeatEquation

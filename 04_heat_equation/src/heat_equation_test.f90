@@ -1,7 +1,7 @@
 module HeatEquationTest
 use Types, only: dp
-use AssertsTest, only: assert_true, assert_approx
-use HeatEquation, only: solve_heat_equation
+use AssertsTest, only: assert_true, assert_approx, assert_equal
+use HeatEquation, only: solve_heat_equation, print_data
 use Settings, only: program_settings
 implicit none
 private
@@ -48,10 +48,48 @@ subroutine solve_heat_eqn_test(failures)
     call assert_approx(errors(20, 10), 0.0_dp, 1e-5_dp, __FILE__, __LINE__, failures)
 end
 
+subroutine print_data_test(failures)
+    integer, intent(inout) :: failures
+    type(program_settings) :: options
+    real(dp) :: data(3,3)
+    real(dp) :: x_points(3), t_points(3), read_data(16)
+    character(len=:), allocatable :: output
+
+    data = reshape((/ 1, 2, 3, 4, 5, 6, 7, 8, 9 /), shape(data))
+    x_points = [1.1_dp, 1.2_dp, 1.3_dp]
+    t_points = [0.1_dp, 0.2_dp, 0.3_dp]
+
+    call print_data(data, x_points, t_points, output)
+
+    read(output, *) read_data
+
+    call assert_approx(read_data(1), 0._dp, 1e-5_dp, __FILE__, __LINE__, failures)
+    call assert_approx(read_data(2), 1.1_dp, 1e-5_dp, __FILE__, __LINE__, failures)
+    call assert_approx(read_data(3), 1.2_dp, 1e-5_dp, __FILE__, __LINE__, failures)
+    call assert_approx(read_data(4), 1.3_dp, 1e-5_dp, __FILE__, __LINE__, failures)
+
+    call assert_approx(read_data(5), 0.1_dp, 1e-5_dp, __FILE__, __LINE__, failures)
+    call assert_approx(read_data(6), 1._dp, 1e-5_dp, __FILE__, __LINE__, failures)
+    call assert_approx(read_data(7), 2._dp, 1e-5_dp, __FILE__, __LINE__, failures)
+    call assert_approx(read_data(8), 3._dp, 1e-5_dp, __FILE__, __LINE__, failures)
+
+    call assert_approx(read_data(9), 0.2_dp, 1e-5_dp, __FILE__, __LINE__, failures)
+    call assert_approx(read_data(10), 4._dp, 1e-5_dp, __FILE__, __LINE__, failures)
+    call assert_approx(read_data(11), 5._dp, 1e-5_dp, __FILE__, __LINE__, failures)
+    call assert_approx(read_data(12), 6._dp, 1e-5_dp, __FILE__, __LINE__, failures)
+
+    call assert_approx(read_data(13), 0.3_dp, 1e-5_dp, __FILE__, __LINE__, failures)
+    call assert_approx(read_data(14), 7._dp, 1e-5_dp, __FILE__, __LINE__, failures)
+    call assert_approx(read_data(15), 8._dp, 1e-5_dp, __FILE__, __LINE__, failures)
+    call assert_approx(read_data(16), 9._dp, 1e-5_dp, __FILE__, __LINE__, failures)
+end
+
 subroutine heat_equation_test_all(failures)
     integer, intent(inout) :: failures
 
     call solve_heat_eqn_test(failures)
+
+    call print_data_test(failures)
 end
 
 end module HeatEquationTest
