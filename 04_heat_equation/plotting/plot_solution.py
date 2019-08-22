@@ -21,18 +21,34 @@ def plot_solution(plot_dir):
     x_values = [df.values[0, 1:]]
     t_values = np.transpose([df.values[1:, 0]])
     temperatures = df.values[1:,1:]
-    print(x_values)
 
     fig = plt.figure()
     ax = fig.gca(projection='3d')
-    ax.plot_surface(x_values, t_values, temperatures, cmap=cm.bone)
+    ax.plot_surface(x_values, t_values, temperatures, cmap=plt.cm.jet)
     ax.set_xlabel("Length x [m]")
     ax.set_ylabel("Time t [s]")
-    ax.set_zlabel("Temperature [T]")
+    ax.set_zlabel("Temperature T [K]")
     ax.set_title("Z-component of curl of velocity")
     # plt.savefig(filename)
     plt.show()
 
+    # x_values = df.values[0, 1:]
+    # t_values = df.values[1:, 0]
+    # x_values = df.values[0, 1:]
+    # t_values = df.values[1:, 0]
+    # x = []
+    # y = []
+    # z = []
+
+    # for ix in range(0, temperatures.shape[1]):
+    #     for it in range(0, temperatures.shape[0]):
+    #         x.append(x_values[ix])
+    #         y.append(t_values[it])
+    #         z.append(temperatures[it, ix])
+    #         # print(temperatures[it, ix])
+
+    # ax.plot_trisurf(x, y, z, cmap=plt.cm.jet, linewidth=0.2)
+    # plt.show()
 
 
 if __name__ == '__main__':

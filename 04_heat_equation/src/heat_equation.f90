@@ -61,7 +61,7 @@ subroutine solve_heat_equation()
     dt =  alpha * dx**2 / k
 
     t0 = 0
-    nt = 100
+    nt = 300
     allocate(data(nx, nt))
     allocate(x_points(nx))
     call linspace(x0, x1, x_points)
