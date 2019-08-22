@@ -21,7 +21,7 @@ def plot_solution(plot_dir):
     if result is None:
         return
 
-    dx = 1/20
+    dx = 1. / nx
     dt = alpha * dx**2 / k
 
     data = result["data"]
