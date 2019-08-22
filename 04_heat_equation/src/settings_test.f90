@@ -92,8 +92,8 @@ subroutine show_help_test(failures)
     call assert_true(.not. string_is_empty(error_message), __FILE__, __LINE__, failures)
 
     call assert_string_starts_with(error_message, &
-                                   NEW_LINE('h')//"This program solves ODE", &
-                                   __FILE__, __LINE__, failures)
+            NEW_LINE('h')//"This program solves the heat equation", &
+            __FILE__, __LINE__, failures)
 end
 
 
