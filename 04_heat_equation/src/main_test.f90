@@ -2,7 +2,6 @@ program MainTest
     use CommandLineArgsTest, only: command_line_args_test_all
     use StringTest, only: string_test_all
     use SettingsTest, only: settings_test_all
-    use OdeSolverTest, only: ode_solver_test_all
     use FloatUtilsTest, only: float_utils_test_all
     use HeatEquationTest, only: heat_equation_test_all
     implicit none
@@ -13,7 +12,6 @@ program MainTest
     call string_test_all(failures)
     call settings_test_all(failures)
 
-    call ode_solver_test_all(failures)
     call float_utils_test_all(failures)
     call heat_equation_test_all(failures)
 

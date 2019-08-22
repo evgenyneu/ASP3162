@@ -4,6 +4,7 @@
 module HeatEquation
 use Types, only: dp
 use Constants, only: pi
+use Settings, only: program_settings
 implicit none
 private
 public :: solve_heat_equation
@@ -45,23 +46,24 @@ subroutine linspace(from, to, array)
     end do
 end subroutine
 
-subroutine solve_heat_equation()
+subroutine solve_heat_equation(options)
+    type(program_settings), intent(in) :: options
     real(dp) :: l, x0, x1, dx, t0, dt, alpha, k, t
     real(dp), allocatable :: data(:,:), exact(:,:), errors(:,:), x_points(:)
     integer :: nx, nt, n, j
     character(len=1024) :: rowfmt
 
-    k = 2.28e-5_dp
+    k = options%k
     l = 1._dp
     x0 = 0._dp
     x1 = x0 + l
-    nx = 20
+    nx = options%nx
     dx = (x1 - x0) / nx
-    alpha = 0.25_dp
+    alpha = options%alpha
     dt =  alpha * dx**2 / k
 
     t0 = 0
-    nt = 100
+    nt = options%nt
     allocate(data(nx, nt))
     allocate(exact(nx, nt))
     allocate(errors(nx, nt))
