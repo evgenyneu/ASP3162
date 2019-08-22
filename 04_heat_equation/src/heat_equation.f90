@@ -74,10 +74,12 @@ subroutine solve_heat_equation()
     data(nx, :) = 0
 
     do n = 1, nt - 1
-        do j = 2, nx - 1
-            data(j, n + 1) = data(j, n) + &
-                alpha * (data(j + 1, n) - 2 * data(j, n) + data(j - 1, n))
-        end do
+        ! do j = 2, nx - 1
+        !     data(j, n + 1) = data(j, n) + &
+        !         alpha * (data(j + 1, n) - 2 * data(j, n) + data(j - 1, n))
+        ! end do
+        data(2:nx-1, n + 1) = data(2:nx-1, n) + &
+                alpha * (data(3:nx, n) - 2 * data(2:nx-1, n) + data(1:nx-2, n))
     end do
 
     ! ! Print to a file
