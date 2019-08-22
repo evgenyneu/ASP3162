@@ -19,7 +19,11 @@ subroutine solve_heat_eqn_test(failures)
     options%alpha = 0.25_dp
     options%k = 2.28e-5
 
+    allocate(data(options%nx, options%nt))
+    allocate(errors(options%nx, options%nt))
+
     call solve_heat_equation(options, data, errors)
+    print *, data
 
     call assert_true(.true., __FILE__, __LINE__, failures)
 end
