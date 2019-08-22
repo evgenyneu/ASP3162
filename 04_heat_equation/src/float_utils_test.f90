@@ -33,7 +33,6 @@ end
 
 subroutine linspace_test(failures)
     integer, intent(inout) :: failures
-    logical :: success
     real(dp) :: list(5)
 
     call linspace(from=0._dp, to=1._dp, array=list)
@@ -47,7 +46,6 @@ end
 
 subroutine linspace_test2(failures)
     integer, intent(inout) :: failures
-    logical :: success
     real(dp) :: list(5)
 
     call linspace(from=10._dp, to=20._dp, array=list)

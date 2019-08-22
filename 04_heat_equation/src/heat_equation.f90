@@ -12,6 +12,41 @@ public :: solve_heat_equation, print_data, solve_and_create_output
 
 contains
 
+!
+! Solve the heat equation
+!
+!   dT/dt= k d^2T/dx^2
+!
+! with initial conditions
+!
+!    T(x,0) = 100 sin􏰄(pi x / L)
+!
+! and boundary conditions
+!
+!   T(0,t) = T(L,t) = 0
+!
+! where L = 1 m.􏰅
+!
+!
+! Inputs:
+! -------
+!
+! options : program options
+!
+!
+! Outputs:
+! -------
+!
+! data : 2D array containing the solution for the temperature
+!        first coordinate is x, second is time.
+!
+! errors : 2D array containing the absolute value of the difference between
+!          the approximate and exact solutions.
+!
+! x_points : A 1D array containing the values of the x coordinate
+!
+! t_points : A 1D array containing the values of the time coordinate
+!
 subroutine solve_heat_equation(options, data, errors, x_points, t_points)
     type(program_settings), intent(in) :: options
     real(dp), allocatable, intent(out) :: data(:,:), errors(:,:)
@@ -66,6 +101,27 @@ subroutine solve_heat_equation(options, data, errors, x_points, t_points)
     errors = abs(exact - data)
 end subroutine
 
+
+!
+! Prints 2D array containing solutions (or their errors)
+! to a string variable. In addition to the solution, the first row
+! contains the x coordinate, and the first column contains the t coordinate
+!
+! Inputs:
+! -------
+!
+! data : a 2D array containing solutions or errors for printing
+!
+! x_points : A 1D array containing the values of the x coordinate
+!
+! t_points : A 1D array containing the values of the time coordinate
+!
+!
+! Outputs:
+! -------
+!
+! output : text output containing solution
+!
 subroutine print_data(data, x_points, t_points, output)
     real(dp), intent(in) :: data(:,:),  x_points(:), t_points(:)
     character(len=:), allocatable, intent(out) :: output
@@ -96,6 +152,17 @@ subroutine print_data(data, x_points, t_points, output)
     end do
 end subroutine
 
+
+!
+! Write text to a file
+!
+! Inputs:
+! -------
+!
+! text : a text to be written
+!
+! path : path to a text file to be created
+!
 subroutine write_to_file(text, path)
     character(len=*), intent(in) :: text, path
     integer, parameter :: out_unit=20
@@ -105,6 +172,14 @@ subroutine write_to_file(text, path)
     close(unit=out_unit)
 end subroutine
 
+!
+! Solves PDE and print solutions and errors to files
+!
+! Inputs:
+! -------
+!
+! options : program options
+!
 subroutine solve_and_create_output(options)
     type(program_settings), intent(in) :: options
     real(dp), allocatable :: data(:,:), errors(:,:)
