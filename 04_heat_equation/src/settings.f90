@@ -172,14 +172,6 @@ subroutine read_from_parsed_command_line(parsed, settings, error_message)
     ! Check unrecognized parameters
     ! ----------
 
-    if (parsed%positional_count /= 0) then
-        write(error_message, '(a, a, a)') &
-            "ERROR: Unrecognized parameter '", &
-            trim(parsed%positional(1)), &
-            "'. Run with --help for help."
-        return
-    end if
-
     valid_args(1) = "nx"
     valid_args(2) = "nt"
     valid_args(3) = "alpha"
@@ -196,53 +188,90 @@ subroutine read_from_parsed_command_line(parsed, settings, error_message)
         return
     end if
 
-    ! ! OUTPUT
-    ! ! --------------
+    ! OUTPUT
+    ! --------------
 
-    ! if (parsed%positional_count /= 2) then
-    !     error_message = "ERROR: OUTPUT and ERRORS parameters are missing."&
-    !         //NEW_LINE('h')//" &
-    !         &Run with --help for help."
-    !     return
-    ! end if
+    if (parsed%positional_count /= 2) then
+        error_message = "ERROR: OUTPUT and ERRORS parameters are missing."&
+            //NEW_LINE('h')//" &
+            &Run with --help for help."
+        return
+    end if
 
-    ! call get_positional_value(index=1, parsed=parsed, &
-    !                           value=settings%output_path, &
-    !                           success=success)
+    call get_positional_value(index=1, parsed=parsed, &
+                              value=settings%output_path, &
+                              success=success)
 
-    ! ! if (.not. success) then
-    ! !     error_message = "ERROR: XSTART is not a number."//NEW_LINE('h')//"&
-    ! !                     &Run with --help for help."
-    ! !     return
-    ! ! end if
+    if (.not. success) then
+        error_message = "ERROR: OUTPUT parameter is missing."//NEW_LINE('h')//"&
+                        &Run with --help for help."
+        return
+    end if
 
+    ! ERRORS
+    ! --------------
 
-    ! ! t_end
-    ! ! --------------
+    call get_positional_value(index=2, parsed=parsed, &
+                              value=settings%errors_path, &
+                              success=success)
 
-    ! call get_named_value_or_default(name='t_end', parsed=parsed, &
-    !                                 default=DEFAULT_T_END, &
-    !                                 value=settings%t_end, success=success)
+    if (.not. success) then
+        error_message = "ERROR: ERRORS parameter is missing."//NEW_LINE('h')//"&
+                        &Run with --help for help."
+        return
+    end if
 
-    ! if (.not. success) then
-    !     error_message = "ERROR: t_end is not a number."//NEW_LINE('h')//"&
-    !                     &Run with --help for help."
-    !     return
-    ! end if
+    ! nx
+    ! --------------
 
+    call get_named_value_or_default(name='nx', parsed=parsed, &
+                                    default=DEFAULT_NX, &
+                                    value=settings%nx, success=success)
 
-    ! ! delta_t
-    ! ! --------------
+    if (.not. success) then
+        error_message = "ERROR: nx is not a number."//NEW_LINE('h')//"&
+                        &Run with --help for help."
+        return
+    end if
 
-    ! call get_named_value_or_default(name='delta_t', parsed=parsed, &
-    !                                 default=DEFAULT_DELTA_T, &
-    !                                 value=settings%delta_t, success=success)
+    ! nt
+    ! --------------
 
-    ! if (.not. success) then
-    !     error_message = "ERROR: delta_t is not a number."//NEW_LINE('h')//"&
-    !                     &Run with --help for help."
-    !     return
-    ! end if
+    call get_named_value_or_default(name='nt', parsed=parsed, &
+                                    default=DEFAULT_NT, &
+                                    value=settings%nt, success=success)
+
+    if (.not. success) then
+        error_message = "ERROR: nt is not a number."//NEW_LINE('h')//"&
+                        &Run with --help for help."
+        return
+    end if
+
+    ! alpha
+    ! --------------
+
+    call get_named_value_or_default(name='alpha', parsed=parsed, &
+                                    default=DEFAULT_ALPHA, &
+                                    value=settings%alpha, success=success)
+
+    if (.not. success) then
+        error_message = "ERROR: alpha is not a number."//NEW_LINE('h')//"&
+                        &Run with --help for help."
+        return
+    end if
+
+    ! k
+    ! --------------
+
+    call get_named_value_or_default(name='k', parsed=parsed, &
+                                    default=DEFAULT_K, &
+                                    value=settings%k, success=success)
+
+    if (.not. success) then
+        error_message = "ERROR: k is not a number."//NEW_LINE('h')//"&
+                        &Run with --help for help."
+        return
+    end if
 
 end subroutine
 
