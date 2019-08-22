@@ -32,8 +32,9 @@ def plot_solution(plot_dir):
     ax.set_ylabel("Time t [s]")
     ax.set_zlabel("Temperature T [K]")
     ax.set_title(f"Solution of heat equation\ndx={dx:.2e} m, dt={dt:.2e} s, $\\alpha$={alpha:.2e}")
-    pdf_file = os.path.join(plot_dir, "plot_solution.pdf")
+    ax.view_init(30, 45)
     plt.tight_layout()
+    pdf_file = os.path.join(plot_dir, "plot_solution.pdf")
     plt.savefig(pdf_file)
     plt.show()
 
