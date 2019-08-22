@@ -1,13 +1,9 @@
 # Plotting solution of the heat equation
-import numpy as np
 import matplotlib.pyplot as plt
 import os
-from io import StringIO
-import pandas as pd
 from plot_utils import create_dir
 from solve_pde import solve_pde
 from mpl_toolkits.mplot3d import Axes3D
-from matplotlib import cm
 
 
 def plot_solution(plot_dir):
@@ -37,6 +33,7 @@ def plot_solution(plot_dir):
     ax.set_zlabel("Temperature T [K]")
     ax.set_title(f"Solution of heat equation\ndx={dx:.2e} m, dt={dt:.2e} s, $\\alpha$={alpha:.2e}")
     pdf_file = os.path.join(plot_dir, "plot_solution.pdf")
+    plt.tight_layout()
     plt.savefig(pdf_file)
     plt.show()
 
