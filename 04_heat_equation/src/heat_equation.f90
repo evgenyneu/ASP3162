@@ -61,7 +61,7 @@ subroutine solve_heat_equation(options, data, errors, x_points, t_points)
     x0 = 0._dp
     x1 = x0 + l
     nx = options%nx
-    dx = (x1 - x0) / nx
+    dx = (x1 - x0) / (nx - 1)
     alpha = options%alpha
     dt =  alpha * dx**2 / k
     t0 = 0

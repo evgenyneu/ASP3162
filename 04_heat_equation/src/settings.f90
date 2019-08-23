@@ -72,7 +72,8 @@ character(len=1024), parameter :: HELP_MESSAGE = NEW_LINE('h')//"&
     &"//NEW_LINE('h')//"&
     &"//NEW_LINE('h')//"&
     &    --nx=NUMBER : number of x points in the grid,"//NEW_LINE('h')//"&
-    &                  Default: 20."//NEW_LINE('h')//"&
+    &                  including the points on the edges."//NEW_LINE('h')//"&
+    &                  Default: 21."//NEW_LINE('h')//"&
     &"//NEW_LINE('h')//"&
     &    --nt=NUMBER : number of t points in the grid,"//NEW_LINE('h')//"&
     &                  Default: 300."//NEW_LINE('h')//"&
@@ -90,7 +91,7 @@ character(len=1024), parameter :: HELP_MESSAGE = NEW_LINE('h')//"&
 ! Default values for the settings
 ! ------
 
-integer, parameter :: DEFAULT_NX = 20
+integer, parameter :: DEFAULT_NX = 21
 integer, parameter :: DEFAULT_NT = 300
 real(dp), parameter :: DEFAULT_ALPHA = 0.25
 real(dp), parameter :: DEFAULT_K = 2.28e-5

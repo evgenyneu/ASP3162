@@ -9,7 +9,7 @@ from mpl_toolkits.mplot3d import Axes3D
 def plot_solution(plot_dir):
     create_dir(plot_dir)
 
-    nx = 20
+    nx = 21
     alpha = 0.25
     k = 2.28e-5
     result = solve_pde(nx=nx, nt=300, alpha=alpha, k=k)
@@ -17,7 +17,7 @@ def plot_solution(plot_dir):
     if result is None:
         return
 
-    dx = 1. / nx
+    dx = 1. / (nx - 1)
     dt = alpha * dx**2 / k
 
     data = result["data"]
