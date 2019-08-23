@@ -108,7 +108,7 @@ The corresponding errors are shown on \autoref{fix_errors_nx_5_alpha_0_1}. The e
 \[
   T(x,t) = 100 e^{- \pi^2 k t / L^2} \sin(\pi x / L).
 \]
-We can see from \autoref{fix_errors_nx_5_alpha_0_1} that the errors are increasing with time, and that the errors are larger near the center of the rod. We can see that the errors reach peak values of about $10 K$ at $t \approx 3000 \ s$.
+We can see from \autoref{fix_errors_nx_5_alpha_0_1} that the errors are increasing with time, and that the errors are larger near the center of the rod. We can see that the errors reach peak values of about $0.6 K$ at $t \approx 3000 \ s$.
 \begin{figure}[H]
   \centering
   \includegraphics[width=1.0\textwidth]{figures/errors_alpha_1_00e_01.pdf}
@@ -117,32 +117,32 @@ We can see from \autoref{fix_errors_nx_5_alpha_0_1} that the errors are increasi
 \end{figure}
 
 
-\subsubsection*{Solution for $20$ position steps}
+\subsubsection*{Solution for $21$ position steps}
 
-Next, we use larger amount of position steps, $nx = 20$ and $\alpha = 0.25$. The solution is shown on \autoref{fix_solution_nx_20_alpha_0_2_5}. We have calculated the solution for $300$ time steps ($nt = 300$).
+Next, we use larger amount of position steps, $nx = 21$ (we are counting both edges of the rod) and $\alpha = 0.25$. The solution is shown on \autoref{fix_solution_nx_20_alpha_0_2_5}. We have calculated the solution for $300$ time steps ($nt = 300$).
 \begin{figure}[H]
   \centering
   \includegraphics[width=1.0\textwidth]{figures/solution_2_50e_01.pdf}
-  \caption{Approximate solution to the heat equation for $nx=20$ and $\alpha = 0.25$.}
+  \caption{Approximate solution to the heat equation for $nx=21$ and $\alpha = 0.25$.}
   \label{fix_solution_nx_20_alpha_0_2_5}
 \end{figure}
-The general shape of the solution is not unlike the one we found for $nx=5$. We can see that the new $nx=20$ solution is smoother, which can be explained by smaller steps for position and time. The errors of the approximate solution for $nx=20$ are shown on \autoref{fix_errors_nx_20_alpha_0_2_5}.
+The general shape of the solution is not unlike the one we found for $nx=5$. We can see that the new $nx=21$ solution is smoother, which can be explained by smaller steps for position and time. The errors of the approximate solution for $nx=21$ are shown on \autoref{fix_errors_nx_20_alpha_0_2_5}.
 \begin{figure}[H]
   \centering
   \includegraphics[width=1.0\textwidth]{figures/errors_alpha_2_50e_01.pdf}
-  \caption{The errors of the approximate solution to the heat equation for $nx=20$ and $\alpha = 0.25$.}
+  \caption{The errors of the approximate solution to the heat equation for $nx=21$ and $\alpha = 0.25$.}
   \label{fix_errors_nx_20_alpha_0_2_5}
 \end{figure}
-We can see similar distribution of errors as before. This time, however, the peak values of errors are about $3$ times smaller, reaching maximum values of about $3.5 \ K$.
+We can see similar distribution of errors as before. This time, however, the peak values of errors are about $20$ times smaller, reaching maximum values of about $0.03 \ K$.
 
 
 \subsection{Solution for $\alpha=0.65$}
 
-Here we want to see how values of $\alpha$ parameter affect the solution. Specifically, we use $\alpha = 0.65$ while keeping the same number of position steps ($nx=20$). The solution is shown on \autoref{fix_solution_nx_20_alpha_0_6_5}.
+Here we want to see how values of $\alpha$ parameter affect the solution. Specifically, we use $\alpha = 0.65$ while keeping the same number of position steps ($nx=21$). The solution is shown on \autoref{fix_solution_nx_20_alpha_0_6_5}.
 \begin{figure}[H]
   \centering
   \includegraphics[width=1.0\textwidth]{figures/solution_6_50e_01.pdf}
-  \caption{Approximate solution to the heat equation for $nx=20$ and $\alpha = 0.6.5$, showing signs of numerical instability from $t \approx 5500 \ s$.}
+  \caption{Approximate solution to the heat equation for $nx=21$ and $\alpha = 0.65$, showing signs of numerical instability from $t \approx 5500 \ s$.}
   \label{fix_solution_nx_20_alpha_0_6_5}
 \end{figure}
 We can see form \autoref{fix_solution_nx_20_alpha_0_6_5} that initially, the program produces results similar to the previous case with $\alpha=0.25$. However, after about $t \approx 5500 \ s$, the $\alpha=0.65$ solution shows large fluctuations in temperature. These result are unrealistic, since the rood cools down with time, and it can not heat up in random locations without an external supply of energy.
