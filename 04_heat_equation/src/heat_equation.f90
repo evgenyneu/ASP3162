@@ -74,10 +74,10 @@ subroutine solve_heat_equation(options, data, errors, x_points, t_points)
     allocate(x_points(nx))
     allocate(t_points(nt))
 
-    ! The evenly spaced x values
+    ! Assign evenly spaced x values
     call linspace(x0, x1, x_points)
 
-    ! Set intial conditions
+    ! Set initial conditions
     data(:, 1) = 100._dp * sin(pi * x_points / l)
 
     ! Set boundary conditions

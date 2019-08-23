@@ -1,24 +1,26 @@
 \subsection{The heat equation}
 
-We want to use a finite-difference (Euler) method to find an approximate solution the the heat equation
+We want to use a finite-difference (Euler) method to find an approximate solution of the heat equation
 \begin{equation}
   T_t = k T_{xx}
   \label{eq_heat_equation}
 \end{equation}
 with the initial condition
-\begin{equation*}
+\begin{equation}
   T(x,0) = 100 \sin(\pi x / L),
-\end{equation*}
+  \label{eq_initial_condition}
+\end{equation}
 and boundary conditions
-\begin{equation*}
+\begin{equation}
   T(0,t) = T(L,t) = 0
-\end{equation*}
+  \label{eq_boundary_conditions}
+\end{equation}
 for $L = 1 \ m$. Here we use a short notation for the derivatives: $T_t = \frac{\partial T}{\partial t}$.
 
 
 \subsection{The recurrence relation}
 
-Our goal is to find a recurrence relation that will allow us to calculate the value of temperature iteratively at each time step. In order to find this recurrence relation we use approximations for the derivative. The time derivative approximation is
+Our goal is to find a recurrence relation that will allow us to calculate the value of temperature iteratively at each time step. In order to find this recurrence relation we use approximations for the derivatives. The time derivative approximation is
 \[
   T_t(x, t) \approx \frac{T(x, t + \Delta t) - T(x, t)}{\Delta t},
 \]
@@ -33,7 +35,7 @@ where the $j$ is the position index and $n$ is the time index:
   n &= 1, 2, \dots, n_t,
 \end{align*}
 with $n_x$ and $n_t$ being the total number of position and time values respectively.
-Similarly, the approximate expression for the second spec derivative is:
+Similarly, the approximate expression for the second position derivative is:
 \begin{equation}
   (T_{xx})_j^n = \frac{T_{j+1}^n - 2 T_{j}^n + 2T_{j-1}^n}{\Delta x^2}.
   \label{eq_space_derivative_approximation}
@@ -43,207 +45,112 @@ Next, we substitute Equations \ref{eq_time_derivative_approximation} and \ref{eq
   \frac{T_j^{n + 1} - T_j^{n}}{\Delta t} = k \frac{T_{j+1}^n - 2 T_{j}^n + 2T_{j-1}^n}{\Delta x^2}.
 \]
 Finally, we solve for $T_j^{n + 1}$ and find the recurrence relation that we wanted
-\[
+\begin{equation}
   \boxed{ T_j^{n + 1} = T_j^{n} + \alpha \big( T_{j+1}^n - 2 T_{j}^n + 2T_{j-1}^n \big), \quad \alpha = k \frac{\Delta t}{\Delta x^2}. }
+  \label{eq_recurrence_relation_heat_eq}
+\end{equation}
+
+
+\subsection{Writing the code}
+
+Next, we write Fortran code to solve the heat equation (\autoref{eq_heat_equation}). The code is shown in shown in \autoref{code_solve_heat_equation}.
+
+
+\noindent\begin{minipage}{\linewidth}
+\begin{lstlisting}[caption={Solving a heat equation with forward-difference method (\code{heat\_equation.f90}).},frame=tlrb,label={code_solve_heat_equation}, numbers=left, firstnumber=77]
+! Assign evenly spaced x values
+call linspace(x0, x1, x_points)
+
+! Set initial conditions
+data(:, 1) = 100._dp * sin(pi * x_points / l)
+
+! Set boundary conditions
+data(1, :) = 0
+data(nx, :) = 0
+
+! Calculate numerical solution using forward differencing method
+do n = 1, nt - 1
+    data(2:nx-1, n + 1) = data(2:nx-1, n) + &
+        alpha * (data(3:nx, n) - 2 * data(2:nx-1, n) + data(1:nx-2, n))
+end do
+\end{lstlisting}
+\end{minipage}
+
+On \code{Line 77} we assign evenly spaced values between $0$ and $1$ for the x-coordinate and store then in the \code{x\_points} array. The number of the values \code{nx} are supplied to the program by the user.
+
+Next, on \code{Line 81} use the initial condition from \autoref{eq_initial_condition}. Our temperature values are stored in a 2D array variable called \code{data}. Here we assign the temperatures to all the x-values corresponding to the first time index $n=1$.
+
+Similarly, on \code{Line 77} and \code{78} we use the boundary conditions (\autoref{eq_boundary_conditions}) by assigning zero temperatures to the ends of the rod. This is done by assigning zero for all time indexes in the \code{data} array corresponding to first (1) and last (\code{nx}) x-index.
+
+Finally, on \code{Lines 88-91} we iterate over time indexes (\code{n}) and use the recurrence relation from \autoref{eq_recurrence_relation_heat_eq} to assign the temperature value for the next time index (\code{n + 1}) using the temperatures that were calculated for the previous step for the time index (\code{n}).
+
+On \code{Lines 89-90} are using a so-called ``vectorized'' indexing syntax for the x-coordinate, such as \code{2:nx-1}. This allows the program to use SIMD processor instructions that perform multiple operations in one cycle. These instructions take advantage of the fact that x-values are located contiguously in memory (Fortran arrays are column-major, meaning the values from the first index of an array are stored one after another in memory). This index notation will make out calculation multiple times faster (this speed increase depends on type of SIMD instructions implemented in a specific processor) compared to an alternative implementation where we would iterate over the $x$ values using a loop.
+
+
+\subsection{Running the program and making plots}
+
+Instructions for compiling, running the program and plotting its results are located in the README.md file that comes with the source code.
+
+
+
+\subsection{Approximate solution and errors}
+
+We look at the approximate solution produced by our program by first plotting the solution for small number of x values ($nx = 5$) on \autoref{fix_solution_nx_5_alpha_0_1}.
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=1.0\textwidth]{figures/solution_1_00e_01.pdf}
+  \caption{Approximate solution to the heat equation for $nx=5$ and $\alpha = 0.1$.}
+  \label{fix_solution_nx_5_alpha_0_1}
+\end{figure}
+We can see from \autoref{fix_solution_nx_5_alpha_0_1} that the the temperature of the rod decreases from a sinusoidal distribution with time, and the ends remain at $T=0$, as expected. 
+
+The corresponding errors are shown on \autoref{fix_errors_nx_5_alpha_0_1}. The errors were found by calculating the absolute value of the difference between the approximate solution and the exact solution, which is given by equation
+\[
+  T(x,t) = 100 e^{- \pi^2 k t / L^2} \sin(\pi x / L).
 \]
+We can see from \autoref{fix_errors_nx_5_alpha_0_1} that the errors are increasing with time, and that the errors are larger near the center of the rod. We can see that the errors reach peak values of about $10 K$ at $t \approx 3000 \ s$.
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=1.0\textwidth]{figures/errors_alpha_1_00e_01.pdf}
+  \caption{The absolute errors of the approximate solution of the heat equation for $nx=5$ and $\alpha = 0.1$.}
+  \label{fix_errors_nx_5_alpha_0_1}
+\end{figure}
+
+
+\subsubsection*{Solution for $20$ position steps}
+
+Next, we use larger amount of position steps, $nx = 20$ and $\alpha = 0.25$. The solution is shown on \autoref{fix_solution_nx_20_alpha_0_2_5}. We have calculated the solution for $300$ time steps ($nt = 300$).
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=1.0\textwidth]{figures/solution_2_50e_01.pdf}
+  \caption{Approximate solution to the heat equation for $nx=20$ and $\alpha = 0.25$.}
+  \label{fix_solution_nx_20_alpha_0_2_5}
+\end{figure}
+The general shape of the solution is not unlike the one we found for $nx=5$. We can see that the new $nx=20$ solution is smoother, which can be explained by smaller steps for position and time. The errors of the approximate solution for $nx=20$ are shown on \autoref{fix_errors_nx_20_alpha_0_2_5}.
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=1.0\textwidth]{figures/errors_alpha_2_50e_01.pdf}
+  \caption{The errors of the approximate solution to the heat equation for $nx=20$ and $\alpha = 0.25$.}
+  \label{fix_errors_nx_20_alpha_0_2_5}
+\end{figure}
+We can see similar distribution of errors as before. This time, however, the peak values of errors are about $3$ times smaller, reaching maximum values of about $3.5 \ K$.
+
+
+\subsection{Solution for $\alpha=0.65$}
+
+Here we want to see how values of $\alpha$ parameter affect the solution. Specifically, we use $\alpha = 0.65$ while keeping the same number of position steps ($nx=20$). The solution is shown on \autoref{fix_solution_nx_20_alpha_0_6_5}.
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=1.0\textwidth]{figures/solution_6_50e_01.pdf}
+  \caption{Approximate solution to the heat equation for $nx=20$ and $\alpha = 0.6.5$, showing signs of numerical instability from $t \approx 5500 \ s$.}
+  \label{fix_solution_nx_20_alpha_0_6_5}
+\end{figure}
+We can see form \autoref{fix_solution_nx_20_alpha_0_6_5} that initially, the program produces results similar to the previous case with $\alpha=0.25$. However, after about $t \approx 5500 \ s$, the $\alpha=0.65$ solution shows large fluctuations in temperature. These result are unrealistic, since the rood cools down with time, and it can not heat up in random locations without an external supply of energy.
+
+These problems in our numerical solution are likely to come from unbounded growth of rounding errors. A more detailed stability analysis using Von Neumann method is needed to show that the forward-difference method of solving \autoref{eq_heat_equation} is unstable for $\alpha > 0.5$. This condition limits our choice of the position steps: we can not make $\Delta x$ as small as we like for same values of $\Delta t$. Fortunately, there are alternative methods of solving \autoref{eq_heat_equation}, such as backward-difference and Crank-Nicolson methods, that are always stable for any choice of $\Delta x$ and $\Delta t$.
 
 
 
-% \subsection{Finding exact solution}
+\subsection{Conclusion}
 
-% We will first find the general solution to \autoref{eq_ode}. The corresponding characteristic equation is
-% \[
-%   \lambda^2 + 1 = 0
-% \]
-% with roots
-% \[
-%   \lambda = \pm i.
-% \]
-% Therefore, the general solution to \autoref{eq_ode} is
-% \begin{equation}
-%   x = A \cos t + B \sin t, \quad A, B \in \mathbb{R}.
-%   \label{eq_general_solution}
-% \end{equation}
-% Next, we use the initial conditions to find the values of constants $A$ and $B$. Using \autoref{eq_ode_condition_one} gives
-% \begin{align*}
-%   x(0) &= 1 \\
-%       &= A \cos 0 + B \sin 0 \\
-%       &= A.
-% \end{align*}
-% Therefore,
-% \[
-%   A = 1.
-% \]
-% Next, we calculate the derivative of $x$ using \autoref{eq_general_solution} and $A=1$:
-% \begin{align*}
-%   \dot{x} &= -\sin t + B \cos t.
-% \end{align*}
-% Applying condition from \autoref{eq_ode_condition_two} gives
-% \begin{align*}
-%   \dot{x}(0) &= 0 \\
-%       &= -\sin 0 + B \cos 0 \\
-%       &= B.
-% \end{align*}
-% We have found that
-% \[
-%   B = 0.
-% \]
-% Finally, we substitute the values of $A$ and $B$ back into \autoref{eq_general_solution} and find the unique solution we desired:
-% \[
-%   \boxed{x = \cos t.}
-% \]
-
-
-% \subsection{Deriving a recurrence relation}
-
-% Next, we want to find a recurrence relation for \autoref{eq_ode} that will be used to solve the equation numerically. We begin by writing an approximation of the second derivative:
-% \[
-%   \ddot{x} \approx \frac{x(t + \Delta t) - 2 x(t) + x(t - \Delta t)}{\Delta t^2}.
-% \]
-% Solving for $ x(t + \Delta t)$ gives
-% \begin{equation}
-%   x(t + \Delta t) \approx - x(t - \Delta t) + 2 x(t) + \Delta t^2 \ddot{x}
-%   \label{eq_exact}
-% \end{equation}
-% Next, we use approximations
-% \begin{align*}
-%   x_{i-1} &\approx x(t - \Delta t) \\
-%   x_{i} &\approx x(t) \\
-%   x_{i+1} &\approx x(t + \Delta t), \quad \textrm{for} \ i = 0, 1, \dots , n_t,
-% \end{align*}
-% where $n_t$ is the number of time steps.
-% With the approximations \autoref{eq_exact} becomes
-% \begin{align*}
-%   x_{i+1} &= - x_{i-1} + 2 x_{i} + \Delta t^2 \ddot{x_{i}} \\
-%     &= - x_{i-1} + 2 x_{i} - \Delta t^2 x_{i} \tag{Use \autoref{eq_ode}}\\
-%     &= - x_{i-1} + x_{i} (2 - \Delta t^2 ).
-% \end{align*}
-% Finally, we replace $i$ with $i+1$ in order to make the indexes start from $0$ and not from $-1$ and get the recurrence relation we wanted:
-% \begin{equation}
-%   \boxed{ x_{i+2} = - x_{i} + x_{i+1} (2 - \Delta t^2 ), \ i = 0, 1, \dots , n_t }
-%   \label{eq_reccurence_relation}
-% \end{equation}
-
-% \subsection{Calculating $x_1$}
-
-% We have found out recurrence relation but we can't use it yet. We know from \autoref{eq_ode_condition_one} that $x_0 = 1$, but we don't know $x_1$. In order to estimate $x_1$, we use a power series expansion around $t=0$:
-% \[
-%   x(0 + \Delta t) \approx x(0) + \dot{x}(0) \Delta t + \frac{1}{2} \ddot{x}(0) \Delta t^2.
-% \]
-% Next, we substitute $\ddot{x}$ from \autoref{eq_ode}, as well as $x$ and $\dot{x}$ from Equations \ref{eq_ode_condition_one} and \ref{eq_ode_condition_two}:
-% \[
-%   x(\Delta t) \approx 1 - \frac{1}{2} \Delta t^2
-% \]
-% Finally, we substitute the approximation
-% \[
-%   x_1 \approx x(\Delta t)
-% \]
-% and find the expression for $x_1$ that we wanted
-% \[
-%     \boxed{ x_1 = 1 - \frac{1}{2} \Delta t^2. }
-% \]
-
-
-% \subsection{Calculating full numerical solution}
-
-
-% Next, we write a Fortran program that solves \autoref{eq_ode} numerically. The program is given the size of the time step $\Delta t$, as well as the final value of $t$. The starting value of $t$ is set to be zero by the initial value conditions. The first two values of $x$ are
-% \begin{align*}
-%   x_0 &= 1 \\
-%   x_1 &= 1 - \frac{1}{2} \Delta t^2.
-% \end{align*}
-% The remaining values are calculated iteratively using the recurrence relation from \autoref{eq_reccurence_relation}.
-
-
-% Instructions for compiling and running the program are located in the README.md file that comes with the source code.
-
-
-% \subsection{Plotting approximate and exact solutions}
-
-% We plot the approximate and exact solutions of \autoref{eq_ode} on \autoref{fig_approx_vs_exact_dt_1} for $\Delta t = 1$. We can see that this time step does not result in good agreement between two solutions. Next, we decrease the time step to $\Delta t = 0.1$, the results are shown on \autoref{approx_vs_exact_dt_0_1}. Now the approximate solution looks indistinguishable from the exact one on this scale.
-% \begin{figure}[H]
-%   \centering
-%   \includegraphics[width=0.8\textwidth]{figures/approx_vs_exact_dt_1.pdf}
-%   \caption{Approximate and exact solutions of the problem $\ddot{x} - x = 0, x(0)=1, \dot{x}(0)=0$ for $\Delta t = 1$.}
-%   \label{fig_approx_vs_exact_dt_1}
-% \end{figure}
-% \begin{figure}[H]
-%   \centering
-%   \includegraphics[width=0.8\textwidth]{figures/approx_vs_exact_dt_0_1.pdf}
-%   \caption{Approximate and exact solutions of the problem $\ddot{x} - x = 0, x(0)=1, \dot{x}(0)=0$ for $\Delta t = 0.1$.}
-%   \label{approx_vs_exact_dt_0_1}
-% \end{figure}
-
-
-% \subsection{Plotting error dependence on $t$}
-
-% Next, we want to see how absolute errors -- an absolute value of the difference between the approximate and exact solution at each $t$ -- depend on $t$. The absolute errors for $\Delta t = 1$ and $\Delta t = 0.1$ are shown on Figures \ref{abs_error_dt_1} and \ref{abs_error_dt_0_1}. We can see that globally the absolute error increases with $t$ (we ignore local periodic oscillations) for both time steps. We can also see that absolute errors from $\Delta t = 1$ solution are about $100$ times larger than those from $\Delta t = 0.1$ solution.
-
-% \begin{figure}[H]
-%   \centering
-%   \includegraphics[width=0.8\textwidth]{figures/abs_error_dt_1.pdf}
-%   \caption{Absolute error of numerical solution of the problem $\ddot{x} - x = 0, x(0)=1, \dot{x}(0)=0$ for $\Delta t = 1$.}
-%   \label{abs_error_dt_1}
-% \end{figure}
-% \begin{figure}[H]
-%   \centering
-%   \includegraphics[width=0.8\textwidth]{figures/abs_error_dt_0_1.pdf}
-%   \caption{Absolute error of numerical solution of the problem $\ddot{x} - x = 0, x(0)=1, \dot{x}(0)=0$ for $\Delta t = 0.1$.}
-%   \label{abs_error_dt_0_1}
-% \end{figure}
-
-
-% \subsection{Dependence of errors on $\Delta t$}
-
-% Finally, we want to see how the choice of the time step affects the absolute errors. We run our Fortran program repeatedly using the following values of time steps:
-% \[
-%   \Delta t = 1, 0.5, 0.2, 0.1, 0.05, 0.02, 0.01, 0.005, 0.002, 0.001, 0.0005.
-% \]
-% Next we calculate the absolute errors of the numerical solutions for different time steps at $t=11$. The value $t=11$ was chosen because it corresponds to a large error on \autoref{abs_error_dt_0_1}. The log-log plot of the errors is shown on \autoref{abs_error_vs_dt}.
-
-% \begin{figure}[H]
-%   \centering
-%   \includegraphics[width=0.8\textwidth]{figures/abs_error_vs_dt.pdf}
-%   \caption{Dependence of absolute errors of numerical solution of the problem $\ddot{x} - x = 0, x(0)=1, \dot{x}(0)=0$ on time step.}
-%   \label{abs_error_vs_dt}
-% \end{figure}
-
-% We can see from \autoref{abs_error_vs_dt} that there is a strong increasing linear relationship between the logarithms of the error and the time step. In order to calculate its slope, we find an equation for the line of best fit using \emph{linregress} function from the \emph{scipy} package:
-% \[
-%   \log(\textrm{error}) = (2.006 \pm 0.002) \log(\Delta t) + b,
-% \]
-% where $b$ is some value for the $y$-intercept. We can see that the slope is within three standard errors from $2$, and the standard error is smaller than $0.001$ of the slope value. Therefore, relation between the maximum error and the time step is, approximately:
-% \[
-%   \textrm{Global error} \sim \Delta t^2.
-% \]
-% Hence, we conclude that our numerical solution method is of the order $O(\Delta t^2)$.
-
-
-% \subsection{Errors for very small $\Delta t$}
-
-% We have found that errors are proportional to $\Delta t^2$. We want to see if this remains true for very small values of $\Delta t$, such as:
-% \[
-%   \Delta t = 0.0002, 0.0001, 0.00001, 0.000001, 0.0000001.
-% \]
-% The corresponding errors are shown on \autoref{abs_error_vs_dt_small_delta_t}. We can see that proportionality
-% \[
-%   \textrm{Global error} \sim \Delta t^2.
-% \]
-% no longer holds for $\Delta t < 0.0005$. Is we make $\Delta t$ smaller than $0.0005$, the errors start to increase, not decrease. The increase of errors could be caused by the rounding errors of the floating point numbers and arithmetic operations with those numbers. These errors accumulate with each time step and may become significant for small values of $\Delta t$ and large number of time steps.
-
-% Our conjecture could be tested by modifying the Fortran program and using quadruple precision for real variables instead of the currently used double precision. If the errors for very small $\Delta t$ are indeed caused by the limitations of the floating point number system, then we expect that quadruple precision will decrease the errors for $\Delta t = 0.0002, 0.0001, 0.00001$ and maintain the proportionality
-% \[
-%   \textrm{Global error} \sim \Delta t^2.
-% \].
-% \begin{figure}[H]
-%   \centering
-%   \includegraphics[width=0.8\textwidth]{figures/abs_error_vs_dt_small_delta_t.pdf}
-%   \caption{Dependence of absolute errors of numerical solution of the problem $\ddot{x} - x = 0, x(0)=1, \dot{x}(0)=0$ on time step including $\Delta t < 0.0005$.}
-%   \label{abs_error_vs_dt_small_delta_t}
-% \end{figure}
-
-
-
-% \subsection{Conclusion}
-
-% We wrote a Fortran program for solving the $\ddot{x} - x = 0, x(0)=1, \dot{x}(0)=0$ problem numerically. We analyzed the absolute errors of our numerical approximation of the solution. We found that global errors of our numerical method were proportional to the square of the time step when using the time steps between $0.0005$ and $1$. Time steps smaller than $0.0005$ caused the errors to increase.
+We used forward-difference (Euler) method and solved a heat equation with initial and boundary conditions. We have found that smaller position and time steps result in smaller errors. However, we have also found that making our position step too small results in unlimited growth of errors.
