@@ -10,9 +10,9 @@ def plot_solution(plot_dir):
     create_dir(plot_dir)
 
     nx = 21
-    alpha = 0.25
+    alpha = 0.65
     k = 2.28e-5
-    result = solve_pde(nx=nx, nt=300, alpha=alpha, k=k)
+    result = solve_pde(nx=nx, nt=100, alpha=alpha, k=k)
 
     if result is None:
         return
