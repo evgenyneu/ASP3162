@@ -20,7 +20,7 @@ for $L = 1 \ m$. Here we use a short notation for the derivatives: $T_t = \frac{
 
 \subsection{The recurrence relation}
 
-Our goal is to find a recurrence relation that will allow us to calculate the value of temperature iteratively at each time step. In order to find this recurrence relation we use approximations for the derivatives. The time derivative approximation is
+Our goal is to find a recurrence relation that will allow us to calculate the value of temperature iteratively at each time index. In order to find this recurrence relation we use approximations for the derivatives. The time derivative approximation is
 \[
   T_t(x, t) \approx \frac{T(x, t + \Delta t) - T(x, t)}{\Delta t},
 \]
@@ -82,7 +82,7 @@ Next, on \code{Line 81} use the initial condition from \autoref{eq_initial_condi
 
 Similarly, on \code{Line 77} and \code{78} we use the boundary conditions (\autoref{eq_boundary_conditions}) by assigning zero temperatures to the ends of the rod. This is done by assigning zero for all time indexes in the \code{data} array corresponding to first (1) and last (\code{nx}) x-index.
 
-Finally, on \code{Lines 88-91} we iterate over time indexes (\code{n}) and use the recurrence relation from \autoref{eq_recurrence_relation_heat_eq} to assign the temperature value for the next time index (\code{n + 1}) using the temperatures that were calculated for the previous step for the time index (\code{n}).
+Finally, on \code{Lines 88-91} we iterate over time indexes (\code{n}) and use the recurrence relation from \autoref{eq_recurrence_relation_heat_eq} to assign the temperature value for the next time index (\code{n + 1}) using the temperatures that were calculated for the previous index of time (\code{n}).
 
 On \code{Lines 89-90} are using a so-called ``vectorized'' indexing syntax for the x-coordinate, such as \code{2:nx-1}. This allows the program to use SIMD processor instructions that perform multiple operations in one cycle. These instructions take advantage of the fact that x-values are located contiguously in memory (Fortran arrays are column-major, meaning the values from the first index of an array are stored one after another in memory). This index notation will make out calculation multiple times faster (this speed increase depends on type of SIMD instructions implemented in a specific processor) compared to an alternative implementation where we would iterate over the $x$ values using a loop.
 
@@ -117,9 +117,9 @@ We can see from \autoref{fix_errors_nx_5_alpha_0_1} that the errors are increasi
 \end{figure}
 
 
-\subsubsection*{Solution for $21$ position steps}
+\subsubsection*{Solution for $21$ position values}
 
-Next, we use larger amount of position steps, $nx = 21$ (we are counting both edges of the rod) and $\alpha = 0.25$. The solution is shown on \autoref{fix_solution_nx_20_alpha_0_2_5}. We have calculated the solution for $300$ time steps ($nt = 300$).
+Next, we use larger amount of position values, $nx = 21$ (we are counting both edges of the rod, so there are $20$ time steps) and $\alpha = 0.25$. The solution is shown on \autoref{fix_solution_nx_20_alpha_0_2_5}. We have calculated the solution for $300$ time values ($nt = 300$).
 \begin{figure}[H]
   \centering
   \includegraphics[width=1.0\textwidth]{figures/solution_2_50e_01.pdf}
@@ -138,7 +138,7 @@ We can see similar distribution of errors as before. This time, however, the pea
 
 \subsection{Solution for $\alpha=0.65$}
 
-Here we want to see how values of $\alpha$ parameter affect the solution. Specifically, we use $\alpha = 0.65$ while keeping the same number of position steps ($nx=21$). The solution is shown on \autoref{fix_solution_nx_20_alpha_0_6_5}.
+Here we want to see how values of $\alpha$ parameter affect the solution. Specifically, we use $\alpha = 0.65$ while keeping the same number of position values ($nx=21$). The solution is shown on \autoref{fix_solution_nx_20_alpha_0_6_5}.
 \begin{figure}[H]
   \centering
   \includegraphics[width=1.0\textwidth]{figures/solution_6_50e_01.pdf}
@@ -147,7 +147,7 @@ Here we want to see how values of $\alpha$ parameter affect the solution. Specif
 \end{figure}
 We can see form \autoref{fix_solution_nx_20_alpha_0_6_5} that initially, the program produces results similar to the previous case with $\alpha=0.25$. However, after about $t \approx 5500 \ s$, the $\alpha=0.65$ solution shows large fluctuations in temperature. These result are unrealistic, since the rood cools down with time, and it can not heat up in random locations without an external supply of energy.
 
-These problems in our numerical solution are likely to come from unbounded growth of rounding errors. A more detailed stability analysis using Von Neumann method is needed to show that the forward-difference method of solving \autoref{eq_heat_equation} is unstable for $\alpha > 0.5$. This condition limits our choice of the position steps: we can not make $\Delta x$ as small as we like for same values of $\Delta t$. Fortunately, there are alternative methods of solving \autoref{eq_heat_equation}, such as backward-difference and Crank-Nicolson methods, that are always stable for any choice of $\Delta x$ and $\Delta t$.
+These problems in our numerical solution are likely to come from unbounded growth of rounding errors. A more detailed stability analysis using Von Neumann method is needed to show that the forward-difference method of solving \autoref{eq_heat_equation} is unstable for $\alpha > 0.5$. This condition limits our choice of the size of the position steps: we can not make $\Delta x$ as small as we like for same values of $\Delta t$. Fortunately, there are alternative methods of solving \autoref{eq_heat_equation}, such as backward-difference and Crank-Nicolson methods, that are always stable for any choice of $\Delta x$ and $\Delta t$.
 
 
 

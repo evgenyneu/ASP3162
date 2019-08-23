@@ -57,6 +57,7 @@ subroutine solve_heat_equation(options, data, errors, x_points, t_points)
     integer :: nx, nt, n
 
     k = options%k
+    print *, k
     l = 1._dp
     x0 = 0._dp
     x1 = x0 + l
