@@ -6,13 +6,10 @@ from solve_pde import solve_pde
 from mpl_toolkits.mplot3d import Axes3D
 
 
-def plot_solution(plot_dir):
+def plot_solution(plot_dir, nx, alpha, k, nt):
     create_dir(plot_dir)
 
-    nx = 21
-    alpha = 0.25
-    k = 2.28e-5
-    result = solve_pde(nx=nx, nt=300, alpha=alpha, k=k)
+    result = solve_pde(nx=nx, nt=nt, alpha=alpha, k=k)
 
     if result is None:
         return
@@ -60,4 +57,4 @@ def plot_solution(plot_dir):
 
 
 if __name__ == '__main__':
-    plot_solution(plot_dir="plots")
+    plot_solution(plot_dir="plots", nx=21, alpha=0.25, k=2.28e-5, nt=300)
