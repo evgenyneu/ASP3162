@@ -57,7 +57,7 @@ end subroutine
 ! Inputs:
 ! --------
 !
-! v : value of independent variable
+! v : value of the independent variable
 !
 ! x, t : value of parameters
 !
@@ -73,28 +73,27 @@ function my_function(v, x, t) result(result)
 end function
 
 !
-! Calculate the value of the derivative f'(x) of the function
+! Calculate the value of the derivative f' of the function
+! with respect to v
 !
-!   f(x) = cos(x) - x,
-!
-! where
-!
-!   f'(x) = -sin(x) - 1
+!   f = cos(x - v * t) - v,
 !
 ! Inputs:
 ! --------
 !
-! x : value of independent variable
+! v : value of the independent variable
+!
+! x, t : value of parameters
 !
 ! Outputs:
 ! -------
 !
-! Returns: the value of function f'(x)
+! Returns: the value of function f'
 !
-function my_function_derivative(x) result(result)
-    real(dp), intent(in) :: x
+function my_function_derivative(v, x, t) result(result)
+    real(dp), intent(in) :: v, x, t
     real(dp) :: result
-    result = -sin(x) - 1
+    result = t * sin(x - v * t) - 1
 end function
 
 !
