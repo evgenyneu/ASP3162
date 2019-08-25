@@ -52,6 +52,8 @@ SOURCE_FILES = 	types.f90 \
 							command_line_args_test.f90 \
 							settings.f90 \
 							settings_test.f90 \
+							newton_raphson.f90 \
+							newton_raphson_test.f90 \
 							heat_equation.f90 \
 							heat_equation_test.f90 \
 							main.f90 \
