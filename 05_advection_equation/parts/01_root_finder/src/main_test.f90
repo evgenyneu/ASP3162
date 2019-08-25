@@ -3,7 +3,6 @@ program MainTest
     use StringTest, only: string_test_all
     use SettingsTest, only: settings_test_all
     use FloatUtilsTest, only: float_utils_test_all
-    use HeatEquationTest, only: heat_equation_test_all
     use FileUtilsTest, only: file_utils_test_all
     implicit none
 
@@ -14,7 +13,6 @@ program MainTest
     call settings_test_all(failures)
 
     call float_utils_test_all(failures)
-    call heat_equation_test_all(failures)
     call file_utils_test_all(failures)
 
     if (failures == 0) then

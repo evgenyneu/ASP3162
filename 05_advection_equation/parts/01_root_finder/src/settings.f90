@@ -22,28 +22,33 @@ type, public :: program_settings
     ! solution data
     character(len=4096) :: output_path
 
-    ! Path to the errors file that will be filled with
-    ! the errors data
-    character(len=4096) :: errors_path
 
-    ! The number of x point in the grid
+    ! The smallest x value
+    real(dp) :: x_start
+
+    ! The largest x value
+    real(dp) :: x_end
+
+    ! The number of x points in the grid
     integer :: nx
+
+    ! The smallest t value
+    real(dp) :: t_end
 
     ! The number of time points in the grid
     integer :: nt
 
-    ! The alpha parameter of the numerical solution
-    ! of the heat equation
-    !
-    ! alpha = k dt / dx^2
-    !
-    ! Values greater than 0.5 produce numerically unstable solutions
-    ! for forward differencing method.
-    !
-    real(dp) :: alpha
+    ! The size of the time step
+    real(dp) :: dt
 
-    ! Thermal diffusivity of the rod in m^2 s^{-1} units
-    real(dp) :: k
+    ! The starting value for v for the root finding algorithm.
+    real(dp) :: root_finder_v_start
+
+    ! Convergence tolerance for Newton-Raphson method.
+    real(dp) :: root_finder_tolerance
+
+    ! The maximum number of iterations of the Newton-Raphson method.
+    integer :: root_finder_max_iterations
 end type program_settings
 
 ! Help message to be shown
@@ -160,121 +165,121 @@ subroutine read_from_parsed_command_line(parsed, settings, error_message)
     integer :: unrecognized_count
     character(len=ARGUMENT_MAX_LENGTH) :: valid_args(4)
 
-    error_message = ""
+    ! error_message = ""
 
-    ! help
-    ! --------------
+    ! ! help
+    ! ! --------------
 
-    if (has_flag(name='help', parsed=parsed) .or. &
-        has_flag(name='h', parsed=parsed)) then
+    ! if (has_flag(name='help', parsed=parsed) .or. &
+    !     has_flag(name='h', parsed=parsed)) then
 
-        error_message = HELP_MESSAGE
-        return
-    end if
+    !     error_message = HELP_MESSAGE
+    !     return
+    ! end if
 
-    ! Check unrecognized parameters
-    ! ----------
+    ! ! Check unrecognized parameters
+    ! ! ----------
 
-    valid_args(1) = "nx"
-    valid_args(2) = "nt"
-    valid_args(3) = "alpha"
-    valid_args(4) = "k"
+    ! valid_args(1) = "nx"
+    ! valid_args(2) = "nt"
+    ! valid_args(3) = "alpha"
+    ! valid_args(4) = "k"
 
-    call unrecognized_named_args(valid=valid_args, parsed=parsed, &
-        unrecognized=unrecognized, count=unrecognized_count)
+    ! call unrecognized_named_args(valid=valid_args, parsed=parsed, &
+    !     unrecognized=unrecognized, count=unrecognized_count)
 
-    if (unrecognized_count > 0) then
-        write(error_message, '(a, a, a)') &
-            "ERROR: Unrecognized parameter '", &
-            trim(unrecognized(1)), &
-            "'. Run with --help for help."
-        return
-    end if
+    ! if (unrecognized_count > 0) then
+    !     write(error_message, '(a, a, a)') &
+    !         "ERROR: Unrecognized parameter '", &
+    !         trim(unrecognized(1)), &
+    !         "'. Run with --help for help."
+    !     return
+    ! end if
 
-    ! OUTPUT
-    ! --------------
+    ! ! OUTPUT
+    ! ! --------------
 
-    if (parsed%positional_count /= 2) then
-        error_message = "ERROR: OUTPUT and ERRORS parameters are missing."&
-            //NEW_LINE('h')//" &
-            &Run with --help for help."
-        return
-    end if
+    ! if (parsed%positional_count /= 2) then
+    !     error_message = "ERROR: OUTPUT and ERRORS parameters are missing."&
+    !         //NEW_LINE('h')//" &
+    !         &Run with --help for help."
+    !     return
+    ! end if
 
-    call get_positional_value(index=1, parsed=parsed, &
-                              value=settings%output_path, &
-                              success=success)
+    ! call get_positional_value(index=1, parsed=parsed, &
+    !                           value=settings%output_path, &
+    !                           success=success)
 
-    if (.not. success) then
-        error_message = "ERROR: OUTPUT parameter is missing."//NEW_LINE('h')//"&
-                        &Run with --help for help."
-        return
-    end if
+    ! if (.not. success) then
+    !     error_message = "ERROR: OUTPUT parameter is missing."//NEW_LINE('h')//"&
+    !                     &Run with --help for help."
+    !     return
+    ! end if
 
-    ! ERRORS
-    ! --------------
+    ! ! ERRORS
+    ! ! --------------
 
-    call get_positional_value(index=2, parsed=parsed, &
-                              value=settings%errors_path, &
-                              success=success)
+    ! call get_positional_value(index=2, parsed=parsed, &
+    !                           value=settings%errors_path, &
+    !                           success=success)
 
-    if (.not. success) then
-        error_message = "ERROR: ERRORS parameter is missing."//NEW_LINE('h')//"&
-                        &Run with --help for help."
-        return
-    end if
+    ! if (.not. success) then
+    !     error_message = "ERROR: ERRORS parameter is missing."//NEW_LINE('h')//"&
+    !                     &Run with --help for help."
+    !     return
+    ! end if
 
-    ! nx
-    ! --------------
+    ! ! nx
+    ! ! --------------
 
-    call get_named_value_or_default(name='nx', parsed=parsed, &
-                                    default=DEFAULT_NX, &
-                                    value=settings%nx, success=success)
+    ! call get_named_value_or_default(name='nx', parsed=parsed, &
+    !                                 default=DEFAULT_NX, &
+    !                                 value=settings%nx, success=success)
 
-    if (.not. success) then
-        error_message = "ERROR: nx is not a number."//NEW_LINE('h')//"&
-                        &Run with --help for help."
-        return
-    end if
+    ! if (.not. success) then
+    !     error_message = "ERROR: nx is not a number."//NEW_LINE('h')//"&
+    !                     &Run with --help for help."
+    !     return
+    ! end if
 
-    ! nt
-    ! --------------
+    ! ! nt
+    ! ! --------------
 
-    call get_named_value_or_default(name='nt', parsed=parsed, &
-                                    default=DEFAULT_NT, &
-                                    value=settings%nt, success=success)
+    ! call get_named_value_or_default(name='nt', parsed=parsed, &
+    !                                 default=DEFAULT_NT, &
+    !                                 value=settings%nt, success=success)
 
-    if (.not. success) then
-        error_message = "ERROR: nt is not a number."//NEW_LINE('h')//"&
-                        &Run with --help for help."
-        return
-    end if
+    ! if (.not. success) then
+    !     error_message = "ERROR: nt is not a number."//NEW_LINE('h')//"&
+    !                     &Run with --help for help."
+    !     return
+    ! end if
 
-    ! alpha
-    ! --------------
+    ! ! alpha
+    ! ! --------------
 
-    call get_named_value_or_default(name='alpha', parsed=parsed, &
-                                    default=DEFAULT_ALPHA, &
-                                    value=settings%alpha, success=success)
+    ! call get_named_value_or_default(name='alpha', parsed=parsed, &
+    !                                 default=DEFAULT_ALPHA, &
+    !                                 value=settings%alpha, success=success)
 
-    if (.not. success) then
-        error_message = "ERROR: alpha is not a number."//NEW_LINE('h')//"&
-                        &Run with --help for help."
-        return
-    end if
+    ! if (.not. success) then
+    !     error_message = "ERROR: alpha is not a number."//NEW_LINE('h')//"&
+    !                     &Run with --help for help."
+    !     return
+    ! end if
 
-    ! k
-    ! --------------
+    ! ! k
+    ! ! --------------
 
-    call get_named_value_or_default(name='k', parsed=parsed, &
-                                    default=DEFAULT_K, &
-                                    value=settings%k, success=success)
+    ! call get_named_value_or_default(name='k', parsed=parsed, &
+    !                                 default=DEFAULT_K, &
+    !                                 value=settings%k, success=success)
 
-    if (.not. success) then
-        error_message = "ERROR: k is not a number."//NEW_LINE('h')//"&
-                        &Run with --help for help."
-        return
-    end if
+    ! if (.not. success) then
+    !     error_message = "ERROR: k is not a number."//NEW_LINE('h')//"&
+    !                     &Run with --help for help."
+    !     return
+    ! end if
 
 end subroutine
 
