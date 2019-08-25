@@ -86,9 +86,12 @@ subroutine solve_heat_equation(options, data, errors, x_points, t_points)
 
     ! Calculate numerical solution using forward differencing method
     do n = 1, nt - 1
-        data(2 : nx - 1, n + 1) = data(2 : nx - 1, n) + &
-            alpha * (data(3 : nx, n) - 2 * data(2 : nx - 1, n) + &
-            data(1 : nx - 2, n))
+        data(2 : nx - 1, n + 1) = data(2 : nx - 1, n) &
+            + alpha * ( &
+                data(3 : nx, n) &
+                - 2 * data(2 : nx - 1, n) &
+                + data(1 : nx - 2, n) &
+            )
     end do
 
     ! Calculate exact solution

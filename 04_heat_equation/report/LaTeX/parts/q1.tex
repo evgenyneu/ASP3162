@@ -53,7 +53,7 @@ Finally, we solve for $T_j^{n + 1}$ and find the recurrence relation that we wan
 
 \subsection{Writing the code}
 
-Next, we write Fortran code to solve the heat equation (\autoref{eq_heat_equation}). The code is shown in shown in \autoref{code_solve_heat_equation}.
+Next, we write Fortran code to solve the heat equation (\autoref{eq_heat_equation}). The code is shown in \autoref{code_solve_heat_equation}.
 
 
 \noindent\begin{minipage}{\linewidth}
@@ -70,9 +70,12 @@ data(nx, :) = 0
 
 ! Calculate numerical solution using forward differencing method
 do n = 1, nt - 1
-    data(2 : nx - 1, n + 1) = data(2 : nx - 1, n) + &
-        alpha * (data(3 : nx, n) - 2 * data(2 : nx - 1, n) + &
-        data(1 : nx - 2, n))
+    data(2 : nx - 1, n + 1) = data(2 : nx - 1, n) &
+        + alpha * ( &
+            data(3 : nx, n) &
+            - 2 * data(2 : nx - 1, n) &
+            + data(1 : nx - 2, n) &
+        )
 end do
 \end{lstlisting}
 \end{minipage}
@@ -83,9 +86,9 @@ Next, on \code{Line 81} use the initial condition from \autoref{eq_initial_condi
 
 Similarly, on \code{Line 77} and \code{78} we use the boundary conditions (\autoref{eq_boundary_conditions}) by assigning zero temperatures to the ends of the rod. This is done by assigning zero for all time indexes in the \code{data} array corresponding to first (1) and last (\code{nx}) x-index.
 
-Finally, on \code{Lines 88-92} we iterate over time indexes (\code{n}) and use the recurrence relation from \autoref{eq_recurrence_relation_heat_eq} to assign the temperature value for the next time index (\code{n + 1}) using the temperatures that were calculated for the previous index of time (\code{n}).
+Finally, on \code{Lines 88-95} we iterate over time indexes (\code{n}) and use the recurrence relation from \autoref{eq_recurrence_relation_heat_eq} to assign the temperature value for the next time index (\code{n + 1}) using the temperatures that were calculated for the previous index of time (\code{n}).
 
-On \code{Lines 89-90} are using a so-called ``vectorized'' indexing syntax for the x-coordinate, such as \code{2:nx-1}. This allows the program to use SIMD processor instructions that perform multiple operations in one cycle. These instructions take advantage of the fact that x-values are located contiguously in memory (Fortran arrays are column-major, meaning the values from the first index of an array are stored one after another in memory). This index notation will make out calculation multiple times faster (this speed increase depends on type of SIMD instructions implemented in a specific processor) compared to an alternative implementation where we would iterate over the $x$ values using a loop.
+On \code{Lines 89-94} are using a so-called ``vectorized'' indexing syntax for the x-coordinate, such as \code{2:nx-1}. This allows the program to use SIMD processor instructions that perform multiple operations in one cycle. These instructions take advantage of the fact that x-values are located contiguously in memory (Fortran arrays are column-major, meaning the values from the first index of an array are stored one after another in memory). This index notation will make out calculation multiple times faster (this speed increase depends on type of SIMD instructions implemented in a specific processor) compared to an alternative implementation where we would iterate over the $x$ values using a loop.
 
 
 \subsection{Running the program and making plots}
@@ -109,7 +112,7 @@ The corresponding errors are shown on \autoref{fix_errors_nx_5_alpha_0_1}. The e
 \[
   T(x,t) = 100 e^{- \pi^2 k t / L^2} \sin(\pi x / L).
 \]
-We can see from \autoref{fix_errors_nx_5_alpha_0_1} that the errors are increasing with time, and that the errors are larger near the center of the rod. We can see that the errors reach peak values of about $0.6 K$ at $t \approx 3000 \ s$.
+We can see from \autoref{fix_errors_nx_5_alpha_0_1} that the errors are first increasing with time, reaching peak values of about $0.8 \ K$ at $t \approx 3000 \ s$, and then start to decrease. The data show that the errors are larger near the center of the rod.
 \begin{figure}[H]
   \centering
   \includegraphics[width=1.0\textwidth]{figures/{nx_5_alpha_0.10_errors}.pdf}
@@ -134,12 +137,12 @@ The general shape of the solution is not unlike the one we found for $nx=5$. We 
   \caption{The errors of the approximate solution to the heat equation for $nx=21$ and $\alpha = 0.25$.}
   \label{fix_errors_nx_20_alpha_0_2_5}
 \end{figure}
-We can see similar distribution of errors as before. This time, however, the peak values of errors are about $20$ times smaller, reaching maximum values of about $0.03 \ K$.
+We can see similar distribution of errors as before. This time, however, the peak values of errors are about $20$ times smaller, reaching maximum values of about $0.04 \ K$.
 
 
 \subsection{Solution for $\alpha > 0.5$}
 
-Here we want to see how values of $\alpha$ parameter larger than $0.5$ affect the solution. Specifically, we use $\alpha=0.562$, while keeping the same time step $dt=27.4 \ s$ that we used for $nx = 21$. In order to keep $dt$ we increase the number of position values from $nx=21$ to $nx=31$. This increase means that position step sizes decreased from $dx = 0.05 \ m$ to $dx = 0.033 \ m$. The solution is shown on \autoref{fix_solution_nx_20_alpha_0_6_5}.
+Here we want to see how values of $\alpha$ parameter larger than $0.5$ affect the solution. Specifically, we use $\alpha=0.562$, while keeping the same time step $\Delta t=27.4 \ s$ that we used for $nx = 21$. In order to keep $\Delta t$ unchanged we have to increase the number of position values from $nx=21$ to $nx=31$. Consequently, position step size decreases from $\Delta x = 0.05 \ m$ to $\Delta x \approx 0.033 \ m$. The solution is shown on \autoref{fix_solution_nx_20_alpha_0_6_5}.
 \begin{figure}[H]
   \centering
   \includegraphics[width=1.0\textwidth]{figures/{nx_31_alpha_0.56_solution}.pdf}
