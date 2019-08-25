@@ -58,7 +58,7 @@ contains
 !
 ! success : .true. if algorithm converged to a solution.
 !
-! Returns: approximation of the root of equation f(x) = 0.
+! Returns: approximation of the root of equation f = 0.
 !
 function approximate_root(v_start, func, derivative, &
                           x, t, tolerance, &

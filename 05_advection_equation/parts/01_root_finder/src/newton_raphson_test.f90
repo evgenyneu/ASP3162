@@ -62,26 +62,28 @@ subroutine find_root_test(failures)
                        __LINE__, failures)
 end
 
-! subroutine find_root_test_did_not_converge(failures)
-!     integer, intent(inout) :: failures
-!     real(dp) :: result
-!     logical :: success
+subroutine find_root_test_did_not_converge(failures)
+    integer, intent(inout) :: failures
+    real(dp) :: result
+    logical :: success
 
-!     result = approximate_root(x_start=10000._dp, &
-!                               func=my_function, &
-!                               derivative=my_function_derivative, &
-!                               tolerance=1e-5_dp, &
-!                               max_iterations = 20, &
-!                               success=success)
+    result = approximate_root(v_start=0.5_dp, &
+                              func=my_function, &
+                              derivative=my_function_derivative, &
+                              x = 0.2_dp, &
+                              t = 1._dp, &
+                              tolerance=1e-5_dp, &
+                              max_iterations = 2, &
+                              success=success)
 
-!     call assert_true(.not. success, __FILE__, __LINE__, failures)
-! end
+    call assert_true(.not. success, __FILE__, __LINE__, failures)
+end
 
 subroutine newton_raphson_test_all(failures)
     integer, intent(inout) :: failures
 
     call find_root_test(failures)
-    ! call find_root_test_did_not_converge(failures)
+    call find_root_test_did_not_converge(failures)
 end
 
 end module NewtonRaphsonTest
