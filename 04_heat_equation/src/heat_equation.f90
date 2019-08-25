@@ -57,7 +57,6 @@ subroutine solve_heat_equation(options, data, errors, x_points, t_points)
     integer :: nx, nt, n
 
     k = options%k
-    print *, k
     l = 1._dp
     x0 = 0._dp
     x1 = x0 + l
@@ -79,7 +78,7 @@ subroutine solve_heat_equation(options, data, errors, x_points, t_points)
     call linspace(x0, x1, x_points)
 
     ! Set initial conditions
-    data(:, 1) = 100._dp * sin(pi * x_points / l)
+    data(:, 1) = 100 * sin(pi * x_points / l)
 
     ! Set boundary conditions
     data(1, :) = 0
@@ -87,8 +86,9 @@ subroutine solve_heat_equation(options, data, errors, x_points, t_points)
 
     ! Calculate numerical solution using forward differencing method
     do n = 1, nt - 1
-        data(2:nx-1, n + 1) = data(2:nx-1, n) + &
-                alpha * (data(3:nx, n) - 2 * data(2:nx-1, n) + data(1:nx-2, n))
+        data(2 : nx - 1, n + 1) = data(2 : nx - 1, n) + &
+            alpha * (data(3 : nx, n) - 2 * data(2 : nx - 1, n) + &
+            data(1 : nx - 2, n))
     end do
 
     ! Calculate exact solution

@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 import os
 from plot_utils import create_dir
 from solve_pde import solve_pde
+import numpy as np
 from mpl_toolkits.mplot3d import Axes3D
 
 
@@ -93,8 +94,13 @@ def plot_solution(plot_dir, nx, nt, alpha, k):
 
     data = result["errors"]
 
+    # Calculate max error
+    errors = data["temperatures"]
+    max_error = np.max(errors)
+
     title = ("Errors of the solution to the heat equation\n"
-             f"nx={nx}, $\\alpha$={alpha:.2f}, dx={dx:.3f} m, dt={dt:.2f} s")
+             f"nx={nx}, $\\alpha$={alpha:.2f}, dx={dx:.3f} m, dt={dt:.2f} s\n"
+             f"Max error: {max_error:.3f} K")
 
     plot_file_name = f"nx_{nx}_alpha_{alpha:.2f}_errors.pdf"
 
