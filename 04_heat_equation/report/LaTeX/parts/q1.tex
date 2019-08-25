@@ -136,16 +136,22 @@ The general shape of the solution is not unlike the one we found for $nx=5$. We 
 We can see similar distribution of errors as before. This time, however, the peak values of errors are about $20$ times smaller, reaching maximum values of about $0.03 \ K$.
 
 
-\subsection{Solution for $\alpha=0.65$}
+\subsection{Solution for $\alpha > 0.5$}
 
-Here we want to see how values of $\alpha$ parameter affect the solution. Specifically, we use $\alpha = 0.65$ while keeping the same number of position values ($nx=21$). The solution is shown on \autoref{fix_solution_nx_20_alpha_0_6_5}.
+Here we want to see how values of $\alpha$ parameter larger than $0.5$ affect the solution. Specifically, we use $\alpha=0.562$, while keeping the same time step $dt=27.4 \ s$ that we used for $nx = 21$. In order to keep $dt$ we increase the number of position values from $nx=21$ to $nx=31$. This increase means that position step sizes decreased from $dx = 0.05 \ m$ to $dx = 0.033 \ m$. The solution is shown on \autoref{fix_solution_nx_20_alpha_0_6_5}.
 \begin{figure}[H]
   \centering
-  \includegraphics[width=1.0\textwidth]{figures/solution_6_50e_01.pdf}
-  \caption{Approximate solution to the heat equation for $nx=21$ and $\alpha = 0.65$, showing signs of numerical instability from $t \approx 5500 \ s$.}
+  \includegraphics[width=1.0\textwidth]{figures/{nx_31_alpha_0.56_solution}.pdf}
+  \caption{Approximate solution to the heat equation for $nx=31$ and $\alpha = 0.562$, showing signs of numerical instability from $t \approx 4800 \ s$.}
   \label{fix_solution_nx_20_alpha_0_6_5}
 \end{figure}
-We can see form \autoref{fix_solution_nx_20_alpha_0_6_5} that initially, the program produces results similar to the previous case with $\alpha=0.25$. However, after about $t \approx 5500 \ s$, the $\alpha=0.65$ solution shows large fluctuations in temperature. These result are unrealistic, since the rood cools down with time, and it can not heat up in random locations without an external supply of energy.
+We can see form \autoref{fix_solution_nx_20_alpha_0_6_5} that initially, the program produces results similar to the previous case with $\alpha=0.25$. However, after about $t \approx 4800 \ s$, the $\alpha=0.562$ solution shows large fluctuations in temperature. These result are unrealistic, since the rood cools down with time, and it can not heat up in random locations without an external supply of energy. Errors of the $\alpha=0.562$ solution are shown on \autoref{fix_errrors_nx_31}. We can see that errors grow up to about $70 \ K$ at $t \approx 4800 \ s$, which confirms that there are issues with our solution.
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=1.0\textwidth]{figures/{nx_31_alpha_0.56_errors}.pdf}
+  \caption{Errors of solution to the heat equation for $nx=31$ and $\alpha = 0.562$.}
+  \label{fix_errrors_nx_31}
+\end{figure}
 
 These problems in our numerical solution are likely to come from unbounded growth of rounding errors. A more detailed stability analysis using Von Neumann method is needed to show that the forward-difference method of solving \autoref{eq_heat_equation} is unstable for $\alpha > 0.5$. This condition limits our choice of the size of the position steps: we can not make $\Delta x$ as small as we like for same values of $\Delta t$. Fortunately, there are alternative methods of solving \autoref{eq_heat_equation}, such as backward-difference and Crank-Nicolson methods, that are always stable for any choice of $\Delta x$ and $\Delta t$.
 

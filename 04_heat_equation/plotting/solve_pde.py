@@ -19,8 +19,8 @@ def solve_pde(nx, nt, alpha, k):
         Number of time points
 
     alpha : float
-        Alpha parameter of the forward differencing method that solves the heat equation.
-        Values larger than 0.5 reusult in instable solution.
+        Alpha parameter of the forward differencing method that solves the heat
+        equation. Values larger than 0.5 reusult in instable solution.
 
     k : float
         Thermal difusivity of the metal rod.
@@ -28,7 +28,7 @@ def solve_pde(nx, nt, alpha, k):
     Returns
     -------
         dict
-            solution and its errors.
+            Solution and its errors.
     """
 
     create_dir("tmp")

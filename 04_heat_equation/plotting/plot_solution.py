@@ -7,6 +7,24 @@ from mpl_toolkits.mplot3d import Axes3D
 
 
 def make_plot(data, title, plot_dir, plot_file_name):
+    """
+    Makes a surface 3D plot of the temperatures and saves it to a file.
+
+    Parameters
+    ----------
+    data : dict
+        Contains x, t values and temperatures for plotting.
+
+    title : str
+        Title of the plot
+
+    plot_dir : str
+        Directory where the plot file is saved
+
+    plot_file_name : str
+        Plot file name
+    """
+
     x_values = data["x_values"]
     t_values = data["t_values"]
     temperatures = data["temperatures"]
@@ -21,13 +39,30 @@ def make_plot(data, title, plot_dir, plot_file_name):
     ax.view_init(30, 45)
     plt.tight_layout()
     pdf_file = os.path.join(plot_dir, plot_file_name)
-    # pdf_file = pdf_file.replace(".", "_")
-    # pdf_file = f"{pdf_file}.pdf"
     plt.savefig(pdf_file)
     plt.show()
 
 
-def plot_solution(plot_dir, nx, alpha, k, nt):
+def plot_solution(plot_dir, nx, nt, alpha, k):
+    """
+    Calculates solution to the heat equation, plots the solution and the errors
+
+    Parameters
+    ----------
+    nx : int
+        Number of x points in the grid, including the points on the edges
+
+    nt : int
+        Number of t points in the grid
+
+    alpha : float
+        The alpha parameter of the numerical solution of the heat equation.
+        Values larger than 0.5 results in unstable solutions.
+
+    k : float
+        Thermal diffusivity of the rod in m^2 s^{-1}
+    """
+
     create_dir(plot_dir)
 
     result = solve_pde(nx=nx, nt=nt, alpha=alpha, k=k)
@@ -35,22 +70,36 @@ def plot_solution(plot_dir, nx, alpha, k, nt):
     if result is None:
         return
 
+    # Calculate the steps
+
     dx = 1. / (nx - 1)
     dt = alpha * dx**2 / k
 
+    # Plot solution
+    # -------------
+
     data = result["data"]
 
-    title = f"Solution of heat equation\ndx={dx:.2e} m, dt={dt:.2e} s, $\\alpha$={alpha:.2e}"
+    title = ("Solution of heat equation\n"
+             f"nx={nx}, $\\alpha$={alpha:.2f}, dx={dx:.3f} m, dt={dt:.2f} s")
+
     plot_file_name = f"nx_{nx}_alpha_{alpha:.2f}_solution.pdf"
-    make_plot(data=data, title=title, plot_dir=plot_dir, plot_file_name=plot_file_name)
+
+    make_plot(data=data, title=title, plot_dir=plot_dir,
+              plot_file_name=plot_file_name)
 
     # Plot errors
     # -------------
 
     data = result["errors"]
-    title = f"Errors of the solution to the heat equation\ndx={dx:.2e} m, dt={dt:.2e} s, $\\alpha$={alpha:.2e}"
+
+    title = ("Errors of the solution to the heat equation\n"
+             f"nx={nx}, $\\alpha$={alpha:.2f}, dx={dx:.3f} m, dt={dt:.2f} s")
+
     plot_file_name = f"nx_{nx}_alpha_{alpha:.2f}_errors.pdf"
-    make_plot(data=data, title=title, plot_dir=plot_dir, plot_file_name=plot_file_name)
+
+    make_plot(data=data, title=title, plot_dir=plot_dir,
+              plot_file_name=plot_file_name)
 
 
 if __name__ == '__main__':
