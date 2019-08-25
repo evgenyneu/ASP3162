@@ -90,7 +90,8 @@ Usage:
 
 
     --nx=NUMBER : number of x points in the grid,
-                  Default: 20.
+                  including the points on the edges.
+                  Default: 21.
 
     --nt=NUMBER : number of t points in the grid,
                   Default: 300.
