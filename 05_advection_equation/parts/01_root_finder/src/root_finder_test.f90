@@ -53,23 +53,23 @@ subroutine my_function_derivative_test(failures)
 end
 
 
-! ! find_root
-! ! -----------
+! find_root
+! -----------
 
-! subroutine find_root_test(failures)
-!     integer, intent(inout) :: failures
-!     real(dp) :: result
-!     logical :: success
-!     type(program_settings) :: options
+subroutine find_root_test(failures)
+    integer, intent(inout) :: failures
+    real(dp) :: result
+    logical :: success
+    type(program_settings) :: options
 
-!     options%x_start = -2._dp
-!     options%tolerance = 1e-5_dp
-!     options%max_iterations = 20
+    options%root_finder_v_start = 0.5_dp
+    options%root_finder_tolerance = 1e-5_dp
+    options%root_finder_max_iterations = 20
 
-!     result = find_root(options=options, success=success)
+    result = find_root(options=options, x=0._dp, t=0._dp, success=success)
 
-!     call assert_approx(result, 0.739085_dp, 1e-5_dp, __FILE__, __LINE__, failures)
-! end
+    call assert_approx(result, 0.739085_dp, 1e-5_dp, __FILE__, __LINE__, failures)
+end
 
 
 subroutine root_finder_test_all(failures)
@@ -77,7 +77,7 @@ subroutine root_finder_test_all(failures)
 
     call my_function_test(failures)
     call my_function_derivative_test(failures)
-    ! call find_root_test(failures)
+    call find_root_test(failures)
     ! call do_it_test(failures)
 end
 

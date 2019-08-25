@@ -31,21 +31,21 @@ subroutine do_it(silent)
     logical :: success
     real(dp) :: root
 
-    call read_from_command_line(silent=silent, settings=settings, success=success)
+    ! call read_from_command_line(silent=silent, settings=settings, success=success)
 
-    if (.not. success) then
-        if (.not. silent) call exit(41)
-        return
-    end if
+    ! if (.not. success) then
+    !     if (.not. silent) call exit(41)
+    !     return
+    ! end if
 
-    root = find_root(options=settings, success=success)
+    ! root = find_root(options=settings, success=success)
 
-    if (.not. success) then
-        write (0, *) "Could not find root"
-        call exit(40)
-    end if
+    ! if (.not. success) then
+    !     write (0, *) "Could not find root"
+    !     call exit(40)
+    ! end if
 
-    print *, root
+    ! print *, root
 end subroutine
 
 
@@ -114,17 +114,20 @@ end function
 !
 ! Returns: root of equation cos(x) - x = 0
 !
-function find_root(options, success) result(result)
+function find_root(options, x, t, success) result(result)
+    real(dp), intent(in) :: x, t
     type(program_settings), intent(in) :: options
     logical, intent(out) :: success
     real(dp) :: result
 
-    ! result = approximate_root(x_start = options%x_start, &
-    !                           func = my_function, &
-    !                           derivative = my_function_derivative, &
-    !                           tolerance = options%tolerance, &
-    !                           max_iterations = options%max_iterations, &
-    !                           success = success)
+    ! result = approximate_root(v_start = options%root_finder_v_start, &
+    !             func = my_function, &
+    !             derivative = my_function_derivative, &
+    !             x = x, &
+    !             t = t, &
+    !             tolerance = options%root_finder_tolerance, &
+    !             max_iterations = options%root_finder_max_iterations, &
+    !             success = success)
 end function
 
 end module RootFinder
