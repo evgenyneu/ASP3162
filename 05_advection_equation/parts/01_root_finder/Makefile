@@ -54,6 +54,8 @@ SOURCE_FILES = 	types.f90 \
 							settings_test.f90 \
 							newton_raphson.f90 \
 							newton_raphson_test.f90 \
+							root_finder.f90 \
+							root_finder_test.f90 \
 							main.f90 \
 							main_test.f90
 

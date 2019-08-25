@@ -118,12 +118,12 @@ function find_root(options, success) result(result)
     logical, intent(out) :: success
     real(dp) :: result
 
-    result = approximate_root(x_start = options%x_start, &
-                              func = my_function, &
-                              derivative = my_function_derivative, &
-                              tolerance = options%tolerance, &
-                              max_iterations = options%max_iterations, &
-                              success = success)
+    ! result = approximate_root(x_start = options%x_start, &
+    !                           func = my_function, &
+    !                           derivative = my_function_derivative, &
+    !                           tolerance = options%tolerance, &
+    !                           max_iterations = options%max_iterations, &
+    !                           success = success)
 end function
 
 end module RootFinder
