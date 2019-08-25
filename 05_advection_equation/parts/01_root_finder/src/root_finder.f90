@@ -52,22 +52,24 @@ end subroutine
 !
 ! Calculate the value of function
 !
-!   f(x) = cos(x) - x
+!   f(v, x, t) = cos(x - v * t) - v,
 !
 ! Inputs:
 ! --------
 !
-! x : value of independent variable
+! v : value of independent variable
+!
+! x, t : value of parameters
 !
 ! Outputs:
 ! -------
 !
-! Returns: the value of function f(x)
+! Returns: the value of function f
 !
-function my_function(x) result(result)
-    real(dp), intent(in) :: x
+function my_function(v, x, t) result(result)
+    real(dp), intent(in) :: v, x, t
     real(dp) :: result
-    result = cos(x) - x
+    result = cos(x - v * t) - v
 end function
 
 !

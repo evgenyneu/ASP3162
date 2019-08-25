@@ -21,17 +21,20 @@ contains
 ! end
 
 
-! ! my_function
-! ! -----------
+! my_function
+! -----------
 
-! subroutine my_function_test(failures)
-!     integer, intent(inout) :: failures
-!     real(dp) :: result
+subroutine my_function_test(failures)
+    integer, intent(inout) :: failures
+    real(dp) :: result
 
-!     result = my_function(1.23_dp)
+    result = my_function(v=0.5_dp, x=0._dp, t=0._dp)
+    call assert_approx(result, 0.5_dp, 1e-5_dp, __FILE__, __LINE__, failures)
 
-!     call assert_approx(result, -0.895762_dp, 1e-5_dp, __FILE__, __LINE__, failures)
-! end
+    result = my_function(v=0.5_dp, x=-0.2_dp, t=0.2_dp)
+    call assert_approx(result, 0.4553364_dp, 1e-5_dp, __FILE__, &
+                       __LINE__, failures)
+end
 
 
 ! ! my_function_derivative
@@ -69,7 +72,7 @@ contains
 subroutine root_finder_test_all(failures)
     integer, intent(inout) :: failures
 
-    ! call my_function_test(failures)
+    call my_function_test(failures)
     ! call my_function_derivative_test(failures)
     ! call find_root_test(failures)
     ! call do_it_test(failures)

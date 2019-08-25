@@ -4,6 +4,7 @@ program MainTest
     use SettingsTest, only: settings_test_all
     use FloatUtilsTest, only: float_utils_test_all
     use FileUtilsTest, only: file_utils_test_all
+    use RootFinderTest, only: root_finder_test_all
     implicit none
 
     integer :: failures = 0
@@ -14,6 +15,7 @@ program MainTest
 
     call float_utils_test_all(failures)
     call file_utils_test_all(failures)
+    call root_finder_test_all(failures)
 
     if (failures == 0) then
         print *, NEW_LINE('h')//'Tests finished successfully'
