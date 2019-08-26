@@ -136,6 +136,19 @@ subroutine find_many_roots_test(failures)
 
     call assert_approx(t_points(8), 1.4_dp, 1e-5_dp, &
                        __FILE__, __LINE__, failures)
+
+
+    ! Verify solution
+    ! --------------
+
+    call assert_approx(solution(1, 1), 0.796326e-3_dp, 1e-5_dp, &
+                       __FILE__, __LINE__, failures)
+
+    call assert_approx(solution(50, 1), 0.9998742_dp, 1e-5_dp, &
+                       __FILE__, __LINE__, failures)
+
+    call assert_approx(solution(100, 8), -0.9802040_dp, 1e-5_dp, &
+                       __FILE__, __LINE__, failures)
 end
 
 
