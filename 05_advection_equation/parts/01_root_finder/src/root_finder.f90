@@ -1,15 +1,19 @@
 !
-! Finds a single root of equation
+! Finds roots of equation
 !
-!   cos(x) - x = 0
+!   cos(x - v * t) - v = 0
+!
+! for a range of values of parameters x and t
 !
 module RootFinder
 use Types, only: dp
 use Settings, only: program_settings, read_from_command_line
 use NewtonRaphson, only: approximate_root
+use FloatUtils, only: linspace
 implicit none
 private
-public :: do_it, find_root, my_function, my_function_derivative
+public :: find_roots_and_print_output, find_root, &
+          my_function, my_function_derivative, find_many_roots
 
 contains
 
@@ -18,14 +22,14 @@ contains
 !
 !   * Read program settings from command line arguments.
 !
-!   * Find the root and display output.
+!   * Find the roots and prints output to a file
 !
 ! Outputs:
 ! -------
 !
 ! silent : do not show any output when .true. (used in unit tests)
 !
-subroutine do_it(silent)
+subroutine find_roots_and_print_output(silent)
     logical, intent(in) :: silent
     type(program_settings) :: settings
     logical :: success
@@ -52,7 +56,7 @@ end subroutine
 !
 ! Calculate the value of function
 !
-!   f(v, x, t) = cos(x - v * t) - v,
+!   f = cos(x - v * t) - v,
 !
 ! Inputs:
 ! --------
@@ -134,5 +138,60 @@ function find_root(options, x, t, success) result(result)
                 max_iterations = options%root_finder_max_iterations, &
                 success = success)
 end function
+
+!
+! Find multiple roots of equation
+!
+!   cos(x - v * t) - v = 0
+!
+! for a range of parameters x and t.
+!
+! Inputs:
+! --------
+!
+! options : settings used for finding the roots.
+!
+!
+! Outputs:
+! -------
+!
+! solution : 2D array containing the solution (values of v)
+!            first coordinate is x, second is t.
+!
+! x_points : A 1D array containing the values of x
+!
+! t_points : A 1D array containing the values of t
+!
+! success : .true. if algorithm converged to a solution for all values of
+!           x and t
+!
+subroutine find_many_roots(options, solution, x_points, t_points, success)
+    type(program_settings), intent(in) :: options
+    real(dp), allocatable, intent(out) :: solution(:,:)
+    real(dp), allocatable, intent(out) :: x_points(:), t_points(:)
+    logical, intent(out) :: success
+    integer :: nx, nt
+
+    nx = options%nx
+    nt = options%nt
+
+    ! Allocate the arrays
+    allocate(solution(nx, nt))
+    allocate(x_points(nx))
+    allocate(t_points(nt))
+
+    print *, 'frog'
+
+    ! result = approximate_root( &
+    !             v_start = options%root_finder_v_start, &
+    !             func = my_function, &
+    !             derivative = my_function_derivative, &
+    !             x = x, &
+    !             t = t, &
+    !             tolerance = options%root_finder_tolerance, &
+    !             max_iterations = options%root_finder_max_iterations, &
+    !             success = success)
+end subroutine
+
 
 end module RootFinder

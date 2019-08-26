@@ -33,13 +33,13 @@ type, public :: program_settings
     integer :: nx
 
     ! The smallest t value
-    real(dp) :: t_end
-
-    ! The number of time points in the grid
-    integer :: nt
+    real(dp) :: t_start
 
     ! The size of the time step
     real(dp) :: dt
+
+    ! The number of time points in the grid
+    integer :: nt
 
     ! The starting value for v for the root finding algorithm.
     real(dp) :: root_finder_v_start
