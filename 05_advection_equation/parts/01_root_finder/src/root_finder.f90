@@ -99,12 +99,16 @@ end function
 !
 ! Calculate a single root of equation
 !
-!   cos(x) - x = 0
+!   cos(x - v * t) - v = 0
+!
+! for given values of parameters x and t.
 !
 ! Inputs:
 ! --------
 !
-! settings : settings used for finding the roots.
+! options : settings used for finding the roots.
+!
+! x, t : value of parameters
 !
 !
 ! Outputs:
@@ -112,7 +116,7 @@ end function
 !
 ! success : .true. if algorithm converged to a solution.
 !
-! Returns: root of equation cos(x) - x = 0
+! Returns: root of equation cos(x - v * t) - v = 0
 !
 function find_root(options, x, t, success) result(result)
     real(dp), intent(in) :: x, t
@@ -120,14 +124,15 @@ function find_root(options, x, t, success) result(result)
     logical, intent(out) :: success
     real(dp) :: result
 
-    ! result = approximate_root(v_start = options%root_finder_v_start, &
-    !             func = my_function, &
-    !             derivative = my_function_derivative, &
-    !             x = x, &
-    !             t = t, &
-    !             tolerance = options%root_finder_tolerance, &
-    !             max_iterations = options%root_finder_max_iterations, &
-    !             success = success)
+    result = approximate_root( &
+                v_start = options%root_finder_v_start, &
+                func = my_function, &
+                derivative = my_function_derivative, &
+                x = x, &
+                t = t, &
+                tolerance = options%root_finder_tolerance, &
+                max_iterations = options%root_finder_max_iterations, &
+                success = success)
 end function
 
 end module RootFinder
