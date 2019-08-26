@@ -151,6 +151,28 @@ end subroutine
 
 
 !
+! Make an error message shown to the user
+!
+! Inputs:
+! --------
+!
+! text: message to be shown
+!
+!
+! Outputs:
+! -------
+!
+! message : the full message shown to user.
+!
+subroutine make_message(text, message)
+    character(len=*), intent(in) :: text
+    character(len=*), intent(out) :: message
+
+     write(message, '(a, a, a, a, a)') "ERROR: ", text, ".", NEW_LINE('h'), &
+        "Run with --help for help."
+end subroutine
+
+!
 ! Reads settings from parsed command line arguments.
 !
 ! Inputs:
@@ -210,21 +232,18 @@ subroutine read_from_parsed_command_line(parsed, settings, error_message)
     ! --------------
 
     if (parsed%positional_count /= 1) then
-        error_message = "ERROR: OUTPUT and ERRORS parameters are missing."&
-            //NEW_LINE('h')//" &
-            &Run with --help for help."
+        call make_message("OUTPUT parameter is missing", error_message)
         return
     end if
 
-    ! call get_positional_value(index=1, parsed=parsed, &
-    !                           value=settings%output_path, &
-    !                           success=success)
+    call get_positional_value(index=1, parsed=parsed, &
+                              value=settings%output_path, &
+                              success=success)
 
-    ! if (.not. success) then
-    !     error_message = "ERROR: OUTPUT parameter is missing."//NEW_LINE('h')//"&
-    !                     &Run with --help for help."
-    !     return
-    ! end if
+    if (.not. success) then
+        call make_message("OUTPUT parameter is missing", error_message)
+        return
+    end if
 
     ! ! ERRORS
     ! ! --------------
