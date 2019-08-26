@@ -73,6 +73,7 @@ subroutine find_root_test(failures)
 
     result = find_root(options=options, x=1._dp, t=0.2_dp, success=success)
 
+    call assert_true(success, __FILE__, __LINE__, failures)
     call assert_approx(result, 0.6438924_dp, 1e-5_dp, __FILE__, __LINE__, failures)
 end
 
@@ -87,6 +88,7 @@ subroutine find_many_roots_test(failures)
     type(program_settings) :: options
     real(dp), allocatable :: solution(:,:)
     real(dp), allocatable :: x_points(:), t_points(:)
+    real(dp) :: error_x, error_t
 
     options%x_start = -1.57_dp
     options%x_end = 1.57_dp
@@ -97,13 +99,43 @@ subroutine find_many_roots_test(failures)
 
     options%root_finder_v_start = 0.5_dp
     options%root_finder_tolerance = 1e-5_dp
-    options%root_finder_max_iterations = 20
+    options%root_finder_max_iterations = 300
 
     call find_many_roots(options=options, solution=solution, &
-                             x_points=x_points, t_points=t_points, &
-                             success=success)
+                         x_points=x_points, t_points=t_points, &
+                         success=success, error_x=error_x, error_t=error_t)
 
-    ! call assert_approx(result, 0.6438924_dp, 1e-5_dp, __FILE__, __LINE__, failures)
+    call assert_true(success, __FILE__, __LINE__, failures)
+
+    ! Verify x_points
+    ! --------------
+
+    call assert_approx(x_points(1), -1.57_dp, 1e-5_dp, &
+                       __FILE__, __LINE__, failures)
+
+    call assert_approx(x_points(2), -1.5382828_dp, 1e-5_dp, &
+                       __FILE__, __LINE__, failures)
+
+    call assert_approx(x_points(99), 1.5382828_dp, 1e-5_dp, &
+                       __FILE__, __LINE__, failures)
+
+    call assert_approx(x_points(100), 1.57_dp, 1e-5_dp, &
+                       __FILE__, __LINE__, failures)
+
+    ! Verify t_points
+    ! --------------
+
+    call assert_approx(t_points(1), 0._dp, 1e-5_dp, &
+                       __FILE__, __LINE__, failures)
+
+    call assert_approx(t_points(2), 0.2_dp, 1e-5_dp, &
+                       __FILE__, __LINE__, failures)
+
+    call assert_approx(t_points(7), 1.2_dp, 1e-5_dp, &
+                       __FILE__, __LINE__, failures)
+
+    call assert_approx(t_points(8), 1.4_dp, 1e-5_dp, &
+                       __FILE__, __LINE__, failures)
 end
 
 

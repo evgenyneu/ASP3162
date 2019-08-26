@@ -165,10 +165,15 @@ end function
 ! success : .true. if algorithm converged to a solution for all values of
 !           x and t
 !
-subroutine find_many_roots(options, solution, x_points, t_points, success)
+! error_x, error_t : Values of x and t for which the program
+!                    could not find a root
+!
+subroutine find_many_roots(options, solution, x_points, t_points, &
+                           success, error_x, error_t)
     type(program_settings), intent(in) :: options
     real(dp), allocatable, intent(out) :: solution(:,:)
     real(dp), allocatable, intent(out) :: x_points(:), t_points(:)
+    real(dp), intent(out) :: error_x, error_t
     logical, intent(out) :: success
     integer :: nx, nt, ix, it
     real(dp) :: x_start, x_end, t_start, t_end, dx, dt, root
@@ -188,7 +193,7 @@ subroutine find_many_roots(options, solution, x_points, t_points, success)
     allocate(t_points(nt))
 
     ! Assign evenly spaced x and t values
-    call linspace(t_start, x_end, x_points)
+    call linspace(x_start, x_end, x_points)
     call linspace(t_start, t_end, t_points)
 
     ! Calculate step sizes
@@ -202,7 +207,13 @@ subroutine find_many_roots(options, solution, x_points, t_points, success)
             t = t_start + (it - 1) * dt
 
             root = find_root(options=options, x=x, t=t, success=success)
-            if (.not. success) return
+
+            if (.not. success) then
+                ! Could not find root: return the problematic x and t
+                error_x = x
+                error_t = t
+                return
+            end if
 
             solution(ix, it) = root
         end do
