@@ -35,8 +35,8 @@ type, public :: program_settings
     ! The smallest t value
     real(dp) :: t_start
 
-    ! The size of the time step
-    real(dp) :: dt
+     ! The largest t value
+    real(dp) :: t_end
 
     ! The number of time points in the grid
     integer :: nt

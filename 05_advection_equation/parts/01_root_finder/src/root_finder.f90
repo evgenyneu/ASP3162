@@ -170,27 +170,43 @@ subroutine find_many_roots(options, solution, x_points, t_points, success)
     real(dp), allocatable, intent(out) :: solution(:,:)
     real(dp), allocatable, intent(out) :: x_points(:), t_points(:)
     logical, intent(out) :: success
-    integer :: nx, nt
+    integer :: nx, nt, ix, it
+    real(dp) :: x_start, x_end, t_start, t_end, dx, dt, root
+    real(dp) :: x, t
 
+    ! Assign shortcuts variables from settings
     nx = options%nx
     nt = options%nt
+    x_start = options%x_start
+    x_end = options%x_end
+    t_start = options%t_start
+    t_end = options%t_end
 
     ! Allocate the arrays
     allocate(solution(nx, nt))
     allocate(x_points(nx))
     allocate(t_points(nt))
 
-    print *, 'frog'
+    ! Assign evenly spaced x and t values
+    call linspace(t_start, x_end, x_points)
+    call linspace(t_start, t_end, t_points)
 
-    ! result = approximate_root( &
-    !             v_start = options%root_finder_v_start, &
-    !             func = my_function, &
-    !             derivative = my_function_derivative, &
-    !             x = x, &
-    !             t = t, &
-    !             tolerance = options%root_finder_tolerance, &
-    !             max_iterations = options%root_finder_max_iterations, &
-    !             success = success)
+    ! Calculate step sizes
+    dx = (x_end - x_start) / (nx - 1)
+    dt = (t_end - t_start) / (nt - 1)
+
+    ! Calculate solutions for all values of x and t
+    do it = 1, nt
+        do ix = 1, nx
+            x = x_start + (ix - 1) * dx
+            t = t_start + (it - 1) * dt
+
+            root = find_root(options=options, x=x, t=t, success=success)
+            if (.not. success) return
+
+            solution(ix, it) = root
+        end do
+    end do
 end subroutine
 
 

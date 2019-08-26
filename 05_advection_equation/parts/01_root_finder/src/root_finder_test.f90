@@ -92,8 +92,8 @@ subroutine find_many_roots_test(failures)
     options%x_end = 1.57_dp
     options%nx = 100
     options%t_start = 0._dp
-    options%dt = 0.2_dp
-    options%nt = 9
+    options%t_end = 1.4_dp
+    options%nt = 8
 
     options%root_finder_v_start = 0.5_dp
     options%root_finder_tolerance = 1e-5_dp
