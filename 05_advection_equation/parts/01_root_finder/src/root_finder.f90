@@ -13,45 +13,10 @@ use FloatUtils, only: linspace
 implicit none
 private
 public :: find_roots_and_print_output, find_root, &
-          my_function, my_function_derivative, find_many_roots
+          my_function, my_function_derivative, find_many_roots, &
+          print_output
 
 contains
-
-!
-! The main function of the program that does all the work:
-!
-!   * Read program settings from command line arguments.
-!
-!   * Find the roots and prints output to a file
-!
-! Outputs:
-! -------
-!
-! silent : do not show any output when .true. (used in unit tests)
-!
-subroutine find_roots_and_print_output(silent)
-    logical, intent(in) :: silent
-    type(program_settings) :: settings
-    logical :: success
-    real(dp) :: root
-
-    ! call read_from_command_line(silent=silent, settings=settings, success=success)
-
-    ! if (.not. success) then
-    !     if (.not. silent) call exit(41)
-    !     return
-    ! end if
-
-    ! root = find_root(options=settings, success=success)
-
-    ! if (.not. success) then
-    !     write (0, *) "Could not find root"
-    !     call exit(40)
-    ! end if
-
-    ! print *, root
-end subroutine
-
 
 !
 ! Calculate the value of function
@@ -219,6 +184,92 @@ subroutine find_many_roots(options, solution, x_points, t_points, &
         end do
     end do
 end subroutine
+
+
+!
+! Prints solution to a binary data file
+!
+! Inputs:
+! --------
+!
+! filename : Name of the data file to print output to
+!
+! solution : 2D array containing the solution (values of v)
+!            first coordinate is x, second is t.
+!
+! x_points : A 1D array containing the values of x
+!
+! t_points : A 1D array containing the values of t
+!
+subroutine print_output(filename, solution, x_points, t_points)
+    character(len=*), intent(in) :: filename
+    real(dp), intent(in) :: solution(:, :)
+    real(dp), intent(in) :: x_points(:), t_points(:)
+
+    integer, parameter :: out_unit=20
+
+    open(unit=out_unit, file=filename, form="unformatted", action="write", &
+        status="replace")
+
+    write(out_unit) size(x_points)
+    write(out_unit) size(t_points)
+    write(out_unit) x_points
+    write(out_unit) t_points
+    write(out_unit) solution
+
+    close(unit=out_unit)
+end subroutine
+
+
+!
+! The main function of the program that does all the work:
+!
+!   * Read program settings from command line arguments.
+!
+!   * Find the roots and prints output to a file
+!
+! Outputs:
+! -------
+!
+! silent : do not show any output when .true. (used in unit tests)
+!
+subroutine find_roots_and_print_output(silent)
+    logical, intent(in) :: silent
+    type(program_settings) :: settings
+    logical :: success
+    real(dp) :: root
+    real(dp), allocatable :: solution(:,:)
+    real(dp), allocatable :: x_points(:), t_points(:)
+    real(dp) :: error_x, error_t
+
+    ! call read_from_command_line(silent=silent, settings=settings, &
+    !                             success=success)
+
+    ! if (.not. success) then
+    !     if (.not. silent) call exit(41)
+    !     return
+    ! end if
+
+    ! call find_many_roots(options=settings, solution=solution, &
+    !                      x_points=x_points, t_points=t_points, &
+    !                      success=success, error_x=error_x, error_t=error_t)
+
+    ! if (.not. success) then
+    !     if (.not. silent) then
+    !         print "(a, ES24.17, a, ES24.17)", 'Error finding root for x=', &
+    !             error_x, ' t=', error_t
+    !     end if
+    !     return
+    ! end if
+
+    ! call print_output(filename=settings%output_path, &
+    !                   solution=solution, x_points=x_points, t_points=t_points)
+
+    ! if (.not. silent) then
+    !     print "(a, a)", "Solution save to '", settings%output_path, "'"
+    ! end if
+end subroutine
+
 
 
 end module RootFinder
