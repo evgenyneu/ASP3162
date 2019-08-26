@@ -29,6 +29,15 @@ function file_exists(filename) result(res)
   inquire(file=trim(filename), exist=res)
 end function
 
+
+!
+! Delete a file.
+!
+! Inputs:
+! -------
+!
+! filename : Path to a file.
+!
 subroutine delete_file(filename)
     character(len=*), intent(in) :: filename
     integer :: stat
