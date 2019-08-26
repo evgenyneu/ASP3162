@@ -13,30 +13,28 @@ contains
 ! read_from_parsed_command_line
 ! ----------------
 
-! subroutine read_from_parsed_command_line_test__no_args(failures)
-!     integer, intent(inout) :: failures
-!     type(parsed_args) :: parsed
-!     type(program_settings) :: settings
-!     character(len=1024) :: error_message
+subroutine read_from_parsed_command_line_test__no_args(failures)
+    integer, intent(inout) :: failures
+    type(parsed_args) :: parsed
+    type(program_settings) :: settings
+    character(len=1024) :: error_message
 
-!     call allocate_parsed(size=2, parsed=parsed)
+    call allocate_parsed(size=2, parsed=parsed)
 
-!     parsed%positional_count = 2
-!     parsed%positional(1) = "data.txt"
-!     parsed%positional(2) = "errors.txt"
+    parsed%positional_count = 2
+    parsed%positional(1) = "data.data"
+    parsed%named_count = 0
 
-!     parsed%named_count = 0
+    call read_from_parsed_command_line(parsed=parsed, settings=settings, error_message=error_message)
 
-!     call read_from_parsed_command_line(parsed=parsed, settings=settings, error_message=error_message)
-
-!     call assert_true(string_is_empty(error_message), __FILE__, __LINE__, failures)
-!     call assert_equal(settings%output_path, "data.txt", __FILE__, __LINE__, failures)
-!     call assert_equal(settings%errors_path, "errors.txt", __FILE__, __LINE__, failures)
-!     call assert_equal(settings%nx, 21, __FILE__, __LINE__, failures)
-!     call assert_equal(settings%nt, 300, __FILE__, __LINE__, failures)
-!     call assert_approx(settings%alpha, 0.25_dp, 1e-5_dp, __FILE__, __LINE__, failures)
-!     call assert_approx(settings%k, 2.28e-5_dp, 1e-5_dp, __FILE__, __LINE__, failures)
-! end
+    call assert_true(string_is_empty(error_message), __FILE__, __LINE__, failures)
+    call assert_equal(settings%output_path, "data.txt", __FILE__, __LINE__, failures)
+    ! call assert_equal(settings%errors_path, "errors.txt", __FILE__, __LINE__, failures)
+    ! call assert_equal(settings%nx, 21, __FILE__, __LINE__, failures)
+    ! call assert_equal(settings%nt, 300, __FILE__, __LINE__, failures)
+    ! call assert_approx(settings%alpha, 0.25_dp, 1e-5_dp, __FILE__, __LINE__, failures)
+    ! call assert_approx(settings%k, 2.28e-5_dp, 1e-5_dp, __FILE__, __LINE__, failures)
+end
 
 ! subroutine read_from_parsed_command_line_test__named(failures)
 !     integer, intent(inout) :: failures
@@ -114,7 +112,7 @@ contains
 subroutine settings_test_all(failures)
     integer, intent(inout) :: failures
 
-    ! call read_from_parsed_command_line_test__no_args(failures)
+    call read_from_parsed_command_line_test__no_args(failures)
     ! call read_from_parsed_command_line_test__named(failures)
 
     ! call show_help_test(failures)

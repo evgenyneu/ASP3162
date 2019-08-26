@@ -53,43 +53,53 @@ end type program_settings
 
 ! Help message to be shown
 character(len=1024), parameter :: HELP_MESSAGE = NEW_LINE('h')//"&
-    &This program solves the heat equation"//NEW_LINE('h')//"&
+    &This program solves equation"//NEW_LINE('h')//"&
     &"//NEW_LINE('h')//"&
-    &  dT/dt = k d^2T/dx^2"//NEW_LINE('h')//"&
+    &  cos(x - v * t) - v = 0"//NEW_LINE('h')//"&
     &"//NEW_LINE('h')//"&
-    &with initial condition"//NEW_LINE('h')//"&
-    &  T(x,0) = 100 sin(pi x / L)"//NEW_LINE('h')//"&
-    &and boundary conditions"//NEW_LINE('h')//"&
-    &   T(0,t) = T(L,t) = 0,"//NEW_LINE('h')//"&
-    & where L = 1 m."//NEW_LINE('h')//"&
+    &for different values of x and t"//NEW_LINE('h')//"&
     &"//NEW_LINE('h')//"&
     &"//NEW_LINE('h')//"&
     &Usage:&
     &"//NEW_LINE('h')//"&
     &"//NEW_LINE('h')//"&
-    & ./build/main OUTPUT ERRORS [--nx=20] [--nt=300] &
-    &[--alpha=0.2] [--k=2.28e-5]"//NEW_LINE('h')//"&
+    & ./build/main OUTPUT [--x_start=-1.5] [--x_end=1.5] &
+    &[--nx=100] [--t_start=0] [--t_end=1.4] &
+    &[--nt=8] [--v_start=0.5] [--v_start=0.5] &
+    &[--tolerance=1.0e-5] [--max_iterations=1000]"//NEW_LINE('h')//"&
     &"//NEW_LINE('h')//"&
     &    OUTPUT : path to the output data file"//NEW_LINE('h')//"&
     &"//NEW_LINE('h')//"&
     &"//NEW_LINE('h')//"&
-    &    ERRORS : path to the output errors file"//NEW_LINE('h')//"&
+    &    --x_start=NUMBER : the smallest x value,"//NEW_LINE('h')//"&
+    &                  Default: -1.5."//NEW_LINE('h')//"&
     &"//NEW_LINE('h')//"&
+    &    --x_end=NUMBER : the largest x value,"//NEW_LINE('h')//"&
+    &                  Default: 1.5."//NEW_LINE('h')//"&
     &"//NEW_LINE('h')//"&
     &    --nx=NUMBER : number of x points in the grid,"//NEW_LINE('h')//"&
-    &                  including the points on the edges."//NEW_LINE('h')//"&
-    &                  Default: 21."//NEW_LINE('h')//"&
+    &                  Default: 100."//NEW_LINE('h')//"&
+    &"//NEW_LINE('h')//"&
+    &    --t_start=NUMBER : the smallest t value,"//NEW_LINE('h')//"&
+    &                  Default: 0."//NEW_LINE('h')//"&
+    &"//NEW_LINE('h')//"&
+    &    --t_end=NUMBER : the largest t value,"//NEW_LINE('h')//"&
+    &                  Default: 1.4."//NEW_LINE('h')//"&
     &"//NEW_LINE('h')//"&
     &    --nt=NUMBER : number of t points in the grid,"//NEW_LINE('h')//"&
-    &                  Default: 300."//NEW_LINE('h')//"&
+    &                  Default: 8."//NEW_LINE('h')//"&
     &"//NEW_LINE('h')//"&
-    &    --alpha=NUMBER : The alpha parameter of the numerical"//NEW_LINE('h')//"&
-    &     solution of the heat equation. Values larger than"//NEW_LINE('h')//"&
-    &     0.5 results in unstable solutions. Default: 0.25."//NEW_LINE('h')//"&
+    &    --v_start=NUMBER : The starting value for v for the root finding &
+    &algorithm.,"//NEW_LINE('h')//"&
+    &                  Default: 0.5."//NEW_LINE('h')//"&
     &"//NEW_LINE('h')//"&
-    &    --k=NUMBER : Thermal diffusivity of the rod in m^2 s^{-1}&
-    & units."//NEW_LINE('h')//"&
-    &                 Default: 2.28e-5."//NEW_LINE('h')//"&
+    &    --tolerance=NUMBER : tolerance for Newton-Raphson &
+    &method.,"//NEW_LINE('h')//"&
+    &                  Default: 1e-5."//NEW_LINE('h')//"&
+    &"//NEW_LINE('h')//"&
+    &    --max_iterations=NUMBER : maximum number of &
+    &iterations for Newton-Raphson method"//NEW_LINE('h')//"&
+    &                  Default: 1000."//NEW_LINE('h')//"&
     &"//NEW_LINE('h')//"&
     &    --help  : show this message."//NEW_LINE('h')
 
@@ -165,17 +175,17 @@ subroutine read_from_parsed_command_line(parsed, settings, error_message)
     integer :: unrecognized_count
     character(len=ARGUMENT_MAX_LENGTH) :: valid_args(4)
 
-    ! error_message = ""
+    error_message = ""
 
-    ! ! help
-    ! ! --------------
+    ! help
+    ! --------------
 
-    ! if (has_flag(name='help', parsed=parsed) .or. &
-    !     has_flag(name='h', parsed=parsed)) then
+    if (has_flag(name='help', parsed=parsed) .or. &
+        has_flag(name='h', parsed=parsed)) then
 
-    !     error_message = HELP_MESSAGE
-    !     return
-    ! end if
+        error_message = HELP_MESSAGE
+        return
+    end if
 
     ! ! Check unrecognized parameters
     ! ! ----------
@@ -196,15 +206,15 @@ subroutine read_from_parsed_command_line(parsed, settings, error_message)
     !     return
     ! end if
 
-    ! ! OUTPUT
-    ! ! --------------
+    ! OUTPUT
+    ! --------------
 
-    ! if (parsed%positional_count /= 2) then
-    !     error_message = "ERROR: OUTPUT and ERRORS parameters are missing."&
-    !         //NEW_LINE('h')//" &
-    !         &Run with --help for help."
-    !     return
-    ! end if
+    if (parsed%positional_count /= 1) then
+        error_message = "ERROR: OUTPUT and ERRORS parameters are missing."&
+            //NEW_LINE('h')//" &
+            &Run with --help for help."
+        return
+    end if
 
     ! call get_positional_value(index=1, parsed=parsed, &
     !                           value=settings%output_path, &
