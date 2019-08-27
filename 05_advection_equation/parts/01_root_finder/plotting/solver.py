@@ -8,7 +8,7 @@ import array
 
 def read_solution_from_file(path_to_data):
     """
-    Read solution from the binary file.
+    Read solution from a binary file.
 
     Parameters
     ----------
@@ -18,9 +18,11 @@ def read_solution_from_file(path_to_data):
     The data format
     -----------
 
+    Here is how data is saved in the binary file:
+
     [x]
     [
-        Number of x values, nx
+        nx: number of x values
         Size: 4 bytes
         Type: signed int
     ]
@@ -28,7 +30,7 @@ def read_solution_from_file(path_to_data):
 
     [x]
     [
-        Number of t values, tx
+        tx: number of t values
         Size: 4 bytes
         Type: Signed int
     ]
@@ -36,7 +38,7 @@ def read_solution_from_file(path_to_data):
 
     [x]
     [
-        x values
+        x_values
         Size: nx * 8 bytes
         Type: Array of double floats. Length nx.
     ]
@@ -44,7 +46,7 @@ def read_solution_from_file(path_to_data):
 
     [x]
     [
-        t values
+        t_values
         Size: tx * 8 bytes
         Type: Array of double floats. Length: tx.
     ]
@@ -52,19 +54,27 @@ def read_solution_from_file(path_to_data):
 
     [x]
     [
-        2D array containing solution, which are velocity values
-        for x and t coordinates: solution[x, t]. The data is
-        save in Fortran column-major format: the x-index in incremented first.
+        solution: 2D array containing solution, which are velocity values
+        for x and t coordinates.
 
         Size: nx * tx 8 bytes
         Type: 2D array of double floats. Length: nx * tx.
     ]
     [x]
 
+    Notes:
 
-    Here [x] means 4-byte separator. This is added by Fortran write's function.
-    This separator is put before and after the data block, and its value is the length in bytes
-    of this block.
+    * Here [x] means 4-byte separator. This is added by Fortran's `write`
+    function. This separator is written before and after a data block,
+    and its value is the length in bytes of this block.
+
+    * `solution` is a 2D array saved as a sequence of double precision
+    float numbers in the column-major order. For example, for nx=3, nt=2,
+    the data will be saved as:
+
+        [1, 1] [2, 1] [3, 1] [1, 2] [2, 2] [3, 2],
+
+    where first index is x and second index is t.
     """
 
     data = open(path_to_data, "rb").read()
@@ -142,6 +152,7 @@ def solve_equation():
         print(message)
         return None
 
+    read_solution_from_file(path_to_data)
 
     os.remove(path_to_data)
     os.rmdir("tmp")
