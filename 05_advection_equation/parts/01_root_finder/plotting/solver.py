@@ -1,6 +1,7 @@
 # Solve a heat equation
 import subprocess
 from plot_utils import create_dir
+import numpy as np
 import os
 import struct
 import array
@@ -15,10 +16,18 @@ def read_solution_from_file(path_to_data):
     path_to_data : str
         Path to the binary file containing solution data.
 
+
+    Returns
+    -------
+        (x, y, z) tuple
+            x, y, and z values of the solution,
+            where x and y and 1D arrays, and z is a 2D array.
+
+
     The data format
     -----------
 
-    Here is how data is saved in the binary file:
+    Here is how data is stored in the binary file:
 
     [x]
     [
@@ -30,7 +39,7 @@ def read_solution_from_file(path_to_data):
 
     [x]
     [
-        tx: number of t values
+        nt: number of t values
         Size: 4 bytes
         Type: Signed int
     ]
@@ -38,7 +47,7 @@ def read_solution_from_file(path_to_data):
 
     [x]
     [
-        x_values
+        x_values: array of x values
         Size: nx * 8 bytes
         Type: Array of double floats. Length nx.
     ]
@@ -46,23 +55,24 @@ def read_solution_from_file(path_to_data):
 
     [x]
     [
-        t_values
-        Size: tx * 8 bytes
+        t_values: array of t values
+        Size: nt * 8 bytes
         Type: Array of double floats. Length: tx.
     ]
     [x]
 
     [x]
     [
-        solution: 2D array containing solution, which are velocity values
+        solution: a 2D array containing solution. These are velocity values
         for x and t coordinates.
 
-        Size: nx * tx 8 bytes
-        Type: 2D array of double floats. Length: nx * tx.
+        Size: nx * nt * 8 bytes
+        Type: 2D array of double floats. Length: nx * nt.
     ]
     [x]
 
-    Notes:
+    Notes
+    ------
 
     * Here [x] means 4-byte separator. This is added by Fortran's `write`
     function. This separator is written before and after a data block,
@@ -79,18 +89,19 @@ def read_solution_from_file(path_to_data):
 
     data = open(path_to_data, "rb").read()
 
-    # Read nx and nt
+    # nx: number of x points
     # ----------
 
     start = 0
     end = 4*3
     (_, nx, _) = struct.unpack("@iii", data[start: end])
 
+    # nt: number of t points
+    # ----------
+
     start = end
     end = start + 4*3
     (_, nt, _) = struct.unpack("@iii", data[start: end])
-    print(nx)
-    print(nt)
 
     # x values
     # ---------
@@ -99,25 +110,25 @@ def read_solution_from_file(path_to_data):
     end = start + nx * 8
     x_values = array.array("d")
     x_values.frombytes(data[start:end])
-    print(x_values)
 
-    # x values
+    # t values
     # ---------
 
     start = end + 8
     end = start + nt * 8
     t_values = array.array("d")
     t_values.frombytes(data[start:end])
-    print(t_values)
 
-    # Solution (2D array)
+    # Solution: 2D array
     # ---------
 
     start = end + 8
     end = start + nx * nt * 8
     solution = array.array("d")
     solution.frombytes(data[start:end])
-    print(solution)
+    solution = np.reshape(solution, (nx, nt))
+
+    return (x_values, t_values, solution)
 
 
 def solve_equation():
@@ -126,14 +137,18 @@ def solve_equation():
 
         cos(x - v * t) - v = 0
 
+    and returns the solution.
+
     Returns
     -------
-        dict
-            Solution
+        (x, y, z) tuple
+            x, y, and z values of the solution,
+            where x and y and 1D arrays, and z is a 2D array.
     """
 
-    create_dir("tmp")
-    path_to_data = "tmp/data.bin"
+    subdir = "tmp"
+    create_dir(subdir)
+    path_to_data = os.path.join(subdir, "data.bin")
 
     parameters = [
         f'../build/main {path_to_data}'
@@ -152,9 +167,9 @@ def solve_equation():
         print(message)
         return None
 
-    read_solution_from_file(path_to_data)
+    x, y, z = read_solution_from_file(path_to_data)
 
     os.remove(path_to_data)
-    os.rmdir("tmp")
+    os.rmdir(subdir)
 
-    # return True
+    return (x, y, z)
