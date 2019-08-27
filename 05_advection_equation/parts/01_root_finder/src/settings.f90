@@ -202,7 +202,7 @@ subroutine read_from_parsed_command_line(parsed, settings, error_message)
     logical :: success
     character(len=ARGUMENT_MAX_LENGTH), allocatable :: unrecognized(:)
     integer :: unrecognized_count
-    character(len=ARGUMENT_MAX_LENGTH) :: valid_args(4)
+    character(len=ARGUMENT_MAX_LENGTH) :: valid_args(11)
 
     error_message = ""
 
@@ -216,24 +216,31 @@ subroutine read_from_parsed_command_line(parsed, settings, error_message)
         return
     end if
 
-    ! ! Check unrecognized parameters
-    ! ! ----------
+    ! Check unrecognized parameters
+    ! ----------
 
-    ! valid_args(1) = "nx"
-    ! valid_args(2) = "nt"
-    ! valid_args(3) = "alpha"
-    ! valid_args(4) = "k"
+    valid_args(1) = "x_start"
+    valid_args(2) = "x_end"
+    valid_args(3) = "nx"
+    valid_args(4) = "t_start"
+    valid_args(5) = "t_end"
+    valid_args(6) = "nt"
+    valid_args(7) = "v_start"
+    valid_args(8) = "tolerance"
+    valid_args(9) = "max_iterations"
+    valid_args(10) = "h"
+    valid_args(11) = "help"
 
-    ! call unrecognized_named_args(valid=valid_args, parsed=parsed, &
-    !     unrecognized=unrecognized, count=unrecognized_count)
+    call unrecognized_named_args(valid=valid_args, parsed=parsed, &
+        unrecognized=unrecognized, count=unrecognized_count)
 
-    ! if (unrecognized_count > 0) then
-    !     write(error_message, '(a, a, a)') &
-    !         "ERROR: Unrecognized parameter '", &
-    !         trim(unrecognized(1)), &
-    !         "'. Run with --help for help."
-    !     return
-    ! end if
+    if (unrecognized_count > 0) then
+        write(error_message, '(a, a, a)') &
+            "ERROR: Unrecognized parameter '", &
+            trim(unrecognized(1)), &
+            "'. Run with --help for help."
+        return
+    end if
 
     ! OUTPUT
     ! --------------

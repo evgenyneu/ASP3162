@@ -236,7 +236,6 @@ subroutine find_roots_and_print_output(options, silent)
     type(program_settings), intent(in) :: options
     logical, intent(in) :: silent
     logical :: success
-    real(dp) :: root
     real(dp), allocatable :: solution(:,:)
     real(dp), allocatable :: x_points(:), t_points(:)
     real(dp) :: error_x, error_t

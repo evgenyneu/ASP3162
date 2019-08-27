@@ -74,7 +74,6 @@ end
 
 subroutine find_many_roots_test(failures)
     integer, intent(inout) :: failures
-    real(dp) :: result
     logical :: success
     type(program_settings) :: options
     real(dp), allocatable :: solution(:,:)
