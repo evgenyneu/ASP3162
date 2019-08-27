@@ -261,6 +261,8 @@ subroutine find_roots_and_print_output_test(failures)
     call assert_approx(solution(50, 8), 0.626791_dp, 1e-5_dp, __FILE__, &
             __LINE__, failures)
 
+    close(unit=unit)
+
     call delete_file("test_output.dat")
 end
 
