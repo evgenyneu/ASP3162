@@ -14,7 +14,7 @@ implicit none
 private
 public :: find_roots_and_print_output, find_root, &
           my_function, my_function_derivative, find_many_roots, &
-          print_output
+          print_output, read_settings_find_roots_and_print_output
 
 contains
 
@@ -222,52 +222,73 @@ end subroutine
 
 
 !
-! The main function of the program that does all the work:
+! Find the roots and prints output to a file
 !
-!   * Read program settings from command line arguments.
 !
-!   * Find the roots and prints output to a file
+! Inputs:
+! --------
 !
-! Outputs:
-! -------
+! options : program options
 !
 ! silent : do not show any output when .true. (used in unit tests)
 !
-subroutine find_roots_and_print_output(silent)
+subroutine find_roots_and_print_output(options, silent)
+    type(program_settings), intent(in) :: options
     logical, intent(in) :: silent
-    type(program_settings) :: settings
     logical :: success
     real(dp) :: root
     real(dp), allocatable :: solution(:,:)
     real(dp), allocatable :: x_points(:), t_points(:)
     real(dp) :: error_x, error_t
 
-    ! call read_from_command_line(silent=silent, settings=settings, &
-    !                             success=success)
+    call find_many_roots(options=options, solution=solution, &
+                         x_points=x_points, t_points=t_points, &
+                         success=success, error_x=error_x, error_t=error_t)
 
-    ! if (.not. success) then
-    !     if (.not. silent) call exit(41)
-    !     return
-    ! end if
+    if (.not. success) then
+        if (.not. silent) then
+            print "(a, ES24.17, a, ES24.17)", 'Error finding root for x=', &
+                error_x, ' t=', error_t
+        end if
+        return
+    end if
 
-    ! call find_many_roots(options=settings, solution=solution, &
-    !                      x_points=x_points, t_points=t_points, &
-    !                      success=success, error_x=error_x, error_t=error_t)
+    call print_output(filename=options%output_path, &
+                      solution=solution, x_points=x_points, t_points=t_points)
 
-    ! if (.not. success) then
-    !     if (.not. silent) then
-    !         print "(a, ES24.17, a, ES24.17)", 'Error finding root for x=', &
-    !             error_x, ' t=', error_t
-    !     end if
-    !     return
-    ! end if
+    if (.not. silent) then
+        print "(a, a)", "Solution saved to '", trim(options%output_path), "'"
+    end if
+end subroutine
 
-    ! call print_output(filename=settings%output_path, &
-    !                   solution=solution, x_points=x_points, t_points=t_points)
 
-    ! if (.not. silent) then
-    !     print "(a, a)", "Solution save to '", settings%output_path, "'"
-    ! end if
+!
+! The main function of the program that does all the work:
+!
+!   * Read program settings from command line arguments.
+!
+!   * Find the roots and prints output to a file
+!
+!
+! Inputs:
+! -------
+!
+! silent : do not show any output when .true. (used in unit tests)
+!
+subroutine read_settings_find_roots_and_print_output(silent)
+    logical, intent(in) :: silent
+    type(program_settings) :: options
+    logical :: success
+
+    call read_from_command_line(silent=silent, settings=options, &
+                                success=success)
+
+    if (.not. success) then
+        if (.not. silent) call exit(41)
+        return
+    end if
+
+    call find_roots_and_print_output(options=options, silent=silent)
 end subroutine
 
 

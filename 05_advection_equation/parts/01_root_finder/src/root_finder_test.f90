@@ -6,7 +6,8 @@ use FileUtils, only: file_exists, delete_file
 
 use RootFinder, only: find_roots_and_print_output, &
                       find_root, my_function, my_function_derivative, &
-                      find_many_roots, print_output
+                      find_many_roots, print_output, &
+                      read_settings_find_roots_and_print_output
 
 use Settings, only: program_settings
 implicit none
@@ -153,7 +154,6 @@ subroutine print_output_test(failures)
     real(dp) :: x_points_read(2), t_points_read(3)
     integer, parameter :: unit=20
     integer :: nx, nt
-    real(dp) :: value
 
     solution = reshape((/ 1, 2, 3, 4, 5, 6 /), shape(solution))
     x_points = [1.1_dp, 1.2_dp]
@@ -201,8 +201,77 @@ end
 
 subroutine find_roots_and_print_output_test(failures)
     integer, intent(inout) :: failures
+    type(program_settings) :: options
+    integer, parameter :: unit=20
+    integer :: nx, nt
+    real(dp) :: x_points(100), t_points(8), solution(100, 8)
 
-    call find_roots_and_print_output(silent=.false.)
+    options%output_path = "test_output.dat"
+
+    options%x_start = -1.57_dp
+    options%x_end = 1.57_dp
+    options%nx = 100
+    options%t_start = 0._dp
+    options%t_end = 1.4_dp
+    options%nt = 8
+
+    options%root_finder_v_start = 0.5_dp
+    options%root_finder_tolerance = 1e-5_dp
+    options%root_finder_max_iterations = 300
+
+    call find_roots_and_print_output(options=options, silent=.true.)
+
+    call assert_true(file_exists("test_output.dat"), __FILE__, __LINE__, failures)
+
+    open(unit=unit, file="test_output.dat", form='unformatted', &
+        status='old', action='read' )
+
+    read (unit) nx
+    call assert_equal(nx, 100, __FILE__, __LINE__, failures)
+
+    read (unit) nt
+    call assert_equal(nt, 8, __FILE__, __LINE__, failures)
+
+    read (unit) x_points
+
+    call assert_approx(x_points(1), -1.57_dp, 1e-5_dp, __FILE__, __LINE__, &
+                       failures)
+
+    call assert_approx(x_points(2), -1.538282_dp, 1e-5_dp, __FILE__, &
+                       __LINE__, failures)
+
+    call assert_approx(x_points(100), 1.57_dp, 1e-5_dp, __FILE__, &
+                       __LINE__, failures)
+
+    read (unit) t_points
+
+    call assert_approx(t_points(1), 0._dp, 1e-5_dp, __FILE__, &
+                       __LINE__, failures)
+
+    call assert_approx(t_points(2), 0.2_dp, 1e-5_dp, __FILE__, &
+                       __LINE__, failures)
+
+    call assert_approx(t_points(8), 1.4_dp, 1e-5_dp, __FILE__, &
+                       __LINE__, failures)
+
+    read (unit) solution
+    call assert_approx(solution(50, 1), 0.999874_dp, 1e-5_dp, __FILE__, &
+            __LINE__, failures)
+
+    call assert_approx(solution(50, 8), 0.626791_dp, 1e-5_dp, __FILE__, &
+            __LINE__, failures)
+
+    call delete_file("test_output.dat")
+end
+
+
+! read_settings_find_roots_and_print_output_test
+! ---------
+
+subroutine read_settings_find_roots_and_print_output_test(failures)
+    integer, intent(inout) :: failures
+
+    call read_settings_find_roots_and_print_output(silent=.true.)
 
     call assert_true(.true., __FILE__, __LINE__, failures)
 end
@@ -217,6 +286,7 @@ subroutine root_finder_test_all(failures)
     call find_many_roots_test(failures)
     call print_output_test(failures)
     call find_roots_and_print_output_test(failures)
+    call read_settings_find_roots_and_print_output_test(failures)
 end
 
 end module
