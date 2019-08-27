@@ -140,18 +140,18 @@ subroutine show_help_test(failures)
 end
 
 
-! ! read_from_parsed_command_line
-! ! --------------
+! read_from_parsed_command_line
+! --------------
 
-! subroutine read_from_command_line_test(failures)
-!     integer, intent(inout) :: failures
-!     type(program_settings) :: settings
-!     logical :: success
+subroutine read_from_command_line_test(failures)
+    integer, intent(inout) :: failures
+    type(program_settings) :: settings
+    logical :: success
 
-!     call read_from_command_line(silent=.true., settings=settings, success=success)
+    call read_from_command_line(silent=.true., settings=settings, success=success)
 
-!     call assert_true(.not. success, __FILE__, __LINE__, failures)
-! end
+    call assert_true(.not. success, __FILE__, __LINE__, failures)
+end
 
 
 subroutine settings_test_all(failures)
@@ -160,8 +160,7 @@ subroutine settings_test_all(failures)
     call read_from_parsed_command_line_test__no_args(failures)
     call read_from_parsed_command_line_test__named(failures)
     call show_help_test(failures)
-
-    ! call read_from_command_line_test(failures)
+    call read_from_command_line_test(failures)
 end
 
 end module SettingsTest
