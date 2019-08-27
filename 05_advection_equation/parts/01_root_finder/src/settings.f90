@@ -106,8 +106,14 @@ character(len=1024), parameter :: HELP_MESSAGE = NEW_LINE('h')//"&
 ! Default values for the settings
 ! ------
 
-integer, parameter :: DEFAULT_NX = 21
-integer, parameter :: DEFAULT_NT = 300
+real(dp), parameter :: DEFAULT_X_START = -1.5_dp
+real(dp), parameter :: DEFAULT_X_END = 1.5_dp
+integer, parameter :: DEFAULT_NX = 100
+
+real(dp), parameter :: DEFAULT_T_START = -0._dp
+real(dp), parameter :: DEFAULT_T_END = 1.4_dp
+integer, parameter :: DEFAULT_NT = 8
+
 real(dp), parameter :: DEFAULT_ALPHA = 0.25
 real(dp), parameter :: DEFAULT_K = 2.28e-5
 
@@ -245,31 +251,83 @@ subroutine read_from_parsed_command_line(parsed, settings, error_message)
         return
     end if
 
-    ! ! ERRORS
-    ! ! --------------
 
-    ! call get_positional_value(index=2, parsed=parsed, &
-    !                           value=settings%errors_path, &
-    !                           success=success)
+    ! x_start
+    ! --------------
 
-    ! if (.not. success) then
-    !     error_message = "ERROR: ERRORS parameter is missing."//NEW_LINE('h')//"&
-    !                     &Run with --help for help."
-    !     return
-    ! end if
+    call get_named_value_or_default(name='x_start', parsed=parsed, &
+                                    default=DEFAULT_X_START, &
+                                    value=settings%x_start, success=success)
 
-    ! ! nx
-    ! ! --------------
+    if (.not. success) then
+        call make_message("x_start is not a number", error_message)
+        return
+    end if
 
-    ! call get_named_value_or_default(name='nx', parsed=parsed, &
-    !                                 default=DEFAULT_NX, &
-    !                                 value=settings%nx, success=success)
 
-    ! if (.not. success) then
-    !     error_message = "ERROR: nx is not a number."//NEW_LINE('h')//"&
-    !                     &Run with --help for help."
-    !     return
-    ! end if
+    ! x_end
+    ! --------------
+
+    call get_named_value_or_default(name='x_end', parsed=parsed, &
+                                    default=DEFAULT_X_END, &
+                                    value=settings%x_end, success=success)
+
+    if (.not. success) then
+        call make_message("x_end is not a number", error_message)
+        return
+    end if
+
+
+    ! nx
+    ! --------------
+
+    call get_named_value_or_default(name='nx', parsed=parsed, &
+                                    default=DEFAULT_NX, &
+                                    value=settings%nx, success=success)
+
+    if (.not. success) then
+        call make_message("nx is not a number", error_message)
+        return
+    end if
+
+
+    ! t_start
+    ! --------------
+
+    call get_named_value_or_default(name='t_start', parsed=parsed, &
+                                    default=DEFAULT_T_START, &
+                                    value=settings%t_start, success=success)
+
+    if (.not. success) then
+        call make_message("t_start is not a number", error_message)
+        return
+    end if
+
+
+    ! t_end
+    ! --------------
+
+    call get_named_value_or_default(name='t_end', parsed=parsed, &
+                                    default=DEFAULT_T_END, &
+                                    value=settings%t_end, success=success)
+
+    if (.not. success) then
+        call make_message("t_end is not a number", error_message)
+        return
+    end if
+
+
+    ! nt
+    ! --------------
+
+    call get_named_value_or_default(name='nt', parsed=parsed, &
+                                    default=DEFAULT_NT, &
+                                    value=settings%nt, success=success)
+
+    if (.not. success) then
+        call make_message("nt is not a number", error_message)
+        return
+    end if
 
     ! ! nt
     ! ! --------------
@@ -284,18 +342,6 @@ subroutine read_from_parsed_command_line(parsed, settings, error_message)
     !     return
     ! end if
 
-    ! ! alpha
-    ! ! --------------
-
-    ! call get_named_value_or_default(name='alpha', parsed=parsed, &
-    !                                 default=DEFAULT_ALPHA, &
-    !                                 value=settings%alpha, success=success)
-
-    ! if (.not. success) then
-    !     error_message = "ERROR: alpha is not a number."//NEW_LINE('h')//"&
-    !                     &Run with --help for help."
-    !     return
-    ! end if
 
     ! ! k
     ! ! --------------

@@ -19,21 +19,27 @@ subroutine read_from_parsed_command_line_test__no_args(failures)
     type(program_settings) :: settings
     character(len=1024) :: error_message
 
-    call allocate_parsed(size=2, parsed=parsed)
+    call allocate_parsed(size=1, parsed=parsed)
 
-    parsed%positional_count = 2
-    parsed%positional(1) = "data.data"
+    parsed%positional_count = 1
+    parsed%positional(1) = "data.bin"
     parsed%named_count = 0
 
     call read_from_parsed_command_line(parsed=parsed, settings=settings, error_message=error_message)
 
-    print *, trim(error_message)
-    ! call assert_true(string_is_empty(error_message), __FILE__, __LINE__, failures)
-    ! call assert_equal(settings%output_path, "data.txt", __FILE__, __LINE__, failures)
+    call assert_true(string_is_empty(error_message), __FILE__, __LINE__, failures)
+    call assert_equal(settings%output_path, "data.bin", __FILE__, __LINE__, failures)
+
+    call assert_approx(settings%x_start, -1.5_dp, 1e-5_dp, __FILE__, __LINE__, failures)
+    call assert_approx(settings%x_end, 1.5_dp, 1e-5_dp, __FILE__, __LINE__, failures)
+    call assert_equal(settings%nx, 100, __FILE__, __LINE__, failures)
+
+    call assert_approx(settings%t_start, 0._dp, 1e-5_dp, __FILE__, __LINE__, failures)
+    call assert_approx(settings%t_end, 1.4_dp, 1e-5_dp, __FILE__, __LINE__, failures)
+    call assert_equal(settings%nt, 8, __FILE__, __LINE__, failures)
     ! call assert_equal(settings%errors_path, "errors.txt", __FILE__, __LINE__, failures)
     ! call assert_equal(settings%nx, 21, __FILE__, __LINE__, failures)
     ! call assert_equal(settings%nt, 300, __FILE__, __LINE__, failures)
-    ! call assert_approx(settings%alpha, 0.25_dp, 1e-5_dp, __FILE__, __LINE__, failures)
     ! call assert_approx(settings%k, 2.28e-5_dp, 1e-5_dp, __FILE__, __LINE__, failures)
 end
 
