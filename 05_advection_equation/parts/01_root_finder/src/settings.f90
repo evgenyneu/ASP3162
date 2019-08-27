@@ -330,19 +330,6 @@ subroutine read_from_parsed_command_line(parsed, settings, error_message)
         return
     end if
 
-    
-
-
-
-
-
-
-
-
-
-
-
-
 
     ! v_start
     ! --------------
