@@ -114,8 +114,9 @@ real(dp), parameter :: DEFAULT_T_START = -0._dp
 real(dp), parameter :: DEFAULT_T_END = 1.4_dp
 integer, parameter :: DEFAULT_NT = 8
 
-real(dp), parameter :: DEFAULT_ALPHA = 0.25
-real(dp), parameter :: DEFAULT_K = 2.28e-5
+real(dp), parameter :: DEFAULT_V_START = 0.5_dp
+real(dp), parameter :: DEFAULT_TOLERANCE = 1.e-5_dp
+integer, parameter :: DEFAULT_MAX_ITERATIONS = 1000
 
 contains
 
@@ -329,32 +330,60 @@ subroutine read_from_parsed_command_line(parsed, settings, error_message)
         return
     end if
 
-    ! ! nt
-    ! ! --------------
-
-    ! call get_named_value_or_default(name='nt', parsed=parsed, &
-    !                                 default=DEFAULT_NT, &
-    !                                 value=settings%nt, success=success)
-
-    ! if (.not. success) then
-    !     error_message = "ERROR: nt is not a number."//NEW_LINE('h')//"&
-    !                     &Run with --help for help."
-    !     return
-    ! end if
+    
 
 
-    ! ! k
-    ! ! --------------
 
-    ! call get_named_value_or_default(name='k', parsed=parsed, &
-    !                                 default=DEFAULT_K, &
-    !                                 value=settings%k, success=success)
 
-    ! if (.not. success) then
-    !     error_message = "ERROR: k is not a number."//NEW_LINE('h')//"&
-    !                     &Run with --help for help."
-    !     return
-    ! end if
+
+
+
+
+
+
+
+
+
+    ! v_start
+    ! --------------
+
+    call get_named_value_or_default(name='v_start', parsed=parsed, &
+                                    default=DEFAULT_V_START, &
+                                    value=settings%root_finder_v_start, &
+                                    success=success)
+
+    if (.not. success) then
+        call make_message("v_start is not a number", error_message)
+        return
+    end if
+
+
+    ! tolerance
+    ! --------------
+
+    call get_named_value_or_default(name='tolerance', parsed=parsed, &
+                                    default=DEFAULT_TOLERANCE, &
+                                    value=settings%root_finder_tolerance, &
+                                    success=success)
+
+    if (.not. success) then
+        call make_message("tolerance is not a number", error_message)
+        return
+    end if
+
+
+    ! max_iterations
+    ! --------------
+
+    call get_named_value_or_default(name='max_iterations', parsed=parsed, &
+                                    default=DEFAULT_MAX_ITERATIONS, &
+                                    value=settings%root_finder_max_iterations,&
+                                    success=success)
+
+    if (.not. success) then
+        call make_message("max_iterations is not a number", error_message)
+        return
+    end if
 
 end subroutine
 

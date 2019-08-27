@@ -37,10 +37,15 @@ subroutine read_from_parsed_command_line_test__no_args(failures)
     call assert_approx(settings%t_start, 0._dp, 1e-5_dp, __FILE__, __LINE__, failures)
     call assert_approx(settings%t_end, 1.4_dp, 1e-5_dp, __FILE__, __LINE__, failures)
     call assert_equal(settings%nt, 8, __FILE__, __LINE__, failures)
-    ! call assert_equal(settings%errors_path, "errors.txt", __FILE__, __LINE__, failures)
-    ! call assert_equal(settings%nx, 21, __FILE__, __LINE__, failures)
-    ! call assert_equal(settings%nt, 300, __FILE__, __LINE__, failures)
-    ! call assert_approx(settings%k, 2.28e-5_dp, 1e-5_dp, __FILE__, __LINE__, failures)
+
+    call assert_approx(settings%root_finder_v_start, 0.5_dp, 1e-5_dp, &
+                       __FILE__, __LINE__, failures)
+
+    call assert_approx(settings%root_finder_tolerance, 1.e-5_dp, 1e-8_dp, &
+                       __FILE__, __LINE__, failures)
+
+    call assert_equal(settings%root_finder_max_iterations, 1000,  &
+                       __FILE__, __LINE__, failures)
 end
 
 ! subroutine read_from_parsed_command_line_test__named(failures)
