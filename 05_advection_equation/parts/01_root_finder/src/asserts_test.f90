@@ -173,7 +173,7 @@ subroutine assert_string_starts_with(value, substring, filename, line, failures)
     character(*), intent(in) :: filename, value, substring
     integer, intent(in) :: line
     integer, intent(inout) :: failures
-    character(len=1024) :: error_message
+    character(len=4094) :: error_message
 
     call print_dot()
 

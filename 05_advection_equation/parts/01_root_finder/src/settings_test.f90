@@ -114,28 +114,30 @@ subroutine read_from_parsed_command_line_test__named(failures)
 end
 
 
-! subroutine show_help_test(failures)
-!     integer, intent(inout) :: failures
-!     type(parsed_args) :: parsed
-!     type(program_settings) :: settings
-!     character(len=1024) :: error_message
+subroutine show_help_test(failures)
+    integer, intent(inout) :: failures
+    type(parsed_args) :: parsed
+    type(program_settings) :: settings
+    character(len=2024) :: error_message
 
-!     call allocate_parsed(size=2, parsed=parsed)
+    call allocate_parsed(size=1, parsed=parsed)
 
-!     parsed%positional_count = 0
-!     parsed%named_count = 1
+    parsed%positional_count = 0
+    parsed%named_count = 1
 
-!     parsed%named_name(1) = "help"
-!     parsed%named_value(1) = ""
+    parsed%named_name(1) = "help"
+    parsed%named_value(1) = ""
 
-!     call read_from_parsed_command_line(parsed=parsed, settings=settings, error_message=error_message)
+    call read_from_parsed_command_line(parsed=parsed, settings=settings, &
+                                       error_message=error_message)
 
-!     call assert_true(.not. string_is_empty(error_message), __FILE__, __LINE__, failures)
+    call assert_true(.not. string_is_empty(error_message), __FILE__, &
+                     __LINE__, failures)
 
-!     call assert_string_starts_with(error_message, &
-!             NEW_LINE('h')//"This program solves the heat equation", &
-!             __FILE__, __LINE__, failures)
-! end
+    call assert_string_starts_with(error_message, &
+            NEW_LINE('h')//"This program solves equation", &
+            __FILE__, __LINE__, failures)
+end
 
 
 ! ! read_from_parsed_command_line
@@ -157,8 +159,7 @@ subroutine settings_test_all(failures)
 
     call read_from_parsed_command_line_test__no_args(failures)
     call read_from_parsed_command_line_test__named(failures)
-
-    ! call show_help_test(failures)
+    call show_help_test(failures)
 
     ! call read_from_command_line_test(failures)
 end

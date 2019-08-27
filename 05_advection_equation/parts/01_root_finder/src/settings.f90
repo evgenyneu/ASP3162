@@ -52,7 +52,7 @@ type, public :: program_settings
 end type program_settings
 
 ! Help message to be shown
-character(len=1024), parameter :: HELP_MESSAGE = NEW_LINE('h')//"&
+character(len=4096), parameter :: HELP_MESSAGE = NEW_LINE('h')//"&
     &This program solves equation"//NEW_LINE('h')//"&
     &"//NEW_LINE('h')//"&
     &  cos(x - v * t) - v = 0"//NEW_LINE('h')//"&
@@ -63,10 +63,10 @@ character(len=1024), parameter :: HELP_MESSAGE = NEW_LINE('h')//"&
     &Usage:&
     &"//NEW_LINE('h')//"&
     &"//NEW_LINE('h')//"&
-    & ./build/main OUTPUT [--x_start=-1.5] [--x_end=1.5] &
-    &[--nx=100] [--t_start=0] [--t_end=1.4] &
-    &[--nt=8] [--v_start=0.5] [--v_start=0.5] &
-    &[--tolerance=1.0e-5] [--max_iterations=1000]"//NEW_LINE('h')//"&
+    & ./build/main OUTPUT [--x_start=-1.5] [--x_end=1.5]"//NEW_LINE('h')//"&
+    &    [--nx=100] [--t_start=0] [--t_end=1.4]"//NEW_LINE('h')//"&
+    &    [--nt=8] [--v_start=0.5] [--v_start=0.5]"//NEW_LINE('h')//"&
+    &    [--tolerance=1.0e-5] [--max_iterations=1000]"//NEW_LINE('h')//"&
     &"//NEW_LINE('h')//"&
     &    OUTPUT : path to the output data file"//NEW_LINE('h')//"&
     &"//NEW_LINE('h')//"&
