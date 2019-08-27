@@ -256,7 +256,7 @@ subroutine find_roots_and_print_output(options, silent)
                       solution=solution, x_points=x_points, t_points=t_points)
 
     if (.not. silent) then
-        print "(a, a)", "Solution saved to '", trim(options%output_path), "'"
+        print "(a, a, a)", "Solution saved to '", trim(options%output_path), "'"
     end if
 end subroutine
 
