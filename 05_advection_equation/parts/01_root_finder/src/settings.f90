@@ -14,6 +14,8 @@ implicit none
 private
 public :: read_from_parsed_command_line, read_from_command_line
 
+integer, parameter :: HELP_MESSAGE_LENGTH = 4096
+
 !
 ! Stores program settings:
 !
@@ -52,7 +54,7 @@ type, public :: program_settings
 end type program_settings
 
 ! Help message to be shown
-character(len=4096), parameter :: HELP_MESSAGE = NEW_LINE('h')//"&
+character(len=HELP_MESSAGE_LENGTH), parameter :: HELP_MESSAGE = NEW_LINE('h')//"&
     &This program solves equation"//NEW_LINE('h')//"&
     &"//NEW_LINE('h')//"&
     &  cos(x - v * t) - v = 0"//NEW_LINE('h')//"&
@@ -139,7 +141,7 @@ subroutine read_from_command_line(silent, settings, success)
     type(program_settings), intent(out) :: settings
     logical, intent(out) :: success
     type(parsed_args) :: parsed
-    character(len=1024) :: error_message
+    character(len=HELP_MESSAGE_LENGTH) :: error_message
 
     call parse_current_command_line_arguments(parsed)
 
