@@ -22,17 +22,26 @@ def plot(plot_dir, plot_file_name):
     ax = fig.gca(projection='3d')
     x = [x]
     y = np.transpose([y])
-    # print(f'x {len(x)} y {y.shape} z {z.shape}')
+
+    print(f'x= {np.array(x).shape}')
+    print(f'y= {np.array(y).shape}')
+    print(f'z= {np.array(z).shape}')
+    print(f'x {len(x)} y {y.shape} z {z.shape}')
     ax.plot_surface(x, y, z, cmap=plt.cm.jet)
-    ax.set_xlabel("Length x [m]")
+    ax.set_xlabel("Position x [m]")
     ax.set_ylabel("Time t [s]")
-    ax.set_zlabel("Temperature T [K]")
-    ax.set_title("Hi, I'm a title")
+    ax.set_zlabel("Velocity v [m/s]")
+
+    ax.set_title(("Analytical solution of advection equation\n"
+                  "$v_t + vv_x$ with initial condition\n$v(x,0)=\\cos(x)$"))
+
     ax.view_init(30, 45)
+    ax.set_zlim(0, 1)
+    ax.invert_xaxis()
     plt.tight_layout()
-    create_dir(plot_dir)
-    pdf_file = os.path.join(plot_dir, plot_file_name)
-    plt.savefig(pdf_file)
+    # create_dir(plot_dir)
+    # pdf_file = os.path.join(plot_dir, plot_file_name)
+    # plt.savefig(pdf_file)
     plt.show()
 
 

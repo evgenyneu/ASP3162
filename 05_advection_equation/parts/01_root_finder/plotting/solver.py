@@ -126,7 +126,7 @@ def read_solution_from_file(path_to_data):
     end = start + nx * nt * 8
     solution = array.array("d")
     solution.frombytes(data[start:end])
-    solution = np.reshape(solution, (nx, nt))
+    solution = np.reshape(solution, (nt, nx), order='C')
 
     return (x_values, t_values, solution)
 

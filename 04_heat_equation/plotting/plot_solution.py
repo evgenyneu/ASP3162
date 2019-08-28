@@ -30,18 +30,22 @@ def make_plot(data, title, plot_dir, plot_file_name):
     t_values = data["t_values"]
     temperatures = data["temperatures"]
 
-    fig = plt.figure()
-    ax = fig.gca(projection='3d')
-    ax.plot_surface(x_values, t_values, temperatures, cmap=plt.cm.jet)
-    ax.set_xlabel("Length x [m]")
-    ax.set_ylabel("Time t [s]")
-    ax.set_zlabel("Temperature T [K]")
-    ax.set_title(title)
-    ax.view_init(30, 45)
-    plt.tight_layout()
-    pdf_file = os.path.join(plot_dir, plot_file_name)
-    plt.savefig(pdf_file)
-    plt.show()
+    print(f'x= {np.array(x_values).shape}')
+    print(f'y= {np.array(t_values).shape}')
+    print(f'z= {np.array(temperatures).shape}')
+
+    # fig = plt.figure()
+    # ax = fig.gca(projection='3d')
+    # ax.plot_surface(x_values, t_values, temperatures, cmap=plt.cm.jet)
+    # ax.set_xlabel("Length x [m]")
+    # ax.set_ylabel("Time t [s]")
+    # ax.set_zlabel("Temperature T [K]")
+    # ax.set_title(title)
+    # ax.view_init(30, 45)
+    # plt.tight_layout()
+    # pdf_file = os.path.join(plot_dir, plot_file_name)
+    # plt.savefig(pdf_file)
+    # plt.show()
 
 
 def plot_solution(plot_dir, nx, nt, alpha, k):
@@ -110,5 +114,5 @@ def plot_solution(plot_dir, nx, nt, alpha, k):
 
 if __name__ == '__main__':
     plot_solution(plot_dir="plots", nx=5, alpha=0.1, k=2.28e-5, nt=35)
-    plot_solution(plot_dir="plots", nx=21, alpha=0.25, k=2.28e-5, nt=300)
-    plot_solution(plot_dir="plots", nx=31, alpha=0.5625, k=2.28e-5, nt=180)
+    # plot_solution(plot_dir="plots", nx=21, alpha=0.25, k=2.28e-5, nt=300)
+    # plot_solution(plot_dir="plots", nx=31, alpha=0.5625, k=2.28e-5, nt=180)
