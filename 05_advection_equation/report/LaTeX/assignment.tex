@@ -43,8 +43,6 @@
 % \setlength\cftparskip{4pt} % Reduce space between line in the table of contents
 \addtolength{\jot}{2\jot} % Double the line between equations
 \def\arraystretch{1.5} % Increase the vertical table cell margin
-\dottedcontents{part}[0em]{\bfseries}{0em}{1pc} % Use dots in the table of contents
-\dottedcontents{section}[5em]{}{3em}{1pc} % Use dots in the table of contents
 \renewcommand{\contentsname}{\centering Contents} % Center the table of contents header
 \raggedbottom % Prevents spreading the page content vetically for non-full pages.
 \setlength{\headheight}{20pt} % Height of the header
@@ -64,6 +62,12 @@ language=Fortran,           % choose the language of the code
 basicstyle=\footnotesize    % the size of the fonts that are used for the line-numbers
 }
 
+
+% Set margins for the contents
+\dottedcontents{part}[0em]{\bfseries}{0em}{1pc} % Use dots in the table of contents
+\dottedcontents{section}[1em]{}{2em}{1pc} % Use dots in the table of contents
+\dottedcontents{subsection}[3em]{}{2em}{1pc} % Use dots in the table of contents
+
 % Make the proof white box a black box.
 % \renewcommand{\qedsymbol}{\rule{0.7em}{0.7em}}
 
@@ -79,19 +83,19 @@ basicstyle=\footnotesize    % the size of the fonts that are used for the line-n
 % Draw circles around letters:
 % \encircle{d}
 % https://tex.stackexchange.com/a/123926
-\usepackage{tikz}
-\newcommand\encircle[1]{%
-  \tikz[baseline=(X.base)] 
-    \node (X) [draw, shape=circle, inner sep=0] {\strut #1};}
+% \usepackage{tikz}
+% \newcommand\encircle[1]{%
+%   \tikz[baseline=(X.base)] 
+%     \node (X) [draw, shape=circle, inner sep=0] {\strut #1};}
 
 % For making array column the same width https://tex.stackexchange.com/a/162847
-\newcolumntype{C}[1]{>{\centering\arraybackslash$}m{#1}<{$}}
+% \newcolumntype{C}[1]{>{\centering\arraybackslash$}m{#1}<{$}}
 
-\newcommand{\STAB}[1]{\begin{tabular}{@{}c@{}}#1\end{tabular}}
+% \newcommand{\STAB}[1]{\begin{tabular}{@{}c@{}}#1\end{tabular}}
 
-\newcommand{\largeletter}[1]{\text{\Large\ensuremath #1}}
+% \newcommand{\largeletter}[1]{\text{\Large\ensuremath #1}}
 
-\newcommand*\widefbox[1]{\fbox{\hspace{2em}#1\hspace{2em}}}
+% \newcommand*\widefbox[1]{\fbox{\hspace{2em}#1\hspace{2em}}}
 
 % PDFPlots
 % Horizontal asymptote
@@ -124,28 +128,28 @@ basicstyle=\footnotesize    % the size of the fonts that are used for the line-n
 
 % Column vector: \myvec{x\\y\\z}
 % Row vector: \myvec{a&b&c}
-\newcommand{\myvec}[1]{\ensuremath{\renewcommand*{\arraystretch}{0.9}\begin{bmatrix}#1\end{bmatrix}}}
+% \newcommand{\myvec}[1]{\ensuremath{\renewcommand*{\arraystretch}{0.9}\begin{bmatrix}#1\end{bmatrix}}}
 
 % Use to draw vertical line in bmatrix
 % https://tex.stackexchange.com/a/299241/101976
-\newcommand\aug{\fboxsep=-\fboxrule\!\!\!\fbox{\strut}\!\!\!}
+% \newcommand\aug{\fboxsep=-\fboxrule\!\!\!\fbox{\strut}\!\!\!}
 
 
 \def\code#1{\texttt{\small#1}} % Format code inlint \code{myFunction}
 
 % Title page
 
-\title{Making a Fortran program for solving a heat equation using the forward-difference (Euler) method}
+\title{Making a Fortran programs for solving an advection equation}
 \author{Written by Evgenii Neumerzhitckii}
-\date{Aug 23, 2019}
+\date{Aug 29, 2019}
 
 \begin{document}
 
-\setcounter{secnumdepth}{-1}
-\renewcommand{\thepart}{}
-\renewcommand{\thesection}{Part \Alph{section}}
-\renewcommand{\thesubsection}{\Alph{section}.\arabic{subsection}}
-\renewcommand{\partname}{}
+% \setcounter{secnumdepth}{2}
+% \renewcommand{\thepart}{\Alph{part}}
+% \renewcommand{\thesection}{Part \Alph{section}}
+% \renewcommand{\thesubsection}{\Alph{section}.\arabic{subsection}}
+% \renewcommand{\partname}{}
 
 
 \maketitle
