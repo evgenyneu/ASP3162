@@ -141,6 +141,35 @@ def solve_equation(x_start, x_end, nx,
 
     and returns the solution.
 
+    Parameters
+    ----------
+    x_start : float
+        The smallest x value
+
+    x_end : float
+        The largest x value
+
+    nx : int
+        The number of x points in the grid
+
+    t_start : float
+        The smallest t value
+
+    t_end : float
+        The largest t value
+
+    nt : int
+        The number of t points in the grid
+
+    v_start : float
+        The starting value for v for the root finding algorithm.
+
+    tolerance : float
+        Convergence tolerance for Newton-Raphson method.
+
+    max_iterations : int
+        The maximum number of iterations of the Newton-Raphson method.
+
     Returns
     -------
         (x, y, z) tuple

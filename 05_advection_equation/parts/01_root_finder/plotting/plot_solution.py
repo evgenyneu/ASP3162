@@ -1,5 +1,5 @@
 #
-# Plot solution of
+# Plot solutions of
 #
 #   cos(x - v * t) - v = 0
 #
@@ -11,11 +11,23 @@ from plot_utils import create_dir
 import matplotlib.pyplot as plt
 import numpy as np
 import os
-
 from solver import solve_equation
 
 
 def plot_3d(plot_dir, plot_file_name):
+    """
+    Makes a surface 3D plot of the velocity and saves it to a file.
+
+    Parameters
+    ----------
+
+    plot_dir : str
+        Directory where the plot file is saved
+
+    plot_file_name : str
+        Plot file name
+    """
+
     result = solve_equation(x_start=-1.6, x_end=1.6, nx=200,
                             t_start=0, t_end=1.4, nt=50,
                             v_start=0.8, tolerance=1e-5, max_iterations=1000)
@@ -50,6 +62,20 @@ def plot_3d(plot_dir, plot_file_name):
 
 
 def plot_2d(plot_dir, plot_file_name):
+    """
+    Makes a 2D plot of the velocity at different time values
+    and saves it to a file.
+
+    Parameters
+    ----------
+
+    plot_dir : str
+        Directory where the plot file is saved
+
+    plot_file_name : str
+        Plot file name
+    """
+
     result = solve_equation(x_start=-1.6, x_end=1.6, nx=100,
                             t_start=0, t_end=1.4, nt=8,
                             v_start=0.62, tolerance=1e-5, max_iterations=1000)
@@ -79,6 +105,10 @@ def plot_2d(plot_dir, plot_file_name):
 
 
 def make_plots():
+    """
+    Make plots of velocity.
+    """
+
     plot_3d(plot_dir="plots",
             plot_file_name="advection_analytical_solution_3d.pdf")
 
