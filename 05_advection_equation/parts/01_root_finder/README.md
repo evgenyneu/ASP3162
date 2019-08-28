@@ -35,6 +35,7 @@ The program will print the solution into the binary file `data.bin`.
 
 Here is how data is stored in the binary file:
 
+```
 [x]
 [
     nx: number of x values
@@ -76,6 +77,7 @@ Here is how data is stored in the binary file:
     Type: 2D array of double floats. Length: nx * nt.
 ]
 [x]
+```
 
 #### Notes
 
