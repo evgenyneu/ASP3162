@@ -187,7 +187,8 @@ end subroutine
 
 
 !
-! Prints solution to a binary data file
+! Prints solution to a binary data file. See README.md for description
+! of the file format.
 !
 ! Inputs:
 ! --------
