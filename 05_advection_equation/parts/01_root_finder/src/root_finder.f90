@@ -248,6 +248,8 @@ subroutine find_roots_and_print_output(options, silent)
         if (.not. silent) then
             print "(a, ES24.17, a, ES24.17)", 'Error finding root for x=', &
                 error_x, ' t=', error_t
+
+            call exit(41)
         end if
         return
     end if

@@ -131,7 +131,7 @@ def read_solution_from_file(path_to_data):
     return (x_values, t_values, solution)
 
 
-def solve_equation():
+def solve_equation(x_start, x_end, nx):
     """
     Runs Fortran program that solves equation
 
@@ -151,7 +151,12 @@ def solve_equation():
     path_to_data = os.path.join(subdir, "data.bin")
 
     parameters = [
-        f'../build/main {path_to_data}'
+        (
+            f'../build/main {path_to_data}'
+            f' --x_start={x_start}'
+            f' --x_end={x_end}'
+            f' --nx={nx}'
+        )
     ]
 
     child = subprocess.Popen(parameters,
@@ -166,6 +171,8 @@ def solve_equation():
     if not success:
         print(message)
         return None
+
+    # print(message)
 
     x, y, z = read_solution_from_file(path_to_data)
 

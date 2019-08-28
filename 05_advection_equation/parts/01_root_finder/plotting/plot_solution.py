@@ -59,7 +59,12 @@ def plot_2d(x, y, z, plot_dir, plot_file_name):
 
 
 def make_plots():
-    x, y, z = solve_equation()
+    result = solve_equation(x_start=-1.6, x_end=1.6, nx=100)
+
+    if result is None:
+        return
+    else:
+        x, y, z = result
 
     # plot_3d(x=x, y=y, z=z, plot_dir="plots",
             # plot_file_name="advection_analytical_solution_3d.pdf")
