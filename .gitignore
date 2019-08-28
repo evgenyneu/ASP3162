@@ -1,4 +1,5 @@
 build/
+plots/
 .DS_Store
 
 # Python
