@@ -131,7 +131,9 @@ def read_solution_from_file(path_to_data):
     return (x_values, t_values, solution)
 
 
-def solve_equation(x_start, x_end, nx):
+def solve_equation(x_start, x_end, nx,
+                   t_start, t_end, nt,
+                   v_start, tolerance, max_iterations):
     """
     Runs Fortran program that solves equation
 
@@ -156,6 +158,12 @@ def solve_equation(x_start, x_end, nx):
             f' --x_start={x_start}'
             f' --x_end={x_end}'
             f' --nx={nx}'
+            f' --t_start={t_start}'
+            f' --t_end={t_end}'
+            f' --nt={nt}'
+            f' --v_start={v_start}'
+            f' --tolerance={tolerance}'
+            f' --max_iterations={max_iterations}'
         )
     ]
 

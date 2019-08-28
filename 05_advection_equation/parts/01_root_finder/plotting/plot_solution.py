@@ -15,7 +15,17 @@ import os
 from solver import solve_equation
 
 
-def plot_3d(x, y, z, plot_dir, plot_file_name):
+def plot_3d(plot_dir, plot_file_name):
+    result = solve_equation(x_start=-1.6, x_end=1.6, nx=200,
+                            t_start=0, t_end=1.4, nt=50,
+                            v_start=0.8, tolerance=1e-5, max_iterations=1000)
+
+    if result is None:
+        return
+    else:
+        x, y, z = result
+        z = np.clip(z, 0, 1.1)
+
     x = [x]
     y = np.transpose([y])
 
@@ -27,9 +37,9 @@ def plot_3d(x, y, z, plot_dir, plot_file_name):
     ax.set_zlabel("Velocity v [m/s]")
 
     plt.title(("Analytical solution of advection equation\n"
-               "$v_t + vv_x=0$ with initial condition\n$v(x,0)=\\cos(x)$ at different times"))
+               "$v_t + vv_x=0$ with initial condition\n$v(x,0)=\\cos(x)$"))
 
-    ax.view_init(30, 45)
+    ax.view_init(40, 110)
     ax.set_zlim(0, 1)
     ax.invert_xaxis()
     plt.tight_layout()
@@ -39,7 +49,17 @@ def plot_3d(x, y, z, plot_dir, plot_file_name):
     plt.show()
 
 
-def plot_2d(x, y, z, plot_dir, plot_file_name):
+def plot_2d(plot_dir, plot_file_name):
+    result = solve_equation(x_start=-1.6, x_end=1.6, nx=100,
+                            t_start=0, t_end=1.4, nt=8,
+                            v_start=0.62, tolerance=1e-5, max_iterations=1000)
+
+    if result is None:
+        return
+    else:
+        x, y, z = result
+        z = np.clip(z, 0, 1.1)
+
     for iy, t in enumerate(y):
         velocities = z[iy, :]
         plt.plot(x, velocities, label=f't={t:.1f} s')
@@ -59,17 +79,10 @@ def plot_2d(x, y, z, plot_dir, plot_file_name):
 
 
 def make_plots():
-    result = solve_equation(x_start=-1.6, x_end=1.6, nx=100)
+    plot_3d(plot_dir="plots",
+            plot_file_name="advection_analytical_solution_3d.pdf")
 
-    if result is None:
-        return
-    else:
-        x, y, z = result
-
-    # plot_3d(x=x, y=y, z=z, plot_dir="plots",
-            # plot_file_name="advection_analytical_solution_3d.pdf")
-
-    plot_2d(x=x, y=y, z=z, plot_dir="plots",
+    plot_2d(plot_dir="plots",
             plot_file_name="advection_analytical_solution_2d.pdf")
 
 
