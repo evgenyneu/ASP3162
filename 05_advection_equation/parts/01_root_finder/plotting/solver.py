@@ -209,8 +209,6 @@ def solve_equation(x_start, x_end, nx,
         print(message)
         return None
 
-    # print(message)
-
     x, y, z = read_solution_from_file(path_to_data)
 
     os.remove(path_to_data)
