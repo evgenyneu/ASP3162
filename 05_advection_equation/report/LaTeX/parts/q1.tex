@@ -52,12 +52,63 @@ Our goal is to find roots of \autoref{eq_analytical_solution} for different valu
   \{ t_{\textrm{start}}, t_{\textrm{start}} + \Delta t, t_{\textrm{start}} + 2 \Delta t, \dots, t_{\textrm{end}} \},
 \end{align*}
 where $x_{\textrm{start}}$, $x_{\textrm{end}}$ are the smallest and largest $x$ values, and $t_{\textrm{start}}$, $t_{\textrm{end}}$ are the smallest and largest $t$ values that are supplied to the program by the user The values $\Delta x$, $\Delta t$ are the position and time steps that are calculated as follows:
-\begin{align*}
-  \Delta x &= \frac{x_{\textrm{end}} - x_{\textrm{start}}}{n_x - 1} \\
-  \Delta t &= \frac{t_{\textrm{end}} - t_{\textrm{start}}}{n_t - 1},
-\end{align*}
+\begin{align}
+  \Delta x &= \frac{x_{\textrm{end}} - x_{\textrm{start}}}{n_x - 1} \label{eq_dx} \\
+  \Delta t &= \frac{t_{\textrm{end}} - t_{\textrm{start}}}{n_t - 1}, \label{eq_dt}
+\end{align}
 where $n_x$ and $n_t$ are the number of position and time steps that are supplied to the program by the user.
 
+
+\subsection{Writing the code}
+
+Next, we write Fortran code to solve \autoref{eq_analytical_solution}. The code shown in \autoref{code_solve_v_equation} is a part of \code{find\_many\_roots} function. The code calculates the roots of \autoref{eq_analytical_solution} for various values of $x$ and $t$ parameters.
+
+\noindent\begin{minipage}{\linewidth}
+\begin{lstlisting}[caption={Solving $v = \cos (x - v t )$ equation for various values of parameters $x$ and $t$ (\code{root\_finder.f90}).},frame=tlrb,label={code_solve_v_equation}, numbers=left, firstnumber=160]
+! Assign evenly spaced x and t values
+call linspace(x_start, x_end, x_points)
+call linspace(t_start, t_end, t_points)
+
+! Calculate step sizes
+dx = (x_end - x_start) / (nx - 1)
+dt = (t_end - t_start) / (nt - 1)
+
+! Calculate solutions for all values of x and t
+do it = 1, nt
+    do ix = 1, nx
+        x = x_start + (ix - 1) * dx
+        t = t_start + (it - 1) * dt
+
+        root = find_root(options=options, x=x, t=t, success=success)
+
+        if (.not. success) then
+            ! Could not find root: return the problematic x and t
+            error_x = x
+            error_t = t
+            return
+        end if
+
+        solution(ix, it) = root
+    end do
+end do
+\end{lstlisting}
+\end{minipage}
+
+On \code{Line 161} we assign evenly spaced values between $x\_start$ and $x\_end$ for the $x$-coordinate and store then in the \code{x\_points} array. The values \code{x\_start} and \code{x\_end}. The number of points $nx$ are also supplied to the program by the user and they determine the size of the \code{x\_points} array.
+
+On \code{Line 162} use the same technique to calculate the values of the $t$-coordinate and store them in $\code{t\_points}$ array.
+
+On \code{Lines 165} and \code{166} we calculate the position and time steps $dx$ and $dt$ using Equations \ref{eq_dx} and \ref{eq_dt}.
+
+Next, on \code{Lines 169} and \code{170} we use two loops to iterate over the range of indexes $it$ and $ix$. Inside the loops, on \code{Lines 171} and \code{172} we calculate the values of the $x$ and $t$ parameters for the current iteration.
+
+On \code{Line 174} we call \code{find\_root} function. This function calculates a root of \autoref{eq_analytical_solution} using Newton-Raphson method and returns this root.
+
+Newton-Raphson method does not guarantee to find a root. The case when the program does not find a root is handled on \code{Lines 176-181}. Here we store the problematic values of $x$ and $t$ and exit the subroutine with an error.
+
+Alternatively, in case when the program does find a root, we store that value in a 2D array called \code{solution} on \code{Line 183}.
+
+The end result of this part of the program is the $\code{solution}$ array filled with values of $v$ for all values of $x$ and $t$ parameters that the user has chosen. Alternatively, if the program could not find solution to \autoref{eq_analytical_solution} for just a single pair of $x$ and $t$, it exits with an error. In this case, the user is presented with an error message containing the values of $x$ and $t$ parameters for which Newton-Raphson method failed. The user can then re-run the program again with different values of starting $v_1$ value, tolerance and maximum number of iterations $N_{max}$ for Newton-Raphson method, until she finds settings for which Newton-Raphson is able to find solutions for all values of $x$ and $t$.
 
 % First, we move all terms of \autoref{eq_analytical_solution} to one side and call this an $f$ function:
 % \[
