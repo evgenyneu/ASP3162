@@ -1,24 +1,13 @@
-# A Fortran program for a heat equation
+# A Fortran program for finding roots of analytic solution of advection equation
 
-This this a Fortran program that solves the equation
-
-```
-dT/dt = k d^2T/dx^2
-```
-
-using the initial condition
+This this a Fortran program that finds roots of equation
 
 ```
-T(x, 0) = 100 sin(pi x / L)
+cos(x - v * t) - v = 0
 ```
 
-and boundary conditions
+for different values of x and t parameters.
 
-```
-T(0,t) = T(L,t) = 0,
-```
-
-where `L=1 m`.
 
 
 ## Compile
@@ -36,31 +25,83 @@ Gfortran compiler is required to build the program (tested with GCC 6.3.0 and 7.
 Running the program:
 
 ```
-./build/main data errors
+./build/main data.bin
 ```
 
-The program will print the solution into the `data` file. The first row contains x-values, the first column contains the t-values, and the inner matrix contains temperature solution for the corresponding x and t:
+The program will print the solution into the binary file `data.bin`.
+
+### The binary file format
+
+
+Here is how data is stored in the binary file:
+
+[x]
+[
+    nx: number of x values
+    Size: 4 bytes
+    Type: signed int
+]
+[x]
+
+[x]
+[
+    nt: number of t values
+    Size: 4 bytes
+    Type: Signed int
+]
+[x]
+
+[x]
+[
+    x_values: array of x values
+    Size: nx * 8 bytes
+    Type: Array of double floats. Length nx.
+]
+[x]
+
+[x]
+[
+    t_values: array of t values
+    Size: nt * 8 bytes
+    Type: Array of double floats. Length: tx.
+]
+[x]
+
+[x]
+[
+    solution: a 2D array containing solution. These are velocity values
+    for x and t coordinates.
+
+    Size: nx * nt * 8 bytes
+    Type: 2D array of double floats. Length: nx * nt.
+]
+[x]
+
+#### Notes
+
+
+* Here [x] means 4-byte separator. This is added by Fortran's `write`
+function. This separator is written before and after a data block,
+and its value is the length in bytes of this block.
+
+* `solution` is a 2D array saved as a sequence of double precision
+float numbers in the column-major order. For example, for nx=3, nt=2,
+the data will be saved as:
 
 ```
-0.00000000000000000E+00  0.00000000000000000E+00  5.26315789473684181E-02  1.05263157894736836E-01  1.57894736842105254E-01  2.10526315789473673E-01  2.63157894736842091E-01  3.15789473684210509E-01  3.68421052631578927E-01  4.21052631578947345E-01  4.73684210526315763E-01  5.26315789473684181E-01  5.78947368421052655E-01  6.31578947368421018E-01  6.84210526315789491E-01  7.36842105263157854E-01  7.89473684210526327E-01  8.42105263157894690E-01  8.94736842105263164E-01  9.47368421052631526E-01  1.00000000000000000E+00
-  0.00000000000000000E+00  0.00000000000000000E+00  1.64594590280733897E+01  3.24699469204683453E+01  4.75947393037073496E+01  6.14212712689667839E+01  7.35723910673131627E+01  8.37166478262528528E+01  9.15773326655057360E+01  9.69400265939330410E+01  9.96584493006669874E+01  9.96584493006669874E+01  9.69400265939330410E+01  9.15773326655057502E+01  8.37166478262528813E+01  7.35723910673131627E+01  6.14212712689667910E+01  4.75947393037073709E+01  3.24699469204683595E+01  1.64594590280734039E+01  0.00000000000000000E+00
-  2.74122797321586127E+01  0.00000000000000000E+00  1.63472162441537812E+01  3.22485230431793610E+01  4.72701741992124553E+01  6.10024182272385218E+01  7.30706753074614852E+01  8.31457548463311582E+01  9.09528349377993379E+01  9.62789587885096978E+01  9.89788436239834937E+01  9.89788436239834937E+01  9.62789587885096978E+01  9.09528349377993521E+01  8.31457548463311724E+01  7.30706753074614994E+01  6.10024182272385289E+01  4.72701741992124767E+01  3.22485230431793752E+01  1.63472162441537918E+01  0.00000000000000000E+00
-  5.48245594643172254E+01  0.00000000000000000E+00  1.62357388828717291E+01  3.20286091324312423E+01  4.69478224172107019E+01  6.05864214902877478E+01  7.25723809221231591E+01  8.25787549844807813E+01  9.03325958776098901E+01  9.56223990347005497E+01  9.83038724151150518E+01  9.83038724151150518E+01  9.56223990347005639E+01  9.03325958776098901E+01  8.25787549844807955E+01  7.25723809221231733E+01  6.05864214902877620E+01  4.69478224172107161E+01  3.20286091324312565E+01  1.62357388828717397E+01  0.00000000000000000E+00
-  8.22368391964758416E+01  0.00000000000000000E+00  1.61250217245436751E+01  3.18101948912362289E+01  4.66276688642850985E+01  6.01732615799773356E+01  7.20774845797537154E+01  8.20156216921736529E+01  8.97165864436002778E+01  9.49703165905315103E+01  9.76335040700114263E+01  9.76335040700114263E+01  9.49703165905315245E+01  8.97165864436002778E+01  8.20156216921736672E+01  7.20774845797537296E+01  6.01732615799773498E+01  4.66276688642851127E+01  3.18101948912362431E+01  1.61250217245436858E+01  0.00000000000000000E+00
-  1.09649118928634451E+02  0.00000000000000000E+00  1.60150595850808948E+01  3.15932700928253070E+01  4.63096985499459421E+01  5.97629191509983713E+01  7.15859631079146084E+01  8.14563286019253212E+01  8.91047777924764262E+01  9.43226809236686847E+01  9.69677072001414473E+01  9.69677072001414473E+01  9.43226809236686847E+01  8.91047777924764404E+01  8.14563286019253354E+01  7.15859631079146226E+01  5.97629191509983855E+01  4.63096985499459564E+01  3.15932700928253212E+01  1.60150595850809054E+01  0.00000000000000000E+00
- ...
+    [1, 1] [2, 1] [3, 1] [1, 2] [2, 2] [3, 2],
 ```
 
-The absolute errors of the numerical solutions are writtern to the `errors` file in the same format.
+where first index is x and second index is t.
 
 
 
 ## Run with settings
 
-One can also customize program settings:
+One can also customize program settings, for example:
 
 ```
-./build/main --t_end=12.56 --delta_t=0.05
+./build/main data.bin --x_start=-1.5 --x_end=1.5 --nx=200
 ```
 
 Run the program with `--help` flag to see the description of parameters:
@@ -68,40 +109,49 @@ Run the program with `--help` flag to see the description of parameters:
 ```
 ./build/main --help
 
-This program solves the heat equation
+his program solves equation
 
-  dT/dt = k d^2T/dx^2
+  cos(x - v * t) - v = 0
 
-with initial condition
-  T(x,0) = 100 sin(pi x / L)
-and boundary conditions
-   T(0,t) = T(L,t) = 0,
- where L = 1 m.
+for different values of x and t
 
 
 Usage:
 
- ./build/main OUTPUT ERRORS [--nx=20] [--nt=300] [--alpha=0.2] [--k=2.28e-5]
+ ./build/main OUTPUT [--x_start=-1.5] [--x_end=1.5]
+    [--nx=100] [--t_start=0] [--t_end=1.4]
+    [--nt=8] [--v_start=0.5] [--v_start=0.5]
+    [--tolerance=1.0e-5] [--max_iterations=1000]
 
     OUTPUT : path to the output data file
 
 
-    ERRORS : path to the output errors file
+    --x_start=NUMBER : the smallest x value,
+                  Default: -1.5.
 
+    --x_end=NUMBER : the largest x value,
+                  Default: 1.5.
 
     --nx=NUMBER : number of x points in the grid,
-                  including the points on the edges.
-                  Default: 21.
+                  Default: 100.
+
+    --t_start=NUMBER : the smallest t value,
+                  Default: 0.
+
+    --t_end=NUMBER : the largest t value,
+                  Default: 1.4.
 
     --nt=NUMBER : number of t points in the grid,
-                  Default: 300.
+                  Default: 8.
 
-    --alpha=NUMBER : The alpha parameter of the numerical
-     solution of the heat equation. Values larger than
-     0.5 results in unstable solutions. Default: 0.25.
+    --v_start=NUMBER : The starting value for v for the root finding algorithm.,
+                  Default: 0.5.
 
-    --k=NUMBER : Thermal diffusivity of the rod in m^2 s^{-1} units.
-                 Default: 2.28e-5.
+    --tolerance=NUMBER : tolerance for Newton-Raphson method.,
+                  Default: 1e-5.
+
+    --max_iterations=NUMBER : maximum number of iterations for Newton-Raphson method
+                  Default: 1000.
 
     --help  : show this message.
 ```
@@ -140,7 +190,7 @@ cd plotting
 The plotting codes require the Fortran executable to be present.
 
 
-### Plot approximate solution and the errors
+### Plot solutions
 
 ```
 python plot_solution.py
