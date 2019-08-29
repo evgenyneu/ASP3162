@@ -5,6 +5,7 @@ program MainTest
     use FloatUtilsTest, only: float_utils_test_all
     use FileUtilsTest, only: file_utils_test_all
     use RootFinderTest, only: root_finder_test_all
+    use AdvectionEquationTest, only: advection_equation_test_all
     use NewtonRaphsonTest, only: newton_raphson_test_all
     implicit none
 
@@ -18,6 +19,7 @@ program MainTest
     call file_utils_test_all(failures)
     call newton_raphson_test_all(failures)
     call root_finder_test_all(failures)
+    call advection_equation_test_all(failures)
 
     if (failures == 0) then
         print *, NEW_LINE('h')//'Tests finished successfully'
