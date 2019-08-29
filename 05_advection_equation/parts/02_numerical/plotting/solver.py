@@ -100,9 +100,10 @@ def solve_equation(x_start, x_end, nx,
 
     Returns
     -------
-        (x, y, z) tuple
-            x, y, and z values of the solution,
+        (x, y, z, dx, dt) tuple
+            x, y, and z are the values of the solution,
             where x and y and 1D arrays, and z is a 2D array.
+            dx and dt are the positino and time steps
     """
 
     subdir = "tmp"
@@ -135,8 +136,10 @@ def solve_equation(x_start, x_end, nx,
         return None
 
     x, y, z = read_solution_from_file(path_to_data)
+    dx = x[1] - x[0]
+    dt = y[1] - y[0]
 
     os.remove(path_to_data)
     os.rmdir(subdir)
 
-    return (x, y, z)
+    return (x, y, z, dx, dt)

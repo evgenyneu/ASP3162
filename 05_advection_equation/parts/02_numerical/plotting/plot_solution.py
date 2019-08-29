@@ -14,7 +14,7 @@ import os
 from solver import solve_equation
 
 
-def plot_3d(plot_dir, plot_file_name):
+def plot_3d(plot_dir, nx, nt, plot_file_name):
     """
     Makes a surface 3D plot of the velocity and saves it to a file.
 
@@ -28,13 +28,15 @@ def plot_3d(plot_dir, plot_file_name):
         Plot file name
     """
 
-    result = solve_equation(x_start=-1.6, x_end=1.6, nx=200,
-                            t_start=0, t_end=1.4, nt=50)
+    result = solve_equation(x_start=-np.pi/2 + 0.001, x_end=np.pi/2 - 0.001,
+                            nx=nx, t_start=0, t_end=1.4, nt=nt)
 
     if result is None:
         return
     else:
-        x, y, z = result
+        x, y, z, dx, dt = result
+        courant = dx/dt
+        z = np.nan_to_num(z)
         z = np.clip(z, 0, 1.1)
 
     x = [x]
@@ -47,10 +49,13 @@ def plot_3d(plot_dir, plot_file_name):
     plt.ylabel("Time t [s]")
     ax.set_zlabel("Velocity v [m/s]")
 
-    plt.title(("Analytical solution of advection equation\n"
-               "$v_t + vv_x=0$ with initial condition\n$v(x,0)=\\cos(x)$"))
+    title = (
+        "Numerical solution of advection equation\n"
+        f"for dx={dx:.3f}, dt={dt:.3f}, dx/dt={courant:.2f}"
+    )
 
-    ax.view_init(40, 110)
+    plt.title(title)
+    ax.view_init(40, 100)
     ax.set_zlim(0, 1)
     ax.invert_xaxis()
     plt.tight_layout()
@@ -112,7 +117,12 @@ def make_plots():
     """
 
     plot_3d(plot_dir="plots",
-            plot_file_name="advection_analytical_solution_3d.pdf")
+            plot_file_name="advection_analytical_solution_3d_nx_100_nt_100.pdf",
+            nx=100, nt=100)
+
+    plot_3d(plot_dir="plots",
+            plot_file_name="advection_analytical_solution_3d_nx_628_nt_280.pdf",
+            nx=628, nt=280)
 
     # plot_2d(plot_dir="plots",
     #         plot_file_name="advection_analytical_solution_2d_vstart_0_62.pdf",
