@@ -8,8 +8,8 @@ use Settings, only: program_settings, read_from_command_line
 use FloatUtils, only: linspace
 implicit none
 private
-public :: solve_equation, print_data, solve_and_create_output, &
-          read_settings_solve_and_create_output, write_to_file
+public :: solve_equation, print_output, solve_and_create_output, &
+          read_settings_solve_and_create_output
 
 contains
 
@@ -91,74 +91,40 @@ end subroutine
 
 
 !
-! Prints 2D array containing solutions (or their errors)
-! to a string variable. In addition to the solution, the first row
-! contains the x coordinate, and the first column contains the t coordinate
+! Prints solution to a binary data file. See README.md for description
+! of the file format.
 !
 ! Inputs:
-! -------
+! --------
 !
-! data : a 2D array containing solutions or errors for printing
+! filename : Name of the data file to print output to
 !
-! x_points : A 1D array containing the values of the x coordinate
+! solution : 2D array containing the solution (values of v)
+!            first coordinate is x, second is t.
 !
-! t_points : A 1D array containing the values of the time coordinate
+! x_points : A 1D array containing the values of x
 !
+! t_points : A 1D array containing the values of t
 !
-! Outputs:
-! -------
-!
-! output : text output containing solution
-!
-subroutine print_data(data, x_points, t_points, output)
-    real(dp), intent(in) :: data(:,:),  x_points(:), t_points(:)
-    character(len=:), allocatable, intent(out) :: output
-    character(len=:), allocatable :: tmp_arr
-    character(len=1024*10) :: buffer
-    integer :: n, nx, j, allocated = 1024*10
-    character(len=1024) :: rowfmt
+subroutine print_output(filename, solution, x_points, t_points)
+    character(len=*), intent(in) :: filename
+    real(dp), intent(in) :: solution(:, :)
+    real(dp), intent(in) :: x_points(:), t_points(:)
 
-    allocate(character(len=allocated) :: output)
-    output = ""
-    nx = size(x_points)
-    write(rowfmt,'(A,I4,A)') '(',nx + 1,'(1X,ES24.17))'
-    write(buffer, fmt = rowfmt) 0._dp, (x_points(j), j=1, nx)
-    output = output // trim(buffer) // new_line('A')
-
-    do n = 1, size(t_points)
-        write(buffer, fmt = rowfmt) t_points(n), (data(j, n), j=1, nx)
-        output = output // trim(buffer) // new_line('A')
-
-        ! Resize the string array if too small
-        if (len(output) > allocated / 2) then
-            allocated = 2 * allocated
-            allocate(character(len=allocated) :: tmp_arr)
-            tmp_arr = output
-            deallocate(output)
-            call move_alloc(tmp_arr, output)
-        end if
-    end do
-end subroutine
-
-
-!
-! Write text to a file
-!
-! Inputs:
-! -------
-!
-! text : a text to be written
-!
-! path : path to a text file to be created
-!
-subroutine write_to_file(text, path)
-    character(len=*), intent(in) :: text, path
     integer, parameter :: out_unit=20
 
-    open(unit=out_unit, file=path, action="write", status="replace")
-    write(out_unit, "(a)") text
+    open(unit=out_unit, file=filename, form="unformatted", action="write", &
+        status="replace")
+
+    write(out_unit) size(x_points)
+    write(out_unit) size(t_points)
+    write(out_unit) x_points
+    write(out_unit) t_points
+    write(out_unit) solution
+
     close(unit=out_unit)
 end subroutine
+
 
 !
 ! Solves PDE and prints solutions and errors to files
@@ -170,13 +136,14 @@ end subroutine
 !
 subroutine solve_and_create_output(options)
     type(program_settings), intent(in) :: options
-    real(dp), allocatable :: data(:,:)
+    real(dp), allocatable :: solution(:,:)
     real(dp), allocatable :: x_points(:), t_points(:)
     character(len=:), allocatable :: data_output
 
-    call solve_equation(options, data, x_points, t_points)
-    call print_data(data, x_points, t_points, data_output)
-    call write_to_file(data_output, options%output_path)
+    call solve_equation(options, solution, x_points, t_points)
+
+    call print_output(filename=options%output_path, &
+                      solution=solution, x_points=x_points, t_points=t_points)
 end subroutine
 
 !
@@ -207,7 +174,6 @@ subroutine read_settings_solve_and_create_output(silent)
         print "(a, a, a)", "Solution saved to '", &
             trim(settings%output_path), "'"
     end if
-
 end subroutine
 
 
