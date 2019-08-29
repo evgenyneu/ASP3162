@@ -24,6 +24,76 @@ subroutine solve_eqn_test(failures)
 
     options%x_start = -pi/2
     options%x_end = pi/2
+    options%nx = 200
+    options%t_start = 0
+    options%t_end = 1.4_dp
+    options%nt = 50
+
+    call solve_equation(options, solution, x_points, t_points)
+
+    call assert_true(.true., __FILE__, __LINE__, failures)
+
+    ! x_points
+    ! ----------
+
+    call assert_approx(x_points(1), -1.57079_dp, 1e-5_dp, __FILE__, &
+        __LINE__, failures)
+
+    call assert_approx(x_points(2), -1.5550094_dp, 1e-5_dp, __FILE__, &
+        __LINE__, failures)
+
+    call assert_approx(x_points(200), 1.57079_dp, 1e-5_dp, __FILE__, &
+        __LINE__, failures)
+
+    ! t_points
+    ! ----------
+
+    call assert_approx(t_points(1), 0.0_dp, 1e-5_dp, __FILE__, &
+        __LINE__, failures)
+
+    call assert_approx(t_points(2), 0.285714e-1_dp, 1e-5_dp, __FILE__, &
+        __LINE__, failures)
+
+    call assert_approx(t_points(50), 1.4_dp, 1e-5_dp, __FILE__, &
+        __LINE__, failures)
+
+    ! solution
+    ! ----------
+
+    call assert_approx(solution(1, 1), 0.0_dp, 1e-5_dp, __FILE__, &
+        __LINE__, failures)
+
+    call assert_approx(solution(100, 1), 0.999968_dp, 1e-5_dp, __FILE__, &
+        __LINE__, failures)
+
+    call assert_approx(solution(200, 1), 0.0_dp, 1e-5_dp, __FILE__, &
+        __LINE__, failures)
+
+    call assert_approx(solution(1, 40), 0.0_dp, 1e-5_dp, __FILE__, &
+        __LINE__, failures)
+
+    call assert_approx(solution(100, 40), 0.699987_dp, 1e-5_dp, __FILE__, &
+        __LINE__, failures)
+
+    call assert_approx(solution(200, 40), 0.0_dp, 1e-5_dp, __FILE__, &
+        __LINE__, failures)
+
+
+    ! Ensure there are no NaN values
+    if (any(ieee_is_nan(solution))) then
+        call assert_true(.true., __FILE__, __LINE__, failures)
+    end if
+end
+
+
+subroutine solve_eqn_unstable_test(failures)
+    integer, intent(inout) :: failures
+    type(program_settings) :: options
+    real(dp), allocatable :: solution(:,:)
+    real(dp), allocatable :: x_points(:), t_points(:)
+
+    options%x_start = -pi/2
+    options%x_end = pi/2
     options%nx = 600
     options%t_start = 0
     options%t_end = 1.4_dp
@@ -80,19 +150,6 @@ subroutine solve_eqn_test(failures)
 
     call assert_approx(solution(600, 200), 0.0_dp, 1e-5_dp, __FILE__, &
         __LINE__, failures)
-
-    ! call assert_approx(data(1, 100), 0.0_dp, 1e-5_dp, __FILE__, __LINE__, failures)
-    ! call assert_approx(data(10, 100), 50.61869_dp, 1e-5_dp, __FILE__, __LINE__, failures)
-    ! call assert_approx(data(20, 100), 0.0_dp, 1e-5_dp, __FILE__, __LINE__, failures)
-
-    ! call assert_approx(errors(1, 1), 0.0_dp, 1e-5_dp, __FILE__, __LINE__, failures)
-    ! call assert_approx(errors(10, 1), 0.0_dp, 1e-5_dp, __FILE__, __LINE__, failures)
-    ! call assert_approx(errors(20, 1), 0.0_dp, 1e-5_dp, __FILE__, __LINE__, failures)
-
-    ! call assert_approx(errors(1, 10), 0.0_dp, 1e-5_dp, __FILE__, __LINE__, failures)
-    ! call assert_approx(errors(10, 10), 0.65785847e-2_dp, 1e-5_dp, __FILE__, __LINE__, failures)
-    ! call assert_approx(errors(10, 50), .27244811e-1_dp, 1e-5_dp, __FILE__, __LINE__, failures)
-    ! call assert_approx(errors(20, 10), 0.0_dp, 1e-5_dp, __FILE__, __LINE__, failures)
 end
 
 ! subroutine print_data_test(failures)
@@ -244,6 +301,7 @@ subroutine advection_equation_test_all(failures)
     integer, intent(inout) :: failures
 
     call solve_eqn_test(failures)
+    call solve_eqn_unstable_test(failures)
 
     ! call print_data_test(failures)
 
