@@ -109,3 +109,34 @@ Newton-Raphson method does not guarantee to find a root. The case when the progr
 Alternatively, in case when the program does find a root, we store that value in a 2D array called \code{solution} on \code{Line 183}.
 
 The end result of this part of the program is the $\code{solution}$ array filled with values of $v$ for all values of $x$ and $t$ parameters that the user has chosen. Alternatively, if the program could not find solution to \autoref{eq_analytical_solution} for just a single pair of $x$ and $t$, it exits with an error. In this case, the user is presented with an error message containing the values of $x$ and $t$ parameters for which Newton-Raphson method failed. The user can then re-run the program again with different values of starting $v_1$ value, tolerance and maximum number of iterations $N_{max}$ for Newton-Raphson method, until she finds settings for which Newton-Raphson is able to find solutions for all values of $x$ and $t$.
+
+
+
+\subsection{Running the program and making plots}
+
+The source code is located in \code{01\_root\_finder} directory. Instructions for compiling, running the program and plotting its results are located in the README.md file that comes with the source code.
+
+
+\subsection{Plotting solution}
+
+We look at the approximate solution produced by our program by first plotting the solution for small number of x values ($nx = 5$) on \autoref{fix_solution_nx_5_alpha_0_1}.
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=1.0\textwidth]{figures/{nx_5_alpha_0.10_solution}.pdf}
+  \caption{Approximate solution to the heat equation for $nx=5$ and $\alpha = 0.1$.}
+  \label{fix_solution_nx_5_alpha_0_1}
+\end{figure}
+We can see from \autoref{fix_solution_nx_5_alpha_0_1} that the the temperature of the rod decreases from a sinusoidal distribution with time, and the ends remain at $T=0$, as expected. 
+
+The corresponding errors are shown on \autoref{fix_errors_nx_5_alpha_0_1}. The errors were found by calculating the absolute value of the difference between the approximate solution and the exact solution, which is given by equation
+\[
+  T(x,t) = 100 e^{- \pi^2 k t / L^2} \sin(\pi x / L).
+\]
+We can see from \autoref{fix_errors_nx_5_alpha_0_1} that the errors are first increasing with time, reaching peak values of about $0.8 \ K$ at $t \approx 3000 \ s$, and then start to decrease. The data show that the errors are larger near the center of the rod.
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=1.0\textwidth]{figures/{nx_5_alpha_0.10_errors}.pdf}
+  \caption{The absolute errors of the approximate solution of the heat equation for $nx=5$ and $\alpha = 0.1$.}
+  \label{fix_errors_nx_5_alpha_0_1}
+\end{figure}
+

@@ -61,7 +61,7 @@ def plot_3d(plot_dir, plot_file_name):
     plt.show()
 
 
-def plot_2d(plot_dir, plot_file_name):
+def plot_2d(plot_dir, plot_file_name, v_start):
     """
     Makes a 2D plot of the velocity at different time values
     and saves it to a file.
@@ -74,11 +74,14 @@ def plot_2d(plot_dir, plot_file_name):
 
     plot_file_name : str
         Plot file name
+
+    v_start : float
+        The starting value for v for the root finding algorithm.
     """
 
     result = solve_equation(x_start=-1.6, x_end=1.6, nx=100,
                             t_start=0, t_end=1.4, nt=8,
-                            v_start=0.62, tolerance=1e-5, max_iterations=1000)
+                            v_start=v_start, tolerance=1e-5, max_iterations=5000)
 
     if result is None:
         return
@@ -93,7 +96,8 @@ def plot_2d(plot_dir, plot_file_name):
     plt.xlabel("Position x [m]")
     plt.ylabel("Velocity v [m/s]")
     plt.title(("Analytical solution of advection equation\n"
-               "$v_t + vv_x=0$ with initial condition\n$v(x,0)=\\cos(x)$"))
+               "$v_t + vv_x=0$ with initial condition\n$v(x,0)=\\cos(x)$"
+               f", v_start={v_start}"))
 
     plt.ylim(0, 1.1)
     plt.legend()
@@ -113,7 +117,12 @@ def make_plots():
             plot_file_name="advection_analytical_solution_3d.pdf")
 
     plot_2d(plot_dir="plots",
-            plot_file_name="advection_analytical_solution_2d.pdf")
+            plot_file_name="advection_analytical_solution_2d_vstart_0_62.pdf",
+            v_start=0.62)
+
+    plot_2d(plot_dir="plots",
+            plot_file_name="advection_analytical_solution_2d_vstart_0_15.pdf",
+            v_start=0.15)
 
 
 if __name__ == '__main__':
