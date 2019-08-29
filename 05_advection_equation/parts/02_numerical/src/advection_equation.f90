@@ -47,27 +47,26 @@ subroutine solve_equation(options, solution, x_points, t_points)
     type(program_settings), intent(in) :: options
     real(dp), allocatable, intent(out) :: solution(:,:)
     real(dp), allocatable, intent(out) :: x_points(:), t_points(:)
-    real(dp) :: l, x0, x1, dx, t0, dt, t
+    real(dp) :: l, x0, x1, dx, t0, t1, dt, t
     integer :: nx, nt, n
 
-    ! x0 = 0._dp
-    ! x1 = x0 + l
-    ! nx = options%nx
-    ! dx = (x1 - x0) / (nx - 1)
-    ! alpha = options%alpha
-    ! dt =  alpha * dx**2 / k
-    ! t0 = 0
-    ! nt = options%nt
+    ! Assign shortcuts variables from settings
+    x0 = options%x_start
+    x1 = options%x_end
+    nx = options%nx
 
-    ! ! Allocate the arrays
-    ! allocate(data(nx, nt))
-    ! allocate(exact(nx, nt))
-    ! allocate(errors(nx, nt))
-    ! allocate(x_points(nx))
-    ! allocate(t_points(nt))
+    t0 = options%t_start
+    t1 = options%t_end
+    nt = options%nt
 
-    ! ! Assign evenly spaced x values
-    ! call linspace(x0, x1, x_points)
+    ! Allocate the arrays
+    allocate(solution(nx, nt))
+    allocate(x_points(nx))
+    allocate(t_points(nt))
+
+    ! Assign evenly spaced x values
+    call linspace(x0, x1, x_points)
+    call linspace(t0, t1, t_points)
 
     ! ! Set initial conditions
     ! data(:, 1) = 100 * sin(pi * x_points / l)

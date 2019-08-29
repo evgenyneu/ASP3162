@@ -1,6 +1,7 @@
 module AdvectionEquationTest
 use Types, only: dp
 use AssertsTest, only: assert_true, assert_approx, assert_equal
+use Constants, only: pi
 
 use AdvectionEquation, only: solve_equation, print_data, &
     solve_and_create_output, read_settings_solve_and_create_output, &
@@ -14,44 +15,48 @@ public advection_equation_test_all
 
 contains
 
-! subroutine solve_heat_eqn_test(failures)
-!     integer, intent(inout) :: failures
-!     type(program_settings) :: options
-!     real(dp), allocatable :: data(:,:), errors(:,:)
-!     real(dp), allocatable :: x_points(:), t_points(:)
+subroutine solve_eqn_test(failures)
+    integer, intent(inout) :: failures
+    type(program_settings) :: options
+    real(dp), allocatable :: solution(:,:)
+    real(dp), allocatable :: x_points(:), t_points(:)
 
-!     options%nx = 20
-!     options%nt = 100
-!     options%alpha = 0.25_dp
-!     options%k = 2.28e-5
+    options%x_start = -pi/2
+    options%x_end = pi/2
+    options%nx = 600
+    options%t_start = 0
+    options%t_end = 1.4_dp
+    options%nt = 280
 
-!     call solve_heat_equation(options, data, errors, x_points, t_points)
+    call solve_equation(options, solution, x_points, t_points)
 
-!     call assert_approx(x_points(1), 0.0_dp, 1e-5_dp, __FILE__, __LINE__, failures)
-!     call assert_approx(x_points(10), 0.4736842_dp, 1e-5_dp, __FILE__, __LINE__, failures)
-!     call assert_approx(x_points(20), 1.0_dp, 1e-5_dp, __FILE__, __LINE__, failures)
+    call assert_true(.true., __FILE__, __LINE__, failures)
 
-!     call assert_approx(t_points(1), 0.0_dp, 1e-5_dp, __FILE__, __LINE__, failures)
-!     call assert_approx(t_points(2), 30.3737171_dp, 1e-5_dp, __FILE__, __LINE__, failures)
-!     call assert_approx(t_points(3), 60.7474343_dp, 1e-5_dp, __FILE__, __LINE__, failures)
+    ! call assert_approx(x_points(1), 0.0_dp, 1e-5_dp, __FILE__, __LINE__, failures)
+    ! call assert_approx(x_points(10), 0.4736842_dp, 1e-5_dp, __FILE__, __LINE__, failures)
+    ! call assert_approx(x_points(20), 1.0_dp, 1e-5_dp, __FILE__, __LINE__, failures)
 
-!     call assert_approx(data(1, 1), 0.0_dp, 1e-5_dp, __FILE__, __LINE__, failures)
-!     call assert_approx(data(10, 1), 99.658449_dp, 1e-5_dp, __FILE__, __LINE__, failures)
-!     call assert_approx(data(20, 1), 0.0_dp, 1e-5_dp, __FILE__, __LINE__, failures)
+    ! call assert_approx(t_points(1), 0.0_dp, 1e-5_dp, __FILE__, __LINE__, failures)
+    ! call assert_approx(t_points(2), 30.3737171_dp, 1e-5_dp, __FILE__, __LINE__, failures)
+    ! call assert_approx(t_points(3), 60.7474343_dp, 1e-5_dp, __FILE__, __LINE__, failures)
 
-!     call assert_approx(data(1, 100), 0.0_dp, 1e-5_dp, __FILE__, __LINE__, failures)
-!     call assert_approx(data(10, 100), 50.61869_dp, 1e-5_dp, __FILE__, __LINE__, failures)
-!     call assert_approx(data(20, 100), 0.0_dp, 1e-5_dp, __FILE__, __LINE__, failures)
+    ! call assert_approx(data(1, 1), 0.0_dp, 1e-5_dp, __FILE__, __LINE__, failures)
+    ! call assert_approx(data(10, 1), 99.658449_dp, 1e-5_dp, __FILE__, __LINE__, failures)
+    ! call assert_approx(data(20, 1), 0.0_dp, 1e-5_dp, __FILE__, __LINE__, failures)
 
-!     call assert_approx(errors(1, 1), 0.0_dp, 1e-5_dp, __FILE__, __LINE__, failures)
-!     call assert_approx(errors(10, 1), 0.0_dp, 1e-5_dp, __FILE__, __LINE__, failures)
-!     call assert_approx(errors(20, 1), 0.0_dp, 1e-5_dp, __FILE__, __LINE__, failures)
+    ! call assert_approx(data(1, 100), 0.0_dp, 1e-5_dp, __FILE__, __LINE__, failures)
+    ! call assert_approx(data(10, 100), 50.61869_dp, 1e-5_dp, __FILE__, __LINE__, failures)
+    ! call assert_approx(data(20, 100), 0.0_dp, 1e-5_dp, __FILE__, __LINE__, failures)
 
-!     call assert_approx(errors(1, 10), 0.0_dp, 1e-5_dp, __FILE__, __LINE__, failures)
-!     call assert_approx(errors(10, 10), 0.65785847e-2_dp, 1e-5_dp, __FILE__, __LINE__, failures)
-!     call assert_approx(errors(10, 50), .27244811e-1_dp, 1e-5_dp, __FILE__, __LINE__, failures)
-!     call assert_approx(errors(20, 10), 0.0_dp, 1e-5_dp, __FILE__, __LINE__, failures)
-! end
+    ! call assert_approx(errors(1, 1), 0.0_dp, 1e-5_dp, __FILE__, __LINE__, failures)
+    ! call assert_approx(errors(10, 1), 0.0_dp, 1e-5_dp, __FILE__, __LINE__, failures)
+    ! call assert_approx(errors(20, 1), 0.0_dp, 1e-5_dp, __FILE__, __LINE__, failures)
+
+    ! call assert_approx(errors(1, 10), 0.0_dp, 1e-5_dp, __FILE__, __LINE__, failures)
+    ! call assert_approx(errors(10, 10), 0.65785847e-2_dp, 1e-5_dp, __FILE__, __LINE__, failures)
+    ! call assert_approx(errors(10, 50), .27244811e-1_dp, 1e-5_dp, __FILE__, __LINE__, failures)
+    ! call assert_approx(errors(20, 10), 0.0_dp, 1e-5_dp, __FILE__, __LINE__, failures)
+end
 
 ! subroutine print_data_test(failures)
 !     integer, intent(inout) :: failures
@@ -201,7 +206,7 @@ contains
 subroutine advection_equation_test_all(failures)
     integer, intent(inout) :: failures
 
-    ! call solve_heat_eqn_test(failures)
+    call solve_eqn_test(failures)
 
     ! call print_data_test(failures)
 
