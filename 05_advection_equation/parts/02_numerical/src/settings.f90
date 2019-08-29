@@ -42,24 +42,19 @@ type, public :: program_settings
 
     ! The number of time points in the grid
     integer :: nt
-
-    ! The starting value for v for the root finding algorithm.
-    real(dp) :: root_finder_v_start
-
-    ! Convergence tolerance for Newton-Raphson method.
-    real(dp) :: root_finder_tolerance
-
-    ! The maximum number of iterations of the Newton-Raphson method.
-    integer :: root_finder_max_iterations
 end type program_settings
 
 ! Help message to be shown
 character(len=HELP_MESSAGE_LENGTH), parameter :: HELP_MESSAGE = NEW_LINE('h')//"&
     &This program solves equation"//NEW_LINE('h')//"&
     &"//NEW_LINE('h')//"&
-    &  cos(x - v * t) - v = 0"//NEW_LINE('h')//"&
+    &  v_t + v v_x = 0"//NEW_LINE('h')//"&
     &"//NEW_LINE('h')//"&
-    &for different values of x and t"//NEW_LINE('h')//"&
+    &with initial condition"//NEW_LINE('h')//"&
+    &  v(x,0) = cos x"//NEW_LINE('h')//"&
+    &"//NEW_LINE('h')//"&
+    &and boundary conditions"//NEW_LINE('h')//"&
+    &  v(−pi/2, t) = v(pi/2, t) = 0"//NEW_LINE('h')//"&
     &"//NEW_LINE('h')//"&
     &"//NEW_LINE('h')//"&
     &Usage:&
@@ -67,8 +62,7 @@ character(len=HELP_MESSAGE_LENGTH), parameter :: HELP_MESSAGE = NEW_LINE('h')//"
     &"//NEW_LINE('h')//"&
     & ./build/main OUTPUT [--x_start=-1.5] [--x_end=1.5]"//NEW_LINE('h')//"&
     &    [--nx=100] [--t_start=0] [--t_end=1.4]"//NEW_LINE('h')//"&
-    &    [--nt=8] [--v_start=0.5] [--v_start=0.5]"//NEW_LINE('h')//"&
-    &    [--tolerance=1.0e-5] [--max_iterations=1000]"//NEW_LINE('h')//"&
+    &    [--nt=8]"//NEW_LINE('h')//"&
     &"//NEW_LINE('h')//"&
     &    OUTPUT : path to the output data file"//NEW_LINE('h')//"&
     &"//NEW_LINE('h')//"&
@@ -91,18 +85,6 @@ character(len=HELP_MESSAGE_LENGTH), parameter :: HELP_MESSAGE = NEW_LINE('h')//"
     &    --nt=NUMBER : number of t points in the grid,"//NEW_LINE('h')//"&
     &                  Default: 8."//NEW_LINE('h')//"&
     &"//NEW_LINE('h')//"&
-    &    --v_start=NUMBER : The starting value for v for the root finding &
-    &algorithm.,"//NEW_LINE('h')//"&
-    &                  Default: 0.5."//NEW_LINE('h')//"&
-    &"//NEW_LINE('h')//"&
-    &    --tolerance=NUMBER : tolerance for Newton-Raphson &
-    &method.,"//NEW_LINE('h')//"&
-    &                  Default: 1e-5."//NEW_LINE('h')//"&
-    &"//NEW_LINE('h')//"&
-    &    --max_iterations=NUMBER : maximum number of &
-    &iterations for Newton-Raphson method"//NEW_LINE('h')//"&
-    &                  Default: 1000."//NEW_LINE('h')//"&
-    &"//NEW_LINE('h')//"&
     &    --help  : show this message."//NEW_LINE('h')
 
 ! Default values for the settings
@@ -115,10 +97,6 @@ integer, parameter :: DEFAULT_NX = 100
 real(dp), parameter :: DEFAULT_T_START = -0._dp
 real(dp), parameter :: DEFAULT_T_END = 1.4_dp
 integer, parameter :: DEFAULT_NT = 8
-
-real(dp), parameter :: DEFAULT_V_START = 0.5_dp
-real(dp), parameter :: DEFAULT_TOLERANCE = 1.e-5_dp
-integer, parameter :: DEFAULT_MAX_ITERATIONS = 1000
 
 contains
 
@@ -204,7 +182,7 @@ subroutine read_from_parsed_command_line(parsed, settings, error_message)
     logical :: success
     character(len=ARGUMENT_MAX_LENGTH), allocatable :: unrecognized(:)
     integer :: unrecognized_count
-    character(len=ARGUMENT_MAX_LENGTH) :: valid_args(11)
+    character(len=ARGUMENT_MAX_LENGTH) :: valid_args(8)
 
     error_message = ""
 
@@ -227,11 +205,8 @@ subroutine read_from_parsed_command_line(parsed, settings, error_message)
     valid_args(4) = "t_start"
     valid_args(5) = "t_end"
     valid_args(6) = "nt"
-    valid_args(7) = "v_start"
-    valid_args(8) = "tolerance"
-    valid_args(9) = "max_iterations"
-    valid_args(10) = "h"
-    valid_args(11) = "help"
+    valid_args(7) = "h"
+    valid_args(8) = "help"
 
     call unrecognized_named_args(valid=valid_args, parsed=parsed, &
         unrecognized=unrecognized, count=unrecognized_count)
@@ -338,49 +313,6 @@ subroutine read_from_parsed_command_line(parsed, settings, error_message)
         call make_message("nt is not a number", error_message)
         return
     end if
-
-
-    ! v_start
-    ! --------------
-
-    call get_named_value_or_default(name='v_start', parsed=parsed, &
-                                    default=DEFAULT_V_START, &
-                                    value=settings%root_finder_v_start, &
-                                    success=success)
-
-    if (.not. success) then
-        call make_message("v_start is not a number", error_message)
-        return
-    end if
-
-
-    ! tolerance
-    ! --------------
-
-    call get_named_value_or_default(name='tolerance', parsed=parsed, &
-                                    default=DEFAULT_TOLERANCE, &
-                                    value=settings%root_finder_tolerance, &
-                                    success=success)
-
-    if (.not. success) then
-        call make_message("tolerance is not a number", error_message)
-        return
-    end if
-
-
-    ! max_iterations
-    ! --------------
-
-    call get_named_value_or_default(name='max_iterations', parsed=parsed, &
-                                    default=DEFAULT_MAX_ITERATIONS, &
-                                    value=settings%root_finder_max_iterations,&
-                                    success=success)
-
-    if (.not. success) then
-        call make_message("max_iterations is not a number", error_message)
-        return
-    end if
-
 end subroutine
 
 end module Settings

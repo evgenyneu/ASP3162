@@ -37,15 +37,6 @@ subroutine read_from_parsed_command_line_test__no_args(failures)
     call assert_approx(settings%t_start, 0._dp, 1e-5_dp, __FILE__, __LINE__, failures)
     call assert_approx(settings%t_end, 1.4_dp, 1e-5_dp, __FILE__, __LINE__, failures)
     call assert_equal(settings%nt, 8, __FILE__, __LINE__, failures)
-
-    call assert_approx(settings%root_finder_v_start, 0.5_dp, 1e-5_dp, &
-                       __FILE__, __LINE__, failures)
-
-    call assert_approx(settings%root_finder_tolerance, 1.e-5_dp, 1e-8_dp, &
-                       __FILE__, __LINE__, failures)
-
-    call assert_equal(settings%root_finder_max_iterations, 1000,  &
-                       __FILE__, __LINE__, failures)
 end
 
 subroutine read_from_parsed_command_line_test__named(failures)
@@ -54,12 +45,12 @@ subroutine read_from_parsed_command_line_test__named(failures)
     type(program_settings) :: settings
     character(len=1024) :: error_message
 
-    call allocate_parsed(size=9, parsed=parsed)
+    call allocate_parsed(size=6, parsed=parsed)
 
     parsed%positional_count = 1
     parsed%positional(1) = "data.bin"
 
-    parsed%named_count = 9
+    parsed%named_count = 6
 
     parsed%named_name(1) = "x_start"
     parsed%named_value(1) = "0.123"
@@ -81,16 +72,6 @@ subroutine read_from_parsed_command_line_test__named(failures)
     parsed%named_value(6) = "132"
 
 
-    parsed%named_name(7) = "v_start"
-    parsed%named_value(7) = "0.55"
-
-    parsed%named_name(8) = "tolerance"
-    parsed%named_value(8) = "1.2341"
-
-    parsed%named_name(9) = "max_iterations"
-    parsed%named_value(9) = "542"
-
-
     call read_from_parsed_command_line(parsed=parsed, settings=settings, error_message=error_message)
 
     call assert_true(string_is_empty(error_message), __FILE__, __LINE__, failures)
@@ -102,15 +83,6 @@ subroutine read_from_parsed_command_line_test__named(failures)
     call assert_approx(settings%t_start, 0.111_dp, 1e-5_dp, __FILE__, __LINE__, failures)
     call assert_approx(settings%t_end, 0.222_dp, 1e-5_dp, __FILE__, __LINE__, failures)
     call assert_equal(settings%nt, 132, __FILE__, __LINE__, failures)
-
-    call assert_approx(settings%root_finder_v_start, 0.55_dp, 1e-5_dp, &
-                       __FILE__, __LINE__, failures)
-
-    call assert_approx(settings%root_finder_tolerance, 1.2341_dp, 1e-8_dp, &
-                       __FILE__, __LINE__, failures)
-
-    call assert_equal(settings%root_finder_max_iterations, 542,  &
-                       __FILE__, __LINE__, failures)
 end
 
 

@@ -67,7 +67,7 @@ character(len=HELP_MESSAGE_LENGTH), parameter :: HELP_MESSAGE = NEW_LINE('h')//"
     &"//NEW_LINE('h')//"&
     & ./build/main OUTPUT [--x_start=-1.5] [--x_end=1.5]"//NEW_LINE('h')//"&
     &    [--nx=100] [--t_start=0] [--t_end=1.4]"//NEW_LINE('h')//"&
-    &    [--nt=8] [--v_start=0.5] [--v_start=0.5]"//NEW_LINE('h')//"&
+    &    [--nt=8] [--v_start=0.5]"//NEW_LINE('h')//"&
     &    [--tolerance=1.0e-5] [--max_iterations=1000]"//NEW_LINE('h')//"&
     &"//NEW_LINE('h')//"&
     &    OUTPUT : path to the output data file"//NEW_LINE('h')//"&
