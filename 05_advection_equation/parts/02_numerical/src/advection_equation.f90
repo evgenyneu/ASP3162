@@ -47,7 +47,7 @@ subroutine solve_equation(options, solution, x_points, t_points)
     type(program_settings), intent(in) :: options
     real(dp), allocatable, intent(out) :: solution(:,:)
     real(dp), allocatable, intent(out) :: x_points(:), t_points(:)
-    real(dp) :: l, x0, x1, dx, t0, t1, dt, t, a
+    real(dp) :: x0, x1, dx, t0, t1, dt, a
     integer :: nx, nt, n
 
     ! Assign shortcuts variables from settings
@@ -100,7 +100,7 @@ end subroutine
 ! filename : Name of the data file to print output to
 !
 ! solution : 2D array containing the solution (values of v)
-!            first coordinate is x, second is t.
+!            the first coordinate is x, the second is t.
 !
 ! x_points : A 1D array containing the values of x
 !
@@ -127,7 +127,7 @@ end subroutine
 
 
 !
-! Solves PDE and prints solutions and errors to files
+! Solves PDE and prints solutions to a file
 !
 ! Inputs:
 ! -------
@@ -138,7 +138,6 @@ subroutine solve_and_create_output(options)
     type(program_settings), intent(in) :: options
     real(dp), allocatable :: solution(:,:)
     real(dp), allocatable :: x_points(:), t_points(:)
-    character(len=:), allocatable :: data_output
 
     call solve_equation(options, solution, x_points, t_points)
 
@@ -146,9 +145,10 @@ subroutine solve_and_create_output(options)
                       solution=solution, x_points=x_points, t_points=t_points)
 end subroutine
 
+
 !
 ! Reads program settings from command line arguments,
-! solves PDE and prints solutions and errors to files
+! solves PDE and prints solutions to a file
 !
 ! Inputs:
 ! -------
