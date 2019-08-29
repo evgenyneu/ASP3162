@@ -2,6 +2,7 @@ module AdvectionEquationTest
 use Types, only: dp
 use AssertsTest, only: assert_true, assert_approx, assert_equal
 use Constants, only: pi
+use, intrinsic :: ieee_arithmetic, only: ieee_is_nan
 
 use AdvectionEquation, only: solve_equation, print_data, &
     solve_and_create_output, read_settings_solve_and_create_output, &
@@ -32,17 +33,53 @@ subroutine solve_eqn_test(failures)
 
     call assert_true(.true., __FILE__, __LINE__, failures)
 
-    ! call assert_approx(x_points(1), 0.0_dp, 1e-5_dp, __FILE__, __LINE__, failures)
-    ! call assert_approx(x_points(10), 0.4736842_dp, 1e-5_dp, __FILE__, __LINE__, failures)
-    ! call assert_approx(x_points(20), 1.0_dp, 1e-5_dp, __FILE__, __LINE__, failures)
+    ! x_points
+    ! ----------
 
-    ! call assert_approx(t_points(1), 0.0_dp, 1e-5_dp, __FILE__, __LINE__, failures)
-    ! call assert_approx(t_points(2), 30.3737171_dp, 1e-5_dp, __FILE__, __LINE__, failures)
-    ! call assert_approx(t_points(3), 60.7474343_dp, 1e-5_dp, __FILE__, __LINE__, failures)
+    call assert_approx(x_points(1), -1.57079_dp, 1e-5_dp, __FILE__, &
+        __LINE__, failures)
 
-    ! call assert_approx(data(1, 1), 0.0_dp, 1e-5_dp, __FILE__, __LINE__, failures)
-    ! call assert_approx(data(10, 1), 99.658449_dp, 1e-5_dp, __FILE__, __LINE__, failures)
-    ! call assert_approx(data(20, 1), 0.0_dp, 1e-5_dp, __FILE__, __LINE__, failures)
+    call assert_approx(x_points(2), -1.56555_dp, 1e-5_dp, __FILE__, &
+        __LINE__, failures)
+
+    call assert_approx(x_points(600), 1.57079_dp, 1e-5_dp, __FILE__, &
+        __LINE__, failures)
+
+    ! t_points
+    ! ----------
+
+    call assert_approx(t_points(1), 0.0_dp, 1e-5_dp, __FILE__, &
+        __LINE__, failures)
+
+    call assert_approx(t_points(2), 0.501792e-2_dp, 1e-5_dp, __FILE__, &
+        __LINE__, failures)
+
+    call assert_approx(t_points(280), 1.4_dp, 1e-5_dp, __FILE__, &
+        __LINE__, failures)
+
+    ! solution
+    ! ----------
+
+    call assert_approx(solution(1, 1), 0.0_dp, 1e-5_dp, __FILE__, &
+        __LINE__, failures)
+
+    call assert_approx(solution(300, 1), 0.99999_dp, 1e-5_dp, __FILE__, &
+        __LINE__, failures)
+
+    call assert_approx(solution(600, 1), 0.0_dp, 1e-5_dp, __FILE__, &
+        __LINE__, failures)
+
+    call assert_approx(solution(1, 200), 0.0_dp, 1e-5_dp, __FILE__, &
+        __LINE__, failures)
+
+    call assert_approx(solution(300, 142), -55477.776052_dp, 1e-5_dp, __FILE__, &
+        __LINE__, failures)
+
+    call assert_true(ieee_is_nan(solution(300, 200)), __FILE__, &
+        __LINE__, failures)
+
+    call assert_approx(solution(600, 200), 0.0_dp, 1e-5_dp, __FILE__, &
+        __LINE__, failures)
 
     ! call assert_approx(data(1, 100), 0.0_dp, 1e-5_dp, __FILE__, __LINE__, failures)
     ! call assert_approx(data(10, 100), 50.61869_dp, 1e-5_dp, __FILE__, __LINE__, failures)
