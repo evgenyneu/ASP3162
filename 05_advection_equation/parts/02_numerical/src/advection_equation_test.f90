@@ -5,8 +5,7 @@ use Constants, only: pi
 use, intrinsic :: ieee_arithmetic, only: ieee_is_nan
 
 use AdvectionEquation, only: solve_equation, print_output, &
-    solve_and_create_output, read_settings_solve_and_create_output, &
-    write_to_file
+    solve_and_create_output, read_settings_solve_and_create_output
 
 use Settings, only: program_settings
 use FileUtils, only: file_exists, delete_file
@@ -152,142 +151,73 @@ subroutine solve_eqn_unstable_test(failures)
         __LINE__, failures)
 end
 
-! subroutine print_data_test(failures)
-!     integer, intent(inout) :: failures
-!     real(dp) :: data(3,3), value(4)
-!     real(dp) :: x_points(3), t_points(3)
-!     character(len=:), allocatable :: output
-!     integer, parameter :: unit=15
 
-!     data = reshape((/ 1, 2, 3, 4, 5, 6, 7, 8, 9 /), shape(data))
-!     x_points = [1.1_dp, 1.2_dp, 1.3_dp]
-!     t_points = [0.1_dp, 0.2_dp, 0.3_dp]
+subroutine solve_and_create_output_test(failures)
+    integer, intent(inout) :: failures
+    type(program_settings) :: options
+    real(dp) :: data(4)
+    integer, parameter :: unit=15
+    integer :: nx, nt
+    real(dp) :: x_points(100), t_points(8), solution(100, 8)
 
-!     call print_data(data, x_points, t_points, output)
+    options%output_path = "test_output.dat"
 
-!     ! Verify the data
-!     ! ----------
+    options%x_start = -1.57_dp
+    options%x_end = 1.57_dp
+    options%nx = 100
+    options%t_start = 0._dp
+    options%t_end = 1.4_dp
+    options%nt = 8
 
-!     call write_to_file(output, "test_data")
+    call solve_and_create_output(options)
 
-!     open (unit=unit, file="test_data", status='old',    &
-!         access='sequential', form='formatted', action='read' )
+    call assert_true(file_exists("test_output.dat"), __FILE__, __LINE__, failures)
 
-!     read (unit, *) value
-!     call assert_approx(value(1), 0._dp, 1e-5_dp, __FILE__, __LINE__, failures)
-!     call assert_approx(value(2), 1.1_dp, 1e-5_dp, __FILE__, __LINE__, failures)
-!     call assert_approx(value(3), 1.2_dp, 1e-5_dp, __FILE__, __LINE__, failures)
-!     call assert_approx(value(4), 1.3_dp, 1e-5_dp, __FILE__, __LINE__, failures)
+    ! Check output file
+    ! ----------
 
-!     read (unit, *) value
-!     call assert_approx(value(1), 0.1_dp, 1e-5_dp, __FILE__, __LINE__, failures)
-!     call assert_approx(value(2), 1._dp, 1e-5_dp, __FILE__, __LINE__, failures)
-!     call assert_approx(value(3), 2._dp, 1e-5_dp, __FILE__, __LINE__, failures)
-!     call assert_approx(value(4), 3._dp, 1e-5_dp, __FILE__, __LINE__, failures)
+    open(unit=unit, file="test_output.dat", form='unformatted', &
+        status='old', action='read' )
 
-!     read (unit, *) value
-!     call assert_approx(value(1), 0.2_dp, 1e-5_dp, __FILE__, __LINE__, failures)
-!     call assert_approx(value(2), 4._dp, 1e-5_dp, __FILE__, __LINE__, failures)
-!     call assert_approx(value(3), 5._dp, 1e-5_dp, __FILE__, __LINE__, failures)
-!     call assert_approx(value(4), 6._dp, 1e-5_dp, __FILE__, __LINE__, failures)
+    read (unit) nx
+    call assert_equal(nx, 100, __FILE__, __LINE__, failures)
 
-!     read (unit, *) value
-!     call assert_approx(value(1), 0.3_dp, 1e-5_dp, __FILE__, __LINE__, failures)
-!     call assert_approx(value(2), 7._dp, 1e-5_dp, __FILE__, __LINE__, failures)
-!     call assert_approx(value(3), 8._dp, 1e-5_dp, __FILE__, __LINE__, failures)
-!     call assert_approx(value(4), 9._dp, 1e-5_dp, __FILE__, __LINE__, failures)
+    read (unit) nt
+    call assert_equal(nt, 8, __FILE__, __LINE__, failures)
 
-!     close(unit=unit)
+    read (unit) x_points
 
-!     call delete_file("test_data")
-! end
+    call assert_approx(x_points(1), -1.57_dp, 1e-5_dp, __FILE__, __LINE__, &
+                       failures)
 
-! subroutine solve_and_create_output_test(failures)
-!     integer, intent(inout) :: failures
-!     type(program_settings) :: options
-!     real(dp) :: data(4)
-!     integer, parameter :: unit=15
+    call assert_approx(x_points(2), -1.538282_dp, 1e-5_dp, __FILE__, &
+                       __LINE__, failures)
 
-!     options%nx = 3
-!     options%nt = 3
-!     options%alpha = 0.25_dp
-!     options%k = 2.28e-5
-!     options%output_path = "test_output.txt"
-!     options%errors_path = "test_errors.txt"
+    call assert_approx(x_points(100), 1.57_dp, 1e-5_dp, __FILE__, &
+                       __LINE__, failures)
 
-!     call solve_and_create_output(options)
+    read (unit) t_points
 
-!     call assert_true(file_exists("test_output.txt"), __FILE__, __LINE__, failures)
-!     call assert_true(file_exists("test_errors.txt"), __FILE__, __LINE__, failures)
+    call assert_approx(t_points(1), 0._dp, 1e-5_dp, __FILE__, &
+                       __LINE__, failures)
 
-!     ! Check output file
-!     ! ----------
+    call assert_approx(t_points(2), 0.2_dp, 1e-5_dp, __FILE__, &
+                       __LINE__, failures)
 
-!     open (unit=unit, file="test_output.txt", status='old',    &
-!         access='sequential', form='formatted', action='read' )
+    call assert_approx(t_points(8), 1.4_dp, 1e-5_dp, __FILE__, &
+                       __LINE__, failures)
 
-!     read (unit, *) data
-!     call assert_approx(data(1), 0._dp, 1e-5_dp, __FILE__, __LINE__, failures)
-!     call assert_approx(data(2), 0._dp, 1e-5_dp, __FILE__, __LINE__, failures)
-!     call assert_approx(data(3), 0.5_dp, 1e-5_dp, __FILE__, __LINE__, failures)
-!     call assert_approx(data(4), 1._dp, 1e-5_dp, __FILE__, __LINE__, failures)
+    read (unit) solution
+    call assert_approx(solution(50, 1), 0.999874_dp, 1e-5_dp, __FILE__, &
+            __LINE__, failures)
 
-!     read (unit, *) data
-!     call assert_approx(data(1), 0._dp, 1e-5_dp, __FILE__, __LINE__, failures)
-!     call assert_approx(data(2), 0._dp, 1e-5_dp, __FILE__, __LINE__, failures)
-!     call assert_approx(data(3), 100._dp, 1e-5_dp, __FILE__, __LINE__, failures)
-!     call assert_approx(data(4), 0._dp, 1e-5_dp, __FILE__, __LINE__, failures)
+    call assert_approx(solution(50, 8), 0.5936725_dp, 1e-5_dp, __FILE__, &
+            __LINE__, failures)
 
-!     read (unit, *) data
-!     call assert_approx(data(1), 2741.22797_dp, 1e-5_dp, __FILE__, __LINE__, failures)
-!     call assert_approx(data(2), 0._dp, 1e-5_dp, __FILE__, __LINE__, failures)
-!     call assert_approx(data(3), 50._dp, 1e-5_dp, __FILE__, __LINE__, failures)
-!     call assert_approx(data(4), 0._dp, 1e-5_dp, __FILE__, __LINE__, failures)
+    close(unit=unit)
 
-!     read (unit, *) data
-!     call assert_approx(data(1), 5482.455946_dp, 1e-5_dp, __FILE__, __LINE__, failures)
-!     call assert_approx(data(2), 0._dp, 1e-5_dp, __FILE__, __LINE__, failures)
-!     call assert_approx(data(3), 25._dp, 1e-5_dp, __FILE__, __LINE__, failures)
-!     call assert_approx(data(4), 0._dp, 1e-5_dp, __FILE__, __LINE__, failures)
-
-!     close(unit=unit)
-
-
-!     ! Check errors file
-!     ! ----------
-
-!     open (unit=unit, file="test_errors.txt", status='old',    &
-!         access='sequential', form='formatted', action='read' )
-
-!     read (unit, *) data
-!     call assert_approx(data(1), 0._dp, 1e-5_dp, __FILE__, __LINE__, failures)
-!     call assert_approx(data(2), 0._dp, 1e-5_dp, __FILE__, __LINE__, failures)
-!     call assert_approx(data(3), 0.5_dp, 1e-5_dp, __FILE__, __LINE__, failures)
-!     call assert_approx(data(4), 1._dp, 1e-5_dp, __FILE__, __LINE__, failures)
-
-!     read (unit, *) data
-!     call assert_approx(data(1), 0._dp, 1e-5_dp, __FILE__, __LINE__, failures)
-!     call assert_approx(data(2), 0._dp, 1e-5_dp, __FILE__, __LINE__, failures)
-!     call assert_approx(data(3), 0._dp, 1e-5_dp, __FILE__, __LINE__, failures)
-!     call assert_approx(data(4), 0._dp, 1e-5_dp, __FILE__, __LINE__, failures)
-
-!     read (unit, *) data
-!     call assert_approx(data(1), 2741.22797_dp, 1e-5_dp, __FILE__, __LINE__, failures)
-!     call assert_approx(data(2), 0._dp, 1e-5_dp, __FILE__, __LINE__, failures)
-!     call assert_approx(data(3), 3.9641485_dp, 1e-5_dp, __FILE__, __LINE__, failures)
-!     call assert_approx(data(4), 0._dp, 1e-5_dp, __FILE__, __LINE__, failures)
-
-!     read (unit, *) data
-!     call assert_approx(data(1), 5482.455946_dp, 1e-5_dp, __FILE__, __LINE__, failures)
-!     call assert_approx(data(2), 0._dp, 1e-5_dp, __FILE__, __LINE__, failures)
-!     call assert_approx(data(3), 4.1212933_dp, 1e-5_dp, __FILE__, __LINE__, failures)
-!     call assert_approx(data(4), 0._dp, 1e-5_dp, __FILE__, __LINE__, failures)
-
-!     close(unit=unit)
-
-!     call delete_file("test_output.txt")
-!     call delete_file("test_errors.txt")
-! end
+    call delete_file("test_output.dat")
+end
 
 ! subroutine read_settings_solve_and_create_output_test(failures)
 !     integer, intent(inout) :: failures
@@ -358,7 +288,7 @@ subroutine advection_equation_test_all(failures)
 
     call print_output_test(failures)
 
-    ! call solve_and_create_output_test(failures)
+    call solve_and_create_output_test(failures)
 
     ! call read_settings_solve_and_create_output_test(failures)
 end
