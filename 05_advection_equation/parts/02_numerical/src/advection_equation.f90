@@ -47,7 +47,7 @@ subroutine solve_equation(options, solution, x_points, t_points)
     type(program_settings), intent(in) :: options
     real(dp), allocatable, intent(out) :: solution(:,:)
     real(dp), allocatable, intent(out) :: x_points(:), t_points(:)
-    real(dp) :: l, x0, x1, dx, t0, t1, dt, t
+    real(dp) :: l, x0, x1, dx, t0, t1, dt, t, a
     integer :: nx, nt, n
 
     ! Assign shortcuts variables from settings
@@ -68,33 +68,25 @@ subroutine solve_equation(options, solution, x_points, t_points)
     call linspace(x0, x1, x_points)
     call linspace(t0, t1, t_points)
 
-    ! ! Set initial conditions
-    ! data(:, 1) = 100 * sin(pi * x_points / l)
+    ! Set initial conditions
+    solution(:, 1) = cos(x_points)
 
-    ! ! Set boundary conditions
-    ! data(1, :) = 0
-    ! data(nx, :) = 0
+    ! Set boundary conditions
+    solution(1, :) = 0
+    solution(nx, :) = 0
 
-    ! ! Calculate numerical solution using forward differencing method
-    ! do n = 1, nt - 1
-    !     data(2 : nx - 1, n + 1) = data(2 : nx - 1, n) &
-    !         + alpha * ( &
-    !             data(3 : nx, n) &
-    !             - 2 * data(2 : nx - 1, n) &
-    !             + data(1 : nx - 2, n) &
-    !         )
-    ! end do
+    ! Calculate the steps
+    dx = (x1 - x0) / (nx - 1)
+    dt = (t1 - t0) / (nt - 1)
 
-    ! ! Calculate exact solution
-    ! do n = 1, nt
-    !     t = t0 + real(n - 1, dp) * dt
-    !     t_points(n) = t
+    ! Pre-calculate the multiplier
+    a = 0.25_dp * dt / dx
 
-    !     exact(:, n) = 100 * exp(-(pi**2)*k*t / (l**2)) * sin(pi * x_points / l)
-    ! end do
-
-    ! ! Calculate the errors
-    ! errors = abs(exact - data)
+    ! Calculate numerical solution
+    do n = 1, nt - 1
+        solution(2 : nx - 1, n + 1) = solution(2 : nx - 1, n) &
+            - a * ( solution(3 : nx, n)**2 - solution(1 : nx-2, n)**2)
+    end do
 end subroutine
 
 
