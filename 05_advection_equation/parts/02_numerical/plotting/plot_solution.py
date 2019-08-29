@@ -11,10 +11,11 @@ from plot_utils import create_dir
 import matplotlib.pyplot as plt
 import numpy as np
 import os
+import math
 from solver import solve_equation
 
 
-def plot_3d(plot_dir, nx, nt, plot_file_name):
+def plot_3d(plot_dir, plot_file_name, nx, nt):
     """
     Makes a surface 3D plot of the velocity and saves it to a file.
 
@@ -26,18 +27,21 @@ def plot_3d(plot_dir, nx, nt, plot_file_name):
 
     plot_file_name : str
         Plot file name
+
+    nx : int
+        The number of x points in the grid
+
+    nt : int
+        The number of t points in the grid
     """
 
-    result = solve_equation(x_start=-np.pi/2 + 0.001, x_end=np.pi/2 - 0.001,
+    result = solve_equation(x_start=-np.pi/2, x_end=np.pi/2,
                             nx=nx, t_start=0, t_end=1.4, nt=nt)
 
     if result is None:
         return
     else:
-        x, y, z, dx, dt = result
-        courant = dx/dt
-        z = np.nan_to_num(z)
-        z = np.clip(z, 0, 1.1)
+        x, y, z, dx, dt, courant = result
 
     x = [x]
     y = np.transpose([y])
@@ -65,7 +69,7 @@ def plot_3d(plot_dir, nx, nt, plot_file_name):
     plt.show()
 
 
-def plot_2d(plot_dir, plot_file_name, v_start):
+def plot_2d(plot_dir, plot_file_name, nx, nt, plot_timesteps):
     """
     Makes a 2D plot of the velocity at different time values
     and saves it to a file.
@@ -79,31 +83,43 @@ def plot_2d(plot_dir, plot_file_name, v_start):
     plot_file_name : str
         Plot file name
 
-    v_start : float
-        The starting value for v for the root finding algorithm.
+    nx : int
+        The number of x points in the grid
+
+    nt : int
+        The number of t points in the grid
+
+    plot_timesteps : int
+        number of timesteps to plot
     """
 
-    result = solve_equation(x_start=-1.6, x_end=1.6, nx=100,
-                            t_start=0, t_end=1.4, nt=8)
+    result = solve_equation(x_start=-np.pi/2, x_end=np.pi/2,
+                            nx=nx, t_start=0, t_end=1.4, nt=nt)
 
     if result is None:
         return
     else:
-        x, y, z = result
-        z = np.clip(z, 0, 1.1)
+        x, y, z, dx, dt, courant = result
+
+    plot_every_k_timestep = math.floor(float(len(y)) / plot_timesteps)
 
     for iy, t in enumerate(y):
+        if iy % plot_every_k_timestep != 0:
+            continue
         velocities = z[iy, :]
         plt.plot(x, velocities, label=f't={t:.1f} s')
 
     plt.xlabel("Position x [m]")
     plt.ylabel("Velocity v [m/s]")
-    plt.title(("Analytical solution of advection equation\n"
-               "$v_t + vv_x=0$ with initial condition\n$v(x,0)=\\cos(x)$"
-               f", v_start={v_start}"))
 
+    title = (
+        "Numerical solution of advection equation\n"
+        f"for dx={dx:.3f}, dt={dt:.3f}, dx/dt={courant:.2f}"
+    )
+
+    plt.title(title)
     plt.ylim(0, 1.1)
-    plt.legend()
+    plt.legend(loc='upper left')
     plt.tight_layout()
     create_dir(plot_dir)
     pdf_file = os.path.join(plot_dir, plot_file_name)
@@ -116,21 +132,25 @@ def make_plots():
     Make plots of velocity.
     """
 
-    plot_3d(plot_dir="plots",
-            plot_file_name="advection_analytical_solution_3d_nx_100_nt_100.pdf",
-            nx=100, nt=100)
+    # plot_3d(plot_dir="plots",
+    #         plot_file_name="advection_analytical_solution_3d_nx_101_nt_101.pdf",
+    #         nx=101, nt=101)
 
-    plot_3d(plot_dir="plots",
-            plot_file_name="advection_analytical_solution_3d_nx_628_nt_280.pdf",
-            nx=628, nt=280)
+    # plot_3d(plot_dir="plots",
+    #         plot_file_name="advection_analytical_solution_3d_nx_628_nt_280.pdf",
+    #         nx=628, nt=280)
+
+    plot_2d(plot_dir="plots",
+            plot_file_name="advection_analytical_solution_2d_nx_301_nt_101.pdf",
+            nx=101, nt=801, plot_timesteps=10)
 
     # plot_2d(plot_dir="plots",
-    #         plot_file_name="advection_analytical_solution_2d_vstart_0_62.pdf",
-    #         v_start=0.62)
+    #         plot_file_name="advection_analytical_solution_2d_nx_101_nt_101.pdf",
+    #         nx=101, nt=101, plot_timesteps=10)
 
     # plot_2d(plot_dir="plots",
-    #         plot_file_name="advection_analytical_solution_2d_vstart_0_15.pdf",
-    #         v_start=0.15)
+    #         plot_file_name="advection_analytical_solution_2d_nx_628_nt_280.pdf",
+    #         nx=628, nt=281, plot_timesteps=10)
 
 
 if __name__ == '__main__':

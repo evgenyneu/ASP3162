@@ -100,10 +100,13 @@ def solve_equation(x_start, x_end, nx,
 
     Returns
     -------
-        (x, y, z, dx, dt) tuple
-            x, y, and z are the values of the solution,
-            where x and y and 1D arrays, and z is a 2D array.
-            dx and dt are the positino and time steps
+        (x, y, z, dx, dt, courant) tuple
+            x, y, z :  values of the solution,
+                       where x and y and 1D arrays, and z is a 2D array.
+
+            dx, dt  : position and time steps
+
+            courant : ratio dx / dt
     """
 
     subdir = "tmp"
@@ -142,4 +145,8 @@ def solve_equation(x_start, x_end, nx,
     os.remove(path_to_data)
     os.rmdir(subdir)
 
-    return (x, y, z, dx, dt)
+    courant = dx/dt
+    z = np.nan_to_num(z)
+    z = np.clip(z, 0, 1.1)
+
+    return (x, y, z, dx, dt, courant)
