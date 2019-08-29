@@ -135,7 +135,7 @@ The 2D plot of the solution is shown on \autoref{fig_solution_2d}. We can see th
 \end{figure}
 In order to investigate the solution at high values of $t$ we run the program with different values of \code{v\_start} parameter (the initial value used for Newton-Raphson method), chosen between $0$ and $1$ We have found that Newton-Raphson method was not able to find a solution for most values $\code{v\_start} < 0.4$. In contrast, the program was able to find solutions for values $\code{v\_start} > 0.5$, especially those near $\code{v\_start} = 0.8$.
 
-In addition, we have found that the choise of $\code{v\_start}$ affected the solution for $t > 1.2$. For example, using solutions for $\code{v\_start}=0.15$ are shown in \autoref{fig_solution_2d_0_15}.
+In addition, we have found that the choice of $\code{v\_start}$ affected solutions for $t > 1.2$. For example, solutions calculated with $\code{v\_start}=0.15$ are shown in \autoref{fig_solution_2d_0_15}. We can see that the right sides of the curves look different from those shown on \autoref{fig_solution_2d}. It is possible that \autoref{eq_analytical_solution} can be solved with multiple values of $v$ for high values of $t$. Therefore, varying the value of $\code{v\_start}$ resulted in different values of $v$ at the same $x$ and $t$.
 \begin{figure}[H]
   \centering
   \includegraphics[width=1.0\textwidth]{figures/advection_analytical_solution_2d_vstart_0_15.pdf}
