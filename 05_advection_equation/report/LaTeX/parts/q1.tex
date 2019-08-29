@@ -119,24 +119,26 @@ The source code is located in \code{01\_root\_finder} directory. Instructions fo
 
 \subsection{Plotting solution}
 
-We look at the approximate solution produced by our program by first plotting the solution for small number of x values ($nx = 5$) on \autoref{fix_solution_nx_5_alpha_0_1}.
+We plot the output of our program \autoref{fig_solution_3d}.
 \begin{figure}[H]
   \centering
-  \includegraphics[width=1.0\textwidth]{figures/{nx_5_alpha_0.10_solution}.pdf}
-  \caption{Approximate solution to the heat equation for $nx=5$ and $\alpha = 0.1$.}
-  \label{fix_solution_nx_5_alpha_0_1}
+  \includegraphics[width=1.0\textwidth]{figures/advection_analytical_solution_3d.pdf}
+  \caption{Analytical solution of advection equation.}
+  \label{fig_solution_3d}
 \end{figure}
-We can see from \autoref{fix_solution_nx_5_alpha_0_1} that the the temperature of the rod decreases from a sinusoidal distribution with time, and the ends remain at $T=0$, as expected. 
-
-The corresponding errors are shown on \autoref{fix_errors_nx_5_alpha_0_1}. The errors were found by calculating the absolute value of the difference between the approximate solution and the exact solution, which is given by equation
-\[
-  T(x,t) = 100 e^{- \pi^2 k t / L^2} \sin(\pi x / L).
-\]
-We can see from \autoref{fix_errors_nx_5_alpha_0_1} that the errors are first increasing with time, reaching peak values of about $0.8 \ K$ at $t \approx 3000 \ s$, and then start to decrease. The data show that the errors are larger near the center of the rod.
+The 2D plot of the solution is shown on \autoref{fig_solution_2d}. We can see that as time increases, the solution curve becomes skewed to the right. After about $t > 1.2 s$, the right side of the curve becomes almost vertical, breaks and does not reach the zero value.
 \begin{figure}[H]
   \centering
-  \includegraphics[width=1.0\textwidth]{figures/{nx_5_alpha_0.10_errors}.pdf}
-  \caption{The absolute errors of the approximate solution of the heat equation for $nx=5$ and $\alpha = 0.1$.}
-  \label{fix_errors_nx_5_alpha_0_1}
+  \includegraphics[width=1.0\textwidth]{figures/advection_analytical_solution_2d_vstart_0_62.pdf}
+  \caption{Analytical solution of advection equation for various time values. The solution was calculated using \code{v\_start}=0.62 parameter for Newton-Raphson method.}
+  \label{fig_solution_2d}
 \end{figure}
+In order to investigate the solution at high values of $t$ we run the program with different values of \code{v\_start} parameter (the initial value used for Newton-Raphson method), chosen between $0$ and $1$ We have found that Newton-Raphson method was not able to find a solution for most values $\code{v\_start} < 0.4$. In contrast, the program was able to find solutions for values $\code{v\_start} > 0.5$, especially those near $\code{v\_start} = 0.8$.
 
+In addition, we have found that the choise of $\code{v\_start}$ affected the solution for $t > 1.2$. For example, using solutions for $\code{v\_start}=0.15$ are shown in \autoref{fig_solution_2d_0_15}.
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=1.0\textwidth]{figures/advection_analytical_solution_2d_vstart_0_15.pdf}
+  \caption{Analytical solution of advection equation for various time values. The solution was calculated using \code{v\_start}=0.15 parameter for Newton-Raphson method.}
+  \label{fig_solution_2d_0_15}
+\end{figure}
