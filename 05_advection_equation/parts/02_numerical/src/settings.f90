@@ -61,17 +61,15 @@ character(len=HELP_MESSAGE_LENGTH), parameter :: HELP_MESSAGE = NEW_LINE('h')//"
     &"//NEW_LINE('h')//"&
     &"//NEW_LINE('h')//"&
     & ./build/main OUTPUT [--x_start=-1.5] [--x_end=1.5]"//NEW_LINE('h')//"&
-    &    [--nx=100] [--t_start=0] [--t_end=1.4]"//NEW_LINE('h')//"&
-    &    [--nt=8]"//NEW_LINE('h')//"&
+    &    [--nx=100] [--t_start=0] [--t_end=1.4] [--nt=8]"//NEW_LINE('h')//"&
     &"//NEW_LINE('h')//"&
     &    OUTPUT : path to the output data file"//NEW_LINE('h')//"&
     &"//NEW_LINE('h')//"&
-    &"//NEW_LINE('h')//"&
     &    --x_start=NUMBER : the smallest x value,"//NEW_LINE('h')//"&
-    &                  Default: -1.5."//NEW_LINE('h')//"&
+    &                  Default: -pi/2."//NEW_LINE('h')//"&
     &"//NEW_LINE('h')//"&
     &    --x_end=NUMBER : the largest x value,"//NEW_LINE('h')//"&
-    &                  Default: 1.5."//NEW_LINE('h')//"&
+    &                  Default: pi/2."//NEW_LINE('h')//"&
     &"//NEW_LINE('h')//"&
     &    --nx=NUMBER : number of x points in the grid,"//NEW_LINE('h')//"&
     &                  Default: 100."//NEW_LINE('h')//"&
@@ -90,8 +88,8 @@ character(len=HELP_MESSAGE_LENGTH), parameter :: HELP_MESSAGE = NEW_LINE('h')//"
 ! Default values for the settings
 ! ------
 
-real(dp), parameter :: DEFAULT_X_START = -1.5_dp
-real(dp), parameter :: DEFAULT_X_END = 1.5_dp
+real(dp), parameter :: DEFAULT_X_START = -pi/2
+real(dp), parameter :: DEFAULT_X_END = pi/2
 integer, parameter :: DEFAULT_NX = 100
 
 real(dp), parameter :: DEFAULT_T_START = -0._dp

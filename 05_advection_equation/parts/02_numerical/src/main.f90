@@ -1,8 +1,8 @@
 ! Contains the entry point to the program
 program Main
-use RootFinder, only: read_settings_find_roots_and_print_output
+use AdvectionEquation, only: read_settings_solve_and_create_output
 implicit none
 
-call read_settings_find_roots_and_print_output(silent=.false.)
+call read_settings_solve_and_create_output(silent=.false.)
 
 end program Main
