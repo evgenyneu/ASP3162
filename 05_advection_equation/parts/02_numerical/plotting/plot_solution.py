@@ -13,7 +13,7 @@ import numpy as np
 import os
 import math
 from solver import solve_equation
-
+from matplotlib.ticker import FuncFormatter, MultipleLocator
 
 def plot_3d(plot_dir, plot_file_name, nx, nt):
     """
@@ -69,7 +69,7 @@ def plot_3d(plot_dir, plot_file_name, nx, nt):
     plt.show()
 
 
-def plot_2d(plot_dir, plot_file_name, nx, nt, plot_timesteps):
+def plot_2d(plot_dir, plot_file_name, nx, nt, method, plot_timesteps):
     """
     Makes a 2D plot of the velocity at different time values
     and saves it to a file.
@@ -89,12 +89,15 @@ def plot_2d(plot_dir, plot_file_name, nx, nt, plot_timesteps):
     nt : int
         The number of t points in the grid
 
+    method : str
+        Numerical method to be used: centered, upwind
+
     plot_timesteps : int
         number of timesteps to plot
     """
 
-    result = solve_equation(x_start=-np.pi/2, x_end=np.pi/2,
-                            nx=nx, t_start=0, t_end=1.4, nt=nt)
+    result = solve_equation(x_start=-np.pi/2, x_end=3*np.pi/2,
+                            nx=nx, t_start=0, t_end=1.4, nt=nt, method=method)
 
     if result is None:
         return
@@ -117,8 +120,15 @@ def plot_2d(plot_dir, plot_file_name, nx, nt, plot_timesteps):
         f"for dx={dx:.3f}, dt={dt:.3f}, dx/dt={courant:.2f}"
     )
 
+    # Use pi units for the x-axis
+    ax = plt.gca()
+    ax.xaxis.set_major_formatter(FuncFormatter(
+       lambda val, pos: '{:.2g}$\pi$'.format(val/np.pi) if val !=0 else '0'
+    ))
+    ax.xaxis.set_major_locator(MultipleLocator(base=np.pi/2))
+
     plt.title(title)
-    plt.ylim(0, 1.1)
+    plt.ylim(-1.1, 1.1)
     plt.legend(loc='upper left')
     plt.tight_layout()
     create_dir(plot_dir)
@@ -142,7 +152,7 @@ def make_plots():
 
     plot_2d(plot_dir="plots",
             plot_file_name="advection_analytical_solution_2d_nx_301_nt_101.pdf",
-            nx=201, nt=101, plot_timesteps=10)
+            nx=201, nt=101, method='upwind', plot_timesteps=10)
 
     # plot_2d(plot_dir="plots",
     #         plot_file_name="advection_analytical_solution_2d_nx_101_nt_101.pdf",

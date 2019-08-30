@@ -70,7 +70,7 @@ def read_solution_from_file(path_to_data):
 
 
 def solve_equation(x_start, x_end, nx,
-                   t_start, t_end, nt):
+                   t_start, t_end, nt, method):
     """
     Runs Fortran program that solves equation
 
@@ -98,6 +98,9 @@ def solve_equation(x_start, x_end, nx,
     nt : int
         The number of t points in the grid
 
+    method : str
+        Numerical method to be used: centered, upwind
+
     Returns
     -------
         (x, y, z, dx, dt, courant) tuple
@@ -122,6 +125,7 @@ def solve_equation(x_start, x_end, nx,
             f' --t_start={t_start}'
             f' --t_end={t_end}'
             f' --nt={nt}'
+            f' --method={method}'
         )
     ]
 
@@ -147,6 +151,6 @@ def solve_equation(x_start, x_end, nx,
 
     courant = dx/dt
     z = np.nan_to_num(z)
-    z = np.clip(z, 0, 1.1)
+    z = np.clip(z, -1.1, 1.1)
 
     return (x, y, z, dx, dt, courant)

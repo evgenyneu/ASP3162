@@ -55,7 +55,7 @@ end subroutine
 
 
 !
-! Solve the advection equation using cetered-difference method
+! Solve the advection equation using upwind method
 ! for space coordinate
 !
 ! Inputs:
@@ -81,15 +81,24 @@ subroutine solve_upwind(nx, nt, dx, dt, solution)
     real(dp), intent(in) :: dx, dt
     real(dp), allocatable, intent(inout) :: solution(:,:)
     real(dp) :: a
-    integer :: n
+    integer :: n, ix, q
 
     ! Pre-calculate the multiplier
     a = 0.5_dp * dt / dx
 
     ! Calculate numerical solution
     do n = 1, nt - 1
-        solution(2 : nx - 1, n + 1) = solution(2 : nx - 1, n) &
-            - a * (solution(2 : nx - 1, n)**2 - solution(1 : nx - 2, n)**2)
+        do ix = 1, nx - 2
+            if (solution(ix + 1, n) > 0) then
+                q = 0
+            else
+                ! Add 1 to the x index if velocity is negative
+                q = 1
+            end if
+
+            solution(ix + 1, n + 1) = solution(ix + 1, n) &
+                - a * (solution(ix + 1 + q, n)**2 - solution(ix + q, n)**2)
+        end do
     end do
 end subroutine
 
