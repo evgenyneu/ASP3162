@@ -114,7 +114,8 @@ end interface
 ! success : .true. if the value was successfully extracted from the command line arguments.
 !
 interface get_named_value
-    module procedure get_named_value_string, get_named_value_real_dp, get_named_value_integer
+    module procedure get_named_value_string, get_named_value_real_dp, &
+                     get_named_value_integer
 end interface
 
 !
@@ -139,7 +140,9 @@ end interface
 ! success : .true. if the value was successfully extracted from the command line arguments.
 !
 interface get_named_value_or_default
-    module procedure get_named_value_or_default_real_dp, get_named_value_or_default_integer
+    module procedure get_named_value_or_default_real_dp, &
+                     get_named_value_or_default_integer, &
+                     get_named_value_or_default_string
 end interface
 
 
@@ -630,6 +633,25 @@ subroutine get_named_value_or_default_integer(name, parsed, default, value, succ
     call string_to_number(text_value, value, success)
 end subroutine
 
+
+subroutine get_named_value_or_default_string(name, parsed, default, value, success)
+    character(len=*), intent(in) :: name
+    type(parsed_args), intent(in) :: parsed
+    character(len=*), intent(in) :: default
+    character(len=*), intent(out) :: value
+    logical, intent(out) :: success
+
+    success = .true.
+
+    call get_named_value_string(name=name, parsed=parsed, value=value, success=success)
+
+    if (.not. success) then
+        ! Named argument is not present. Use the default value.
+        value = default
+        success = .true.
+        return
+    end if
+end subroutine
 
 
 !

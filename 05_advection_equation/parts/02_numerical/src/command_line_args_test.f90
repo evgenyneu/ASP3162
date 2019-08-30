@@ -369,6 +369,51 @@ subroutine get_named_value_or_default_test__integer(failures)
     call assert_equal(result, -2, __FILE__, __LINE__, failures)
 end
 
+subroutine get_named_value_or_default_test__string(failures)
+    integer, intent(inout) :: failures
+    type(parsed_args) :: parsed
+    character(len=ARGUMENT_MAX_LENGTH) :: result
+    logical :: success
+
+    call allocate_parsed(size=2, parsed=parsed)
+
+    parsed%positional_count = 2
+    parsed%positional(1) = "43"
+    parsed%positional(2) = "-10"
+
+    parsed%named_count = 2
+    parsed%named_name(1) = "name_one_key"
+    parsed%named_value(1) = "12"
+
+    parsed%named_name(2) = "name_two_key"
+    parsed%named_value(2) = "possum"
+
+    ! Argument is present
+    call get_named_value_or_default(name='name_one_key', parsed=parsed, &
+                                    default="pig", &
+                                    value=result, success=success)
+
+    call assert_true(success, __FILE__, __LINE__, failures)
+    call assert_equal(result, "12", __FILE__, __LINE__, failures)
+
+    ! Second argument is present
+    call get_named_value_or_default(name='name_two_key', parsed=parsed, &
+                                    default="marmite", &
+                                    value=result, success=success)
+
+    call assert_true(success, __FILE__, __LINE__, failures)
+    call assert_equal(result, "possum", __FILE__, __LINE__, failures)
+
+
+    ! Argument is not present - use default value
+    call get_named_value_or_default(name='no key', parsed=parsed, &
+                                    value=result, &
+                                    default="default possum", success=success)
+
+    call assert_true(success, __FILE__, __LINE__, failures)
+    call assert_equal(result, "default possum", __FILE__, __LINE__, failures)
+end
+
 subroutine has_flag_test(failures)
     integer, intent(inout) :: failures
     type(parsed_args) :: parsed
@@ -489,6 +534,7 @@ subroutine command_line_args_test_all(failures)
 
     call get_named_value_or_default_test__real_dp(failures)
     call get_named_value_or_default_test__integer(failures)
+    call get_named_value_or_default_test__string(failures)
 
     call has_flag_test(failures)
 

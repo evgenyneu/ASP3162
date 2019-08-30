@@ -24,7 +24,6 @@ type, public :: program_settings
     ! solution data
     character(len=4096) :: output_path
 
-
     ! The smallest x value
     real(dp) :: x_start
 
@@ -42,6 +41,9 @@ type, public :: program_settings
 
     ! The number of time points in the grid
     integer :: nt
+
+    ! Neumerical method used: ('centered', 'upwind')
+    character(len=1024) :: method
 end type program_settings
 
 ! Help message to be shown
@@ -60,10 +62,14 @@ character(len=HELP_MESSAGE_LENGTH), parameter :: HELP_MESSAGE = NEW_LINE('h')//"
     &Usage:&
     &"//NEW_LINE('h')//"&
     &"//NEW_LINE('h')//"&
-    & ./build/main OUTPUT [--x_start=-1.5] [--x_end=1.5]"//NEW_LINE('h')//"&
+    & ./build/main OUTPUT [--method=upwind] [--x_start=-1.5] [--x_end=1.5]"//NEW_LINE('h')//"&
     &    [--nx=100] [--t_start=0] [--t_end=1.4] [--nt=8]"//NEW_LINE('h')//"&
     &"//NEW_LINE('h')//"&
     &    OUTPUT : path to the output data file"//NEW_LINE('h')//"&
+    &"//NEW_LINE('h')//"&
+    &    --method=NAME : numerical method to use"//NEW_LINE('h')//"&
+    &                  (centered, upwind). "//NEW_LINE('h')//"&
+    &                  Default: upwind."//NEW_LINE('h')//"&
     &"//NEW_LINE('h')//"&
     &    --x_start=NUMBER : the smallest x value,"//NEW_LINE('h')//"&
     &                  Default: -pi/2."//NEW_LINE('h')//"&
