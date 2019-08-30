@@ -120,7 +120,7 @@ def plot_2d(plot_dir, plot_file_name, nx, nt, method, plot_timesteps):
         if iy % plot_every_k_timestep != 0:
             continue
         velocities = z[iy, :]
-        plt.plot(x, velocities, label=f't={t:.1f} s')
+        plt.plot(x, velocities, label=f't={t:.2f} s')
 
     plt.xlabel("Position x [m]")
     plt.ylabel("Velocity v [m/s]")
@@ -166,7 +166,7 @@ def make_plots():
 
     plot_2d(plot_dir="plots",
             plot_file_name="centred_nx_100_nt_281_2d.pdf",
-            nx=100, nt=281, method='centered', plot_timesteps=10)
+            nx=100, nt=281, method='centered', plot_timesteps=7)
 
     plot_3d(plot_dir="plots",
             plot_file_name="centred_nx_629_nt_281_3d.pdf",
@@ -174,7 +174,7 @@ def make_plots():
 
     plot_2d(plot_dir="plots",
             plot_file_name="centred_nx_629_nt_281_2d.pdf",
-            nx=629, nt=281, method='centered', plot_timesteps=10)
+            nx=629, nt=281, method='centered', plot_timesteps=7)
 
     # upwind
     # ----------
@@ -185,7 +185,7 @@ def make_plots():
 
     plot_2d(plot_dir="plots",
             plot_file_name="upwind_nx_100_nt_281_2d.pdf",
-            nx=100, nt=281, method='upwind', plot_timesteps=10)
+            nx=100, nt=281, method='upwind', plot_timesteps=7)
 
     plot_3d(plot_dir="plots",
             plot_file_name="upwind_nx_629_nt_281_3d.pdf",
@@ -193,15 +193,15 @@ def make_plots():
 
     plot_2d(plot_dir="plots",
             plot_file_name="upwind_nx_629_nt_281_2d.pdf",
-            nx=629, nt=281, method='upwind', plot_timesteps=10)
+            nx=629, nt=281, method='upwind', plot_timesteps=7)
 
     plot_3d(plot_dir="plots",
             plot_file_name="upwind_nx_629_nt_259_3d.pdf",
             nx=629, nt=259, method='upwind')
 
     plot_2d(plot_dir="plots",
-            plot_file_name="upwind_nx_629_nt_259_2d.pdf",
-            nx=629, nt=259, method='upwind', plot_timesteps=10)
+            plot_file_name="upwind_nx_677_nt_281_2d.pdf",
+            nx=677, nt=281, method='upwind', plot_timesteps=8)
 
 
 if __name__ == '__main__':

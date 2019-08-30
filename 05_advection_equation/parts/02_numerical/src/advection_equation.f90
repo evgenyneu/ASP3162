@@ -166,14 +166,14 @@ subroutine solve_equation(options, solution, x_points, t_points)
     solution(nx, :) = 0
 
     ! Calculate the steps
-    dx = (x1 - x0) / (nx - 1)
-    dt = (t1 - t0) / (nt - 1)
+    dx = x_points(2) - x_points(1)
+    dt = t_points(2) - t_points(1)
 
     select case (options%method)
         case ("centered")
            call solve_centered(nx=nx, nt=nt, dx=dx, dt=dt, solution=solution)
         case ("upwind")
-            call solve_upwind(nx=nx, nt=nt, dx=dx, dt=dt, solution=solution)
+           call solve_upwind(nx=nx, nt=nt, dx=dx, dt=dt, solution=solution)
         case default
            print "(a, a)", "ERROR: unknown method ", trim(options%method)
            call exit(41)

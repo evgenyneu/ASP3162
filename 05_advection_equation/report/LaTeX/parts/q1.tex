@@ -6,9 +6,10 @@ In want to solve the following advection equation
   \label{eq_advection}
 \end{equation}
 where $v$ is velocity, $t$ is time, $x$ position, and $v_t$ is a short notation for the derivative $\frac{\partial v}{\partial t}$. We have the following initial condition
-\[
+\begin{equation}
   v(x, 0) = \cos x,
-\]
+  \label{eq_advection_intial_condition}
+\end{equation}
 and we want to solve the equation for values of $x$ and $t$ from the intervals
 \begin{equation}
   -\pi < x < \pi, \quad \quad 0 \leq t \leq 1.4.
@@ -142,3 +143,151 @@ In addition, we have found that the choice of $\code{v\_start}$ affected solutio
   \caption{Analytical solution of advection equation for various time values. The solution was calculated using \code{v\_start}=0.15 parameter for Newton-Raphson method.}
   \label{fig_solution_2d_0_15}
 \end{figure}
+
+
+
+\section{Calculating numerical solution}
+
+We want to solve \autoref{eq_advection} numerically. This can be done by first rearranging it into
+\begin{equation}
+  v_t + (0.5 v^2)_x = 0.
+  \label{eq_advection_rearranged}
+\end{equation}
+Next, we will use two methods of approximating this equation: centered-difference in space and an upwind method.
+
+
+\subsection{Centered-difference method}
+
+An approximate form of \autoref{eq_advection_rearranged} using forward-difference in space method is
+\begin{equation}
+  v_j^{n+1} = v_j^n - \frac{1}{4} \frac{\Delta t}{\Delta x} \big[ (v_{j+1}^n)^2 - (v_{j-1}^n)^2 \big],
+  \label{eq_centered_difference_recurrence}
+\end{equation}
+where the $j$ is the position index and $n$ is the time index:
+\begin{align*}
+  j &= 1, 2, \dots, n_x \\
+  n &= 1, 2, \dots, n_t,
+\end{align*}
+with $n_x$ and $n_t$ being the total number of position and time values respectively.
+
+
+\subsection{Upwind method}
+
+The second method we use for solving \autoref{eq_advection_rearranged} is the upwind method and it has the following recurrence relation:
+\begin{equation}
+  v_j^{n+1} =
+    \begin{cases}
+      v_j^n - \frac{1}{2} \frac{\Delta t}{\Delta x} \big[ (v_{j}^n)^2 - (v_{j-1}^n)^2 \big], & \mbox{if } v_{j}^n \geq 0 \\[10pt]
+      v_j^n - \frac{1}{2} \frac{\Delta t}{\Delta x} \big[ (v_{j+1}^n)^2 - (v_{j}^n)^2 \big], & \mbox{if } v_{j}^n < 0.
+    \end{cases}
+    \label{eq_upwind_recurrence}
+\end{equation}
+
+
+
+\subsection{Writing the code}
+
+The Fortran code for solving \autoref{eq_advection} using the centered-difference method is shown in \autoref{code_solve_advection_centered}.
+
+
+\noindent\begin{minipage}{\linewidth}
+\begin{lstlisting}[caption={Solving advection equation (\code{advection\_equation.f90}).},frame=tlrb,label={code_solve_advection_centered}, numbers=left, firstnumber=157]
+! Assign evenly spaced x values
+call linspace(x0, x1, x_points)
+call linspace(t0, t1, t_points)
+
+! Set initial conditions
+solution(:, 1) = cos(x_points)
+
+! Set boundary conditions
+solution(1, :) = 0
+solution(nx, :) = 0
+
+! Calculate the steps
+dx = x_points(2) - x_points(1)
+dt = t_points(2) - t_points(1)
+
+select case (options%method)
+    case ("centered")
+       call solve_centered(nx=nx, nt=nt, dx=dx, dt=dt, solution=solution)
+    case ("upwind")
+       call solve_upwind(nx=nx, nt=nt, dx=dx, dt=dt, solution=solution)
+    case default
+       print "(a, a)", "ERROR: unknown method ", trim(options%method)
+       call exit(41)
+end select
+\end{lstlisting}
+\end{minipage}
+
+On \code{Line 158} we assign evenly spaced values for the x-coordinate and store then in the \code{x\_points} array. The left and right boundaries \code{x0} and \code{x1}, as well as the number of the values \code{nx} are supplied to the program by the user. Similarly, on \code{Ling 159} we assign evenly spaced values in \code{t\_points} for the time coordinate.
+
+On \code{Line 162} we use the initial condition from \autoref{eq_advection_intial_condition}. Our velocity values are stored in a 2D array variable called \code{solution}. Here we assign the velocities to all the v-values corresponding to the first time index $n=1$.
+
+The boundaries of the position interval are supplied by the user and are assumed to be the values at which the cosine function is zero (the cosine function comes from \autoref{eq_advection_intial_condition}). For example, the left and right boundaries can be $-\pi/2$ and $\pi/2$. Since the initial velocity at the boundaries is zero, \autoref{eq_advection} becomes
+\[
+  v_t = 0.
+\]
+It follows that velocities at the boundaries do not change with time and remain at zero. We use this condition in \code{Lines 165} and \code{166} by setting zero velocities to the first and last position coordinate for all time indexes.
+
+Next, on \code{Lines 169} and \code{170} we calculate the step sizes for position and time.
+
+On \code{Lines 172-180} the program calls either the centered-difference (\code{solve\_centered}) or the upwind subroutine (\code{solve\_upwind}) based on the method chosen by the user.
+
+
+\subsubsection{Programing the centered-difference method}
+
+The body of \code{solve\_centered} subroutine is shown in \autoref{code_centered}.
+
+\noindent\begin{minipage}{\linewidth}
+\begin{lstlisting}[caption={Code for centered-difference method of solving advection equation (\code{advection\_equation.f90}).},frame=tlrb,label={code_centered}, numbers=left, firstnumber=46]
+! Pre-calculate the multiplier
+a = 0.25_dp * dt / dx
+
+! Calculate numerical solution
+do n = 1, nt - 1
+    solution(2 : nx - 1, n + 1) = solution(2 : nx - 1, n) &
+        - a * (solution(3 : nx, n)**2 - solution(1 : nx - 2, n)**2)
+end do
+\end{lstlisting}
+\end{minipage}
+
+On \code{Line 47} we calculate a multiplier that will be used later inside the loop.
+
+On \code{Lines 50-53} we iterate over time indexes (\code{n}) and use the recurrence relation from \autoref{eq_centered_difference_recurrence} to assign the values of velocities for the next time index (\code{n + 1}) using velocities that were calculated for the previous index of time (\code{n}). We assign the position indices in \code{solution} array by using the vectorised syntax
+\[
+  \code{solution(2:nx-1, n+1)} = \dots
+\]
+This allows to make calculations faster by executing multiple instructions in one CPU cycle.
+
+
+\subsubsection{Programing the upwind method}
+
+The implementation of the upwind method from \autoref{eq_upwind_recurrence} is shown in \autoref{code_upwind}.
+
+\noindent\begin{minipage}{\linewidth}
+\begin{lstlisting}[caption={Implementation of the upwind method of solving advection equation (\code{advection\_equation.f90}).},frame=tlrb,label={code_upwind}, numbers=left, firstnumber=86]
+! Pre-calculate the multiplier
+a = 0.5_dp * dt / dx
+
+! Calculate numerical solution
+do n = 1, nt - 1
+    do ix = 1, nx - 2
+        if (solution(ix + 1, n) > 0) then
+            q = 0
+        else
+            ! Add 1 to the x index if velocity is negative
+            q = 1
+        end if
+
+        solution(ix + 1, n + 1) = solution(ix + 1, n) &
+            - a * (solution(ix + 1 + q, n)**2 - solution(ix + q, n)**2)
+    end do
+end do
+\end{lstlisting}
+\end{minipage}
+
+The code structure is similar to that of the centered-difference method that we discussed. What's different herehere is that we need to use a second loop to iterate over the position indices (\code{Lines 91-100}) because the form of the recurrence relation equation depends on the sign of the velocity at each position step.
+
+\subsection{Running the program and making plots}
+
+The source code is located in \code{02\_numerical} directory. Instructions for compiling, running the program and plotting its results are located in the README.md file that comes with the source code.

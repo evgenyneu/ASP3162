@@ -12,6 +12,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import os
 from solver import solve_equation
+from matplotlib.ticker import FuncFormatter, MultipleLocator
 
 
 def plot_3d(plot_dir, plot_file_name):
@@ -92,6 +93,13 @@ def plot_2d(plot_dir, plot_file_name, v_start):
     for iy, t in enumerate(y):
         velocities = z[iy, :]
         plt.plot(x, velocities, label=f't={t:.1f} s')
+
+    # Use pi units for the x-axis
+    ax = plt.gca()
+    ax.xaxis.set_major_formatter(FuncFormatter(
+       lambda val, pos: '{:.2g}$\pi$'.format(val/np.pi) if val !=0 else '0'
+    ))
+    ax.xaxis.set_major_locator(MultipleLocator(base=np.pi/4))
 
     plt.xlabel("Position x [m]")
     plt.ylabel("Velocity v [m/s]")

@@ -213,7 +213,7 @@ subroutine solve_eqn_centered_unstable_test(failures)
     call assert_approx(solution(1, 200), 0.0_dp, 1e-5_dp, __FILE__, &
         __LINE__, failures)
 
-    call assert_approx(solution(300, 142), -55477.776052_dp, 1e-5_dp, __FILE__, &
+    call assert_approx(solution(300, 142), -4126.51462_dp, 1e-5_dp, __FILE__, &
         __LINE__, failures)
 
     call assert_true(ieee_is_nan(solution(300, 200)), __FILE__, &
