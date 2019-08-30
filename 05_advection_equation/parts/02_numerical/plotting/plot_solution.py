@@ -142,7 +142,7 @@ def make_plots():
 
     plot_2d(plot_dir="plots",
             plot_file_name="advection_analytical_solution_2d_nx_301_nt_101.pdf",
-            nx=101, nt=801, plot_timesteps=10)
+            nx=201, nt=101, plot_timesteps=10)
 
     # plot_2d(plot_dir="plots",
     #         plot_file_name="advection_analytical_solution_2d_nx_101_nt_101.pdf",
