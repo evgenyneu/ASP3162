@@ -140,7 +140,7 @@ def plot_2d(plot_dir, plot_file_name, nx, nt, method, plot_timesteps):
     ax.xaxis.set_major_formatter(FuncFormatter(
        lambda val, pos: '{:.2g}$\pi$'.format(val/np.pi) if val !=0 else '0'
     ))
-    ax.xaxis.set_major_locator(MultipleLocator(base=np.pi/2))
+    ax.xaxis.set_major_locator(MultipleLocator(base=np.pi/4))
 
     plt.title(title)
     plt.ylim(0, 1.1)
@@ -157,54 +157,51 @@ def make_plots():
     Make plots of velocity.
     """
 
-    # plot_3d(plot_dir="plots",
-    #         plot_file_name="centred_nx_5_nt_5_3d.pdf",
-    #         nx=5, nt=5, method='centered')
-
-    # plot_2d(plot_dir="plots",
-    #         plot_file_name="centred_nx_5_nt_5_2d.pdf",
-    #         nx=5, nt=5, method='centered', plot_timesteps=5)
-
-    # plot_3d(plot_dir="plots",
-    #         plot_file_name="centred_nx_628_nt_280_3d.pdf",
-    #         nx=30, nt=30, method='centered')
-
-    # plot_2d(plot_dir="plots",
-    #         plot_file_name="centred_nx_628_nt_280_2d.pdf",
-    #         nx=30, nt=30, method='centered', plot_timesteps=10)
+    # centered
+    # ----------
 
     plot_3d(plot_dir="plots",
-            plot_file_name="centred_nx_628_nt_280_3d.pdf",
+            plot_file_name="centred_nx_100_nt_281_3d.pdf",
             nx=100, nt=281, method='centered')
 
     plot_2d(plot_dir="plots",
-            plot_file_name="centred_nx_628_nt_280_2d.pdf",
+            plot_file_name="centred_nx_100_nt_281_2d.pdf",
             nx=100, nt=281, method='centered', plot_timesteps=10)
 
-    # plot_3d(plot_dir="plots",
-    #         plot_file_name="centred_nx_628_nt_280_3d.pdf",
-    #         nx=629, nt=281, method='centered')
+    plot_3d(plot_dir="plots",
+            plot_file_name="centred_nx_629_nt_281_3d.pdf",
+            nx=629, nt=281, method='centered')
 
-    # plot_2d(plot_dir="plots",
-    #         plot_file_name="centred_nx_628_nt_280_2d.pdf",
-    #         nx=629, nt=281, method='centered', plot_timesteps=10)
+    plot_2d(plot_dir="plots",
+            plot_file_name="centred_nx_629_nt_281_2d.pdf",
+            nx=629, nt=281, method='centered', plot_timesteps=10)
 
+    # upwind
+    # ----------
 
-    # plot_3d(plot_dir="plots",
-    #         plot_file_name="advection_analytical_solution_3d_nx_628_nt_280.pdf",
-    #         nx=628, nt=280)
+    plot_3d(plot_dir="plots",
+            plot_file_name="upwind_nx_100_nt_281_3d.pdf",
+            nx=100, nt=281, method='upwind')
 
-    # plot_2d(plot_dir="plots",
-    #         plot_file_name="advection_analytical_solution_2d_nx_301_nt_101.pdf",
-    #         nx=201, nt=101, method='upwind', plot_timesteps=10)
+    plot_2d(plot_dir="plots",
+            plot_file_name="upwind_nx_100_nt_281_2d.pdf",
+            nx=100, nt=281, method='upwind', plot_timesteps=10)
 
-    # plot_2d(plot_dir="plots",
-    #         plot_file_name="advection_analytical_solution_2d_nx_101_nt_101.pdf",
-    #         nx=101, nt=101, plot_timesteps=10)
+    plot_3d(plot_dir="plots",
+            plot_file_name="upwind_nx_629_nt_281_3d.pdf",
+            nx=629, nt=281, method='upwind')
 
-    # plot_2d(plot_dir="plots",
-    #         plot_file_name="advection_analytical_solution_2d_nx_628_nt_280.pdf",
-    #         nx=628, nt=281, plot_timesteps=10)
+    plot_2d(plot_dir="plots",
+            plot_file_name="upwind_nx_629_nt_281_2d.pdf",
+            nx=629, nt=281, method='upwind', plot_timesteps=10)
+
+    plot_3d(plot_dir="plots",
+            plot_file_name="upwind_nx_629_nt_259_3d.pdf",
+            nx=629, nt=259, method='upwind')
+
+    plot_2d(plot_dir="plots",
+            plot_file_name="upwind_nx_629_nt_259_2d.pdf",
+            nx=629, nt=259, method='upwind', plot_timesteps=10)
 
 
 if __name__ == '__main__':
