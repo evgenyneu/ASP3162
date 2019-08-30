@@ -85,7 +85,7 @@ subroutine solve_equation(options, solution, x_points, t_points)
     ! Calculate numerical solution
     do n = 1, nt - 1
         solution(2 : nx - 1, n + 1) = solution(2 : nx - 1, n) &
-            - a * ( solution(3 : nx, n)**2 - solution(1 : nx-2, n)**2)
+            - a * (solution(3 : nx, n)**2 - solution(1 : nx - 2, n)**2)
     end do
 end subroutine
 
