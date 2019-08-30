@@ -102,6 +102,10 @@ real(dp), parameter :: DEFAULT_T_START = -0._dp
 real(dp), parameter :: DEFAULT_T_END = 1.4_dp
 integer, parameter :: DEFAULT_NT = 8
 
+character(len=ARGUMENT_MAX_LENGTH), parameter :: DEFAULT_METHOD = "upwind"
+character(len=ARGUMENT_MAX_LENGTH), parameter :: ALLOWED_METHODS(2) = &
+     [character(len=ARGUMENT_MAX_LENGTH) :: 'centered', 'upwind']
+
 contains
 
 !
@@ -186,7 +190,7 @@ subroutine read_from_parsed_command_line(parsed, settings, error_message)
     logical :: success
     character(len=ARGUMENT_MAX_LENGTH), allocatable :: unrecognized(:)
     integer :: unrecognized_count
-    character(len=ARGUMENT_MAX_LENGTH) :: valid_args(8)
+    character(len=ARGUMENT_MAX_LENGTH) :: valid_args(9)
 
     error_message = ""
 
@@ -209,8 +213,9 @@ subroutine read_from_parsed_command_line(parsed, settings, error_message)
     valid_args(4) = "t_start"
     valid_args(5) = "t_end"
     valid_args(6) = "nt"
-    valid_args(7) = "h"
-    valid_args(8) = "help"
+    valid_args(7) = "method"
+    valid_args(8) = "h"
+    valid_args(9) = "help"
 
     call unrecognized_named_args(valid=valid_args, parsed=parsed, &
         unrecognized=unrecognized, count=unrecognized_count)
@@ -315,6 +320,23 @@ subroutine read_from_parsed_command_line(parsed, settings, error_message)
 
     if (.not. success) then
         call make_message("nt is not a number", error_message)
+        return
+    end if
+
+    ! method
+    ! --------------
+
+    call get_named_value_or_default(name='method', parsed=parsed, &
+                                    default=DEFAULT_METHOD, &
+                                    value=settings%method, success=success)
+
+    if (.not. success) then
+        call make_message("Failed to read method", error_message)
+        return
+    end if
+
+    if (.not. any(ALLOWED_METHODS == settings%method)) then
+        call make_message("Incorrect method name", error_message)
         return
     end if
 end subroutine
