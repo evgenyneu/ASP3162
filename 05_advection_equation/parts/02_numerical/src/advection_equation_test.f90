@@ -21,6 +21,7 @@ subroutine solve_eqn_test(failures)
     real(dp), allocatable :: solution(:,:)
     real(dp), allocatable :: x_points(:), t_points(:)
 
+    options%method = 'centered'
     options%x_start = -pi/2
     options%x_end = pi/2
     options%nx = 200
@@ -91,6 +92,7 @@ subroutine solve_eqn_unstable_test(failures)
     real(dp), allocatable :: solution(:,:)
     real(dp), allocatable :: x_points(:), t_points(:)
 
+    options%method = 'centered'
     options%x_start = -pi/2
     options%x_end = pi/2
     options%nx = 600
@@ -211,6 +213,7 @@ subroutine solve_and_create_output_test(failures)
 
     options%output_path = "test_output.dat"
 
+    options%method = 'centered'
     options%x_start = -1.57_dp
     options%x_end = 1.57_dp
     options%nx = 100

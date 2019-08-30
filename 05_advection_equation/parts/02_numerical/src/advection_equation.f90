@@ -13,6 +13,87 @@ public :: solve_equation, print_output, solve_and_create_output, &
 
 contains
 
+
+!
+! Solve the advection equation using cetered-difference method
+! for space coordinate
+!
+! Inputs:
+! -------
+!
+! nx : number of x points
+!
+! nt : number of t points
+!
+! nx : size of space step
+!
+! nx : size of time step
+!
+!
+! Outputs:
+! -------
+!
+! solution : 2D array containing the solution for the advection equation
+!        first coordinate is x, second is time.
+!
+subroutine solve_centered(nx, nt, dx, dt, solution)
+    integer, intent(in) :: nx, nt
+    real(dp), intent(in) :: dx, dt
+    real(dp), allocatable, intent(inout) :: solution(:,:)
+    real(dp) :: a
+    integer :: n
+
+    ! Pre-calculate the multiplier
+    a = 0.25_dp * dt / dx
+
+    ! Calculate numerical solution
+    do n = 1, nt - 1
+        solution(2 : nx - 1, n + 1) = solution(2 : nx - 1, n) &
+            - a * (solution(3 : nx, n)**2 - solution(1 : nx - 2, n)**2)
+    end do
+end subroutine
+
+
+!
+! Solve the advection equation using cetered-difference method
+! for space coordinate
+!
+! Inputs:
+! -------
+!
+! nx : number of x points
+!
+! nt : number of t points
+!
+! nx : size of space step
+!
+! nx : size of time step
+!
+!
+! Outputs:
+! -------
+!
+! solution : 2D array containing the solution for the advection equation
+!        first coordinate is x, second is time.
+!
+subroutine solve_upwind(nx, nt, dx, dt, solution)
+    integer, intent(in) :: nx, nt
+    real(dp), intent(in) :: dx, dt
+    real(dp), allocatable, intent(inout) :: solution(:,:)
+    real(dp) :: a
+    integer :: n
+
+    ! Pre-calculate the multiplier
+    a = 0.5_dp * dt / dx
+
+    ! Calculate numerical solution
+    do n = 1, nt - 1
+        solution(2 : nx - 1, n + 1) = solution(2 : nx - 1, n) &
+            - a * (solution(2 : nx - 1, n)**2 - solution(1 : nx - 2, n)**2)
+    end do
+end subroutine
+
+
 !
 ! Solve the advection equation
 !
@@ -47,8 +128,8 @@ subroutine solve_equation(options, solution, x_points, t_points)
     type(program_settings), intent(in) :: options
     real(dp), allocatable, intent(out) :: solution(:,:)
     real(dp), allocatable, intent(out) :: x_points(:), t_points(:)
-    real(dp) :: x0, x1, dx, t0, t1, dt, a
-    integer :: nx, nt, n
+    real(dp) :: x0, x1, dx, t0, t1, dt
+    integer :: nx, nt
 
     ! Assign shortcuts variables from settings
     x0 = options%x_start
@@ -79,14 +160,15 @@ subroutine solve_equation(options, solution, x_points, t_points)
     dx = (x1 - x0) / (nx - 1)
     dt = (t1 - t0) / (nt - 1)
 
-    ! Pre-calculate the multiplier
-    a = 0.25_dp * dt / dx
-
-    ! Calculate numerical solution
-    do n = 1, nt - 1
-        solution(2 : nx - 1, n + 1) = solution(2 : nx - 1, n) &
-            - a * (solution(3 : nx, n)**2 - solution(1 : nx - 2, n)**2)
-    end do
+    select case (options%method)
+        case ("centered")
+           call solve_centered(nx=nx, nt=nt, dx=dx, dt=dt, solution=solution)
+        case ("upwind")
+            call solve_upwind(nx=nx, nt=nt, dx=dx, dt=dt, solution=solution)
+        case default
+           print "(a, a)", "ERROR: unknown method ", trim(options%method)
+           call exit(41)
+    end select
 end subroutine
 
 
