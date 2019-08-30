@@ -15,7 +15,8 @@ import math
 from solver import solve_equation
 from matplotlib.ticker import FuncFormatter, MultipleLocator
 
-def plot_3d(plot_dir, plot_file_name, nx, nt):
+
+def plot_3d(plot_dir, plot_file_name, nx, nt, method):
     """
     Makes a surface 3D plot of the velocity and saves it to a file.
 
@@ -33,16 +34,20 @@ def plot_3d(plot_dir, plot_file_name, nx, nt):
 
     nt : int
         The number of t points in the grid
+
+    method : str
+        Numerical method to be used: centered, upwind
     """
 
     result = solve_equation(x_start=-np.pi/2, x_end=np.pi/2,
-                            nx=nx, t_start=0, t_end=1.4, nt=nt)
+                            nx=nx, t_start=0, t_end=1.4, nt=nt, method=method)
 
     if result is None:
         return
     else:
-        x, y, z, dx, dt, courant = result
+        x, y, z, dx, dt, dt_dx = result
 
+    z = np.clip(z, 0, 1.1)
     x = [x]
     y = np.transpose([y])
 
@@ -53,9 +58,14 @@ def plot_3d(plot_dir, plot_file_name, nx, nt):
     plt.ylabel("Time t [s]")
     ax.set_zlabel("Velocity v [m/s]")
 
+    title_method = method
+    if title_method == 'centered':
+        title_method = 'centered-difference'
+
     title = (
         "Numerical solution of advection equation\n"
-        f"for dx={dx:.3f}, dt={dt:.3f}, dx/dt={courant:.2f}"
+        f"using {title_method} method\n"
+        f"for dx={dx:.3f}, dt={dt:.3f}, dt/dx={dt_dx:.2f}"
     )
 
     plt.title(title)
@@ -96,13 +106,13 @@ def plot_2d(plot_dir, plot_file_name, nx, nt, method, plot_timesteps):
         number of timesteps to plot
     """
 
-    result = solve_equation(x_start=-np.pi/2, x_end=3*np.pi/2,
+    result = solve_equation(x_start=-np.pi/2, x_end=np.pi/2,
                             nx=nx, t_start=0, t_end=1.4, nt=nt, method=method)
 
     if result is None:
         return
     else:
-        x, y, z, dx, dt, courant = result
+        x, y, z, dx, dt, dt_dx = result
 
     plot_every_k_timestep = math.floor(float(len(y)) / plot_timesteps)
 
@@ -115,9 +125,14 @@ def plot_2d(plot_dir, plot_file_name, nx, nt, method, plot_timesteps):
     plt.xlabel("Position x [m]")
     plt.ylabel("Velocity v [m/s]")
 
+    title_method = method
+    if title_method == 'centered':
+        title_method = 'centered-difference'
+
     title = (
         "Numerical solution of advection equation\n"
-        f"for dx={dx:.3f}, dt={dt:.3f}, dx/dt={courant:.2f}"
+        f"using {title_method} method\n"
+        f"for dx={dx:.3f}, dt={dt:.3f}, dt/dx={dt_dx:.2f}"
     )
 
     # Use pi units for the x-axis
@@ -128,7 +143,7 @@ def plot_2d(plot_dir, plot_file_name, nx, nt, method, plot_timesteps):
     ax.xaxis.set_major_locator(MultipleLocator(base=np.pi/2))
 
     plt.title(title)
-    plt.ylim(-1.1, 1.1)
+    plt.ylim(0, 1.1)
     plt.legend(loc='upper left')
     plt.tight_layout()
     create_dir(plot_dir)
@@ -143,16 +158,45 @@ def make_plots():
     """
 
     # plot_3d(plot_dir="plots",
-    #         plot_file_name="advection_analytical_solution_3d_nx_101_nt_101.pdf",
-    #         nx=101, nt=101)
+    #         plot_file_name="centred_nx_5_nt_5_3d.pdf",
+    #         nx=5, nt=5, method='centered')
+
+    # plot_2d(plot_dir="plots",
+    #         plot_file_name="centred_nx_5_nt_5_2d.pdf",
+    #         nx=5, nt=5, method='centered', plot_timesteps=5)
+
+    # plot_3d(plot_dir="plots",
+    #         plot_file_name="centred_nx_628_nt_280_3d.pdf",
+    #         nx=30, nt=30, method='centered')
+
+    # plot_2d(plot_dir="plots",
+    #         plot_file_name="centred_nx_628_nt_280_2d.pdf",
+    #         nx=30, nt=30, method='centered', plot_timesteps=10)
+
+    plot_3d(plot_dir="plots",
+            plot_file_name="centred_nx_628_nt_280_3d.pdf",
+            nx=100, nt=281, method='centered')
+
+    plot_2d(plot_dir="plots",
+            plot_file_name="centred_nx_628_nt_280_2d.pdf",
+            nx=100, nt=281, method='centered', plot_timesteps=10)
+
+    # plot_3d(plot_dir="plots",
+    #         plot_file_name="centred_nx_628_nt_280_3d.pdf",
+    #         nx=629, nt=281, method='centered')
+
+    # plot_2d(plot_dir="plots",
+    #         plot_file_name="centred_nx_628_nt_280_2d.pdf",
+    #         nx=629, nt=281, method='centered', plot_timesteps=10)
+
 
     # plot_3d(plot_dir="plots",
     #         plot_file_name="advection_analytical_solution_3d_nx_628_nt_280.pdf",
     #         nx=628, nt=280)
 
-    plot_2d(plot_dir="plots",
-            plot_file_name="advection_analytical_solution_2d_nx_301_nt_101.pdf",
-            nx=201, nt=101, method='upwind', plot_timesteps=10)
+    # plot_2d(plot_dir="plots",
+    #         plot_file_name="advection_analytical_solution_2d_nx_301_nt_101.pdf",
+    #         nx=201, nt=101, method='upwind', plot_timesteps=10)
 
     # plot_2d(plot_dir="plots",
     #         plot_file_name="advection_analytical_solution_2d_nx_101_nt_101.pdf",

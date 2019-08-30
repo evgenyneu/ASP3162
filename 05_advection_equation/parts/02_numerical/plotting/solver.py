@@ -109,7 +109,7 @@ def solve_equation(x_start, x_end, nx,
 
             dx, dt  : position and time steps
 
-            courant : ratio dx / dt
+            dt_dx : ratio dt / dx
     """
 
     subdir = "tmp"
@@ -149,8 +149,7 @@ def solve_equation(x_start, x_end, nx,
     os.remove(path_to_data)
     os.rmdir(subdir)
 
-    courant = dx/dt
+    dt_dx = dt/dx
     z = np.nan_to_num(z)
-    z = np.clip(z, -1.1, 1.1)
 
-    return (x, y, z, dx, dt, courant)
+    return (x, y, z, dx, dt, dt_dx)
