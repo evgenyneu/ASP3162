@@ -113,11 +113,6 @@ The end result of this part of the program is the $\code{solution}$ array filled
 
 
 
-\subsection{Running the program and making plots}
-
-The source code is located in \code{01\_root\_finder} directory. Instructions for compiling, running the program and plotting its results are located in the README.md file that comes with the source code.
-
-
 \subsection{Plotting solution}
 
 We plot the output of our program \autoref{fig_solution_3d}.
@@ -219,9 +214,9 @@ end select
 \end{lstlisting}
 \end{minipage}
 
-On \code{Line 158} we assign evenly spaced values for the x-coordinate and store then in the \code{x\_points} array. The left and right boundaries \code{x0} and \code{x1}, as well as the number of the values \code{nx} are supplied to the program by the user. Similarly, on \code{Ling 159} we assign evenly spaced values in \code{t\_points} for the time coordinate.
+On \code{Line 158} we assign evenly spaced values for the x-coordinate and store then in the \code{x\_points} array. The left and right boundaries \code{x0} and \code{x1}, as well as the number of the values \code{nx} are supplied to the program by the user. Similarly, on \code{Line 159} we assign evenly spaced values in \code{t\_points} for the time coordinate.
 
-On \code{Line 162} we use the initial condition from \autoref{eq_advection_intial_condition}. Our velocity values are stored in a 2D array variable called \code{solution}. Here we assign the velocities to all the v-values corresponding to the first time index $n=1$.
+On \code{Line 162} we use the initial condition from \autoref{eq_advection_intial_condition}. Our velocity values are stored in a 2D array variable called \code{solution}. Here we assign the velocities to all the $x$-values corresponding to the first time index $n=1$.
 
 The boundaries of the position interval are supplied by the user and are assumed to be the values at which the cosine function is zero (the cosine function comes from \autoref{eq_advection_intial_condition}). For example, the left and right boundaries can be $-\pi/2$ and $\pi/2$. Since the initial velocity at the boundaries is zero, \autoref{eq_advection} becomes
 \[
@@ -257,7 +252,7 @@ On \code{Lines 50-53} we iterate over time indexes (\code{n}) and use the recurr
 \[
   \code{solution(2:nx-1, n+1)} = \dots
 \]
-This allows to make calculations faster by executing multiple instructions in one CPU cycle.
+This allows to make calculations faster by executing multiple instructions in one CPU cycle using SIMD processor instructions.
 
 
 \subsubsection{Programing the upwind method}
@@ -288,6 +283,53 @@ end do
 
 The code structure is similar to that of the centered-difference method that we discussed. What's different herehere is that we need to use a second loop to iterate over the position indices (\code{Lines 91-100}) because the form of the recurrence relation equation depends on the sign of the velocity at each position step.
 
-\subsection{Running the program and making plots}
 
-The source code is located in \code{02\_numerical} directory. Instructions for compiling, running the program and plotting its results are located in the README.md file that comes with the source code.
+\subsection{Plotting solutions}
+
+\subsubsection{Centered-difference plots}
+
+We plot the output of the centered-difference program \autoref{fig_centred_nx_100_nt_281_3d_jiggleschnook}. The corresponding 2D plot is shown on \autoref{fig_centred_nx_100_nt_281_2d}. We can see that numerical solution closely resembles the analytical one from \autoref{fig_solution_2d} (analysis of errors is required to quantify the similarity between the two). However, it can be seen that numerical solution suffers from moderate jiggleschnook\footnote{Jiggleschnook is a technical term that means ``a change of a quantity in such an unpredictable way that it looks almost idiotic''.  Naturally, jiggleschnook is a source of annoyance in science because it prevents describing a natural process with simple and aesthetically pleasing models. The word Jiggleschnook /'d\textyogh\textsci g(\textschwa)l\textesh n\textupsilon k/ is a combination of two words: ``jiggle-'' (English) meaning ``to shake up and down or from side to side'', and ``schnook'' (German), meaning ``a fool''. The term is said to be coined by a colleague of John Lattanzio.}, that appears for large values of $x$ at $t > 1.2 \ s$.
+\begin{figure}[H]
+  \vspace*{-5mm}
+  \centering
+  \includegraphics[width=1.0\textwidth]{figures/numerical/centred_nx_100_nt_281_3d_jiggleschnook_flat.pdf}
+  \vspace*{-10mm}
+  \caption{Numertical solution of advection equation for $\Delta t / \Delta x = 0.16 \ s \, m^{-1}$, showing moderate jiggleschnook at large position values for $t > 1.2 \ s$.}
+  \label{fig_centred_nx_100_nt_281_3d_jiggleschnook}
+  \vspace*{-10mm}
+\end{figure}
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.9\textwidth]{figures/numerical/centred_nx_100_nt_281_2d.pdf}
+  \vspace*{-5mm}
+  \caption{Numertical solution of advection equation for range of time values, $\Delta t / \Delta x = 0.16 \ s \, m^{-1}$. At $t = 1.2 \ s$ a minor jiggleschnook appears at large position value, becoming larger at $t = 1.2 \ s$.}
+  \label{fig_centred_nx_100_nt_281_2d}
+  \vspace*{-10mm}
+\end{figure}
+
+The ratio of steps $\Delta t / \Delta x = 0.16 \ s m^{-1}$ for the solution in \autoref{fig_centred_nx_100_nt_281_2d} is small. We want to investigate if solutions with higher $\Delta t / \Delta x$ show different amount of jiggleschook by solving the advection equation using $\Delta t / \Delta x = 1.0 \ s \, m^{-1}$ (\autoref{fig_centred_nx_629_nt_281_2d}) and $\Delta t / \Delta x = 1.59 \ s \, m^{-1}$ (\autoref{fig_centred_nx_1000_nt_281_2d}).
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.9\textwidth]{figures/numerical/centred_nx_629_nt_281_2d.pdf}
+  \vspace*{-15mm}
+  \caption{Numertical solution of advection equation for $\Delta t / \Delta x = 1.0 \ s \, m^{-1}$. Strong jiggleschnook can be seen for $t > 0.4 \ s$.}
+  \label{fig_centred_nx_629_nt_281_2d}
+  \vspace*{-10mm}
+\end{figure}
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.9\textwidth]{figures/numerical/centred_nx_1000_nt_281_2d.pdf}
+  \vspace*{-5mm}
+  \caption{Numertical solution of advection equation for $\Delta t / \Delta x = 1.59 \ s \, m^{-1}$. Solutions for $t > 0.2 \ s$ are discontinuous and show very strong jiggleschnook.}
+  \label{fig_centred_nx_1000_nt_281_2d}
+  \vspace*{-10mm}
+\end{figure}
+
+It can be see from Figures \ref{fig_centred_nx_629_nt_281_2d} and \ref{fig_centred_nx_1000_nt_281_2d} that increase of $\Delta t / \Delta x$ ratio results in the growth of jiggleschnook and causes discontinuities of solutions for higher values of $t$.
+
+
+\section{Testing, running the programs and making plots}
+
+There are two completely separate source codes for the analytical and numerical calculations. The source code for finding the analytical solution is located in the \code{01\_root\_finder} directory, while the numerical part is implemented inside the \code{02\_numerical} directory.
+
+Instructions for compiling, running the program, the units tests, and plotting the results are located in the README.md files that come with the source codes of the programs.

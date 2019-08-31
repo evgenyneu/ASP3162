@@ -176,6 +176,14 @@ def make_plots():
             plot_file_name="centred_nx_629_nt_281_2d.pdf",
             nx=629, nt=281, method='centered', plot_timesteps=7)
 
+    plot_3d(plot_dir="plots",
+            plot_file_name="centred_nx_1000_nt_281_3d.pdf",
+            nx=1000, nt=281, method='centered')
+
+    plot_2d(plot_dir="plots",
+            plot_file_name="centred_nx_1000_nt_281_2d.pdf",
+            nx=1000, nt=281, method='centered', plot_timesteps=7)
+
     # upwind
     # ----------
 
