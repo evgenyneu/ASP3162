@@ -57,12 +57,27 @@ subroutine linspace_test2(failures)
     call assert_approx(list(5), 20._dp, 1e-5_dp, __FILE__, __LINE__, failures)
 end
 
+subroutine linspace_test3(failures)
+    integer, intent(inout) :: failures
+    real(dp) :: list(912), step
+
+    call linspace(from=2._dp/3._dp, to=7._dp/9._dp, array=list)
+
+    call assert_approx(list(1), 0.666666666666667_dp, 1e-15_dp, __FILE__, __LINE__, failures)
+    call assert_approx(list(2), 0.666788632760093_dp, 1e-15_dp, __FILE__, __LINE__, failures)
+    call assert_approx(list(73), 0.675448225393341_dp, 1e-15_dp, __FILE__, __LINE__, failures)
+    call assert_approx(list(417), 0.717404561531894_dp, 1e-15_dp, __FILE__, __LINE__, failures)
+    call assert_approx(list(911), 0.777655811684352_dp, 1e-15_dp, __FILE__, __LINE__, failures)
+    call assert_approx(list(912), 0.777777777777778_dp, 1e-15_dp, __FILE__, __LINE__, failures)
+end
+
 subroutine float_utils_test_all(failures)
     integer, intent(inout) :: failures
 
     call can_convert_real_to_int_test(failures)
     call linspace_test(failures)
     call linspace_test2(failures)
+    call linspace_test3(failures)
 end
 
 end module FloatUtilsTest
