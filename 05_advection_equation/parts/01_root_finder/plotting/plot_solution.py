@@ -105,7 +105,7 @@ def plot_2d(plot_dir, plot_file_name, v_start):
     plt.ylabel("Velocity v [m/s]")
     plt.title(("Analytical solution of advection equation\n"
                "$v_t + vv_x=0$ with initial condition\n$v(x,0)=\\cos(x)$"
-               f", v_start={v_start}"))
+               f", v_start={v_start} m/s"))
 
     plt.ylim(0, 1.1)
     plt.legend()

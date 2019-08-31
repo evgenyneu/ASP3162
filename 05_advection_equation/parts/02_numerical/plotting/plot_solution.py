@@ -65,7 +65,7 @@ def plot_3d(plot_dir, plot_file_name, nx, nt, method):
     title = (
         "Numerical solution of advection equation\n"
         f"using {title_method} method\n"
-        f"for dx={dx:.3f}, dt={dt:.3f}, dt/dx={dt_dx:.2f}"
+        f"for dx={dx:.3f} m, dt={dt:.3f} s, dt/dx={dt_dx:.2f} s/m"
     )
 
     plt.title(title)
@@ -132,7 +132,7 @@ def plot_2d(plot_dir, plot_file_name, nx, nt, method, plot_timesteps):
     title = (
         "Numerical solution of advection equation\n"
         f"using {title_method} method\n"
-        f"for dx={dx:.3f}, dt={dt:.3f}, dt/dx={dt_dx:.2f}"
+        f"for dx={dx:.3f} m, dt={dt:.3f} s, dt/dx={dt_dx:.2f} s/m"
     )
 
     # Use pi units for the x-axis
@@ -209,7 +209,7 @@ def make_plots():
 
     plot_2d(plot_dir="plots",
             plot_file_name="upwind_nx_677_nt_281_2d.pdf",
-            nx=677, nt=281, method='upwind', plot_timesteps=8)
+            nx=677, nt=281, method='upwind', plot_timesteps=7)
 
 
 if __name__ == '__main__':
