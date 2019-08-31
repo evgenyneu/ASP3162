@@ -1,13 +1,24 @@
-# A Fortran program for finding roots of analytic solution of advection equation
+# A Fortran program for finding roots of advection equation
 
 This this a Fortran program that finds roots of equation
 
 ```
-cos(x - v * t) - v = 0
+v_t + v v_x = 0
 ```
 
-for different values of x and t parameters.
+with initial condition
 
+```
+v(x, 0) = cos x
+```
+
+and boundary conditions
+
+```
+v(−pi/2, t) = v(pi/2, t) = 0
+```
+
+using numerical approximation.
 
 
 ## Compile
@@ -111,28 +122,33 @@ Run the program with `--help` flag to see the description of parameters:
 ```
 ./build/main --help
 
-his program solves equation
+This program solves equation
 
-  cos(x - v * t) - v = 0
+  v_t + v v_x = 0
 
-for different values of x and t
+with initial condition
+  v(x,0) = cos x
+
+and boundary conditions
+  v(−pi/2, t) = v(pi/2, t) = 0
 
 
 Usage:
 
- ./build/main OUTPUT [--x_start=-1.5] [--x_end=1.5]
-    [--nx=100] [--t_start=0] [--t_end=1.4]
-    [--nt=8] [--v_start=0.5] [--v_start=0.5]
-    [--tolerance=1.0e-5] [--max_iterations=1000]
+ ./build/main OUTPUT [--method=upwind] [--x_start=-1.5] [--x_end=1.5]
+    [--nx=100] [--t_start=0] [--t_end=1.4] [--nt=8]
 
     OUTPUT : path to the output data file
 
+    --method=NAME : numerical method to use
+                  (centered, upwind). 
+                  Default: upwind.
 
     --x_start=NUMBER : the smallest x value,
-                  Default: -1.5.
+                  Default: -pi/2.
 
     --x_end=NUMBER : the largest x value,
-                  Default: 1.5.
+                  Default: pi/2.
 
     --nx=NUMBER : number of x points in the grid,
                   Default: 100.
@@ -145,15 +161,6 @@ Usage:
 
     --nt=NUMBER : number of t points in the grid,
                   Default: 8.
-
-    --v_start=NUMBER : The starting value for v for the root finding algorithm.,
-                  Default: 0.5.
-
-    --tolerance=NUMBER : tolerance for Newton-Raphson method.,
-                  Default: 1e-5.
-
-    --max_iterations=NUMBER : maximum number of iterations for Newton-Raphson method
-                  Default: 1000.
 
     --help  : show this message.
 ```
