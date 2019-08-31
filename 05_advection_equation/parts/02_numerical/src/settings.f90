@@ -102,9 +102,9 @@ real(dp), parameter :: DEFAULT_T_START = -0._dp
 real(dp), parameter :: DEFAULT_T_END = 1.4_dp
 integer, parameter :: DEFAULT_NT = 8
 
-character(len=ARGUMENT_MAX_LENGTH), parameter :: DEFAULT_METHOD = "upwind"
-character(len=ARGUMENT_MAX_LENGTH), parameter :: ALLOWED_METHODS(2) = &
-     [character(len=ARGUMENT_MAX_LENGTH) :: 'centered', 'upwind']
+character(len=100), parameter :: DEFAULT_METHOD = "upwind"
+character(len=100), parameter :: ALLOWED_METHODS(2) = &
+     [character(len=100) :: 'centered', 'upwind']
 
 contains
 
