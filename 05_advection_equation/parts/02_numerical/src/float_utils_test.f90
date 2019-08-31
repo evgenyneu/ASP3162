@@ -59,7 +59,7 @@ end
 
 subroutine linspace_test3(failures)
     integer, intent(inout) :: failures
-    real(dp) :: list(912), step
+    real(dp) :: list(912)
 
     call linspace(from=2._dp/3._dp, to=7._dp/9._dp, array=list)
 
