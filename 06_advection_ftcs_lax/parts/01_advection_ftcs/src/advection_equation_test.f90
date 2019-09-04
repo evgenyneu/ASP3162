@@ -27,7 +27,7 @@ subroutine solve_eqn_centered_domain_test(failures)
     options%x_end = 1
     options%nx = 101
     options%t_start = 0
-    options%t_end = 0.05
+    options%t_end = 1
     options%velocity = 1.0_dp
 
     call solve_equation(options, solution, x_points, t_points)
@@ -46,8 +46,8 @@ subroutine solve_eqn_centered_domain_test(failures)
     call assert_approx(x_points(101), 1._dp, 1e-5_dp, __FILE__, &
         __LINE__, failures)
 
-    ! ! t_points
-    ! ! ----------
+    ! t_points
+    ! ----------
 
     ! call assert_approx(t_points(1), 0.0_dp, 1e-5_dp, __FILE__, &
     !     __LINE__, failures)

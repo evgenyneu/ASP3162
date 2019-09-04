@@ -66,7 +66,8 @@ subroutine solve_centered(tmin, tmax, nx, nt, nt_allocated, &
 
             nt_allocated = 2 * nt_allocated
             allocate(t_points_buffer(nt_allocated))
-            t_points_buffer = t_points
+            t_points_buffer = 0
+            t_points_buffer(1:size(t_points)) = t_points
             deallocate(t_points)
             call move_alloc(t_points_buffer, t_points)
 
@@ -74,7 +75,8 @@ subroutine solve_centered(tmin, tmax, nx, nt, nt_allocated, &
             ! -------
 
             allocate(solution_buffer(nx, nt_allocated))
-            solution_buffer = solution
+            solution_buffer = 0
+            solution_buffer(:, 1: size(solution, 2)) = solution
             deallocate(solution)
             call move_alloc(solution_buffer, solution)
         end if
@@ -82,12 +84,6 @@ subroutine solve_centered(tmin, tmax, nx, nt, nt_allocated, &
         ! Calculate t values for all x except the edges
         solution(2 : nx - 1, nt + 1) = solution(2 : nx - 1, nt) &
                 - a * (solution(3 : nx, nt) - solution(1 : nx - 2, nt))
-
-        ! Calculate t values on the edges
-        ! The boundary conditions are periodic, meaning
-        ! that the x axis loops on itself:
-        !    nx + 1 index is 1, and 0 index is nx.
-        ! --------
 
         ! Left edge
         solution(1, nt + 1) = solution(1, nt) &
@@ -207,16 +203,15 @@ subroutine solve_equation(options, solution, x_points, t_points)
     call linspace(xmin, xmax, x_points)
     ! call linspace(t0, t1, t_points)
 
+    solution = 0
+    t_points = 0
+
     ! Set initial conditions
     where (x_points > 0.25 .and. x_points <= 0.75)
         solution(:, 1) = 1
     elsewhere
         solution(:, 1) = 0
     end where
-
-    ! Set boundary conditions
-    solution(1, :) = 0
-    solution(nx, :) = 0
 
     ! Calculate the steps
     dx = x_points(2) - x_points(1)
