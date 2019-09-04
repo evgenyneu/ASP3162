@@ -28,6 +28,7 @@ subroutine solve_eqn_centered_domain_test(failures)
     options%nx = 101
     options%t_start = 0
     options%t_end = 1
+    options%velocity = 1.0_dp
 
     call solve_equation(options, solution, x_points, t_points)
 

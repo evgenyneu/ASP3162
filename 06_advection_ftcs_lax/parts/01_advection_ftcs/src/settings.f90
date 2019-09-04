@@ -36,11 +36,14 @@ type, public :: program_settings
     ! The smallest t value
     real(dp) :: t_start
 
-     ! The largest t value
+    ! The largest t value
     real(dp) :: t_end
 
     ! The number of time points in the grid
     integer :: nt
+
+    ! The velocity parameter of the advection equation
+    real(dp) :: velocity
 
     ! Neumerical method used: ('centered', 'upwind')
     character(len=1024) :: method
@@ -101,6 +104,7 @@ integer, parameter :: DEFAULT_NX = 100
 real(dp), parameter :: DEFAULT_T_START = -0._dp
 real(dp), parameter :: DEFAULT_T_END = 1.4_dp
 integer, parameter :: DEFAULT_NT = 8
+real(dp), parameter :: DEFAULT_VELOCITY = 1.0_dp
 
 character(len=100), parameter :: DEFAULT_METHOD = "upwind"
 character(len=100), parameter :: ALLOWED_METHODS(2) = &
@@ -320,6 +324,19 @@ subroutine read_from_parsed_command_line(parsed, settings, error_message)
 
     if (.not. success) then
         call make_message("nt is not a number", error_message)
+        return
+    end if
+
+
+    ! t_end
+    ! --------------
+
+    call get_named_value_or_default(name='velocity', parsed=parsed, &
+                                    default=DEFAULT_VELOCITY, &
+                                    value=settings%velocity, success=success)
+
+    if (.not. success) then
+        call make_message("velocity is not a number", error_message)
         return
     end if
 

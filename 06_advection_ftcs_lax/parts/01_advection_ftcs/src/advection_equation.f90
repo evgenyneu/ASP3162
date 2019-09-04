@@ -137,7 +137,7 @@ subroutine solve_equation(options, solution, x_points, t_points)
     type(program_settings), intent(in) :: options
     real(dp), allocatable, intent(out) :: solution(:,:)
     real(dp), allocatable, intent(out) :: x_points(:), t_points(:)
-    real(dp) :: x0, x1, dx, t0, t1, dt
+    real(dp) :: x0, x1, dx, t0, t1, dt, v
     integer :: nx, nt, nt_allocated
 
     ! Assign shortcuts variables from settings
@@ -148,6 +148,8 @@ subroutine solve_equation(options, solution, x_points, t_points)
     t0 = options%t_start
     t1 = options%t_end
     ! nt = options%nt
+    v = options%velocity
+
     nt = 0
     nt_allocated = 10
 
@@ -172,8 +174,8 @@ subroutine solve_equation(options, solution, x_points, t_points)
     solution(nx, :) = 0
 
     ! Calculate the steps
-    ! dx = x_points(2) - x_points(1)
-    ! dt = t_points(2) - t_points(1)
+    dx = x_points(2) - x_points(1)
+    dt = 0.5_dp * dx * v
 
     ! select case (options%method)
     !     case ("centered")
