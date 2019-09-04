@@ -36,20 +36,31 @@ contains
 ! solution : 2D array containing the solution for the advection equation
 !        first coordinate is x, second is time.
 !
-subroutine solve_centered(nx, nt, dx, dt, solution)
-    integer, intent(in) :: nx, nt
-    real(dp), intent(in) :: dx, dt
+subroutine solve_centered(tmin, tmax, nx, nt, nt_allocated, &
+                          dx, dt, solution, t_points)
+
+    integer, intent(in) :: nx, nt, nt_allocated
+    real(dp), intent(in) :: tmin, tmax, dx, dt
     real(dp), allocatable, intent(inout) :: solution(:,:)
-    real(dp) :: a
-    integer :: n
+    real(dp), allocatable, intent(inout) :: t_points(:)
+    real(dp) :: a, t
+    integer :: n, i
 
     ! Pre-calculate the multiplier
     a = 0.25_dp * dt / dx
 
+    t = tmin
+    n = 0
+
     ! Calculate numerical solution
-    do n = 1, nt - 1
-        solution(2 : nx - 1, n + 1) = solution(2 : nx - 1, n) &
-            - a * (solution(3 : nx, n)**2 - solution(1 : nx - 2, n)**2)
+    do while (t < tmax)
+        t = t + dt
+        n = n + 1
+
+        do i = 1, nx
+            solution(2 : nx - 1, n + 1) = solution(2 : nx - 1, n) &
+                - a * (solution(3 : nx, n)**2 - solution(1 : nx - 2, n)**2)
+        end do
     end do
 end subroutine
 
@@ -137,17 +148,16 @@ subroutine solve_equation(options, solution, x_points, t_points)
     type(program_settings), intent(in) :: options
     real(dp), allocatable, intent(out) :: solution(:,:)
     real(dp), allocatable, intent(out) :: x_points(:), t_points(:)
-    real(dp) :: x0, x1, dx, t0, t1, dt, v
+    real(dp) :: xmin, xmax, dx, tmin, tmax, dt, v
     integer :: nx, nt, nt_allocated
 
     ! Assign shortcuts variables from settings
-    x0 = options%x_start
-    x1 = options%x_end
+    xmin = options%x_start
+    xmax = options%x_end
     nx = options%nx
 
-    t0 = options%t_start
-    t1 = options%t_end
-    ! nt = options%nt
+    tmin = options%t_start
+    tmax = options%t_end
     v = options%velocity
 
     nt = 0
@@ -159,7 +169,7 @@ subroutine solve_equation(options, solution, x_points, t_points)
     allocate(t_points(nt_allocated))
 
     ! Assign evenly spaced x values
-    call linspace(x0, x1, x_points)
+    call linspace(xmin, xmax, x_points)
     ! call linspace(t0, t1, t_points)
 
     ! Set initial conditions
@@ -175,17 +185,19 @@ subroutine solve_equation(options, solution, x_points, t_points)
 
     ! Calculate the steps
     dx = x_points(2) - x_points(1)
-    dt = 0.5_dp * dx * v
+    dt = 0.5_dp * dx / v
 
-    ! select case (options%method)
-    !     case ("centered")
-    !        call solve_centered(nx=nx, nt=nt, dx=dx, dt=dt, solution=solution)
-    !     case ("upwind")
-    !        call solve_upwind(nx=nx, nt=nt, dx=dx, dt=dt, solution=solution)
-    !     case default
-    !        print "(a, a)", "ERROR: unknown method ", trim(options%method)
-    !        call exit(41)
-    ! end select
+    select case (options%method)
+        case ("centered")
+           call solve_centered(tmin=tmin, tmax=tmax, nx=nx, nt=nt, &
+                nt_allocated=nt_allocated, &
+                dx=dx, dt=dt, solution=solution, t_points=t_points)
+        case ("upwind")
+           ! call solve_upwind(nx=nx, nt=nt, dx=dx, dt=dt, solution=solution)
+        case default
+           print "(a, a)", "ERROR: unknown method ", trim(options%method)
+           call exit(41)
+    end select
 end subroutine
 
 
