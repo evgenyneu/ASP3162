@@ -37,30 +37,65 @@ contains
 !        first coordinate is x, second is time.
 !
 subroutine solve_centered(tmin, tmax, nx, nt, nt_allocated, &
-                          dx, dt, solution, t_points)
+                          dx, dt, v, solution, t_points)
 
-    integer, intent(in) :: nx, nt, nt_allocated
-    real(dp), intent(in) :: tmin, tmax, dx, dt
+    integer, intent(in) :: nx
+    integer, intent(inout) :: nt, nt_allocated
+    real(dp), intent(in) :: tmin, tmax, dx, dt, v
     real(dp), allocatable, intent(inout) :: solution(:,:)
+    real(dp), allocatable :: solution_buffer(:,:)
     real(dp), allocatable, intent(inout) :: t_points(:)
+    real(dp), allocatable :: t_points_buffer(:)
     real(dp) :: a, t
     integer :: n, i
 
     ! Pre-calculate the multiplier
-    a = 0.25_dp * dt / dx
+    a = 0.5_dp * v * dt / dx
 
     t = tmin
-    n = 0
 
     ! Calculate numerical solution
     do while (t < tmax)
         t = t + dt
-        n = n + 1
+        nt = nt + 1
 
-        do i = 1, nx
-            solution(2 : nx - 1, n + 1) = solution(2 : nx - 1, n) &
-                - a * (solution(3 : nx, n)**2 - solution(1 : nx - 2, n)**2)
-        end do
+        ! Make the the t axis larger in the arrays, if necessary
+        if (nt > nt_allocated / 2) then
+            ! Enlarge t_points array
+            ! -------
+
+            nt_allocated = 2 * nt_allocated
+            allocate(t_points_buffer(nt_allocated))
+            t_points_buffer = t_points
+            deallocate(t_points)
+            call move_alloc(t_points_buffer, t_points)
+
+            ! Enlarge t axis of the solution array
+            ! -------
+
+            allocate(solution_buffer(nx, nt_allocated))
+            solution_buffer = solution
+            deallocate(solution)
+            call move_alloc(solution_buffer, solution)
+        end if
+
+        ! Calculate t values for all x except the edges
+        solution(2 : nx - 1, nt + 1) = solution(2 : nx - 1, nt) &
+                - a * (solution(3 : nx, nt) - solution(1 : nx - 2, nt))
+
+        ! Calculate t values on the edges
+        ! The boundary conditions are periodic, meaning
+        ! that the x axis loops on itself:
+        !    nx + 1 index is 1, and 0 index is nx.
+        ! --------
+
+        ! Left edge
+        solution(1, nt + 1) = solution(1, nt) &
+                - a * (solution(2, nt) - solution(nx, nt))
+
+        ! Right edge
+        solution(nx, nt + 1) = solution(nx, nt) &
+                - a * (solution(1, nt) - solution(nx - 1, nt))
     end do
 end subroutine
 
@@ -191,7 +226,7 @@ subroutine solve_equation(options, solution, x_points, t_points)
         case ("centered")
            call solve_centered(tmin=tmin, tmax=tmax, nx=nx, nt=nt, &
                 nt_allocated=nt_allocated, &
-                dx=dx, dt=dt, solution=solution, t_points=t_points)
+                dx=dx, dt=dt, v=v, solution=solution, t_points=t_points)
         case ("upwind")
            ! call solve_upwind(nx=nx, nt=nt, dx=dx, dt=dt, solution=solution)
         case default
