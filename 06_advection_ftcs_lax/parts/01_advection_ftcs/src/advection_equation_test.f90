@@ -65,6 +65,12 @@ subroutine solve_eqn_centered_domain_test(failures)
     call assert_approx(t_points(201), 1._dp, 1e-5_dp, __FILE__, &
         __LINE__, failures)
 
+    ! Solution size
+    ! --------
+
+    call assert_equal(size(solution, 1), 101, __FILE__, __LINE__, failures)
+    call assert_equal(size(solution, 2), 201, __FILE__, __LINE__, failures)
+
     ! Initial condition
     ! ----------
 
@@ -96,11 +102,10 @@ subroutine solve_eqn_centered_domain_test(failures)
         __LINE__, failures)
 
 
-
-    ! ! Ensure there are no NaN values
-    ! if (any(ieee_is_nan(solution))) then
-    !     call assert_true(.true., __FILE__, __LINE__, failures)
-    ! end if
+    ! Ensure there are no NaN values
+    if (any(ieee_is_nan(solution))) then
+        call assert_true(.true., __FILE__, __LINE__, failures)
+    end if
 end
 
 
@@ -367,17 +372,17 @@ subroutine solve_and_create_output_test(failures)
     type(program_settings) :: options
     integer, parameter :: unit=15
     integer :: nx, nt
-    real(dp) :: x_points(100), t_points(8), solution(100, 8)
+    real(dp) :: x_points(101), t_points(201), solution(101, 201)
 
     options%output_path = "test_output.dat"
 
     options%method = 'centered'
-    options%x_start = -1.57_dp
-    options%x_end = 1.57_dp
-    options%nx = 100
-    options%t_start = 0._dp
-    options%t_end = 1.4_dp
-    options%nt = 8
+    options%x_start = 0
+    options%x_end = 1
+    options%nx = 101
+    options%t_start = 0
+    options%t_end = 1
+    options%velocity = 1.0_dp
 
     call solve_and_create_output(options)
 
@@ -390,39 +395,74 @@ subroutine solve_and_create_output_test(failures)
         status='old', action='read' )
 
     read (unit) nx
-    call assert_equal(nx, 100, __FILE__, __LINE__, failures)
+    call assert_equal(nx, 101, __FILE__, __LINE__, failures)
 
     read (unit) nt
-    call assert_equal(nt, 8, __FILE__, __LINE__, failures)
+    call assert_equal(nt, 201, __FILE__, __LINE__, failures)
+
+
+    ! x_points
+    ! ----------
 
     read (unit) x_points
 
-    call assert_approx(x_points(1), -1.57_dp, 1e-5_dp, __FILE__, __LINE__, &
-                       failures)
+    call assert_approx(x_points(1), 0._dp, 1e-5_dp, __FILE__, &
+        __LINE__, failures)
 
-    call assert_approx(x_points(2), -1.538282_dp, 1e-5_dp, __FILE__, &
-                       __LINE__, failures)
+    call assert_approx(x_points(2), 0.01_dp, 1e-5_dp, __FILE__, &
+        __LINE__, failures)
 
-    call assert_approx(x_points(100), 1.57_dp, 1e-5_dp, __FILE__, &
-                       __LINE__, failures)
+    call assert_approx(x_points(101), 1._dp, 1e-5_dp, __FILE__, &
+        __LINE__, failures)
+
+    ! t_points
+    ! ----------
 
     read (unit) t_points
 
-    call assert_approx(t_points(1), 0._dp, 1e-5_dp, __FILE__, &
-                       __LINE__, failures)
+    call assert_approx(t_points(1), 0.0_dp, 1e-5_dp, __FILE__, &
+        __LINE__, failures)
 
-    call assert_approx(t_points(2), 0.2_dp, 1e-5_dp, __FILE__, &
-                       __LINE__, failures)
+    call assert_approx(t_points(2), 0.005_dp, 1e-5_dp, __FILE__, &
+        __LINE__, failures)
 
-    call assert_approx(t_points(8), 1.4_dp, 1e-5_dp, __FILE__, &
-                       __LINE__, failures)
+    call assert_approx(t_points(200), 0.995_dp, 1e-5_dp, __FILE__, &
+        __LINE__, failures)
+
+    call assert_approx(t_points(201), 1._dp, 1e-5_dp, __FILE__, &
+        __LINE__, failures)
+
+    ! Initial condition
+    ! ----------
 
     read (unit) solution
-    call assert_approx(solution(50, 1), 0.999874_dp, 1e-5_dp, __FILE__, &
-            __LINE__, failures)
 
-    call assert_approx(solution(50, 8), 0.5936725_dp, 1e-5_dp, __FILE__, &
-            __LINE__, failures)
+    call assert_approx(solution(1, 1), 0.0_dp, 1e-5_dp, __FILE__, &
+        __LINE__, failures)
+
+    call assert_approx(solution(1, 1), 0.0_dp, 1e-5_dp, __FILE__, &
+        __LINE__, failures)
+
+    call assert_approx(solution(2, 1), 0.0_dp, 1e-5_dp, __FILE__, &
+        __LINE__, failures)
+
+    call assert_approx(solution(26, 1), 0.0_dp, 1e-5_dp, __FILE__, &
+        __LINE__, failures)
+
+    call assert_approx(solution(27, 1), 1.0_dp, 1e-5_dp, __FILE__, &
+        __LINE__, failures)
+
+    call assert_approx(solution(28, 1), 1.0_dp, 1e-5_dp, __FILE__, &
+        __LINE__, failures)
+
+    call assert_approx(solution(76, 1), 1.0_dp, 1e-5_dp, __FILE__, &
+        __LINE__, failures)
+
+    call assert_approx(solution(77, 1), 0.0_dp, 1e-5_dp, __FILE__, &
+        __LINE__, failures)
+
+    call assert_approx(solution(101, 1), 0.0_dp, 1e-5_dp, __FILE__, &
+        __LINE__, failures)
 
     close(unit=unit)
 
@@ -450,11 +490,11 @@ subroutine advection_equation_test_all(failures)
     ! call solve_eqn_upwind_test(failures)
     ! call solve_eqn_centered_unstable_test(failures)
 
-    ! call print_output_test(failures)
+    call print_output_test(failures)
 
-    ! call solve_and_create_output_test(failures)
+    call solve_and_create_output_test(failures)
 
-    ! call read_settings_solve_and_create_output_test(failures)
+    call read_settings_solve_and_create_output_test(failures)
 end
 
 end module AdvectionEquationTest
