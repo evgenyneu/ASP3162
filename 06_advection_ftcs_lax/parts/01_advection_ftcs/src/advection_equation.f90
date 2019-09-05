@@ -71,17 +71,15 @@ subroutine solve_centered(tmin, tmax, nx, nt, nt_allocated, &
     real(dp), intent(in) :: tmin, tmax, dx, dt, v
     real(dp), allocatable, intent(inout) :: solution(:,:)
     real(dp), allocatable, intent(inout) :: t_points(:)
-    real(dp) :: a, t
+    real(dp) :: a
 
     ! Pre-calculate the multiplier
     a = 0.5_dp * v * dt / dx
 
-    t = tmin
-
     ! Calculate umerical solution
-    do while (t < tmax)
-        t = t + dt
+    do while (t_points(nt) < tmax)
         nt = nt + 1
+        t_points(nt) = t_points(nt - 1) + dt
 
         ! Resize the time dimension of the arrays if needed
         if (nt > nt_allocated / 2) then
@@ -202,10 +200,8 @@ subroutine solve_equation(options, solution, x_points, t_points)
     tmax = options%t_end
     v = options%velocity
 
-    nt = 0
-    nt_allocated = 10
-
     ! Allocate the arrays
+    nt_allocated = 10
     allocate(solution(nx, nt_allocated))
     allocate(x_points(nx))
     allocate(t_points(nt_allocated))
@@ -218,6 +214,11 @@ subroutine solve_equation(options, solution, x_points, t_points)
     t_points = 0
 
     ! Set initial conditions
+    ! -------
+
+    nt = 1
+    t_points(1) = tmin
+
     where (x_points > 0.25 .and. x_points <= 0.75)
         solution(:, 1) = 1
     elsewhere
@@ -239,6 +240,10 @@ subroutine solve_equation(options, solution, x_points, t_points)
            print "(a, a)", "ERROR: unknown method ", trim(options%method)
            call exit(41)
     end select
+
+    ! Remove unused elements from t dimensino of arrays
+    call resize_arrays(new_size=nt, copy_elements=nt, &
+                       solution=solution, t_points=t_points)
 end subroutine
 
 

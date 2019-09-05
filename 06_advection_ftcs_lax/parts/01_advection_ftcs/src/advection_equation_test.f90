@@ -37,6 +37,8 @@ subroutine solve_eqn_centered_domain_test(failures)
     ! x_points
     ! ----------
 
+    call assert_equal(size(x_points), 101, __FILE__, __LINE__, failures)
+
     call assert_approx(x_points(1), 0._dp, 1e-5_dp, __FILE__, &
         __LINE__, failures)
 
@@ -49,14 +51,19 @@ subroutine solve_eqn_centered_domain_test(failures)
     ! t_points
     ! ----------
 
-    ! call assert_approx(t_points(1), 0.0_dp, 1e-5_dp, __FILE__, &
-    !     __LINE__, failures)
+    call assert_equal(size(t_points), 201, __FILE__, __LINE__, failures)
 
-    ! call assert_approx(t_points(2), 0.285714e-1_dp, 1e-5_dp, __FILE__, &
-    !     __LINE__, failures)
+    call assert_approx(t_points(1), 0.0_dp, 1e-5_dp, __FILE__, &
+        __LINE__, failures)
 
-    ! call assert_approx(t_points(50), 1.4_dp, 1e-5_dp, __FILE__, &
-    !     __LINE__, failures)
+    call assert_approx(t_points(2), 0.005_dp, 1e-5_dp, __FILE__, &
+        __LINE__, failures)
+
+    call assert_approx(t_points(200), 0.995_dp, 1e-5_dp, __FILE__, &
+        __LINE__, failures)
+
+    call assert_approx(t_points(201), 1._dp, 1e-5_dp, __FILE__, &
+        __LINE__, failures)
 
     ! Initial condition
     ! ----------
