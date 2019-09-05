@@ -74,7 +74,7 @@ subroutine read_from_parsed_command_line_test__named(failures)
     parsed%named_value(6) = "132"
 
     parsed%named_name(7) = "method"
-    parsed%named_value(7) = "centered"
+    parsed%named_value(7) = "ftcs"
 
 
     call read_from_parsed_command_line(parsed=parsed, settings=settings, error_message=error_message)
@@ -89,7 +89,7 @@ subroutine read_from_parsed_command_line_test__named(failures)
     call assert_approx(settings%t_end, 0.222_dp, 1e-5_dp, __FILE__, __LINE__, failures)
     call assert_equal(settings%nt, 132, __FILE__, __LINE__, failures)
 
-    call assert_equal(settings%method, 'centered', __FILE__, __LINE__, failures)
+    call assert_equal(settings%method, 'ftcs', __FILE__, __LINE__, failures)
 end
 
 

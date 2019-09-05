@@ -63,7 +63,7 @@ end subroutine
 ! solution : 2D array containing the solution for the advection equation
 !        first coordinate is x, second is time.
 !
-subroutine solve_centered(tmax, nx, nt, nt_allocated, &
+subroutine solve_ftcs(tmax, nx, nt, nt_allocated, &
                           dx, dt, v, solution, t_points)
 
     integer, intent(in) :: nx
@@ -106,7 +106,7 @@ end subroutine
 
 
 !
-! Solve the advection equation using upwind method
+! Solve the advection equation using lax method
 ! for space coordinate
 !
 ! Inputs:
@@ -248,8 +248,8 @@ subroutine solve_equation(options, solution, x_points, t_points)
     dt = 0.5_dp * dx / v
 
     select case (options%method)
-        case ("centered")
-           call solve_centered(tmax=tmax, nx=nx, nt=nt, &
+        case ("ftcs")
+           call solve_ftcs(tmax=tmax, nx=nx, nt=nt, &
                 nt_allocated=nt_allocated, &
                 dx=dx, dt=dt, v=v, solution=solution, t_points=t_points)
         case ("lax")

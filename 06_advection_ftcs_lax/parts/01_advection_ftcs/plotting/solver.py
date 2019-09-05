@@ -99,7 +99,7 @@ def solve_equation(x_start, x_end, nx,
         The number of t points in the grid
 
     method : str
-        Numerical method to be used: centered, upwind
+        Numerical method to be used: ftcs, lax
 
     Returns
     -------

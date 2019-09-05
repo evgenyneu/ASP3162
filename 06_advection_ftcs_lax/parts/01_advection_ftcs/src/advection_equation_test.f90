@@ -16,13 +16,13 @@ public advection_equation_test_all
 contains
 
 
-subroutine solve_eqn_centered_test(failures)
+subroutine solve_eqn_ftcs_test(failures)
     integer, intent(inout) :: failures
     type(program_settings) :: options
     real(dp), allocatable :: solution(:,:)
     real(dp), allocatable :: x_points(:), t_points(:)
 
-    options%method = 'centered'
+    options%method = 'ftcs'
     options%x_start = 0
     options%x_end = 1
     options%nx = 101
@@ -258,7 +258,7 @@ subroutine solve_and_create_output_test(failures)
 
     options%output_path = "test_output.dat"
 
-    options%method = 'centered'
+    options%method = 'ftcs'
     options%x_start = 0
     options%x_end = 1
     options%nx = 101
@@ -367,7 +367,7 @@ end
 subroutine advection_equation_test_all(failures)
     integer, intent(inout) :: failures
 
-    call solve_eqn_centered_test(failures)
+    call solve_eqn_ftcs_test(failures)
     call solve_eqn_lax_test(failures)
     call print_output_test(failures)
     call solve_and_create_output_test(failures)

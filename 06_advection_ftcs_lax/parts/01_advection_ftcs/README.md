@@ -135,14 +135,14 @@ and boundary conditions
 
 Usage:
 
- ./build/main OUTPUT [--method=upwind] [--x_start=-1.5] [--x_end=1.5]
+ ./build/main OUTPUT [--method=lax] [--x_start=-1.5] [--x_end=1.5]
     [--nx=100] [--t_start=0] [--t_end=1.4] [--nt=8]
 
     OUTPUT : path to the output data file
 
     --method=NAME : numerical method to use
-                  (centered, upwind). 
-                  Default: upwind.
+                  (ftcs, lax). 
+                  Default: lax.
 
     --x_start=NUMBER : the smallest x value,
                   Default: -pi/2.

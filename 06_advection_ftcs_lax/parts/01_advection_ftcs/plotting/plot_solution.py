@@ -35,7 +35,7 @@ def plot_3d(plot_dir, plot_file_name, method):
         The number of t points in the grid
 
     method : str
-        Numerical method to be used: centered, upwind
+        Numerical method to be used: ftcs, lax
     """
 
     result = solve_equation(x_start=0, x_end=1, nx=101,
@@ -57,13 +57,9 @@ def plot_3d(plot_dir, plot_file_name, method):
     plt.ylabel("Time t [s]")
     ax.set_zlabel("Velocity v [m/s]")
 
-    title_method = method
-    if title_method == 'centered':
-        title_method = 'centered-difference'
-
     title = (
         "Numerical solution of advection equation\n"
-        f"using {title_method} method\n"
+        f"using {method} method\n"
         f"for dx={dx:.3f} m, dt={dt:.3f} s, dt/dx={dt_dx:.2f} s/m"
     )
 
@@ -99,7 +95,7 @@ def plot_2d(plot_dir, plot_file_name, method, plot_timesteps):
         The number of t points in the grid
 
     method : str
-        Numerical method to be used: centered, upwind
+        Numerical method to be used: ftcs, lax
 
     plot_timesteps : int
         number of timesteps to plot
@@ -124,13 +120,9 @@ def plot_2d(plot_dir, plot_file_name, method, plot_timesteps):
     plt.xlabel("Position x [m]")
     plt.ylabel("Velocity v [m/s]")
 
-    title_method = method
-    if title_method == 'centered':
-        title_method = 'centered-difference'
-
     title = (
         "Numerical solution of advection equation\n"
-        f"using {title_method} method\n"
+        f"using {method} method\n"
         f"for dx={dx:.3f} m, dt={dt:.3f} s, dt/dx={dt_dx:.2f} s/m"
     )
 
