@@ -45,7 +45,7 @@ type, public :: program_settings
     ! The velocity parameter of the advection equation
     real(dp) :: velocity
 
-    ! Neumerical method used: ('centered', 'upwind')
+    ! Neumerical method used: ('centered', 'lax')
     character(len=1024) :: method
 end type program_settings
 
@@ -65,14 +65,14 @@ character(len=HELP_MESSAGE_LENGTH), parameter :: HELP_MESSAGE = NEW_LINE('h')//"
     &Usage:&
     &"//NEW_LINE('h')//"&
     &"//NEW_LINE('h')//"&
-    & ./build/main OUTPUT [--method=upwind] [--x_start=-1.5] [--x_end=1.5]"//NEW_LINE('h')//"&
+    & ./build/main OUTPUT [--method=lax] [--x_start=-1.5] [--x_end=1.5]"//NEW_LINE('h')//"&
     &    [--nx=100] [--t_start=0] [--t_end=1.4] [--nt=8]"//NEW_LINE('h')//"&
     &"//NEW_LINE('h')//"&
     &    OUTPUT : path to the output data file"//NEW_LINE('h')//"&
     &"//NEW_LINE('h')//"&
     &    --method=NAME : numerical method to use"//NEW_LINE('h')//"&
-    &                  (centered, upwind). "//NEW_LINE('h')//"&
-    &                  Default: upwind."//NEW_LINE('h')//"&
+    &                  (centered, lax). "//NEW_LINE('h')//"&
+    &                  Default: lax."//NEW_LINE('h')//"&
     &"//NEW_LINE('h')//"&
     &    --x_start=NUMBER : the smallest x value,"//NEW_LINE('h')//"&
     &                  Default: -pi/2."//NEW_LINE('h')//"&
@@ -106,9 +106,9 @@ real(dp), parameter :: DEFAULT_T_END = 1.4_dp
 integer, parameter :: DEFAULT_NT = 8
 real(dp), parameter :: DEFAULT_VELOCITY = 1.0_dp
 
-character(len=100), parameter :: DEFAULT_METHOD = "upwind"
+character(len=100), parameter :: DEFAULT_METHOD = "lax"
 character(len=100), parameter :: ALLOWED_METHODS(2) = &
-     [character(len=100) :: 'centered', 'upwind']
+     [character(len=100) :: 'centered', 'lax']
 
 contains
 

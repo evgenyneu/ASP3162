@@ -63,12 +63,12 @@ end subroutine
 ! solution : 2D array containing the solution for the advection equation
 !        first coordinate is x, second is time.
 !
-subroutine solve_centered(tmin, tmax, nx, nt, nt_allocated, &
+subroutine solve_centered(tmax, nx, nt, nt_allocated, &
                           dx, dt, v, solution, t_points)
 
     integer, intent(in) :: nx
     integer, intent(inout) :: nt, nt_allocated
-    real(dp), intent(in) :: tmin, tmax, dx, dt, v
+    real(dp), intent(in) :: tmax, dx, dt, v
     real(dp), allocatable, intent(inout) :: solution(:,:)
     real(dp), allocatable, intent(inout) :: t_points(:)
     real(dp) :: a
@@ -91,16 +91,16 @@ subroutine solve_centered(tmin, tmax, nx, nt, nt_allocated, &
         end if
 
         ! Calculate t values for all x except the edges
-        solution(2 : nx - 1, nt + 1) = solution(2 : nx - 1, nt) &
-                - a * (solution(3 : nx, nt) - solution(1 : nx - 2, nt))
+        solution(2 : nx - 1, nt) = solution(2 : nx - 1, nt - 1) &
+                - a * (solution(3 : nx, nt - 1) - solution(1 : nx - 2, nt - 1))
 
         ! Left edge
-        solution(1, nt + 1) = solution(1, nt) &
-                - a * (solution(2, nt) - solution(nx, nt))
+        solution(1, nt) = solution(1, nt - 1) &
+                - a * (solution(2, nt - 1) - solution(nx, nt - 1))
 
         ! Right edge
-        solution(nx, nt + 1) = solution(nx, nt) &
-                - a * (solution(1, nt) - solution(nx - 1, nt))
+        solution(nx, nt) = solution(nx, nt - 1) &
+                - a * (solution(1, nt - 1) - solution(nx - 1, nt - 1))
     end do
 end subroutine
 
@@ -127,29 +127,47 @@ end subroutine
 ! solution : 2D array containing the solution for the advection equation
 !        first coordinate is x, second is time.
 !
-subroutine solve_upwind(nx, nt, dx, dt, solution)
-    integer, intent(in) :: nx, nt
-    real(dp), intent(in) :: dx, dt
+subroutine solve_lax(tmax, nx, nt, nt_allocated, &
+                          dx, dt, v, solution, t_points)
+
+    integer, intent(in) :: nx
+    integer, intent(inout) :: nt, nt_allocated
+    real(dp), intent(in) :: tmax, dx, dt, v
     real(dp), allocatable, intent(inout) :: solution(:,:)
+    real(dp), allocatable, intent(inout) :: t_points(:)
     real(dp) :: a
-    integer :: n, ix, q
 
     ! Pre-calculate the multiplier
-    a = 0.5_dp * dt / dx
+    a = 0.5_dp * v * dt / dx
 
-    ! Calculate numerical solution
-    do n = 1, nt - 1
-        do ix = 1, nx - 2
-            if (solution(ix + 1, n) > 0) then
-                q = 0
-            else
-                ! Add 1 to the x index if velocity is negative
-                q = 1
-            end if
+    ! Calculate umerical solution
+    do while (t_points(nt) < tmax)
+        nt = nt + 1
+        t_points(nt) = t_points(nt - 1) + dt
 
-            solution(ix + 1, n + 1) = solution(ix + 1, n) &
-                - a * (solution(ix + 1 + q, n)**2 - solution(ix + q, n)**2)
-        end do
+        ! Resize the time dimension of the arrays if needed
+        if (nt > nt_allocated / 2) then
+            nt_allocated = 2 * nt_allocated
+
+            call resize_arrays(new_size=nt_allocated, &
+                               copy_elements=size(t_points), &
+                               solution=solution, t_points=t_points)
+        end if
+
+        ! Calculate t values for all x except the edges
+        solution(2 : nx - 1, nt) = &
+            0.5_dp * (solution(3 : nx, nt - 1) + solution(1 : nx - 2, nt - 1)) &
+            - a * (solution(3 : nx, nt - 1) - solution(1 : nx - 2, nt - 1))
+
+        ! Left edge
+        solution(1, nt + 1) = &
+            0.5_dp * (solution(2, nt - 1) + solution(nx, nt - 1)) &
+            - a * (solution(2, nt - 1) - solution(nx, nt - 1))
+
+        ! Right edge
+        solution(nx, nt + 1) = &
+            0.5_dp * (solution(1, nt - 1) + solution(nx - 1, nt - 1)) &
+            - a * (solution(1, nt - 1) - solution(nx - 1, nt - 1))
     end do
 end subroutine
 
@@ -231,11 +249,13 @@ subroutine solve_equation(options, solution, x_points, t_points)
 
     select case (options%method)
         case ("centered")
-           call solve_centered(tmin=tmin, tmax=tmax, nx=nx, nt=nt, &
+           call solve_centered(tmax=tmax, nx=nx, nt=nt, &
                 nt_allocated=nt_allocated, &
                 dx=dx, dt=dt, v=v, solution=solution, t_points=t_points)
-        case ("upwind")
-           ! call solve_upwind(nx=nx, nt=nt, dx=dx, dt=dt, solution=solution)
+        case ("lax")
+           call solve_lax(tmax=tmax, nx=nx, nt=nt, &
+                nt_allocated=nt_allocated, &
+                dx=dx, dt=dt, v=v, solution=solution, t_points=t_points)
         case default
            print "(a, a)", "ERROR: unknown method ", trim(options%method)
            call exit(41)

@@ -13,10 +13,9 @@ import numpy as np
 import os
 import math
 from solver import solve_equation
-from matplotlib.ticker import FuncFormatter, MultipleLocator
 
 
-def plot_3d(plot_dir, plot_file_name, nx, nt, method):
+def plot_3d(plot_dir, plot_file_name, method):
     """
     Makes a surface 3D plot of the velocity and saves it to a file.
 
@@ -39,8 +38,8 @@ def plot_3d(plot_dir, plot_file_name, nx, nt, method):
         Numerical method to be used: centered, upwind
     """
 
-    result = solve_equation(x_start=-np.pi/2, x_end=np.pi/2,
-                            nx=nx, t_start=0, t_end=1.4, nt=nt, method=method)
+    result = solve_equation(x_start=0, x_end=1, nx=101,
+                            t_start=0, t_end=1, method=method)
 
     if result is None:
         return
@@ -79,7 +78,7 @@ def plot_3d(plot_dir, plot_file_name, nx, nt, method):
     plt.show()
 
 
-def plot_2d(plot_dir, plot_file_name, nx, nt, method, plot_timesteps):
+def plot_2d(plot_dir, plot_file_name, method, plot_timesteps):
     """
     Makes a 2D plot of the velocity at different time values
     and saves it to a file.
@@ -106,8 +105,8 @@ def plot_2d(plot_dir, plot_file_name, nx, nt, method, plot_timesteps):
         number of timesteps to plot
     """
 
-    result = solve_equation(x_start=-np.pi/2, x_end=np.pi/2,
-                            nx=nx, t_start=0, t_end=1.4, nt=nt, method=method)
+    result = solve_equation(x_start=0, x_end=1,
+                            nx=101, t_start=0, t_end=1, method=method)
 
     if result is None:
         return
@@ -134,13 +133,6 @@ def plot_2d(plot_dir, plot_file_name, nx, nt, method, plot_timesteps):
         f"using {title_method} method\n"
         f"for dx={dx:.3f} m, dt={dt:.3f} s, dt/dx={dt_dx:.2f} s/m"
     )
-
-    # Use pi units for the x-axis
-    ax = plt.gca()
-    ax.xaxis.set_major_formatter(FuncFormatter(
-       lambda val, pos: '{:.2g}$\pi$'.format(val/np.pi) if val !=0 else '0'
-    ))
-    ax.xaxis.set_major_locator(MultipleLocator(base=np.pi/4))
 
     plt.title(title)
     plt.ylim(0, 1.1)
@@ -213,4 +205,10 @@ def make_plots():
 
 
 if __name__ == '__main__':
-    make_plots()
+    plot_3d(plot_dir="plots",
+            plot_file_name="centred_nx_100_nt_281_3d.pdf",
+            method='lax')
+
+    # plot_2d(plot_dir="plots",
+    #         plot_file_name="centred_nx_100_nt_281_3d.pdf",
+    #         method='centered', plot_timesteps=3)

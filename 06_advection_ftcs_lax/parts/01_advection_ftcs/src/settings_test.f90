@@ -38,7 +38,7 @@ subroutine read_from_parsed_command_line_test__no_args(failures)
     call assert_approx(settings%t_end, 1.4_dp, 1e-5_dp, __FILE__, __LINE__, failures)
     call assert_equal(settings%nt, 8, __FILE__, __LINE__, failures)
 
-    call assert_equal(settings%method, 'upwind', __FILE__, __LINE__, failures)
+    call assert_equal(settings%method, 'lax', __FILE__, __LINE__, failures)
 end
 
 subroutine read_from_parsed_command_line_test__named(failures)
