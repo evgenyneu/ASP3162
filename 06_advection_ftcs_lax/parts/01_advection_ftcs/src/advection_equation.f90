@@ -14,6 +14,33 @@ public :: solve_equation, print_output, solve_and_create_output, &
 contains
 
 
+subroutine resize_arrays(new_size, copy_elements, solution, t_points)
+    integer, intent(in) :: new_size, copy_elements
+    real(dp), allocatable, intent(inout) :: solution(:,:)
+    real(dp), allocatable :: solution_buffer(:,:)
+    real(dp), allocatable, intent(inout) :: t_points(:)
+    real(dp), allocatable :: t_points_buffer(:)
+
+    ! Enlarge t_points array
+    ! -------
+
+    allocate(t_points_buffer(new_size))
+    t_points_buffer = 0
+    t_points_buffer(1:copy_elements) = t_points
+    deallocate(t_points)
+    call move_alloc(t_points_buffer, t_points)
+
+    ! Enlarge t axis of the solution array
+    ! -------
+
+    allocate(solution_buffer(size(solution, 1), new_size))
+    solution_buffer = 0
+    solution_buffer(:, 1:copy_elements) = solution
+    deallocate(solution)
+    call move_alloc(solution_buffer, solution)
+end subroutine
+
+
 !
 ! Solve the advection equation using cetered-difference method
 ! for space coordinate
@@ -43,42 +70,26 @@ subroutine solve_centered(tmin, tmax, nx, nt, nt_allocated, &
     integer, intent(inout) :: nt, nt_allocated
     real(dp), intent(in) :: tmin, tmax, dx, dt, v
     real(dp), allocatable, intent(inout) :: solution(:,:)
-    real(dp), allocatable :: solution_buffer(:,:)
     real(dp), allocatable, intent(inout) :: t_points(:)
-    real(dp), allocatable :: t_points_buffer(:)
     real(dp) :: a, t
-    integer :: n, i
 
     ! Pre-calculate the multiplier
     a = 0.5_dp * v * dt / dx
 
     t = tmin
 
-    ! Calculate numerical solution
+    ! Calculate umerical solution
     do while (t < tmax)
         t = t + dt
         nt = nt + 1
 
-        ! Make the the t axis larger in the arrays, if necessary
+        ! Resize the time dimension of the arrays if needed
         if (nt > nt_allocated / 2) then
-            ! Enlarge t_points array
-            ! -------
-
             nt_allocated = 2 * nt_allocated
-            allocate(t_points_buffer(nt_allocated))
-            t_points_buffer = 0
-            t_points_buffer(1:size(t_points)) = t_points
-            deallocate(t_points)
-            call move_alloc(t_points_buffer, t_points)
 
-            ! Enlarge t axis of the solution array
-            ! -------
-
-            allocate(solution_buffer(nx, nt_allocated))
-            solution_buffer = 0
-            solution_buffer(:, 1: size(solution, 2)) = solution
-            deallocate(solution)
-            call move_alloc(solution_buffer, solution)
+            call resize_arrays(new_size=nt_allocated, &
+                               copy_elements=size(t_points), &
+                               solution=solution, t_points=t_points)
         end if
 
         ! Calculate t values for all x except the edges
