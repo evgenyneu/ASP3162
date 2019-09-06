@@ -5,6 +5,8 @@ plots/
 # Python
 __pycache__
 
+*.mp4
+
 # Latex
 *.log
 *.aux
