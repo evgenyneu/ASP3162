@@ -7,9 +7,11 @@ ax = plt.axes(xlim=(0, 2), ylim=(-2, 2))
 
 line, = ax.plot([], [])
 
+
 def init():
     line.set_data([], [])
     return line,
+
 
 def animate(i):
     x = np.linspace(0, 2, 1000)
@@ -17,6 +19,7 @@ def animate(i):
     y -= y % 0.3
     line.set_data(x, y)
     return line,
+
 
 anim = animation.FuncAnimation(fig, animate, init_func=init,
                                frames=100, interval=20, blit=True)
