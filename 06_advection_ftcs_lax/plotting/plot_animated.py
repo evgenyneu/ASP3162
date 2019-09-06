@@ -4,6 +4,42 @@ from matplotlib import animation
 
 
 def animate(i, line, text, x_values, t_values, solution):
+    """
+    Updates the curve and text on the plot. Called during animation.
+
+    Parameters
+    ----------
+
+    i : int
+        Index of the frame to draw: 0, 1, ...
+
+    line : Line2D,
+        Plot curve that will be updated during the animation
+
+    text : matplotlib.text.Text
+        A plot text that will be updated during animation
+
+    x_values : np.array of float
+        x values
+
+    t_values : np.array of float
+        t values
+
+    solution : np.array of float
+        2D array containing solution (first index is time, secon is space)
+
+    Returns
+    ---------
+
+    Tuple (line, text)
+
+    line : Line2D,
+           Updated plot curve
+
+    text : matplotlib.text.Text
+           Updated plot text
+    """
+
     x = x_values
     y = solution[i, :]
     time = t_values[i]
@@ -12,31 +48,43 @@ def animate(i, line, text, x_values, t_values, solution):
     return line, text
 
 
-def prepare_for_animation(method, t_end):
+def prepare_for_animation(method, t_end, ylim):
     """
-    Makes a 2D plot of the velocity at different time values
-    and saves it to a file.
+    Makes a 2D that is used in animation.
 
     Parameters
     ----------
 
-    plot_dir : str
-        Directory where the plot file is saved
-
-    plot_file_name : str
-        Plot file name
-
-    nx : int
-        The number of x points in the grid
-
-    nt : int
-        The number of t points in the grid
-
     method : str
         Numerical method to be used: ftcs, lax
 
-    plot_timesteps : int
-        number of timesteps to plot
+    t_end : float
+        The largest time of the solution.
+
+    ylim : tuple
+        Minimum and maximum values of the y-axis.
+
+    Returns
+    ---------
+
+    Tuple (fig, line, text, x, y, z)
+
+    fig : Matplotlib figure
+
+    line : Line2D,
+           Plot curve that will be updated during the animation
+
+    text : matplotlib.text.Text
+           A plot text that will be updated during animation
+
+    x : np.array of float
+        x values
+
+    y : np.array of float
+        t values
+
+    z : np.array of float
+        2D array containing solution (first index is time, secon is space)
     """
 
     result = solve_equation(x_start=0, x_end=1,
@@ -48,7 +96,7 @@ def prepare_for_animation(method, t_end):
         x, y, z, dx, dt, dt_dx = result
 
     fig = plt.figure()
-    ax = plt.axes(xlim=(0, 1), ylim=(-0.1, 1.1))
+    ax = plt.axes(xlim=(0, 1), ylim=ylim)
 
     title = (
         "Solution of advection equation "
@@ -74,19 +122,24 @@ def prepare_for_animation(method, t_end):
 
     line, = ax.plot([], [])
 
+    print(type(text))
+
     return (fig, line, text, x, y, z)
 
 
-def plot_animated(method):
-    fig, line, text, x, y, z = prepare_for_animation(method, t_end=5)
+def plot_animated(method, t_end, ylim):
+    fig, line, text, x, y, z = \
+        prepare_for_animation(method=method, t_end=t_end, ylim=ylim)
+
     timesteps = z.shape[0]
 
     animation.FuncAnimation(fig, animate,
-                            frames=timesteps, interval=20, blit=True,
+                            frames=timesteps, interval=100, blit=True,
                             fargs=(line, text, x, y, z))
 
     plt.show()
 
 
 if __name__ == '__main__':
-    plot_animated(method='lax')
+    plot_animated(method='ftcs', t_end=1, ylim=(-0.5, 1.5))
+    plot_animated(method='lax', t_end=1, ylim=(-0.5, 1.5))
