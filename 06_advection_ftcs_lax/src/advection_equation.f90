@@ -14,8 +14,27 @@ public :: solve_equation, print_output, solve_and_create_output, &
 contains
 
 
-subroutine resize_arrays(new_size, copy_elements, solution, t_points)
-    integer, intent(in) :: new_size, copy_elements
+!
+! Change the size of the time dimension in solution and t_points arrays
+!
+! Inputs:
+! -------
+!
+! new_size : The new size of the time dimensions
+!
+! keep_elements : the number of elements to keep in resized array
+!
+!
+! Outputs:
+! -------
+!
+! solution : 2D array containing the solution for the advection equation
+!        first coordinate is x, second is time.
+!
+! t_points : A 1D array containing the values of the time coordinate
+!
+subroutine resize_arrays(new_size, keep_elements, solution, t_points)
+    integer, intent(in) :: new_size, keep_elements
     real(dp), allocatable, intent(inout) :: solution(:,:)
     real(dp), allocatable :: solution_buffer(:,:)
     real(dp), allocatable, intent(inout) :: t_points(:)
@@ -26,7 +45,7 @@ subroutine resize_arrays(new_size, copy_elements, solution, t_points)
 
     allocate(t_points_buffer(new_size))
     t_points_buffer = 0
-    t_points_buffer(1:copy_elements) = t_points
+    t_points_buffer(1:keep_elements) = t_points
     deallocate(t_points)
     call move_alloc(t_points_buffer, t_points)
 
@@ -35,26 +54,31 @@ subroutine resize_arrays(new_size, copy_elements, solution, t_points)
 
     allocate(solution_buffer(size(solution, 1), new_size))
     solution_buffer = 0
-    solution_buffer(:, 1:copy_elements) = solution
+    solution_buffer(:, 1:keep_elements) = solution
     deallocate(solution)
     call move_alloc(solution_buffer, solution)
 end subroutine
 
 
 !
-! Solve the advection equation using cetered-difference method
-! for space coordinate
+! Solve the advection equation using FTCS method.
 !
 ! Inputs:
 ! -------
+!
+! tmax : the largest time value
 !
 ! nx : number of x points
 !
 ! nt : number of t points
 !
-! nx : size of space step
+! nt_allocated : the number of t points allocated in the arrays.
 !
-! nx : size of time step
+! dx : size of space step
+!
+! dt : size of time step
+!
+! v : velocity parameter in advection equation
 !
 !
 ! Outputs:
@@ -62,6 +86,8 @@ end subroutine
 !
 ! solution : 2D array containing the solution for the advection equation
 !        first coordinate is x, second is time.
+!
+! t_points : A 1D array containing the values of the time coordinate
 !
 subroutine solve_ftcs(tmax, nx, nt, nt_allocated, &
                           dx, dt, v, solution, t_points)
@@ -76,7 +102,7 @@ subroutine solve_ftcs(tmax, nx, nt, nt_allocated, &
     ! Pre-calculate the multiplier
     a = 0.5_dp * v * dt / dx
 
-    ! Calculate umerical solution
+    ! Calculate numerical solution
     do while (t_points(nt) < tmax)
         nt = nt + 1
         t_points(nt) = t_points(nt - 1) + dt
@@ -86,7 +112,7 @@ subroutine solve_ftcs(tmax, nx, nt, nt_allocated, &
             nt_allocated = 2 * nt_allocated
 
             call resize_arrays(new_size=nt_allocated, &
-                               copy_elements=size(t_points), &
+                               keep_elements=size(t_points), &
                                solution=solution, t_points=t_points)
         end if
 
@@ -106,19 +132,24 @@ end subroutine
 
 
 !
-! Solve the advection equation using lax method
-! for space coordinate
+! Solve the advection equation using Lax method.
 !
 ! Inputs:
 ! -------
+!
+! tmax : the largest time value
 !
 ! nx : number of x points
 !
 ! nt : number of t points
 !
-! nx : size of space step
+! nt_allocated : the number of t points allocated in the arrays.
 !
-! nx : size of time step
+! dx : size of space step
+!
+! dt : size of time step
+!
+! v : velocity parameter in advection equation
 !
 !
 ! Outputs:
@@ -126,6 +157,9 @@ end subroutine
 !
 ! solution : 2D array containing the solution for the advection equation
 !        first coordinate is x, second is time.
+!
+! t_points : A 1D array containing the values of the time coordinate
+!  first coordinate is x, second is time.
 !
 subroutine solve_lax(tmax, nx, nt, nt_allocated, &
                           dx, dt, v, solution, t_points)
@@ -140,7 +174,7 @@ subroutine solve_lax(tmax, nx, nt, nt_allocated, &
     ! Pre-calculate the multiplier
     a = 0.5_dp * v * dt / dx
 
-    ! Calculate umerical solution
+    ! Calculate numerical solution
     do while (t_points(nt) < tmax)
         nt = nt + 1
         t_points(nt) = t_points(nt - 1) + dt
@@ -150,7 +184,7 @@ subroutine solve_lax(tmax, nx, nt, nt_allocated, &
             nt_allocated = 2 * nt_allocated
 
             call resize_arrays(new_size=nt_allocated, &
-                               copy_elements=size(t_points), &
+                               keep_elements=size(t_points), &
                                solution=solution, t_points=t_points)
         end if
 
@@ -174,16 +208,6 @@ end subroutine
 
 !
 ! Solve the advection equation
-!
-!   v_t + v v_x = 0
-!
-! with initial conditions
-!
-!    v(x,0) = cos x
-!
-! and boundary conditions
-!
-!   v(−pi/2, t) = v(pi/2, t) = 0
 !
 !
 ! Inputs:
@@ -226,7 +250,6 @@ subroutine solve_equation(options, solution, x_points, t_points)
 
     ! Assign evenly spaced x values
     call linspace(xmin, xmax, x_points)
-    ! call linspace(t0, t1, t_points)
 
     solution = 0
     t_points = 0
@@ -261,8 +284,8 @@ subroutine solve_equation(options, solution, x_points, t_points)
            call exit(41)
     end select
 
-    ! Remove unused elements from t dimensino of arrays
-    call resize_arrays(new_size=nt, copy_elements=nt, &
+    ! Remove unused elements from t dimension of arrays
+    call resize_arrays(new_size=nt, keep_elements=nt, &
                        solution=solution, t_points=t_points)
 end subroutine
 
