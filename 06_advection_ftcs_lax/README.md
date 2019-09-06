@@ -1,6 +1,6 @@
 # A Fortran program for solving an advection equation
 
-This this a Fortran program solves advection equation
+This is a Fortran program that solves advection equation
 
 ```
 u_t + v u_x = 0
@@ -75,8 +75,7 @@ Here is how data is stored in the binary file:
 
 [x]
 [
-    solution: a 2D array containing solution. These are velocity values
-    for x and t coordinates.
+    solution: a 2D array containing solution.
 
     Size: nx * nt * 8 bytes
     Type: 2D array of double floats. Length: nx * nt.
