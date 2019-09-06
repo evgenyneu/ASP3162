@@ -1,80 +1,79 @@
 #
-# Plot solutions of
-#
-#   v_t + v v_x = 0
-#
-# for various values of x and t.
+# Plot solutions of advectino equation
 #
 
-from mpl_toolkits.mplot3d import Axes3D
 from plot_utils import create_dir
 import matplotlib.pyplot as plt
 import numpy as np
 import os
-import math
 from solver import solve_equation
 
 
-def plot_3d(plot_dir, plot_file_name, method):
+def find_nearest_index(array, value):
     """
-    Makes a surface 3D plot of the velocity and saves it to a file.
+    Returns the index of an array element that is closes to the supplied `value`.
 
     Parameters
     ----------
 
-    plot_dir : str
-        Directory where the plot file is saved
+    array : list
+        An array of numbers
 
-    plot_file_name : str
-        Plot file name
+    value : int or float
+        A value.
 
-    nx : int
-        The number of x points in the grid
+    Returns
+    -------
 
-    nt : int
-        The number of t points in the grid
+    int
 
-    method : str
-        Numerical method to be used: ftcs, lax
+    Index of the `array` element.
     """
 
-    result = solve_equation(x_start=0, x_end=1, nx=101,
-                            t_start=0, t_end=1, method=method)
+    array = np.asarray(array)
+    idx = (np.abs(array - value)).argmin()
+    return idx
 
-    if result is None:
-        return
-    else:
-        x, y, z, dx, dt, dt_dx = result
 
-    z = np.clip(z, 0, 1.1)
-    x = [x]
-    y = np.transpose([y])
+def plot_at_time_index(plot_dir, plot_file_name, method,
+                       time, it, x_values,
+                       solution, dx, dt, dt_dx):
 
-    fig = plt.figure()
-    ax = fig.gca(projection='3d')
-    ax.plot_surface(x, y, z, cmap=plt.cm.jet)
-    plt.xlabel("Position x [m]")
-    plt.ylabel("Time t [s]")
-    ax.set_zlabel("Velocity v [m/s]")
+    y = solution[it, :]
+    plt.plot(x_values, y)
 
     title = (
-        "Numerical solution of advection equation\n"
-        f"using {method} method\n"
-        f"for dx={dx:.3f} m, dt={dt:.3f} s, dt/dx={dt_dx:.2f} s/m"
+        "Solution of advection equation "
+        f"made with {method} method\n"
+        f"for dx={dx:.3f} m, dt={dt:.3f} s, "
+        "$v \\Delta t / \\Delta x$"
+        f"={dt_dx:.2f}"
     )
 
     plt.title(title)
-    ax.view_init(40, 100)
-    ax.set_zlim(0, 1)
-    ax.invert_xaxis()
+    plt.xlabel("Position x [m]")
+    plt.ylabel("Density $\\rho$ [$kg \\ m^{-3}$]")
+    ax = plt.gca()
+
+    plt.text(
+        0.05, 0.89,
+        f't = {time:.2f} s',
+        horizontalalignment='left',
+        verticalalignment='center',
+        transform=ax.transAxes,
+        bbox=dict(facecolor='white', alpha=0.8, edgecolor='0.7'))
+
+    plt.ylim(-0.5, 1.5)
     plt.tight_layout()
+
     create_dir(plot_dir)
     pdf_file = os.path.join(plot_dir, plot_file_name)
     plt.savefig(pdf_file)
+
     plt.show()
 
 
-def plot_2d(plot_dir, plot_file_name, method, plot_timesteps):
+def plot_timesteps(plot_dir, method, t_values):
     """
     Makes a 2D plot of the velocity at different time values
     and saves it to a file.
@@ -109,98 +108,25 @@ def plot_2d(plot_dir, plot_file_name, method, plot_timesteps):
     else:
         x, y, z, dx, dt, dt_dx = result
 
-    plot_every_k_timestep = math.floor(float(len(y)) / plot_timesteps)
+    for t in t_values:
+        it = find_nearest_index(y, t)
 
-    for iy, t in enumerate(y):
-        if iy % plot_every_k_timestep != 0:
-            continue
-        velocities = z[iy, :]
-        plt.plot(x, velocities, label=f't={t:.2f} s')
+        file_name = f"{method}_{t:.2f}.pdf"
 
-    plt.xlabel("Position x [m]")
-    plt.ylabel("Velocity v [m/s]")
-
-    title = (
-        "Numerical solution of advection equation\n"
-        f"using {method} method\n"
-        f"for dx={dx:.3f} m, dt={dt:.3f} s, dt/dx={dt_dx:.2f} s/m"
-    )
-
-    plt.title(title)
-    plt.ylim(0, 1.1)
-    plt.legend(loc='upper left')
-    plt.tight_layout()
-    create_dir(plot_dir)
-    pdf_file = os.path.join(plot_dir, plot_file_name)
-    plt.savefig(pdf_file)
-    plt.show()
-
-
-def make_plots():
-    """
-    Make plots of velocity.
-    """
-
-    # centered
-    # ----------
-
-    plot_3d(plot_dir="plots",
-            plot_file_name="centred_nx_100_nt_281_3d.pdf",
-            nx=100, nt=281, method='centered')
-
-    plot_2d(plot_dir="plots",
-            plot_file_name="centred_nx_100_nt_281_2d.pdf",
-            nx=100, nt=281, method='centered', plot_timesteps=7)
-
-    plot_3d(plot_dir="plots",
-            plot_file_name="centred_nx_629_nt_281_3d.pdf",
-            nx=629, nt=281, method='centered')
-
-    plot_2d(plot_dir="plots",
-            plot_file_name="centred_nx_629_nt_281_2d.pdf",
-            nx=629, nt=281, method='centered', plot_timesteps=7)
-
-    plot_3d(plot_dir="plots",
-            plot_file_name="centred_nx_1000_nt_281_3d.pdf",
-            nx=1000, nt=281, method='centered')
-
-    plot_2d(plot_dir="plots",
-            plot_file_name="centred_nx_1000_nt_281_2d.pdf",
-            nx=1000, nt=281, method='centered', plot_timesteps=7)
-
-    # upwind
-    # ----------
-
-    plot_3d(plot_dir="plots",
-            plot_file_name="upwind_nx_100_nt_281_3d.pdf",
-            nx=100, nt=281, method='upwind')
-
-    plot_2d(plot_dir="plots",
-            plot_file_name="upwind_nx_100_nt_281_2d.pdf",
-            nx=100, nt=281, method='upwind', plot_timesteps=7)
-
-    plot_3d(plot_dir="plots",
-            plot_file_name="upwind_nx_629_nt_281_3d.pdf",
-            nx=629, nt=281, method='upwind')
-
-    plot_2d(plot_dir="plots",
-            plot_file_name="upwind_nx_629_nt_281_2d.pdf",
-            nx=629, nt=281, method='upwind', plot_timesteps=7)
-
-    plot_3d(plot_dir="plots",
-            plot_file_name="upwind_nx_629_nt_259_3d.pdf",
-            nx=629, nt=259, method='upwind')
-
-    plot_2d(plot_dir="plots",
-            plot_file_name="upwind_nx_677_nt_281_2d.pdf",
-            nx=677, nt=281, method='upwind', plot_timesteps=7)
+        plot_at_time_index(plot_dir=plot_dir,
+                           plot_file_name=file_name,
+                           method=method,
+                           time=t,
+                           it=it,
+                           x_values=x,
+                           solution=z,
+                           dx=dx,
+                           dt=dt,
+                           dt_dx=dt_dx)
 
 
 if __name__ == '__main__':
-    plot_3d(plot_dir="plots",
-            plot_file_name="centred_nx_100_nt_281_3d.pdf",
-            method='lax')
+    times = [0, 0.2, 0.5, 1]
 
-    # plot_2d(plot_dir="plots",
-    #         plot_file_name="centred_nx_100_nt_281_3d.pdf",
-    #         method='centered', plot_timesteps=3)
+    plot_timesteps(plot_dir="plots", method='ftcs', t_values=times)
+    plot_timesteps(plot_dir="plots", method='lax', t_values=times)
