@@ -1,4 +1,4 @@
-# A Fortran program for finding roots of advection equation
+# A Fortran program for solving an advection equation
 
 This this a Fortran program solves advection equation
 
@@ -9,7 +9,7 @@ u_t + v u_x = 0
 numerically using FTCS and Lax methods.
 
 
-## View movies of solutions on YouTube
+## YouTube movies of solutions
 
   * FTCS: http://bit.ly/asp3162_ftcs
 
@@ -25,7 +25,6 @@ make
 Gfortran compiler is required to build the program (tested with GCC 6.3.0 and 7.4.0). Alternatively, one can uncomment `FC=ifort` and `FFLAGS` in the Makefile and compile using ifort.
 
 
-
 ## Run
 
 Running the program:
@@ -36,8 +35,8 @@ Running the program:
 
 The program will print the solution into the binary file `data.bin`.
 
-### The binary file format
 
+### The binary file format
 
 Here is how data is stored in the binary file:
 
@@ -85,8 +84,8 @@ Here is how data is stored in the binary file:
 [x]
 ```
 
-#### Notes
 
+#### Notes
 
 * Here [x] means 4-byte separator. This is added by Fortran's `write`
 function. This separator is written before and after a data block,
@@ -155,6 +154,7 @@ Usage:
     --help  : show this message.
 ```
 
+
 ## Run unit tests
 
 First make the test executable:
@@ -204,7 +204,6 @@ python plot_animated.py
 
 
 ### Create movies
-
 
 Create mp4 movies for the solutions in the `movies` directory.
 
