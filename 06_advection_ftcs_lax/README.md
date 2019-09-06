@@ -1,24 +1,19 @@
 # A Fortran program for finding roots of advection equation
 
-This this a Fortran program that finds roots of equation
+This this a Fortran program solves advection equation
 
 ```
-v_t + v v_x = 0
+u_t + v u_x = 0
 ```
 
-with initial condition
+numerically using FTCS and Lax methods.
 
-```
-v(x, 0) = cos x
-```
 
-and boundary conditions
+## View movies of solutions on YouTube
 
-```
-v(−pi/2, t) = v(pi/2, t) = 0
-```
+  * FTCS: http://bit.ly/asp3162_ftcs
 
-using numerical approximation.
+  * Lax: http://bit.ly/asp3162_lax
 
 
 ## Compile
@@ -114,7 +109,8 @@ where first index is x and second index is t.
 One can also customize program settings, for example:
 
 ```
-./build/main data.bin --x_start=-1.5 --x_end=1.5 --nx=200
+./build/main data.bin --method=lax --x_start=0 --x_end=1 --nx=101
+
 ```
 
 Run the program with `--help` flag to see the description of parameters:
@@ -122,21 +118,15 @@ Run the program with `--help` flag to see the description of parameters:
 ```
 ./build/main --help
 
-This program solves equation
+This program solves advection equation
 
-  v_t + v v_x = 0
-
-with initial condition
-  v(x,0) = cos x
-
-and boundary conditions
-  v(−pi/2, t) = v(pi/2, t) = 0
+  u_t + v u_x = 0
 
 
 Usage:
 
  ./build/main OUTPUT [--method=lax] [--x_start=-1.5] [--x_end=1.5]
-    [--nx=100] [--t_start=0] [--t_end=1.4] [--nt=8]
+    [--nx=100] [--t_start=0] [--t_end=1.4] [--velocity=1]
 
     OUTPUT : path to the output data file
 
@@ -145,22 +135,22 @@ Usage:
                   Default: lax.
 
     --x_start=NUMBER : the smallest x value,
-                  Default: -pi/2.
+                  Default: 0.
 
     --x_end=NUMBER : the largest x value,
-                  Default: pi/2.
+                  Default: 1.
 
     --nx=NUMBER : number of x points in the grid,
-                  Default: 100.
+                  Default: 101.
 
     --t_start=NUMBER : the smallest t value,
                   Default: 0.
 
     --t_end=NUMBER : the largest t value,
-                  Default: 1.4.
+                  Default: 1.
 
-    --nt=NUMBER : number of t points in the grid,
-                  Default: 8.
+    --velocity=NUMBER : value of velocity parameter,
+                  Default: 1.
 
     --help  : show this message.
 ```
@@ -203,4 +193,21 @@ The plotting codes require the Fortran executable to be present.
 
 ```
 python plot_solution.py
+```
+
+
+### Show animated plot of the solutions
+
+```
+python plot_animated.py
+```
+
+
+### Create movies
+
+
+Create mp4 movies for the solutions in the `movies` directory.
+
+```
+python create_movies.py
 ```
