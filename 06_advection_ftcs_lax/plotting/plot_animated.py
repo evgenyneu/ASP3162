@@ -1,3 +1,5 @@
+# Show animated plots of solutions of advection equation
+
 import matplotlib.pyplot as plt
 from solver import solve_equation
 from matplotlib import animation
@@ -107,7 +109,6 @@ def prepare_for_animation(method, t_end, ylim):
     )
 
     plt.title(title)
-
     plt.xlabel("Position x [m]")
     plt.ylabel("Density $\\rho$ [$kg \\ m^{-3}$]")
 
@@ -116,18 +117,32 @@ def prepare_for_animation(method, t_end, ylim):
         f'',
         horizontalalignment='left',
         verticalalignment='center',
-        transform=ax.transAxes)
+        transform=ax.transAxes,
+        bbox=dict(facecolor='white', alpha=0.8, edgecolor='0.7'))
+
 
     plt.tight_layout()
-
     line, = ax.plot([], [])
-
-    print(type(text))
-
     return (fig, line, text, x, y, z)
 
 
 def plot_animated(method, t_end, ylim):
+    """
+    Show animated plots of solutions of advection equation.
+
+    Parameters
+    ----------
+
+    method : str
+        Numerical method to be used: ftcs, lax
+
+    t_end : float
+        The largest time of the solution.
+
+    ylim : tuple
+        Minimum and maximum values of the y-axis.
+    """
+
     fig, line, text, x, y, z = \
         prepare_for_animation(method=method, t_end=t_end, ylim=ylim)
 

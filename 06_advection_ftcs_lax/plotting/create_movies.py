@@ -61,10 +61,10 @@ def make_movies():
     """
 
     create_movie(method='lax', movie_dir='movies', filename='lax.mp4',
-                 t_end=2, ylim=(-2, 2), fps=10)
+                 t_end=2, ylim=(-0.5, 1.5), fps=10)
 
     create_movie(method='ftcs', movie_dir='movies', filename='ftcs.mp4',
-                 t_end=1, ylim=(-2, 2), fps=10)
+                 t_end=1, ylim=(-0.5, 1.5), fps=10)
 
 
 if __name__ == '__main__':
