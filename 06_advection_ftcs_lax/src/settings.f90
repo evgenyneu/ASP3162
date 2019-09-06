@@ -39,9 +39,6 @@ type, public :: program_settings
     ! The largest t value
     real(dp) :: t_end
 
-    ! The number of time points in the grid
-    integer :: nt
-
     ! The velocity parameter of the advection equation
     real(dp) :: velocity
 
@@ -60,7 +57,7 @@ character(len=HELP_MESSAGE_LENGTH), parameter :: HELP_MESSAGE = NEW_LINE('h')//"
     &"//NEW_LINE('h')//"&
     &"//NEW_LINE('h')//"&
     & ./build/main OUTPUT [--method=lax] [--x_start=-1.5] [--x_end=1.5]"//NEW_LINE('h')//"&
-    &    [--nx=100] [--t_start=0] [--t_end=1.4] [--velocity=1] [--nt=8]"//NEW_LINE('h')//"&
+    &    [--nx=100] [--t_start=0] [--t_end=1.4] [--velocity=1]"//NEW_LINE('h')//"&
     &"//NEW_LINE('h')//"&
     &    OUTPUT : path to the output data file"//NEW_LINE('h')//"&
     &"//NEW_LINE('h')//"&
@@ -69,22 +66,19 @@ character(len=HELP_MESSAGE_LENGTH), parameter :: HELP_MESSAGE = NEW_LINE('h')//"
     &                  Default: lax."//NEW_LINE('h')//"&
     &"//NEW_LINE('h')//"&
     &    --x_start=NUMBER : the smallest x value,"//NEW_LINE('h')//"&
-    &                  Default: -pi/2."//NEW_LINE('h')//"&
+    &                  Default: 0."//NEW_LINE('h')//"&
     &"//NEW_LINE('h')//"&
     &    --x_end=NUMBER : the largest x value,"//NEW_LINE('h')//"&
-    &                  Default: pi/2."//NEW_LINE('h')//"&
+    &                  Default: 1."//NEW_LINE('h')//"&
     &"//NEW_LINE('h')//"&
     &    --nx=NUMBER : number of x points in the grid,"//NEW_LINE('h')//"&
-    &                  Default: 100."//NEW_LINE('h')//"&
+    &                  Default: 101."//NEW_LINE('h')//"&
     &"//NEW_LINE('h')//"&
     &    --t_start=NUMBER : the smallest t value,"//NEW_LINE('h')//"&
     &                  Default: 0."//NEW_LINE('h')//"&
     &"//NEW_LINE('h')//"&
     &    --t_end=NUMBER : the largest t value,"//NEW_LINE('h')//"&
-    &                  Default: 1.4."//NEW_LINE('h')//"&
-    &"//NEW_LINE('h')//"&
-    &    --nt=NUMBER : number of t points in the grid,"//NEW_LINE('h')//"&
-    &                  Default: 8."//NEW_LINE('h')//"&
+    &                  Default: 1."//NEW_LINE('h')//"&
     &"//NEW_LINE('h')//"&
     &    --velocity=NUMBER : value of velocity parameter,"//NEW_LINE('h')//"&
     &                  Default: 1."//NEW_LINE('h')//"&
@@ -94,13 +88,12 @@ character(len=HELP_MESSAGE_LENGTH), parameter :: HELP_MESSAGE = NEW_LINE('h')//"
 ! Default values for the settings
 ! ------
 
-real(dp), parameter :: DEFAULT_X_START = -pi/2
-real(dp), parameter :: DEFAULT_X_END = pi/2
-integer, parameter :: DEFAULT_NX = 100
+real(dp), parameter :: DEFAULT_X_START = 0._dp
+real(dp), parameter :: DEFAULT_X_END = 1._dp
+integer, parameter :: DEFAULT_NX = 101
 
-real(dp), parameter :: DEFAULT_T_START = -0._dp
-real(dp), parameter :: DEFAULT_T_END = 1.4_dp
-integer, parameter :: DEFAULT_NT = 8
+real(dp), parameter :: DEFAULT_T_START = 0._dp
+real(dp), parameter :: DEFAULT_T_END = 1._dp
 real(dp), parameter :: DEFAULT_VELOCITY = 1.0_dp
 
 character(len=100), parameter :: DEFAULT_METHOD = "lax"
@@ -309,19 +302,6 @@ subroutine read_from_parsed_command_line(parsed, settings, error_message)
 
     if (.not. success) then
         call make_message("t_end is not a number", error_message)
-        return
-    end if
-
-
-    ! nt
-    ! --------------
-
-    call get_named_value_or_default(name='nt', parsed=parsed, &
-                                    default=DEFAULT_NT, &
-                                    value=settings%nt, success=success)
-
-    if (.not. success) then
-        call make_message("nt is not a number", error_message)
         return
     end if
 
