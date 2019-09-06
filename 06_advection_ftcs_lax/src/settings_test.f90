@@ -38,6 +38,8 @@ subroutine read_from_parsed_command_line_test__no_args(failures)
     call assert_approx(settings%t_end, 1.4_dp, 1e-5_dp, __FILE__, __LINE__, failures)
     call assert_equal(settings%nt, 8, __FILE__, __LINE__, failures)
 
+    call assert_approx(settings%velocity, 1._dp, 1e-5_dp, __FILE__, __LINE__, failures)
+
     call assert_equal(settings%method, 'lax', __FILE__, __LINE__, failures)
 end
 
@@ -47,12 +49,12 @@ subroutine read_from_parsed_command_line_test__named(failures)
     type(program_settings) :: settings
     character(len=1024) :: error_message
 
-    call allocate_parsed(size=7, parsed=parsed)
+    call allocate_parsed(size=8, parsed=parsed)
 
     parsed%positional_count = 1
     parsed%positional(1) = "data.bin"
 
-    parsed%named_count = 7
+    parsed%named_count = 8
 
     parsed%named_name(1) = "x_start"
     parsed%named_value(1) = "0.123"
@@ -76,6 +78,9 @@ subroutine read_from_parsed_command_line_test__named(failures)
     parsed%named_name(7) = "method"
     parsed%named_value(7) = "ftcs"
 
+    parsed%named_name(8) = "velocity"
+    parsed%named_value(8) = "1.5"
+
 
     call read_from_parsed_command_line(parsed=parsed, settings=settings, error_message=error_message)
 
@@ -88,6 +93,8 @@ subroutine read_from_parsed_command_line_test__named(failures)
     call assert_approx(settings%t_start, 0.111_dp, 1e-5_dp, __FILE__, __LINE__, failures)
     call assert_approx(settings%t_end, 0.222_dp, 1e-5_dp, __FILE__, __LINE__, failures)
     call assert_equal(settings%nt, 132, __FILE__, __LINE__, failures)
+
+    call assert_approx(settings%velocity, 1.5_dp, 1e-5_dp, __FILE__, __LINE__, failures)
 
     call assert_equal(settings%method, 'ftcs', __FILE__, __LINE__, failures)
 end
@@ -162,7 +169,7 @@ subroutine show_help_test(failures)
                      __LINE__, failures)
 
     call assert_string_starts_with(error_message, &
-            NEW_LINE('h')//"This program solves equation", &
+            NEW_LINE('h')//"This program solves advection equation", &
             __FILE__, __LINE__, failures)
 end
 

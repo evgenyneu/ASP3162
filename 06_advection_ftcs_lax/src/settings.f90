@@ -51,22 +51,16 @@ end type program_settings
 
 ! Help message to be shown
 character(len=HELP_MESSAGE_LENGTH), parameter :: HELP_MESSAGE = NEW_LINE('h')//"&
-    &This program solves equation"//NEW_LINE('h')//"&
+    &This program solves advection equation"//NEW_LINE('h')//"&
     &"//NEW_LINE('h')//"&
-    &  v_t + v v_x = 0"//NEW_LINE('h')//"&
-    &"//NEW_LINE('h')//"&
-    &with initial condition"//NEW_LINE('h')//"&
-    &  v(x,0) = cos x"//NEW_LINE('h')//"&
-    &"//NEW_LINE('h')//"&
-    &and boundary conditions"//NEW_LINE('h')//"&
-    &  v(−pi/2, t) = v(pi/2, t) = 0"//NEW_LINE('h')//"&
+    &  u_t + v u_x = 0"//NEW_LINE('h')//"&
     &"//NEW_LINE('h')//"&
     &"//NEW_LINE('h')//"&
     &Usage:&
     &"//NEW_LINE('h')//"&
     &"//NEW_LINE('h')//"&
     & ./build/main OUTPUT [--method=lax] [--x_start=-1.5] [--x_end=1.5]"//NEW_LINE('h')//"&
-    &    [--nx=100] [--t_start=0] [--t_end=1.4] [--nt=8]"//NEW_LINE('h')//"&
+    &    [--nx=100] [--t_start=0] [--t_end=1.4] [--velocity=1] [--nt=8]"//NEW_LINE('h')//"&
     &"//NEW_LINE('h')//"&
     &    OUTPUT : path to the output data file"//NEW_LINE('h')//"&
     &"//NEW_LINE('h')//"&
@@ -91,6 +85,9 @@ character(len=HELP_MESSAGE_LENGTH), parameter :: HELP_MESSAGE = NEW_LINE('h')//"
     &"//NEW_LINE('h')//"&
     &    --nt=NUMBER : number of t points in the grid,"//NEW_LINE('h')//"&
     &                  Default: 8."//NEW_LINE('h')//"&
+    &"//NEW_LINE('h')//"&
+    &    --velocity=NUMBER : value of velocity parameter,"//NEW_LINE('h')//"&
+    &                  Default: 1."//NEW_LINE('h')//"&
     &"//NEW_LINE('h')//"&
     &    --help  : show this message."//NEW_LINE('h')
 
@@ -194,7 +191,7 @@ subroutine read_from_parsed_command_line(parsed, settings, error_message)
     logical :: success
     character(len=ARGUMENT_MAX_LENGTH), allocatable :: unrecognized(:)
     integer :: unrecognized_count
-    character(len=ARGUMENT_MAX_LENGTH) :: valid_args(9)
+    character(len=ARGUMENT_MAX_LENGTH) :: valid_args(10)
 
     error_message = ""
 
@@ -217,9 +214,10 @@ subroutine read_from_parsed_command_line(parsed, settings, error_message)
     valid_args(4) = "t_start"
     valid_args(5) = "t_end"
     valid_args(6) = "nt"
-    valid_args(7) = "method"
-    valid_args(8) = "h"
-    valid_args(9) = "help"
+    valid_args(7) = "velocity"
+    valid_args(8) = "method"
+    valid_args(9) = "h"
+    valid_args(10) = "help"
 
     call unrecognized_named_args(valid=valid_args, parsed=parsed, &
         unrecognized=unrecognized, count=unrecognized_count)
@@ -328,7 +326,7 @@ subroutine read_from_parsed_command_line(parsed, settings, error_message)
     end if
 
 
-    ! t_end
+    ! velocity
     ! --------------
 
     call get_named_value_or_default(name='velocity', parsed=parsed, &
