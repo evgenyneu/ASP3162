@@ -1,0 +1,178 @@
+\documentclass[a4paper,twoside,12pt,hidelinks]{article}
+
+% Packages
+% ---------------------
+
+% \usepackage{amsmath} % Needed for command eqref
+\usepackage{amsthm} % Used to show the proof box
+\usepackage{fancyhdr} % Head and foot options
+\usepackage{hyperref} % Uses automatic references \autoref
+\usepackage{titletoc} % Style table of contents with dots
+\usepackage[T1]{fontenc}
+\usepackage{libertine}
+\usepackage{multirow}
+\usepackage{tipa} % for phonetic characters
+\usepackage[libertine]{newtxmath} % Font
+% \usepackage{pgfplots} % Drawing graphsrestrict y to domain=-20:20
+\usepackage{empheq} % draw box around multiple align equations
+\usepackage{float} % Forcing text after image https://stackoverflow.com/a/2828029/297131
+% \usepackage{breakcites} % Break long citations into separate lines
+% \usepackage{physics} % Used for vector component notation
+% \usepackage{mathtools} % Used for vector component notation
+% \usepackage{siunitx} % Physical numbers and units
+% \usepackage{bm} % Used for vector component notation
+% \usepackage[makeroom]{cancel} % for using \cancel{...}
+% \usepackage[tableposition=top]{caption} % Place captions on top of the tables
+\usepackage{listings} % Source code
+% \usepackage[bottom]{footmisc}
+% \usepackage{tocloft} % Reduce space between line in the table of contents
+% \usepackage{soul} % For strike through text \st{cow}
+% \usepackage{enumitem} % reduce the separation in lists \begin{enumerate}[topsep=0pt] https://tex.stackexchange.com/a/86055
+% \usepackage[most]{tcolorbox} % for putting frames around the text \begin{myframe}[width=\linewidth]
+% \usepackage{natbib}
+\usepackage{enumitem} % lists
+\usepackage{array} % For making array column the same width https://tex.stackexchange.com/a/162847
+
+
+% Page settings
+% ---------------------
+
+\usepackage[top=2cm, bottom=2.5cm,left=2.5cm,right=2.5cm]{geometry} %  Page margins
+\setlength{\parskip}{\baselineskip} % Add space between paragraphs
+\setlength{\intextsep}{20pt plus 2.0pt minus 2.0pt} % Add vertical space before and after tables and figures (http://tex.stackexchange.com/a/26522/101976)
+\parindent=0cm % Remove the paragraph indent of the first line
+% \setlength\cftparskip{4pt} % Reduce space between line in the table of contents
+\addtolength{\jot}{2\jot} % Double the line between equations
+\def\arraystretch{1.5} % Increase the vertical table cell margin
+\renewcommand{\contentsname}{\centering Contents} % Center the table of contents header
+\raggedbottom % Prevents spreading the page content vetically for non-full pages.
+\setlength{\headheight}{20pt} % Height of the header
+% \pgfplotsset{compat=1.12}
+% \lstset{aboveskip=10pt,belowskip=-5pt} % space around code listing
+
+% Set vertical space around equations.
+\AtBeginDocument{%
+ \abovedisplayskip=15pt plus 5pt minus 5pt
+ \abovedisplayshortskip=12pt plus 3pt
+ \belowdisplayskip=15pt plus 5pt minus 5pt
+ \belowdisplayshortskip=12pt plus 3pt minus 4pt
+}
+
+\lstset{ %
+language=Fortran,           % choose the language of the code
+basicstyle=\footnotesize    % the size of the fonts that are used for the line-numbers
+}
+
+
+% Set margins for the contents
+\dottedcontents{part}[0em]{\bfseries}{0em}{1pc} % Use dots in the table of contents
+\dottedcontents{section}[1em]{}{2em}{1pc} % Use dots in the table of contents
+\dottedcontents{subsection}[3em]{}{2em}{1pc} % Use dots in the table of contents
+
+% Make the proof white box a black box.
+% \renewcommand{\qedsymbol}{\rule{0.7em}{0.7em}}
+
+% Show black box on the right
+\newcommand{\myproof}{
+  {
+    \begin{flushright}
+      \qedsymbol
+    \end{flushright}
+  }
+}
+
+% Draw circles around letters:
+% \encircle{d}
+% https://tex.stackexchange.com/a/123926
+% \usepackage{tikz}
+% \newcommand\encircle[1]{%
+%   \tikz[baseline=(X.base)] 
+%     \node (X) [draw, shape=circle, inner sep=0] {\strut #1};}
+
+% For making array column the same width https://tex.stackexchange.com/a/162847
+% \newcolumntype{C}[1]{>{\centering\arraybackslash$}m{#1}<{$}}
+
+% \newcommand{\STAB}[1]{\begin{tabular}{@{}c@{}}#1\end{tabular}}
+
+% \newcommand{\largeletter}[1]{\text{\Large\ensuremath #1}}
+
+% \newcommand*\widefbox[1]{\fbox{\hspace{2em}#1\hspace{2em}}}
+
+% PDFPlots
+% Horizontal asymptote
+%   Usage:
+%     \begin{axis}[hasymptote=1]
+% \pgfplotsset{hasymptote/.style={
+%     before end axis/.append code={
+%         \draw[densely dashed] ({axis cs:0,#1} -| {rel axis cs:0,0})
+%         -- ({axis cs:0,#1} -| {rel axis cs:1,0});
+%     }
+% }}
+
+% \tikzstyle{dashdotted}=[dash pattern=on 3pt off 2pt on \the\pgflinewidth off 2pt]
+
+% \usepgfplotslibrary{fillbetween} % Fill area between graphs
+% \usetikzlibrary{patterns} % Fill with pattern
+
+
+\newenvironment{changemargin}[2]{%
+\begin{list}{}{%
+\setlength{\topsep}{0pt}%
+\setlength{\leftmargin}{#1}%
+\setlength{\rightmargin}{#2}%
+\setlength{\listparindent}{\parindent}%
+\setlength{\itemindent}{\parindent}%
+\setlength{\parsep}{\parskip}%
+}%
+\item[]}{\end{list}}
+
+
+% Column vector: \myvec{x\\y\\z}
+% Row vector: \myvec{a&b&c}
+% \newcommand{\myvec}[1]{\ensuremath{\renewcommand*{\arraystretch}{0.9}\begin{bmatrix}#1\end{bmatrix}}}
+
+% Use to draw vertical line in bmatrix
+% https://tex.stackexchange.com/a/299241/101976
+% \newcommand\aug{\fboxsep=-\fboxrule\!\!\!\fbox{\strut}\!\!\!}
+
+
+\def\code#1{\texttt{\small#1}} % Format code inlint \code{myFunction}
+
+% Title page
+
+\title{Making Fortran programs for solving an advection equation}
+\author{Written by Evgenii Neumerzhitckii}
+\date{Aug 31, 2019}
+
+\begin{document}
+
+% \setcounter{secnumdepth}{2}
+% \renewcommand{\thepart}{\Alph{part}}
+% \renewcommand{\thesection}{Part \Alph{section}}
+% \renewcommand{\thesubsection}{\Alph{section}.\arabic{subsection}}
+% \renewcommand{\partname}{}
+
+
+\maketitle
+\thispagestyle{empty} % Remove page number from title page
+% \vspace{3.5cm} % Add space between the title and table of contents
+
+\pagebreak
+
+\tableofcontents
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=1\textwidth]{figures/table_scketchin.jpg}
+\end{figure}
+
+\pagebreak
+
+
+% Parts
+% ---------------------
+
+\input{parts/q1}
+\pagebreak
+
+\end{document}
