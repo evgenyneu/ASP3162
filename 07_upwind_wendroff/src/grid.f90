@@ -38,7 +38,7 @@ subroutine set_grid(options, solution, x_points, t_points, nt_allocated)
     real(dp), allocatable, intent(out) :: solution(:,:)
     real(dp), allocatable, intent(out) :: x_points(:), t_points(:)
     integer, intent(out) :: nt_allocated
-    real(dp) :: xmin, xmax
+    real(dp) :: xmin, xmax, dx
     integer :: nx
 
     ! Assign shortcut variables from settings
@@ -51,8 +51,25 @@ subroutine set_grid(options, solution, x_points, t_points, nt_allocated)
     allocate(x_points(nx))
     allocate(t_points(nt_allocated))
 
-    ! Assign evenly spaced x values
-    call linspace(xmin, xmax, x_points)
+    !
+    ! Assign evenly spaced x values.
+    !
+    ! Here we assign the x values located *in the middle* of the grid cells:
+    !
+    !   (xmin)---x1---|---x2---|  ...  |---xn---(xmax)
+    !
+    ! For example consider a grid with four x values (nx=4)
+    ! and xmin = 0, xmax = 10. Our grid will look like
+    !
+    !   (0)---x1---|---x2---|---x3---|---x4---(10)
+    !
+    ! and the x values will be
+    !
+    !   (0)---1.25---|---3.75---|---6.25---|---8.75---(10)
+    !
+
+    dx = (xmax - xmin) / nx
+    call linspace(xmin + dx / 2, xmax - dx / 2, x_points)
 
     ! Initialize the arrays with zeros
     solution = 0
