@@ -21,6 +21,7 @@ subroutine solve_eqn_ftcs_test(failures)
     type(program_settings) :: options
     real(dp), allocatable :: solution(:,:)
     real(dp), allocatable :: x_points(:), t_points(:)
+    integer :: test(5) = [1,2,3,4,5]
 
     options%method = 'ftcs'
     options%x_start = 0
@@ -101,9 +102,8 @@ subroutine solve_eqn_ftcs_test(failures)
 
 
     ! Ensure there are no NaN values
-    if (any(ieee_is_nan(solution))) then
-        call assert_true(.true., __FILE__, __LINE__, failures)
-    end if
+    call assert_true(all(.not. ieee_is_nan(solution)), &
+        __FILE__, __LINE__, failures)
 end
 
 subroutine solve_eqn_lax_test(failures)
