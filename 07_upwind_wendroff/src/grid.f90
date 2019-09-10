@@ -1,5 +1,5 @@
 !
-! Helper functions to deal with file system
+! Initialize the arrays for the x, t values and the solution
 !
 module Grid
 use Types, only: dp
@@ -14,7 +14,6 @@ contains
 !
 ! Initialize the arrays for the solution,
 ! the x and t values
-!
 !
 ! Inputs:
 ! -------
@@ -42,7 +41,7 @@ subroutine set_grid(options, solution, x_points, t_points, nt_allocated)
     real(dp) :: xmin, xmax
     integer :: nx
 
-    ! Assign shortcuts variables from settings
+    ! Assign shortcut variables from settings
     xmin = options%x_start
     xmax = options%x_end
     nx = options%nx
@@ -55,6 +54,7 @@ subroutine set_grid(options, solution, x_points, t_points, nt_allocated)
     ! Assign evenly spaced x values
     call linspace(xmin, xmax, x_points)
 
+    ! Initialize the arrays with zeros
     solution = 0
     t_points = 0
 end subroutine

@@ -7,16 +7,18 @@ We create a Makefile based on the post
 
 \url{https://stackoverflow.com/a/30142139/297131}.
 
-A useful feature of this Makefile is that is places all the build files (*.o, *.mod and executables) into a separate directory called \code{build}. In addition, we have added ability to create an executable for unit tests by running
+A useful feature of this Makefile is that it places all the build files (*.o, *.mod and executables) into a separate directory called \code{build}. This is, arguably, a better file organization than mixing both the source code and binary  files in the same directory.
+
+Furthermore, we have extended the Makefile by adding ability to create an executable for unit tests by running
 
 \code{\$ make test}
 
-command. This is accomplished by selecting files that end with ``\code{\_test.f90}'' and use them to build the test executable. When the main executable is made, those test source files are excluded.
+command. This is accomplished by selecting files that have names ending with ``\code{\_test.f90}'' and using them to build the test executable. When the main executable is made, those test source files are excluded.
 
 
 \subsection{Creating \code{Output} module}
 
-We create an \code{Output} module. It contains \code{write\_output} function that solution array, as well as $x$ and $t$ values to a binary data file. The format of the data file is documented in the README.md. We have chosen a binary file instead of a text file because binary file takes less storage space, and it is faster to read and write.
+We create an \code{Output} module. It contains \code{write\_output} function that writes the solution array, as well as $x$ and $t$ grid values to a binary data file. The format of the data file is documented in the README.md. We have chosen a binary file instead of a text file because binary file takes less storage space, and it is faster to read and write.
 
 % In want to solve the following advection equation
 % \begin{equation}

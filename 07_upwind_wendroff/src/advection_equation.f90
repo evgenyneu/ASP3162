@@ -7,6 +7,7 @@ use Constants, only: pi
 use Settings, only: program_settings, read_from_command_line
 use FloatUtils, only: linspace
 use Output, only: write_output
+use Grid, only: set_grid
 implicit none
 private
 public :: solve_equation, solve_and_create_output, &
@@ -231,29 +232,21 @@ subroutine solve_equation(options, solution, x_points, t_points)
     type(program_settings), intent(in) :: options
     real(dp), allocatable, intent(out) :: solution(:,:)
     real(dp), allocatable, intent(out) :: x_points(:), t_points(:)
-    real(dp) :: xmin, xmax, dx, tmin, tmax, dt, v
+    real(dp) :: dx, tmin, tmax, dt, v
     integer :: nx, nt, nt_allocated
 
-    ! Assign shortcuts variables from settings
-    xmin = options%x_start
-    xmax = options%x_end
-    nx = options%nx
+    ! Assign shortcut variables from settings
+    ! ----------
 
+    nx = options%nx
     tmin = options%t_start
     tmax = options%t_end
     v = options%velocity
 
-    ! Allocate the arrays
-    nt_allocated = 10
-    allocate(solution(nx, nt_allocated))
-    allocate(x_points(nx))
-    allocate(t_points(nt_allocated))
-
-    ! Assign evenly spaced x values
-    call linspace(xmin, xmax, x_points)
-
-    solution = 0
-    t_points = 0
+    ! Initialize the arrays
+    call set_grid(options=options, solution=solution, &
+                  x_points=x_points, t_points=t_points, &
+                  nt_allocated=nt_allocated)
 
     ! Set initial conditions
     ! -------
