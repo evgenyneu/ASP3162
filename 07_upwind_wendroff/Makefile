@@ -3,15 +3,18 @@
 # ----------------------------------
 #
 # Build executable build/main:
-# > make
 #
-# Build and run tests build/test:
-# > make test
+# 	$ make
+#
+# Build unit tests executable build/test:
+#
+# 	$ make test
 #
 # Remove build files:
-# > make clean
 #
-# This Makefile is based on: https://stackoverflow.com/a/30142139/297131
+# 	$ make clean
+#
+# This Makefile is based on https://stackoverflow.com/a/30142139/297131
 #
 
 # Fortran compiler
