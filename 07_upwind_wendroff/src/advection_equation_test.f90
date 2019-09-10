@@ -104,6 +104,19 @@ subroutine solve_eqn_ftcs_test(failures)
     ! Ensure there are no NaN values
     call assert_true(all(.not. ieee_is_nan(solution)), &
         __FILE__, __LINE__, failures)
+
+
+    ! Solution
+    ! ----------
+
+    call assert_approx(solution(1, 100), 68.833416_dp, 1e-5_dp, __FILE__, &
+        __LINE__, failures)
+
+    call assert_approx(solution(50, 100), -466.7190088_dp, 1e-5_dp, __FILE__, &
+        __LINE__, failures)
+
+    call assert_approx(solution(101, 100), 261.438962_dp, 1e-5_dp, __FILE__, &
+        __LINE__, failures)
 end
 
 subroutine solve_eqn_lax_test(failures)
