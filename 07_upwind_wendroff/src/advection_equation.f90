@@ -6,9 +6,10 @@ use Types, only: dp
 use Constants, only: pi
 use Settings, only: program_settings, read_from_command_line
 use FloatUtils, only: linspace
+use OUtput, only: print_output
 implicit none
 private
-public :: solve_equation, print_output, solve_and_create_output, &
+public :: solve_equation, solve_and_create_output, &
           read_settings_solve_and_create_output
 
 contains
@@ -287,42 +288,6 @@ subroutine solve_equation(options, solution, x_points, t_points)
     ! Remove unused elements from t dimension of arrays
     call resize_arrays(new_size=nt, keep_elements=nt, &
                        solution=solution, t_points=t_points)
-end subroutine
-
-
-!
-! Prints solution to a binary data file. See README.md for description
-! of the file format.
-!
-! Inputs:
-! --------
-!
-! filename : Name of the data file to print output to
-!
-! solution : 2D array containing the solution (values of v)
-!            the first coordinate is x, the second is t.
-!
-! x_points : A 1D array containing the values of x
-!
-! t_points : A 1D array containing the values of t
-!
-subroutine print_output(filename, solution, x_points, t_points)
-    character(len=*), intent(in) :: filename
-    real(dp), intent(in) :: solution(:, :)
-    real(dp), intent(in) :: x_points(:), t_points(:)
-
-    integer, parameter :: out_unit=20
-
-    open(unit=out_unit, file=filename, form="unformatted", action="write", &
-        status="replace")
-
-    write(out_unit) size(x_points)
-    write(out_unit) size(t_points)
-    write(out_unit) x_points
-    write(out_unit) t_points
-    write(out_unit) solution
-
-    close(unit=out_unit)
 end subroutine
 
 

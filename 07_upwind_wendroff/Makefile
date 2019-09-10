@@ -52,6 +52,8 @@ SOURCE_FILES = 	types.f90 \
 							command_line_args_test.f90 \
 							settings.f90 \
 							settings_test.f90 \
+							output.f90 \
+							output_test.f90 \
 							advection_equation.f90 \
 							advection_equation_test.f90 \
 							main.f90 \

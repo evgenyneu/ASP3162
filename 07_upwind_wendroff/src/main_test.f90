@@ -5,6 +5,7 @@ program MainTest
     use FloatUtilsTest, only: float_utils_test_all
     use FileUtilsTest, only: file_utils_test_all
     use AdvectionEquationTest, only: advection_equation_test_all
+    use OutputTest, only: output_test_all
     implicit none
 
     integer :: failures = 0
@@ -16,6 +17,7 @@ program MainTest
     call float_utils_test_all(failures)
     call file_utils_test_all(failures)
     call advection_equation_test_all(failures)
+    call output_test_all(failures)
 
     if (failures == 0) then
         print *, NEW_LINE('h')//'Tests finished successfully'
