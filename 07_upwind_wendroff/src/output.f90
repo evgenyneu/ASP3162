@@ -1,5 +1,5 @@
 !
-! Helper functions to deal with file system
+! Write solution to a file
 !
 module Output
 use Types, only: dp
