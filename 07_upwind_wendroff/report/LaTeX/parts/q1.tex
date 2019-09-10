@@ -1,5 +1,6 @@
 \section{Reorganizing Fortran code}
 
+
 \subsection{Creating a Makefile}
 
 We create a Makefile based on the post
@@ -11,6 +12,10 @@ A useful feature of this Makefile is that is places all the build files (*.o, *.
 \code{\$ make test}
 
 command. This is accomplished by selecting files that end with \code{\_test.f90} and use them to build the test executable. When the main executable is made, those test source files are excluded.
+
+\subsection{Creating \code{Output} module}
+
+We create an \code{Output} module. It contains \code{print\_output} function that solution array, as well as $x$ and $t$ values to a binary data file. The format of the data file is documented in the README.md. We have chosen a binary file instead of a text file because binary file takes less storage space, and it is faster to read and write.
 
 % In want to solve the following advection equation
 % \begin{equation}

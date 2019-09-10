@@ -1,6 +1,6 @@
 module OutputTest
 use AssertsTest, only: assert_true
-use Output, only: print_output
+use Output, only: write_output
 use Types, only: dp
 use FileUtils, only: file_exists, delete_file
 use AssertsTest, only: assert_true, assert_approx, assert_equal
@@ -10,7 +10,7 @@ public output_test_all
 
 contains
 
-subroutine print_output_test(failures)
+subroutine write_output_test(failures)
     integer, intent(inout) :: failures
     real(dp) :: solution(2, 3)
     real(dp) :: solution_read(2, 3)
@@ -23,7 +23,7 @@ subroutine print_output_test(failures)
     x_points = [1.1_dp, 1.2_dp]
     t_points = [0.1_dp, 0.2_dp, 0.3_dp]
 
-    call print_output(filename="test_output.dat", solution=solution, &
+    call write_output(filename="test_output.dat", solution=solution, &
                       x_points=x_points, t_points=t_points)
 
     call assert_true(file_exists("test_output.dat"), __FILE__, __LINE__, failures)
@@ -63,7 +63,7 @@ end
 subroutine output_test_all(failures)
     integer, intent(inout) :: failures
 
-    call print_output_test(failures)
+    call write_output_test(failures)
 end
 
 end module OutputTest

@@ -4,8 +4,6 @@ use AssertsTest, only: assert_true, assert_approx, assert_equal
 use Constants, only: pi
 use, intrinsic :: ieee_arithmetic, only: ieee_is_nan
 
-use Output, only: print_output
-
 use AdvectionEquation, only: solve_equation, &
     solve_and_create_output, read_settings_solve_and_create_output
 

@@ -6,7 +6,7 @@ use Types, only: dp
 use Constants, only: pi
 use Settings, only: program_settings, read_from_command_line
 use FloatUtils, only: linspace
-use OUtput, only: print_output
+use Output, only: write_output
 implicit none
 private
 public :: solve_equation, solve_and_create_output, &
@@ -306,7 +306,7 @@ subroutine solve_and_create_output(options)
 
     call solve_equation(options, solution, x_points, t_points)
 
-    call print_output(filename=options%output_path, &
+    call write_output(filename=options%output_path, &
                       solution=solution, x_points=x_points, t_points=t_points)
 end subroutine
 

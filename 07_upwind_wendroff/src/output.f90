@@ -5,7 +5,7 @@ module Output
 use Types, only: dp
 implicit none
 private
-public :: print_output
+public :: write_output
 
 contains
 
@@ -25,7 +25,7 @@ contains
 !
 ! t_points : A 1D array containing the values of t
 !
-subroutine print_output(filename, solution, x_points, t_points)
+subroutine write_output(filename, solution, x_points, t_points)
     character(len=*), intent(in) :: filename
     real(dp), intent(in) :: solution(:, :)
     real(dp), intent(in) :: x_points(:), t_points(:)
