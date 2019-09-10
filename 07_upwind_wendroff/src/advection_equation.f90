@@ -6,7 +6,7 @@ use Types, only: dp
 use Constants, only: pi
 use Settings, only: program_settings, read_from_command_line
 use FloatUtils, only: linspace
-use Output, only: write_output
+use Oumtput, only: write_output
 implicit none
 private
 public :: solve_equation, solve_and_create_output, &
