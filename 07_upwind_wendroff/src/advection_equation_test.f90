@@ -5,7 +5,8 @@ use Constants, only: pi
 use, intrinsic :: ieee_arithmetic, only: ieee_is_nan
 
 use AdvectionEquation, only: solve_equation, &
-    solve_and_create_output, read_settings_solve_and_create_output
+    solve_and_create_output, read_settings_solve_and_create_output, &
+    remove_ghost_cells
 
 use Settings, only: program_settings
 use FileUtils, only: file_exists, delete_file
@@ -14,6 +15,26 @@ private
 public advection_equation_test_all
 
 contains
+
+
+subroutine remove_ghost_cells_test(failures)
+    integer, intent(inout) :: failures
+    real(dp), allocatable :: solution(:, :)
+
+    allocate(solution(4, 3))
+
+    solution = reshape((/ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 /), &
+                       shape(solution))
+
+    call remove_ghost_cells(solution)
+
+
+    ! Solution size
+    ! --------
+
+    call assert_equal(size(solution, 1), 2, __FILE__, __LINE__, failures)
+    call assert_equal(size(solution, 2), 3, __FILE__, __LINE__, failures)
+end
 
 
 subroutine solve_eqn_ftcs_test(failures)
@@ -338,6 +359,7 @@ end
 subroutine advection_equation_test_all(failures)
     integer, intent(inout) :: failures
 
+    call remove_ghost_cells_test(failures)
     call solve_eqn_ftcs_test(failures)
     ! call solve_eqn_lax_test(failures)
     ! call solve_and_create_output_test(failures)

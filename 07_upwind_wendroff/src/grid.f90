@@ -50,11 +50,9 @@ subroutine set_grid(options, solution, x_points, t_points, nt_allocated)
     ! The t dimension will grow as the arrays get enlarged when needed
     nt_allocated = 13
 
-    ! Allocate memory for the solution array.
-    ! The x dimension contains two more points:
-    ! there are left and right ghost cells
-    ! that help reduce the number of calculations
-    ! needed for periodic boundary conditions
+    ! Allocate memory for the solution array. The x dimension contains
+    ! two more points: there are left and right ghost cells that help reduce
+    ! the number of calculations needed for periodic boundary conditions:
     allocate(solution(nx + 2, nt_allocated))
 
     ! Allocate memory for x and t arrays

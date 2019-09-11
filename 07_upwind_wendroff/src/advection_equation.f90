@@ -11,7 +11,7 @@ use Grid, only: set_grid
 implicit none
 private
 public :: solve_equation, solve_and_create_output, &
-          read_settings_solve_and_create_output
+          read_settings_solve_and_create_output, remove_ghost_cells
 
 contains
 
@@ -63,6 +63,40 @@ end subroutine
 
 
 !
+! Removes the host cells, which are the values corresponding to
+! the first and last x-values. The ghost cells are temporary cells
+! and are not needed after the solution has been calculated.
+!
+! Outputs:
+! -------
+!
+! solution : 2D array containing the solution for the advection equation
+!        first coordinate is x, second is time.
+!
+subroutine remove_ghost_cells(solution)
+    real(dp), allocatable, intent(inout) :: solution(:,:)
+
+    ! ! Enlarge t_points array
+    ! ! -------
+
+    ! allocate(t_points_buffer(new_size))
+    ! t_points_buffer = 0
+    ! t_points_buffer(1:keep_elements) = t_points
+    ! deallocate(t_points)
+    ! call move_alloc(t_points_buffer, t_points)
+
+    ! ! Enlarge t axis of the solution array
+    ! ! -------
+
+    ! allocate(solution_buffer(size(solution, 1), new_size))
+    ! solution_buffer = 0
+    ! solution_buffer(:, 1:keep_elements) = solution
+    ! deallocate(solution)
+    ! call move_alloc(solution_buffer, solution)
+end subroutine
+
+
+!
 ! Solve the advection equation using FTCS method.
 !
 ! Inputs:
@@ -104,8 +138,15 @@ subroutine solve_ftcs(tmax, nx, nt, nt_allocated, &
     ! Pre-calculate the multiplier
     a = 0.5_dp * v * dt / dx
 
-    ! Calculate numerical solution
+    ! Calculate numerical solution at each time value
     do while (t_points(nt) < tmax)
+        ! Update the ghost cells.
+        ! The leftmost cell gets the values of nx-1 x cell
+        ! and the rightmost cell gets the value of the second x cell.
+        solution(1, nt) = solution(nx - 1, nt)
+        solution(nx, nt) = solution(2, nt)
+
+        ! Increment the time value
         nt = nt + 1
         t_points(nt) = t_points(nt - 1) + dt
 
@@ -118,17 +159,9 @@ subroutine solve_ftcs(tmax, nx, nt, nt_allocated, &
                                solution=solution, t_points=t_points)
         end if
 
-        ! Calculate t values for all x except the edges
+        ! Calculate solution for all x except for two ghost cells at the edges
         solution(2 : nx - 1, nt) = solution(2 : nx - 1, nt - 1) &
                 - a * (solution(3 : nx, nt - 1) - solution(1 : nx - 2, nt - 1))
-
-        ! Left edge
-        solution(1, nt) = solution(1, nt - 1) &
-                - a * (solution(2, nt - 1) - solution(nx, nt - 1))
-
-        ! Right edge
-        solution(nx, nt) = solution(nx, nt - 1) &
-                - a * (solution(1, nt - 1) - solution(nx - 1, nt - 1))
     end do
 end subroutine
 
@@ -178,6 +211,13 @@ subroutine solve_lax(tmax, nx, nt, nt_allocated, &
 
     ! Calculate numerical solution
     do while (t_points(nt) < tmax)
+        ! Update the ghost cells.
+        ! The leftmost cell gets the values of nx-1 x cell
+        ! and the rightmost cell gets the value of the second x cell.
+        solution(1, nt) = solution(nx - 1, nt)
+        solution(nx, nt) = solution(2, nt)
+
+        ! Increment the time value
         nt = nt + 1
         t_points(nt) = t_points(nt - 1) + dt
 
@@ -194,16 +234,6 @@ subroutine solve_lax(tmax, nx, nt, nt_allocated, &
         solution(2 : nx - 1, nt) = &
             0.5_dp * (solution(3 : nx, nt - 1) + solution(1 : nx - 2, nt - 1)) &
             - a * (solution(3 : nx, nt - 1) - solution(1 : nx - 2, nt - 1))
-
-        ! Left edge
-        solution(1, nt + 1) = &
-            0.5_dp * (solution(2, nt - 1) + solution(nx, nt - 1)) &
-            - a * (solution(2, nt - 1) - solution(nx, nt - 1))
-
-        ! Right edge
-        solution(nx, nt + 1) = &
-            0.5_dp * (solution(1, nt - 1) + solution(nx - 1, nt - 1)) &
-            - a * (solution(1, nt - 1) - solution(nx - 1, nt - 1))
     end do
 end subroutine
 
@@ -281,6 +311,8 @@ subroutine solve_equation(options, solution, x_points, t_points)
     ! Remove unused elements from t dimension of arrays
     call resize_arrays(new_size=nt, keep_elements=nt, &
                        solution=solution, t_points=t_points)
+
+    call remove_ghost_cells(solution)
 end subroutine
 
 
