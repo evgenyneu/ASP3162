@@ -69,7 +69,7 @@ subroutine set_grid(options, solution, x_points, t_points, nt_allocated)
     !
     ! and the x values will be
     !
-    !   (0)---1.25---|---3.75---|---6.25---|---8.75---(10)
+    !   (0)--1.25--|--3.75--|--6.25--|--8.75--(10)
     !
 
     dx = (xmax - xmin) / nx
