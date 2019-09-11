@@ -255,9 +255,9 @@ subroutine solve_equation(options, solution, x_points, t_points)
     t_points(1) = tmin
 
     where (x_points > 0.25 .and. x_points <= 0.75)
-        solution(:, 1) = 1
+        solution(2: size(solution, 1) - 1, 1) = 1
     elsewhere
-        solution(:, 1) = 0
+        solution(2: size(solution, 1) - 1, 1) = 0
     end where
 
     ! Calculate the steps

@@ -43,7 +43,7 @@ subroutine set_grid_test(failures)
     ! t_points
     ! ----------
 
-    call assert_equal(size(t_points), 12, __FILE__, __LINE__, failures)
+    call assert_equal(size(t_points), 13, __FILE__, __LINE__, failures)
 
     call assert_true(all(abs(t_points) < 1.e-10_dp), __FILE__, &
         __LINE__, failures)
@@ -52,8 +52,8 @@ subroutine set_grid_test(failures)
     ! Solution
     ! --------
 
-    call assert_equal(size(solution, 1), 10, __FILE__, __LINE__, failures)
-    call assert_equal(size(solution, 2), 12, __FILE__, __LINE__, failures)
+    call assert_equal(size(solution, 1), 12, __FILE__, __LINE__, failures)
+    call assert_equal(size(solution, 2), 13, __FILE__, __LINE__, failures)
 
     call assert_true(all(abs(solution) < 1.e-10_dp), __FILE__, &
         __LINE__, failures)
