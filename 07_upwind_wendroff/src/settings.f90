@@ -72,7 +72,7 @@ character(len=HELP_MESSAGE_LENGTH), parameter :: HELP_MESSAGE = NEW_LINE('h')//"
     &                  Default: 1."//NEW_LINE('h')//"&
     &"//NEW_LINE('h')//"&
     &    --nx=NUMBER : number of x points in the grid,"//NEW_LINE('h')//"&
-    &                  Default: 101."//NEW_LINE('h')//"&
+    &                  Default: 100."//NEW_LINE('h')//"&
     &"//NEW_LINE('h')//"&
     &    --t_start=NUMBER : the smallest t value,"//NEW_LINE('h')//"&
     &                  Default: 0."//NEW_LINE('h')//"&
@@ -90,7 +90,7 @@ character(len=HELP_MESSAGE_LENGTH), parameter :: HELP_MESSAGE = NEW_LINE('h')//"
 
 real(dp), parameter :: DEFAULT_X_START = 0._dp
 real(dp), parameter :: DEFAULT_X_END = 1._dp
-integer, parameter :: DEFAULT_NX = 101
+integer, parameter :: DEFAULT_NX = 100
 
 real(dp), parameter :: DEFAULT_T_START = 0._dp
 real(dp), parameter :: DEFAULT_T_END = 1._dp

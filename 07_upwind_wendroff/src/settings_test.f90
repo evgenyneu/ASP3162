@@ -32,7 +32,7 @@ subroutine read_from_parsed_command_line_test__no_args(failures)
 
     call assert_approx(settings%x_start, 0._dp, 1e-5_dp, __FILE__, __LINE__, failures)
     call assert_approx(settings%x_end, 1._dp, 1e-5_dp, __FILE__, __LINE__, failures)
-    call assert_equal(settings%nx, 101, __FILE__, __LINE__, failures)
+    call assert_equal(settings%nx, 100, __FILE__, __LINE__, failures)
 
     call assert_approx(settings%t_start, 0._dp, 1e-5_dp, __FILE__, __LINE__, failures)
     call assert_approx(settings%t_end, 1._dp, 1e-5_dp, __FILE__, __LINE__, failures)
