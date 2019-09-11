@@ -18,7 +18,7 @@ subroutine set_grid_test(failures)
 
     options%x_start = 10
     options%x_end = 20
-    options%nx = 11
+    options%nx = 10
 
     call set_grid(options=options, solution=solution, &
                   x_points=x_points, t_points=t_points, &
@@ -28,22 +28,22 @@ subroutine set_grid_test(failures)
     ! x_points
     ! ----------
 
-    call assert_equal(size(x_points), 11, __FILE__, __LINE__, failures)
+    call assert_equal(size(x_points), 10, __FILE__, __LINE__, failures)
 
-    call assert_approx(x_points(1), 10._dp, 1e-5_dp, __FILE__, &
+    call assert_approx(x_points(1), 10.5_dp, 1e-5_dp, __FILE__, &
         __LINE__, failures)
 
-    call assert_approx(x_points(2), 11._dp, 1e-5_dp, __FILE__, &
+    call assert_approx(x_points(2), 11.5_dp, 1e-5_dp, __FILE__, &
         __LINE__, failures)
 
-    call assert_approx(x_points(11), 20._dp, 1e-5_dp, __FILE__, &
+    call assert_approx(x_points(10), 19.5_dp, 1e-5_dp, __FILE__, &
         __LINE__, failures)
 
 
     ! t_points
     ! ----------
 
-    call assert_equal(size(t_points), 10, __FILE__, __LINE__, failures)
+    call assert_equal(size(t_points), 12, __FILE__, __LINE__, failures)
 
     call assert_true(all(abs(t_points) < 1.e-10_dp), __FILE__, &
         __LINE__, failures)
@@ -52,8 +52,8 @@ subroutine set_grid_test(failures)
     ! Solution
     ! --------
 
-    call assert_equal(size(solution, 1), 11, __FILE__, __LINE__, failures)
-    call assert_equal(size(solution, 2), 10, __FILE__, __LINE__, failures)
+    call assert_equal(size(solution, 1), 10, __FILE__, __LINE__, failures)
+    call assert_equal(size(solution, 2), 12, __FILE__, __LINE__, failures)
 
     call assert_true(all(abs(solution) < 1.e-10_dp), __FILE__, &
         __LINE__, failures)

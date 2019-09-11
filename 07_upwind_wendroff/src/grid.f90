@@ -46,7 +46,11 @@ subroutine set_grid(options, solution, x_points, t_points, nt_allocated)
     xmax = options%x_end
     nx = options%nx
 
-    nt_allocated = 10
+    ! Size of the t dimension, an arbitrary number.
+    ! The t dimension will grow as the arrays get enlarged when needed
+    nt_allocated = 12
+
+    ! Allocate memory for the arrays
     allocate(solution(nx, nt_allocated))
     allocate(x_points(nx))
     allocate(t_points(nt_allocated))
