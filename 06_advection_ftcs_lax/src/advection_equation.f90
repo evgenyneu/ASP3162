@@ -194,12 +194,12 @@ subroutine solve_lax(tmax, nx, nt, nt_allocated, &
             - a * (solution(3 : nx, nt - 1) - solution(1 : nx - 2, nt - 1))
 
         ! Left edge
-        solution(1, nt + 1) = &
+        solution(1, nt) = &
             0.5_dp * (solution(2, nt - 1) + solution(nx, nt - 1)) &
             - a * (solution(2, nt - 1) - solution(nx, nt - 1))
 
         ! Right edge
-        solution(nx, nt + 1) = &
+        solution(nx, nt) = &
             0.5_dp * (solution(1, nt - 1) + solution(nx - 1, nt - 1)) &
             - a * (solution(1, nt - 1) - solution(nx - 1, nt - 1))
     end do
