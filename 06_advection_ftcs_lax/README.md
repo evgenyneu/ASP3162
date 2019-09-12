@@ -13,7 +13,7 @@ numerically using FTCS and Lax methods.
 
   * FTCS: http://bit.ly/asp3162_ftcs
 
-  * Lax: http://bit.ly/asp3162_lax
+  * Lax: http://bit.ly/asp3162_lax2
 
 
 ## Compile
