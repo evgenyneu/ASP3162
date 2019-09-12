@@ -63,7 +63,7 @@ end subroutine
 
 
 !
-! Removes the host cells, which are the values corresponding to
+! Removes the ghost cells, which are the values corresponding to
 ! the first and last x-values. The ghost cells are temporary cells
 ! and are not needed after the solution has been calculated.
 !
@@ -75,24 +75,13 @@ end subroutine
 !
 subroutine remove_ghost_cells(solution)
     real(dp), allocatable, intent(inout) :: solution(:,:)
+    real(dp), allocatable :: solution_buffer(:,:)
 
-    ! ! Enlarge t_points array
-    ! ! -------
-
-    ! allocate(t_points_buffer(new_size))
-    ! t_points_buffer = 0
-    ! t_points_buffer(1:keep_elements) = t_points
-    ! deallocate(t_points)
-    ! call move_alloc(t_points_buffer, t_points)
-
-    ! ! Enlarge t axis of the solution array
-    ! ! -------
-
-    ! allocate(solution_buffer(size(solution, 1), new_size))
-    ! solution_buffer = 0
-    ! solution_buffer(:, 1:keep_elements) = solution
-    ! deallocate(solution)
-    ! call move_alloc(solution_buffer, solution)
+    allocate(solution_buffer(size(solution, 1) - 2, size(solution, 2)))
+    solution_buffer = 0
+    solution_buffer(:, :) = solution(2 : size(solution, 1) - 1,:)
+    deallocate(solution)
+    call move_alloc(solution_buffer, solution)
 end subroutine
 
 

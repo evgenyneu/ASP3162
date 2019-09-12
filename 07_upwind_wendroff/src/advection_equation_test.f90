@@ -34,6 +34,24 @@ subroutine remove_ghost_cells_test(failures)
 
     call assert_equal(size(solution, 1), 2, __FILE__, __LINE__, failures)
     call assert_equal(size(solution, 2), 3, __FILE__, __LINE__, failures)
+
+    call assert_approx(solution(1,1), 2._dp, 1e-5_dp, __FILE__, &
+        __LINE__, failures)
+
+    call assert_approx(solution(2,1), 3._dp, 1e-5_dp, __FILE__, &
+        __LINE__, failures)
+
+    call assert_approx(solution(1,2), 6._dp, 1e-5_dp, __FILE__, &
+        __LINE__, failures)
+
+    call assert_approx(solution(2,2), 7._dp, 1e-5_dp, __FILE__, &
+        __LINE__, failures)
+
+    call assert_approx(solution(1,3), 10._dp, 1e-5_dp, __FILE__, &
+        __LINE__, failures)
+
+    call assert_approx(solution(2,3), 11._dp, 1e-5_dp, __FILE__, &
+        __LINE__, failures)
 end
 
 
@@ -87,7 +105,7 @@ subroutine solve_eqn_ftcs_test(failures)
     ! Solution size
     ! --------
 
-    call assert_equal(size(solution, 1), 102, __FILE__, __LINE__, failures)
+    call assert_equal(size(solution, 1), 100, __FILE__, __LINE__, failures)
     call assert_equal(size(solution, 2), 201, __FILE__, __LINE__, failures)
 
     ! Initial condition
@@ -99,22 +117,22 @@ subroutine solve_eqn_ftcs_test(failures)
     call assert_approx(solution(2, 1), 0.0_dp, 1e-5_dp, __FILE__, &
         __LINE__, failures)
 
-    call assert_approx(solution(26, 1), 0.0_dp, 1e-5_dp, __FILE__, &
+    call assert_approx(solution(25, 1), 0.0_dp, 1e-5_dp, __FILE__, &
+        __LINE__, failures)
+
+    call assert_approx(solution(26, 1), 1.0_dp, 1e-5_dp, __FILE__, &
         __LINE__, failures)
 
     call assert_approx(solution(27, 1), 1.0_dp, 1e-5_dp, __FILE__, &
         __LINE__, failures)
 
-    call assert_approx(solution(28, 1), 1.0_dp, 1e-5_dp, __FILE__, &
+    call assert_approx(solution(75, 1), 1.0_dp, 1e-5_dp, __FILE__, &
         __LINE__, failures)
 
-    call assert_approx(solution(76, 1), 1.0_dp, 1e-5_dp, __FILE__, &
+    call assert_approx(solution(76, 1), 0.0_dp, 1e-5_dp, __FILE__, &
         __LINE__, failures)
 
-    call assert_approx(solution(77, 1), 0.0_dp, 1e-5_dp, __FILE__, &
-        __LINE__, failures)
-
-    call assert_approx(solution(101, 1), 0.0_dp, 1e-5_dp, __FILE__, &
+    call assert_approx(solution(100, 1), 0.0_dp, 1e-5_dp, __FILE__, &
         __LINE__, failures)
 
 
