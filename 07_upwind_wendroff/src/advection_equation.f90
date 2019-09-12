@@ -93,8 +93,6 @@ end subroutine
 !
 ! tmax : the largest time value
 !
-! nx : number of x points
-!
 ! dx : size of space step
 !
 ! dt : size of time step
@@ -114,20 +112,22 @@ end subroutine
 !
 ! t_points : A 1D array containing the values of the time coordinate
 !
-subroutine solve_ftcs(tmax, nx, dx, dt, v, &
+subroutine solve_ftcs(tmax, dx, dt, v, &
                       nt, nt_allocated, solution, t_points)
 
-    integer, intent(in) :: nx
     integer, intent(inout) :: nt_allocated
     integer, intent(out) :: nt
     real(dp), intent(in) :: tmax, dx, dt, v
     real(dp), allocatable, intent(inout) :: solution(:,:)
     real(dp), allocatable, intent(inout) :: t_points(:)
+    integer :: nx
     real(dp) :: a
+
+    nx = size(solution, 1) ! number of x points plus two ghost points
+    nt = 1
 
     ! Pre-calculate the multiplier
     a = 0.5_dp * v * dt / dx
-    nt = 1
 
     ! Calculate numerical solution at each time value
     do while (t_points(nt) < tmax)
@@ -165,8 +165,6 @@ end subroutine
 !
 ! tmax : the largest time value
 !
-! nx : number of x points
-!
 ! dx : size of space step
 !
 ! dt : size of time step
@@ -187,20 +185,22 @@ end subroutine
 ! t_points : A 1D array containing the values of the time coordinate
 !  first coordinate is x, second is time.
 !
-subroutine solve_lax(tmax, nx, dx, dt, v, &
+subroutine solve_lax(tmax, dx, dt, v, &
                      nt, nt_allocated, solution, t_points)
 
-    integer, intent(in) :: nx
     integer, intent(inout) :: nt_allocated
     integer, intent(out) :: nt
     real(dp), intent(in) :: tmax, dx, dt, v
     real(dp), allocatable, intent(inout) :: solution(:,:)
     real(dp), allocatable, intent(inout) :: t_points(:)
+    integer :: nx
     real(dp) :: a
+
+    nx = size(solution, 1) ! number of x points plus two ghost points
+    nt = 1
 
     ! Pre-calculate the multiplier
     a = 0.5_dp * v * dt / dx
-    nt = 1
 
     ! Calculate numerical solution
     do while (t_points(nt) < tmax)
@@ -256,12 +256,11 @@ subroutine solve_equation(options, solution, x_points, t_points)
     real(dp), allocatable, intent(out) :: solution(:,:)
     real(dp), allocatable, intent(out) :: x_points(:), t_points(:)
     real(dp) :: dx, tmin, tmax, dt, v
-    integer :: nx, nt, nt_allocated
+    integer :: nt, nt_allocated
 
     ! Assign shortcut variables from settings
     ! ----------
 
-    nx = options%nx
     tmin = options%t_start
     tmax = options%t_end
     v = options%velocity
@@ -288,11 +287,11 @@ subroutine solve_equation(options, solution, x_points, t_points)
 
     select case (options%method)
         case ("ftcs")
-           call solve_ftcs(tmax=tmax, nx=nx, nt=nt, &
+           call solve_ftcs(tmax=tmax, nt=nt, &
                 nt_allocated=nt_allocated, &
                 dx=dx, dt=dt, v=v, solution=solution, t_points=t_points)
         case ("lax")
-           call solve_lax(tmax=tmax, nx=nx, nt=nt, &
+           call solve_lax(tmax=tmax, nt=nt, &
                 nt_allocated=nt_allocated, &
                 dx=dx, dt=dt, v=v, solution=solution, t_points=t_points)
         case default

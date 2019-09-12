@@ -141,8 +141,8 @@ subroutine solve_eqn_ftcs_test(failures)
         __FILE__, __LINE__, failures)
 
 
-    ! ! Solution
-    ! ! ----------
+    ! Solution
+    ! ----------
 
     ! call assert_approx(solution(1, 100), 68.833416_dp, 1e-5_dp, __FILE__, &
     !     __LINE__, failures)
@@ -163,7 +163,7 @@ subroutine solve_eqn_lax_test(failures)
     options%method = 'lax'
     options%x_start = 0
     options%x_end = 1
-    options%nx = 101
+    options%nx = 100
     options%t_start = 0
     options%t_end = 1
     options%velocity = 1.0_dp
@@ -175,15 +175,15 @@ subroutine solve_eqn_lax_test(failures)
     ! x_points
     ! ----------
 
-    call assert_equal(size(x_points), 101, __FILE__, __LINE__, failures)
+    call assert_equal(size(x_points), 100, __FILE__, __LINE__, failures)
 
-    call assert_approx(x_points(1), 0._dp, 1e-5_dp, __FILE__, &
+    call assert_approx(x_points(1), 0.005_dp, 1e-5_dp, __FILE__, &
         __LINE__, failures)
 
-    call assert_approx(x_points(2), 0.01_dp, 1e-5_dp, __FILE__, &
+    call assert_approx(x_points(2), 0.015_dp, 1e-5_dp, __FILE__, &
         __LINE__, failures)
 
-    call assert_approx(x_points(101), 1._dp, 1e-5_dp, __FILE__, &
+    call assert_approx(x_points(100), 0.995_dp, 1e-5_dp, __FILE__, &
         __LINE__, failures)
 
     ! t_points
@@ -206,7 +206,7 @@ subroutine solve_eqn_lax_test(failures)
     ! Solution size
     ! --------
 
-    call assert_equal(size(solution, 1), 101, __FILE__, __LINE__, failures)
+    call assert_equal(size(solution, 1), 100, __FILE__, __LINE__, failures)
     call assert_equal(size(solution, 2), 201, __FILE__, __LINE__, failures)
 
     ! Initial condition
@@ -215,28 +215,25 @@ subroutine solve_eqn_lax_test(failures)
     call assert_approx(solution(1, 1), 0.0_dp, 1e-5_dp, __FILE__, &
         __LINE__, failures)
 
-    call assert_approx(solution(1, 1), 0.0_dp, 1e-5_dp, __FILE__, &
-        __LINE__, failures)
-
     call assert_approx(solution(2, 1), 0.0_dp, 1e-5_dp, __FILE__, &
         __LINE__, failures)
 
-    call assert_approx(solution(26, 1), 0.0_dp, 1e-5_dp, __FILE__, &
+    call assert_approx(solution(25, 1), 0.0_dp, 1e-5_dp, __FILE__, &
+        __LINE__, failures)
+
+    call assert_approx(solution(26, 1), 1.0_dp, 1e-5_dp, __FILE__, &
         __LINE__, failures)
 
     call assert_approx(solution(27, 1), 1.0_dp, 1e-5_dp, __FILE__, &
         __LINE__, failures)
 
-    call assert_approx(solution(28, 1), 1.0_dp, 1e-5_dp, __FILE__, &
+    call assert_approx(solution(75, 1), 1.0_dp, 1e-5_dp, __FILE__, &
         __LINE__, failures)
 
-    call assert_approx(solution(76, 1), 1.0_dp, 1e-5_dp, __FILE__, &
+    call assert_approx(solution(76, 1), 0.0_dp, 1e-5_dp, __FILE__, &
         __LINE__, failures)
 
-    call assert_approx(solution(77, 1), 0.0_dp, 1e-5_dp, __FILE__, &
-        __LINE__, failures)
-
-    call assert_approx(solution(101, 1), 0.0_dp, 1e-5_dp, __FILE__, &
+    call assert_approx(solution(100, 1), 0.0_dp, 1e-5_dp, __FILE__, &
         __LINE__, failures)
 
 
@@ -248,13 +245,13 @@ subroutine solve_eqn_lax_test(failures)
     ! Solution
     ! ----------
 
-    call assert_approx(solution(1, 100), 0.9904183_dp, 1e-5_dp, __FILE__, &
+    call assert_approx(solution(1, 100), 0.996552_dp, 1e-5_dp, __FILE__, &
         __LINE__, failures)
 
     call assert_approx(solution(50, 100), 0.277761e-2_dp, 1e-5_dp, __FILE__, &
         __LINE__, failures)
 
-    call assert_approx(solution(101, 100), 0.9934015_dp, 1e-5_dp, __FILE__, &
+    call assert_approx(solution(100, 100), 0.9934015_dp, 1e-5_dp, __FILE__, &
         __LINE__, failures)
 end
 
@@ -379,7 +376,7 @@ subroutine advection_equation_test_all(failures)
 
     call remove_ghost_cells_test(failures)
     call solve_eqn_ftcs_test(failures)
-    ! call solve_eqn_lax_test(failures)
+    call solve_eqn_lax_test(failures)
     ! call solve_and_create_output_test(failures)
     ! call read_settings_solve_and_create_output_test(failures)
 end
