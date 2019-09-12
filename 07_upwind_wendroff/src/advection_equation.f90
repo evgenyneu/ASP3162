@@ -95,10 +95,6 @@ end subroutine
 !
 ! nx : number of x points
 !
-! nt : number of t points
-!
-! nt_allocated : the number of t points allocated in the arrays.
-!
 ! dx : size of space step
 !
 ! dt : size of time step
@@ -109,16 +105,21 @@ end subroutine
 ! Outputs:
 ! -------
 !
+! nt : the number of t points for which solution has been calculated.
+!
+! nt_allocated : the number of t points allocated in the arrays.
+!
 ! solution : 2D array containing the solution for the advection equation
 !        first coordinate is x, second is time.
 !
 ! t_points : A 1D array containing the values of the time coordinate
 !
-subroutine solve_ftcs(tmax, nx, nt, nt_allocated, &
-                          dx, dt, v, solution, t_points)
+subroutine solve_ftcs(tmax, nx, dx, dt, v, &
+                      nt, nt_allocated, solution, t_points)
 
     integer, intent(in) :: nx
-    integer, intent(inout) :: nt, nt_allocated
+    integer, intent(inout) :: nt_allocated
+    integer, intent(out) :: nt
     real(dp), intent(in) :: tmax, dx, dt, v
     real(dp), allocatable, intent(inout) :: solution(:,:)
     real(dp), allocatable, intent(inout) :: t_points(:)
@@ -126,6 +127,7 @@ subroutine solve_ftcs(tmax, nx, nt, nt_allocated, &
 
     ! Pre-calculate the multiplier
     a = 0.5_dp * v * dt / dx
+    nt = 1
 
     ! Calculate numerical solution at each time value
     do while (t_points(nt) < tmax)
@@ -165,10 +167,6 @@ end subroutine
 !
 ! nx : number of x points
 !
-! nt : number of t points
-!
-! nt_allocated : the number of t points allocated in the arrays.
-!
 ! dx : size of space step
 !
 ! dt : size of time step
@@ -179,17 +177,22 @@ end subroutine
 ! Outputs:
 ! -------
 !
+! nt : the number of t points for which solution has been calculated.
+!
+! nt_allocated : the number of t points allocated in the arrays.
+!
 ! solution : 2D array containing the solution for the advection equation
 !        first coordinate is x, second is time.
 !
 ! t_points : A 1D array containing the values of the time coordinate
 !  first coordinate is x, second is time.
 !
-subroutine solve_lax(tmax, nx, nt, nt_allocated, &
-                          dx, dt, v, solution, t_points)
+subroutine solve_lax(tmax, nx, dx, dt, v, &
+                     nt, nt_allocated, solution, t_points)
 
     integer, intent(in) :: nx
-    integer, intent(inout) :: nt, nt_allocated
+    integer, intent(inout) :: nt_allocated
+    integer, intent(out) :: nt
     real(dp), intent(in) :: tmax, dx, dt, v
     real(dp), allocatable, intent(inout) :: solution(:,:)
     real(dp), allocatable, intent(inout) :: t_points(:)
@@ -197,6 +200,7 @@ subroutine solve_lax(tmax, nx, nt, nt_allocated, &
 
     ! Pre-calculate the multiplier
     a = 0.5_dp * v * dt / dx
+    nt = 1
 
     ! Calculate numerical solution
     do while (t_points(nt) < tmax)
@@ -270,7 +274,6 @@ subroutine solve_equation(options, solution, x_points, t_points)
     ! Set initial conditions
     ! -------
 
-    nt = 1
     t_points(1) = tmin
 
     where (x_points > 0.25 .and. x_points <= 0.75)

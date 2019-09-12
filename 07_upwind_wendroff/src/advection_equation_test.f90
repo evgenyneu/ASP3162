@@ -136,9 +136,9 @@ subroutine solve_eqn_ftcs_test(failures)
         __LINE__, failures)
 
 
-    ! ! Ensure there are no NaN values
-    ! call assert_true(all(.not. ieee_is_nan(solution)), &
-    !     __FILE__, __LINE__, failures)
+    ! Ensure there are no NaN values
+    call assert_true(all(.not. ieee_is_nan(solution)), &
+        __FILE__, __LINE__, failures)
 
 
     ! ! Solution
