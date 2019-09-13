@@ -3,7 +3,7 @@
 
 \subsection{Creating a Makefile}
 
-We create a Makefile based on the post by Stackoverflow's user Sophie:
+We create a Makefile based on the post by a Stackoverflow user Sophie:
 
 \url{https://stackoverflow.com/a/30142139/297131}.
 
@@ -28,21 +28,21 @@ Next, we write a \code{Grid}  module that initializes the arrays for storing x, 
 
 \subsubsection*{1. Array of $x$ values}
 
-First, we create a 1D array that stores the $x$ values. The range for the $x$ variable is devided into cells of equal size located between $x\_start$ and $x\_end$ numbers. The total number of cells is set by the $nx$ parameter. Parameters $nx$, $x\_start$ and $x\_end$ are supplied to the program by the user. The $x$ values are set to be in the middle of their cells.
+First, we create a 1D array that stores the $x$ values. The range for the $x$ variable is divided into cells of equal size located between $x\_start$ and $x\_end$ numbers. The total number of cells is set by the $nx$ parameter. Parameters $nx$, $x\_start$ and $x\_end$ are supplied to the program by the user. The $x$ values are set to be in the middle of their cells.
 
 For example, suppose we have four x cells, starting from $0$ and ending with $10$, as shown on \autoref{fig_x_grid}. In this case the $x$ array will contains four values: $1.25$, $3.75$, $6.25$ and $8.75$.
 
 \begin{figure}[!ht]
     \centering
     \includegraphics[width=0.8\textwidth]{figures/x_grid.pdf}
-    \caption{Array for x values $1.25$, $3.75$, $6.25$ and $8.75$ for the grid with parameters $nx=4$ (total number of x cells), $x\_start=0$ and $x\_end=10$.}
+    \caption{Array for storing four x values that are evenly spread in the middle of their cells between zero and ten.}
     \label{fig_x_grid}
 \end{figure}
 
 
 \subsubsection*{2. Array of $t$ values}
 
-Next, we allocate a 1D array to store the time values. The time values start with $t\_start$ and end with $t\_end$ values that are supplied by the user. However, unlike the $x$ values, the number of $t$ values is not supplied by the user, since, in general, the size of the time step can change during calculation. Therefore, we do not yet know the final size of the $t$ array.
+Next, we allocate a 1D array to store the time values. The time values start with $t\_start$ and end with $t\_end$ that are supplied by the user. However, unlike the $x$ values, the number of $t$ values is not supplied by the user, since, in general, the size of the time step can change during calculation. Therefore, we do not yet know the final size of the $t$ array.
 
 This creates a ``chicken and egg'' problem: we need to initialize a $t$ array in order to start calculations, but we do not yet know the size of this array, since it will be determined when calculations are completed. This issue is solved by using an ``allocatable'' keyword that creates a dynamical array, as shown on \code{Line 46} in \autoref{code_initialize_t_array}. On \code{Line 54} we allocate an arbitrary number of $t$ values. Then, later in our program, when we calculate the solution and need to store more $t$ values, we will make the $t$ array larger.
 
@@ -61,6 +61,25 @@ allocate(t_points(nt_allocated))
 
 
 \subsubsection*{3. Solution array}
+
+Finally, we initialize the most important array that will store the values of the solution. This is a 2D array, its first index is the $x$ dimension, and the second is the time dimension. An example of such array is shown on \autoref{fig_solution_array}. In this example, we create an array for four $x$ values and three $t$ values. In addition, the array contains two extra columns (one on the left and one the right) for storing values of so-called ``ghost'' cells. These are temporary cells that help to make calculation of the solution simpler. These ghost cells will be removed from the solution array when calculations are finished.
+
+\begin{figure}[!ht]
+    \centering
+    \includegraphics[width=0.8\textwidth]{figures/solution_array.pdf}
+    \caption{An array for storing solution values for four $x$ values and three $t$ values. The array contains two additional columns at the start and the end for storing values for the ``ghost'' cells, which are used for making calculations simpler. }
+    \label{fig_solution_array}
+\end{figure}
+
+The size of the time dimension of the solution array is determined by the number of the $t$ values. Since this number is not known in advance, we use the trick from the time array initialization. Specifically, we create a dynamical  array and allocate its memory using an arbitrary number of time values, as shown in \autoref{code_initialize_solution_array}. Later, as we calculate the solution for growing number of time values, we will resize the solution array and make its time dimension larger.
+
+\noindent\begin{minipage}{\linewidth}
+\begin{lstlisting}[caption={Initializing a dynamical array for storing values of the solution. The $x$ dimension contains two additional columns for storing the ``ghost`` cells. The $y$ dimension has an arbitrary size that will be increased later during calculation to store data for new time values. (\code{grid.f90}).}, frame=tlrb, numbers=left, firstnumber=83, label={code_initialize_solution_array}]
+real(dp), allocatable :: solution(:, :)
+
+allocate(solution(nx + 2, nt_allocated))
+\end{lstlisting}
+\end{minipage}
 
 
 % In want to solve the following advection equation

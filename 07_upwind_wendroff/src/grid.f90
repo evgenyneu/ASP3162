@@ -78,7 +78,8 @@ subroutine set_grid(options, solution, x_points, t_points, nt_allocated)
 
     ! Allocate memory for the solution array. The x dimension contains
     ! two more points: these are left and right ghost cells that help
-    ! reduce code duplication when calculating a solution
+    ! make calculations simpler. The ghost cells will be removed
+    ! from the solution array when calculations are finished.
     allocate(solution(nx + 2, nt_allocated))
 
     ! Initialize the arrays with zeros
