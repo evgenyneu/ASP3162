@@ -1,5 +1,5 @@
 !
-! Initialize the arrays for the x, t values and the solution
+! Initialize the arrays for x, t values and the solution
 !
 module Grid
 use Types, only: dp
@@ -12,7 +12,7 @@ public :: set_grid
 contains
 
 !
-! Initialize the arrays for the solution, the x and t values.
+! Initialize the arrays for x, t values, and the solution.
 !
 ! Inputs:
 ! -------
@@ -46,17 +46,15 @@ subroutine set_grid(options, solution, x_points, t_points, nt_allocated)
     nx = options%nx
 
     ! Size of the t dimension, an arbitrary number.
-    ! The t dimension will grow as the arrays get enlarged when needed
+    ! The t dimension will grow as the arrays get enlarged
+    ! when new solutions are calculated
     nt_allocated = 13
 
-    ! Allocate memory for the solution array. The x dimension contains
-    ! two more points: there are left and right ghost cells that help reduce
-    ! the number of calculations needed for periodic boundary conditions:
-    allocate(solution(nx + 2, nt_allocated))
-
-    ! Allocate memory for x and t arrays
-    allocate(x_points(nx))
+    ! Allocate memoty for t values
     allocate(t_points(nt_allocated))
+
+    ! Allocate memory for x values
+    allocate(x_points(nx))
 
     !
     ! Assign evenly spaced x values.
@@ -65,18 +63,23 @@ subroutine set_grid(options, solution, x_points, t_points, nt_allocated)
     !
     !   (xmin)---x1---|---x2---|  ...  |---xn---(xmax)
     !
-    ! For example consider a grid with four x values (nx=4)
+    ! For example consider a grid with four x cells (nx=4)
     ! and xmin = 0, xmax = 10. Our grid will look like
     !
     !   (0)---x1---|---x2---|---x3---|---x4---(10)
     !
-    ! and the x values will be
+    ! and the x values will be 1.25, 3.75, 6.25 and 8.75:
     !
     !   (0)--1.25--|--3.75--|--6.25--|--8.75--(10)
     !
 
     dx = (xmax - xmin) / nx
     call linspace(xmin + dx / 2, xmax - dx / 2, x_points)
+
+    ! Allocate memory for the solution array. The x dimension contains
+    ! two more points: there are left and right ghost cells that help reduce
+    ! the number of calculations needed for periodic boundary conditions:
+    allocate(solution(nx + 2, nt_allocated))
 
     ! Initialize the arrays with zeros
     solution = 0

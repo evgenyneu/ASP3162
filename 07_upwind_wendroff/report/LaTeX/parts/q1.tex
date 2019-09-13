@@ -23,16 +23,26 @@ We create an \code{Output} module. It contains \code{write\_output} function tha
 
 \subsection{Creating \code{Grid} module}
 
-We create a \code{Grid}  module that initializes the arrays for the solution, the x and t values.
+We create a \code{Grid}  module that initializes the arrays that store x, t and solution values.
 
-The range for the x variable is devided into cells of equal size located between $x\_start$ and $x\_end$ numbers. The total number of cells is set by $nx$ parameter. 
+
+\subsubsection*{Array of $x$ values}
+
+First, we create a 1D array that stores the $x$ values. The range for the $x$ variable is devided into cells of equal size located between $x\_start$ and $x\_end$ numbers. The total number of cells is set by the $nx$ parameter. Parameters $nx$, $x\_start$ and $x\_end$ are supplied to the program by the user. The $x$ values are set to be in the middle of their cells.
+
+For example, suppose we have four x cells, starting from $0$ and ending with $10$, as shown on \autoref{fig_x_grid}. In this case the $x$ array will contains four values: $1.25$, $3.75$, $6.25$ and $8.75$.
 
 \begin{figure}[!ht]
     \centering
     \includegraphics[width=0.8\textwidth]{figures/x_grid.pdf}
-    \caption{Example of an array for x values parameters $nx=4$ (total number of x values), $x\_start=0$ and $x\_end=10$.}
+    \caption{Array for x values $1.25$, $3.75$, $6.25$ and $8.75$ for the grid with parameters $nx=4$ (total number of x cells), $x\_start=0$ and $x\_end=10$.}
     \label{fig_x_grid}
 \end{figure}
+
+
+\subsubsection*{Array of $t$ values}
+
+
 
 % In want to solve the following advection equation
 % \begin{equation}
