@@ -62,7 +62,9 @@ allocate(t_points(nt_allocated))
 
 \subsubsection*{3. Solution array}
 
-Finally, we initialize the most important array that will store the values of the solution. This is a 2D array, its first index is the $x$ dimension, and the second is the time dimension. An example of such array is shown on \autoref{fig_solution_array}. In this example, we create an array for four $x$ values and three $t$ values. In addition, the array contains two extra columns (one on the left and one the right) for storing values of so-called ``ghost'' cells. These are temporary cells that help to make calculation of the solution simpler. These ghost cells will be removed from the solution array when calculations are finished.
+Finally, we initialize the most important array that will store the values of the solution. This is a 2D array, its first index is the $x$ dimension, and the second is the time dimension. The array will store the solution for every time iteration. This is not be a good idea if the number of time iterations is very large, since the array may become larger than available memory. However, in our case we use fewer than a thousand time iterations, and consequently the solution array will be small relative to the total memory available.
+
+An example of a solution array is shown on \autoref{fig_solution_array}. Here we create an array for four $x$ values and three $t$ values. In addition, the array contains two extra columns (one on the left and one the right) for storing values of so-called ``ghost'' cells. These are temporary cells that help to make calculation of the solution simpler. These ghost cells will be removed from the solution array when calculations are finished.
 
 \begin{figure}[!ht]
     \centering
