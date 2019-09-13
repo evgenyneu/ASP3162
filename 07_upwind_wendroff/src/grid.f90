@@ -50,7 +50,7 @@ subroutine set_grid(options, solution, x_points, t_points, nt_allocated)
     ! when new solutions are calculated
     nt_allocated = 13
 
-    ! Allocate memoty for t values
+    ! Allocate memory for t values
     allocate(t_points(nt_allocated))
 
     ! Allocate memory for x values
