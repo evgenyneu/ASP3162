@@ -18,15 +18,15 @@ command. This is accomplished by selecting files that have names ending with ``\
 
 \subsection{Creating \code{Output} module}
 
-We create an \code{Output} module. It contains \code{write\_output} function that writes the solution array, as well as $x$ and $t$ grid values to a binary data file. The format of the data file is documented in the README.md. We have chosen a binary file instead of a text file because binary file takes less storage space, and it is faster to read and write.
+We create an \code{Output} module. It contains \code{write\_output} function that writes $x$, $t$ values, as well as the solution 2D array, to a binary data file. The format of the data file is documented in the README.md. We have chosen a binary file instead of a text file because a binary file needs less storage space, and it is faster to read and write.
 
 
 \subsection{Creating \code{Grid} module}
 
-We create a \code{Grid}  module that initializes the arrays that store x, t and solution values.
+Next, we write a \code{Grid}  module that initializes the arrays for storing x, t and solution values.
 
 
-\subsubsection*{Array of $x$ values}
+\subsubsection*{1. Array of $x$ values}
 
 First, we create a 1D array that stores the $x$ values. The range for the $x$ variable is devided into cells of equal size located between $x\_start$ and $x\_end$ numbers. The total number of cells is set by the $nx$ parameter. Parameters $nx$, $x\_start$ and $x\_end$ are supplied to the program by the user. The $x$ values are set to be in the middle of their cells.
 
@@ -40,11 +40,11 @@ For example, suppose we have four x cells, starting from $0$ and ending with $10
 \end{figure}
 
 
-\subsubsection*{Array of $t$ values}
+\subsubsection*{2. Array of $t$ values}
 
 Next, we allocate a 1D array to store the time values. The time values start with $t\_start$ and end with $t\_end$ values that are supplied by the user. However, unlike the $x$ values, the number of $t$ values is not supplied by the user, since, in general, the size of the time step can change during calculation. Therefore, we do not yet know the final size of the $t$ array.
 
-This creates a ``chicken and egg'' problem: we need to initialize a $t$ array in order to start calculations, but we do not yet know the size of this array, since it will be determined when calculations are completed. This issue is solved by using an ``allocatable'' keyword that creates a dynamical array, as shown on \code{Line 46} in \autoref{code_initialize_t_array}. On \code{Line 54} we allocate an arbitrary number of $t$ values. Then, later in our program, when we calculate the solution and need to store more $t$ values, we make the $t$ array larger.
+This creates a ``chicken and egg'' problem: we need to initialize a $t$ array in order to start calculations, but we do not yet know the size of this array, since it will be determined when calculations are completed. This issue is solved by using an ``allocatable'' keyword that creates a dynamical array, as shown on \code{Line 46} in \autoref{code_initialize_t_array}. On \code{Line 54} we allocate an arbitrary number of $t$ values. Then, later in our program, when we calculate the solution and need to store more $t$ values, we will make the $t$ array larger.
 
 \noindent\begin{minipage}{\linewidth}
 \begin{lstlisting}[caption={Initializing a dynamical array for storing time values (\code{grid.f90}).}, frame=tlrb, numbers=left, firstnumber=46, label={code_initialize_t_array}]
@@ -58,6 +58,9 @@ nt_allocated = 13
 allocate(t_points(nt_allocated))
 \end{lstlisting}
 \end{minipage}
+
+
+\subsubsection*{3. Solution array}
 
 
 % In want to solve the following advection equation

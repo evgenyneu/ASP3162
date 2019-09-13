@@ -77,8 +77,8 @@ subroutine set_grid(options, solution, x_points, t_points, nt_allocated)
     call linspace(xmin + dx / 2, xmax - dx / 2, x_points)
 
     ! Allocate memory for the solution array. The x dimension contains
-    ! two more points: there are left and right ghost cells that help reduce
-    ! the number of calculations needed for periodic boundary conditions:
+    ! two more points: these are left and right ghost cells that help
+    ! reduce code duplication when calculating a solution
     allocate(solution(nx + 2, nt_allocated))
 
     ! Initialize the arrays with zeros
