@@ -20,6 +20,20 @@ command. This is accomplished by selecting files that have names ending with ``\
 
 We create an \code{Output} module. It contains \code{write\_output} function that writes the solution array, as well as $x$ and $t$ grid values to a binary data file. The format of the data file is documented in the README.md. We have chosen a binary file instead of a text file because binary file takes less storage space, and it is faster to read and write.
 
+
+\subsection{Creating \code{Grid} module}
+
+We create a \code{Grid}  module that initializes the arrays for the solution, the x and t values.
+
+The range for the x variable is devided into cells of equal size located between $x\_start$ and $x\_end$ numbers. The total number of cells is set by $nx$ parameter. 
+
+\begin{figure}[!ht]
+    \centering
+    \includegraphics[width=0.8\textwidth]{figures/x_grid.pdf}
+    \caption{Example of an array for x values parameters $nx=4$ (total number of x values), $x\_start=0$ and $x\_end=10$.}
+    \label{fig_x_grid}
+\end{figure}
+
 % In want to solve the following advection equation
 % \begin{equation}
 %   v_t + v v_x = 0,

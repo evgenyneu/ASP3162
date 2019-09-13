@@ -12,8 +12,7 @@ public :: set_grid
 contains
 
 !
-! Initialize the arrays for the solution,
-! the x and t values
+! Initialize the arrays for the solution, the x and t values.
 !
 ! Inputs:
 ! -------
