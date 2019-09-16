@@ -1,5 +1,5 @@
-! Set initil condition
-module Init
+! Set initial conditions
+module InitialConditions
 use Types, only: dp
 use Settings, only: program_settings
 implicit none
@@ -35,4 +35,4 @@ subroutine set_initial(x_points, solution)
     end where
 end subroutine
 
-end module Init
+end module InitialConditions

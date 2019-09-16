@@ -8,7 +8,7 @@ use Settings, only: program_settings, read_from_command_line
 use FloatUtils, only: linspace
 use Output, only: write_output
 use Grid, only: set_grid
-use Init, only: set_initial
+use InitialConditions, only: set_initial
 use Step, only: step_ftcs, step_lax, step_upwind, step_lax_wendroff
 implicit none
 private

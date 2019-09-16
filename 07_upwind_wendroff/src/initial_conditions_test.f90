@@ -1,7 +1,7 @@
-module InitTest
+module InitialConditionsTest
 use Types, only: dp
 use AssertsTest, only: assert_true, assert_approx, assert_equal
-use Init, only: set_initial
+use InitialConditions, only: set_initial
 implicit none
 private
 public init_test_all
@@ -63,4 +63,4 @@ subroutine init_test_all(failures)
     call set_initial_test(failures)
 end
 
-end module InitTest
+end module InitialConditionsTest

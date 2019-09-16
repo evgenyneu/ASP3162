@@ -7,7 +7,7 @@ program MainTest
     use AdvectionEquationTest, only: advection_equation_test_all
     use OutputTest, only: output_test_all
     use GridTest, only: grid_test_all
-    use InitTest, only: init_test_all
+    use InitialConditionsTest, only: init_test_all
     use StepTest, only: step_test_all
     implicit none
 
