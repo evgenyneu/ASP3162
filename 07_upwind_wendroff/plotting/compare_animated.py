@@ -139,9 +139,14 @@ def prepare_for_animation(methods, initial_conditions, t_end, ylim):
         bbox=dict(facecolor='white', alpha=0.8, edgecolor='0.7'))
 
     plt.tight_layout()
-    line, = ax.plot([], [])
-    line2, = ax.plot([], [])
-    return (fig, line, line2, text, x_values, y_values, z_values)
+
+    lines = []
+
+    for method in methods:
+        line, = ax.plot([], [])
+        lines.append(line)
+
+    return (fig, lines, text, x_values, y_values, z_values)
 
 
 def compare_animated(methods, initial_conditions, t_end, ylim):
@@ -164,7 +169,7 @@ def compare_animated(methods, initial_conditions, t_end, ylim):
         Minimum and maximum values of the y-axis.
     """
 
-    fig, line, line2, text, x, y, z = \
+    fig, lines, text, x, y, z = \
         prepare_for_animation(methods=methods,
                               initial_conditions=initial_conditions,
                               t_end=t_end, ylim=ylim)
@@ -173,7 +178,7 @@ def compare_animated(methods, initial_conditions, t_end, ylim):
 
     animation.FuncAnimation(fig, animate,
                             frames=timesteps, interval=100, blit=True,
-                            fargs=(line, line2, text, x, y, z))
+                            fargs=(lines[0], lines[1], text, x, y, z))
 
     plt.show()
 
