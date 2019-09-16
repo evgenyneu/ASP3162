@@ -87,12 +87,14 @@ end subroutine
 
 
 !
-! Solve the advection equation using FTCS method.
+! Calculate solution for step of the FTCS method
 !
 ! Inputs:
 ! -------
 !
-! tmax : the largest time value
+! nx : total number of x points.
+!
+! nt : the number of t points for which solution has been calculated.
 !
 ! dx : size of space step
 !
@@ -104,65 +106,68 @@ end subroutine
 ! Outputs:
 ! -------
 !
-! nt : the number of t points for which solution has been calculated.
-!
-! nt_allocated : the number of t points allocated in the arrays.
-!
 ! solution : 2D array containing the solution for the advection equation
 !        first coordinate is x, second is time.
 !
-! t_points : A 1D array containing the values of the time coordinate
-!
-subroutine solve_ftcs(tmax, dx, dt, v, &
-                      nt, nt_allocated, solution, t_points)
-
-    integer, intent(inout) :: nt_allocated
-    integer, intent(out) :: nt
-    real(dp), intent(in) :: tmax, dx, dt, v
-    real(dp), allocatable, intent(inout) :: solution(:,:)
-    real(dp), allocatable, intent(inout) :: t_points(:)
-    integer :: nx
+subroutine step_ftcs(nx, nt, dx, dt, v, solution)
+    integer, intent(in) :: nt, nx
+    real(dp), intent(in) :: dx, dt, v
+    real(dp), intent(inout) :: solution(:,:)
     real(dp) :: a
 
-    nx = size(solution, 1) ! number of x points plus two ghost points
-    nt = 1
-
-    ! Pre-calculate the multiplier
     a = 0.5_dp * v * dt / dx
 
-    ! Calculate numerical solution at each time value
-    do while (t_points(nt) < tmax)
-        ! Update the ghost cells.
-        ! The leftmost cell gets the values of nx-1 x cell
-        ! and the rightmost cell gets the value of the second x cell.
-        solution(1, nt) = solution(nx - 1, nt)
-        solution(nx, nt) = solution(2, nt)
-
-        ! Increment the time value
-        nt = nt + 1
-        t_points(nt) = t_points(nt - 1) + dt
-
-        ! Resize the time dimension of the arrays if needed
-        if (nt > nt_allocated / 2) then
-            nt_allocated = 2 * nt_allocated
-
-            call resize_arrays(new_size=nt_allocated, &
-                               keep_elements=size(t_points), &
-                               solution=solution, t_points=t_points)
-        end if
-
-        ! Calculate solution for all x except for two ghost cells at the edges
-        solution(2 : nx - 1, nt) = solution(2 : nx - 1, nt - 1) &
-                - a * (solution(3 : nx, nt - 1) - solution(1 : nx - 2, nt - 1))
-    end do
+    solution(2 : nx - 1, nt) = solution(2 : nx - 1, nt - 1) &
+            - a * (solution(3 : nx, nt - 1) - solution(1 : nx - 2, nt - 1))
 end subroutine
 
 
 !
-! Solve the advection equation using Lax method.
+! Calculate solution for step of the Lax method
 !
 ! Inputs:
 ! -------
+!
+! nx : total number of x points.
+!
+! nt : the number of t points for which solution has been calculated.
+!
+! dx : size of space step
+!
+! dt : size of time step
+!
+! v : velocity parameter in advection equation
+!
+!
+! Outputs:
+! -------
+!
+! solution : 2D array containing the solution for the advection equation
+!        first coordinate is x, second is time.
+!
+subroutine step_lax(nx, nt, dx, dt, v, solution)
+    integer, intent(in) :: nt, nx
+    real(dp), intent(in) :: dx, dt, v
+    real(dp), intent(inout) :: solution(:,:)
+    real(dp) :: a
+
+    ! Pre-calculate the multiplier
+    a = 0.5_dp * v * dt / dx
+
+    solution(2 : nx - 1, nt) = &
+        0.5_dp * (solution(3 : nx, nt - 1) + solution(1 : nx - 2, nt - 1)) &
+        - a * (solution(3 : nx, nt - 1) - solution(1 : nx - 2, nt - 1))
+end subroutine
+
+
+!
+! Iterate over the time values and solve the equation
+! for each of them
+!
+! Inputs:
+! -------
+!
+! options : program options
 !
 ! tmax : the largest time value
 !
@@ -186,22 +191,19 @@ end subroutine
 ! t_points : A 1D array containing the values of the time coordinate
 !  first coordinate is x, second is time.
 !
-subroutine solve_lax(tmax, dx, dt, v, &
-                     nt, nt_allocated, solution, t_points)
+subroutine iterate(options, tmax, dx, dt, v, &
+                 nt, nt_allocated, solution, t_points)
 
+    type(program_settings), intent(in) :: options
     integer, intent(inout) :: nt_allocated
     integer, intent(out) :: nt
     real(dp), intent(in) :: tmax, dx, dt, v
     real(dp), allocatable, intent(inout) :: solution(:,:)
     real(dp), allocatable, intent(inout) :: t_points(:)
     integer :: nx
-    real(dp) :: a
 
     nx = size(solution, 1) ! number of x points plus two ghost points
     nt = 1
-
-    ! Pre-calculate the multiplier
-    a = 0.5_dp * v * dt / dx
 
     ! Calculate numerical solution
     do while (t_points(nt) < tmax)
@@ -224,10 +226,15 @@ subroutine solve_lax(tmax, dx, dt, v, &
                                solution=solution, t_points=t_points)
         end if
 
-        ! Calculate t values for all x except the edges
-        solution(2 : nx - 1, nt) = &
-            0.5_dp * (solution(3 : nx, nt - 1) + solution(1 : nx - 2, nt - 1)) &
-            - a * (solution(3 : nx, nt - 1) - solution(1 : nx - 2, nt - 1))
+        select case (options%method)
+        case ("ftcs")
+           call step_ftcs(nx=nx, nt=nt, dx=dx, dt=dt, v=v, solution=solution)
+        case ("lax")
+           call step_lax(nx=nx, nt=nt, dx=dx, dt=dt, v=v, solution=solution)
+        case default
+           print "(a, a)", "ERROR: unknown method ", trim(options%method)
+           call exit(41)
+        end select
     end do
 end subroutine
 
@@ -281,19 +288,9 @@ subroutine solve_equation(options, solution, x_points, t_points)
     dx = x_points(2) - x_points(1)
     dt = 0.5_dp * dx / v
 
-    select case (options%method)
-        case ("ftcs")
-           call solve_ftcs(tmax=tmax, nt=nt, &
-                nt_allocated=nt_allocated, &
-                dx=dx, dt=dt, v=v, solution=solution, t_points=t_points)
-        case ("lax")
-           call solve_lax(tmax=tmax, nt=nt, &
-                nt_allocated=nt_allocated, &
-                dx=dx, dt=dt, v=v, solution=solution, t_points=t_points)
-        case default
-           print "(a, a)", "ERROR: unknown method ", trim(options%method)
-           call exit(41)
-    end select
+    call iterate(options=options, tmax=tmax, dx=dx, dt=dt, v=v, &
+                 nt=nt, nt_allocated=nt_allocated, solution=solution, &
+                 t_points=t_points)
 
     ! Remove unused elements from t dimension of arrays
     call resize_arrays(new_size=nt, keep_elements=nt, &
