@@ -62,7 +62,7 @@ character(len=HELP_MESSAGE_LENGTH), parameter :: HELP_MESSAGE = NEW_LINE('h')//"
     &    OUTPUT : path to the output data file"//NEW_LINE('h')//"&
     &"//NEW_LINE('h')//"&
     &    --method=NAME : numerical method to use"//NEW_LINE('h')//"&
-    &                  (ftcs, lax, upwind). "//NEW_LINE('h')//"&
+    &                  (ftcs, lax, upwind, lax-wendroff). "//NEW_LINE('h')//"&
     &                  Default: lax."//NEW_LINE('h')//"&
     &"//NEW_LINE('h')//"&
     &    --x_start=NUMBER : the smallest x value,"//NEW_LINE('h')//"&
@@ -97,8 +97,8 @@ real(dp), parameter :: DEFAULT_T_END = 1._dp
 real(dp), parameter :: DEFAULT_VELOCITY = 1.0_dp
 
 character(len=100), parameter :: DEFAULT_METHOD = "lax"
-character(len=100), parameter :: ALLOWED_METHODS(3) = &
-     [character(len=100) :: 'ftcs', 'lax', 'upwind']
+character(len=100), parameter :: ALLOWED_METHODS(4) = &
+     [character(len=100) :: 'ftcs', 'lax', 'upwind', 'lax-wendroff']
 
 contains
 

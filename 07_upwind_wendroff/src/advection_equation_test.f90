@@ -354,6 +354,106 @@ subroutine solve_eqn_upwind_test(failures)
 end
 
 
+subroutine solve_eqn_lax_wendroff_test(failures)
+    integer, intent(inout) :: failures
+    type(program_settings) :: options
+    real(dp), allocatable :: solution(:,:)
+    real(dp), allocatable :: x_points(:), t_points(:)
+
+    options%method = 'lax-wendroff'
+    options%x_start = 0
+    options%x_end = 1
+    options%nx = 100
+    options%t_start = 0
+    options%t_end = 1
+    options%velocity = 1.0_dp
+
+    call solve_equation(options, solution, x_points, t_points)
+
+    ! x_points
+    ! ----------
+
+    call assert_equal(size(x_points), 100, __FILE__, __LINE__, failures)
+
+    call assert_approx(x_points(1), 0.005_dp, 1e-5_dp, __FILE__, &
+        __LINE__, failures)
+
+    call assert_approx(x_points(2), 0.015_dp, 1e-5_dp, __FILE__, &
+        __LINE__, failures)
+
+    call assert_approx(x_points(100), 0.995_dp, 1e-5_dp, __FILE__, &
+        __LINE__, failures)
+
+    ! t_points
+    ! ----------
+
+    call assert_equal(size(t_points), 201, __FILE__, __LINE__, failures)
+
+    call assert_approx(t_points(1), 0.0_dp, 1e-5_dp, __FILE__, &
+        __LINE__, failures)
+
+    call assert_approx(t_points(2), 0.005_dp, 1e-5_dp, __FILE__, &
+        __LINE__, failures)
+
+    call assert_approx(t_points(200), 0.995_dp, 1e-5_dp, __FILE__, &
+        __LINE__, failures)
+
+    call assert_approx(t_points(201), 1._dp, 1e-5_dp, __FILE__, &
+        __LINE__, failures)
+
+    ! Solution size
+    ! --------
+
+    call assert_equal(size(solution, 1), 100, __FILE__, __LINE__, failures)
+    call assert_equal(size(solution, 2), 201, __FILE__, __LINE__, failures)
+
+    ! Initial condition
+    ! ----------
+
+    call assert_approx(solution(1, 1), 0.0_dp, 1e-5_dp, __FILE__, &
+        __LINE__, failures)
+
+    call assert_approx(solution(2, 1), 0.0_dp, 1e-5_dp, __FILE__, &
+        __LINE__, failures)
+
+    call assert_approx(solution(25, 1), 0.0_dp, 1e-5_dp, __FILE__, &
+        __LINE__, failures)
+
+    call assert_approx(solution(26, 1), 1.0_dp, 1e-5_dp, __FILE__, &
+        __LINE__, failures)
+
+    call assert_approx(solution(27, 1), 1.0_dp, 1e-5_dp, __FILE__, &
+        __LINE__, failures)
+
+    call assert_approx(solution(75, 1), 1.0_dp, 1e-5_dp, __FILE__, &
+        __LINE__, failures)
+
+    call assert_approx(solution(76, 1), 0.0_dp, 1e-5_dp, __FILE__, &
+        __LINE__, failures)
+
+    call assert_approx(solution(100, 1), 0.0_dp, 1e-5_dp, __FILE__, &
+        __LINE__, failures)
+
+
+    ! Ensure there are no NaN values
+    call assert_true(all(.not. ieee_is_nan(solution)), &
+        __FILE__, __LINE__, failures)
+
+
+    ! Solution
+    ! ----------
+
+    call assert_approx(solution(1, 100), 0.99700430617_dp, 1e-10_dp, &
+        __FILE__, __LINE__, failures)
+
+    call assert_approx(solution(50, 100), 0.184237044915e-2_dp, 1e-10_dp, &
+        __FILE__, __LINE__, failures)
+
+    call assert_approx(solution(100, 100), 0.99815762955_dp, 1e-10_dp, &
+        __FILE__, __LINE__, failures)
+end
+
+
 subroutine solve_and_create_output_test(failures)
     integer, intent(inout) :: failures
     type(program_settings) :: options
@@ -486,6 +586,7 @@ subroutine advection_equation_test_all(failures)
     call solve_eqn_ftcs_test(failures)
     call solve_eqn_lax_test(failures)
     call solve_eqn_upwind_test(failures)
+    call solve_eqn_lax_wendroff_test(failures)
     call solve_and_create_output_test(failures)
     call read_settings_solve_and_create_output_test(failures)
 end

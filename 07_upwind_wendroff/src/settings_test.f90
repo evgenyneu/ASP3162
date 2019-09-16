@@ -72,7 +72,7 @@ subroutine read_from_parsed_command_line_test__named(failures)
     parsed%named_value(5) = "0.222"
 
     parsed%named_name(6) = "method"
-    parsed%named_value(6) = "upwind"
+    parsed%named_value(6) = "lax-wendroff"
 
     parsed%named_name(7) = "velocity"
     parsed%named_value(7) = "1.5"
@@ -92,7 +92,7 @@ subroutine read_from_parsed_command_line_test__named(failures)
 
     call assert_approx(settings%velocity, 1.5_dp, 1e-5_dp, __FILE__, __LINE__, failures)
 
-    call assert_equal(settings%method, 'upwind', __FILE__, __LINE__, failures)
+    call assert_equal(settings%method, 'lax-wendroff', __FILE__, __LINE__, failures)
 end
 
 
