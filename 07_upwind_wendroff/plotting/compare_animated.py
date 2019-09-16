@@ -5,7 +5,7 @@ from solver import solve_equation
 from matplotlib import animation
 
 
-def animate(i, line, text, x_values, t_values, solution):
+def animate(i, line, line2, text, x_values, t_values, solution):
     """
     Updates the curve and text on the plot. Called during animation.
 
@@ -42,12 +42,18 @@ def animate(i, line, text, x_values, t_values, solution):
            Updated plot text
     """
 
-    x = x_values
-    y = solution[i, :]
-    time = t_values[i]
+    time = t_values[0][i]
     text.set_text(f't = {time:.2f} s')
+
+    x = x_values[0]
+    y = solution[0][i, :]
     line.set_data(x, y)
-    return line, text
+
+    x = x_values[1]
+    y = solution[1][i, :]
+    line2.set_data(x, y)
+
+    return line, line2, text
 
 
 def prepare_for_animation(methods, initial_conditions, t_end, ylim):
@@ -92,6 +98,10 @@ def prepare_for_animation(methods, initial_conditions, t_end, ylim):
         2D array containing solution (first index is time, secon is space)
     """
 
+    x_values = []
+    y_values = []
+    z_values = []
+
     for method in methods:
         result = solve_equation(x_start=0, x_end=1,
                                 nx=100, t_start=0, t_end=t_end, method=method,
@@ -101,18 +111,21 @@ def prepare_for_animation(methods, initial_conditions, t_end, ylim):
             return
         else:
             x, y, z, dx, dt, dt_dx = result
+            x_values.append(x)
+            y_values.append(y)
+            z_values.append(z)
 
     fig = plt.figure()
     ax = plt.axes(xlim=(0, 1), ylim=ylim)
 
     title = (
         "Solution of advection equation "
-        f"made with {method} method\n"
         f"for dx={dx:.3f} m, dt={dt:.3f} s, "
         "$v \\Delta t / \\Delta x$"
         f"={dt_dx:.2f}"
     )
 
+    plt.legend()
     plt.title(title)
     plt.xlabel("Position x [m]")
     plt.ylabel("Density $\\rho$ [$kg \\ m^{-3}$]")
@@ -128,7 +141,7 @@ def prepare_for_animation(methods, initial_conditions, t_end, ylim):
     plt.tight_layout()
     line, = ax.plot([], [])
     line2, = ax.plot([], [])
-    return (fig, line, text, x, y, z)
+    return (fig, line, line2, text, x_values, y_values, z_values)
 
 
 def compare_animated(methods, initial_conditions, t_end, ylim):
@@ -151,16 +164,16 @@ def compare_animated(methods, initial_conditions, t_end, ylim):
         Minimum and maximum values of the y-axis.
     """
 
-    fig, line, text, x, y, z = \
+    fig, line, line2, text, x, y, z = \
         prepare_for_animation(methods=methods,
                               initial_conditions=initial_conditions,
                               t_end=t_end, ylim=ylim)
 
-    timesteps = z.shape[0]
+    timesteps = z[0].shape[0]
 
     animation.FuncAnimation(fig, animate,
                             frames=timesteps, interval=100, blit=True,
-                            fargs=(line, text, x, y, z))
+                            fargs=(line, line2, text, x, y, z))
 
     plt.show()
 
@@ -179,5 +192,5 @@ if __name__ == '__main__':
     #               t_end=1, ylim=(-0.5, 1.5))
 
     compare_animated(methods=['upwind', 'lax-wendroff'],
-                     initial_conditions='sine',
-                     t_end=1, ylim=(-1.5, 1.5))
+                     initial_conditions='square',
+                     t_end=1, ylim=(-0.5, 1.5))
