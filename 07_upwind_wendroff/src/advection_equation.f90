@@ -9,6 +9,7 @@ use FloatUtils, only: linspace
 use Output, only: write_output
 use Grid, only: set_grid
 use Init, only: set_initial
+use Step, only: step_ftcs, step_lax
 implicit none
 private
 public :: solve_equation, solve_and_create_output, &
@@ -83,80 +84,6 @@ subroutine remove_ghost_cells(solution)
     solution_buffer(:, :) = solution(2 : size(solution, 1) - 1,:)
     deallocate(solution)
     call move_alloc(solution_buffer, solution)
-end subroutine
-
-
-!
-! Calculate solution for step of the FTCS method
-!
-! Inputs:
-! -------
-!
-! nx : total number of x points.
-!
-! nt : the number of t points for which solution has been calculated.
-!
-! dx : size of space step
-!
-! dt : size of time step
-!
-! v : velocity parameter in advection equation
-!
-!
-! Outputs:
-! -------
-!
-! solution : 2D array containing the solution for the advection equation
-!        first coordinate is x, second is time.
-!
-subroutine step_ftcs(nx, nt, dx, dt, v, solution)
-    integer, intent(in) :: nt, nx
-    real(dp), intent(in) :: dx, dt, v
-    real(dp), intent(inout) :: solution(:,:)
-    real(dp) :: a
-
-    a = 0.5_dp * v * dt / dx
-
-    solution(2 : nx - 1, nt) = solution(2 : nx - 1, nt - 1) &
-            - a * (solution(3 : nx, nt - 1) - solution(1 : nx - 2, nt - 1))
-end subroutine
-
-
-!
-! Calculate solution for step of the Lax method
-!
-! Inputs:
-! -------
-!
-! nx : total number of x points.
-!
-! nt : the number of t points for which solution has been calculated.
-!
-! dx : size of space step
-!
-! dt : size of time step
-!
-! v : velocity parameter in advection equation
-!
-!
-! Outputs:
-! -------
-!
-! solution : 2D array containing the solution for the advection equation
-!        first coordinate is x, second is time.
-!
-subroutine step_lax(nx, nt, dx, dt, v, solution)
-    integer, intent(in) :: nt, nx
-    real(dp), intent(in) :: dx, dt, v
-    real(dp), intent(inout) :: solution(:,:)
-    real(dp) :: a
-
-    ! Pre-calculate the multiplier
-    a = 0.5_dp * v * dt / dx
-
-    solution(2 : nx - 1, nt) = &
-        0.5_dp * (solution(3 : nx, nt - 1) + solution(1 : nx - 2, nt - 1)) &
-        - a * (solution(3 : nx, nt - 1) - solution(1 : nx - 2, nt - 1))
 end subroutine
 
 

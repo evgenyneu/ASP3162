@@ -61,6 +61,8 @@ SOURCE_FILES = 	types.f90 \
 							grid_test.f90 \
 							init.f90 \
 							init_test.f90 \
+							step.f90 \
+							step_test.f90 \
 							advection_equation.f90 \
 							advection_equation_test.f90 \
 							main.f90 \

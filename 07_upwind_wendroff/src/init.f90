@@ -1,6 +1,4 @@
-!
-! Initialize the arrays for x, t values and the solution
-!
+! Set initil condition
 module Init
 use Types, only: dp
 use Settings, only: program_settings
