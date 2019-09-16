@@ -9,7 +9,7 @@ use FloatUtils, only: linspace
 use Output, only: write_output
 use Grid, only: set_grid
 use Init, only: set_initial
-use Step, only: step_ftcs, step_lax
+use Step, only: step_ftcs, step_lax, step_upwind
 implicit none
 private
 public :: solve_equation, solve_and_create_output, &
@@ -158,6 +158,8 @@ subroutine iterate(options, tmax, dx, dt, v, &
            call step_ftcs(nx=nx, nt=nt, dx=dx, dt=dt, v=v, solution=solution)
         case ("lax")
            call step_lax(nx=nx, nt=nt, dx=dx, dt=dt, v=v, solution=solution)
+        case ("upwind")
+           call step_upwind(nx=nx, nt=nt, dx=dx, dt=dt, v=v, solution=solution)
         case default
            print "(a, a)", "ERROR: unknown method ", trim(options%method)
            call exit(41)

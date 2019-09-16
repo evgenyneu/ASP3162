@@ -42,7 +42,7 @@ type, public :: program_settings
     ! The velocity parameter of the advection equation
     real(dp) :: velocity
 
-    ! Neumerical method used: ('ftcs', 'lax')
+    ! Neumerical method used: ('ftcs', 'lax', 'upwind')
     character(len=1024) :: method
 end type program_settings
 
@@ -62,7 +62,7 @@ character(len=HELP_MESSAGE_LENGTH), parameter :: HELP_MESSAGE = NEW_LINE('h')//"
     &    OUTPUT : path to the output data file"//NEW_LINE('h')//"&
     &"//NEW_LINE('h')//"&
     &    --method=NAME : numerical method to use"//NEW_LINE('h')//"&
-    &                  (ftcs, lax). "//NEW_LINE('h')//"&
+    &                  (ftcs, lax, upwind). "//NEW_LINE('h')//"&
     &                  Default: lax."//NEW_LINE('h')//"&
     &"//NEW_LINE('h')//"&
     &    --x_start=NUMBER : the smallest x value,"//NEW_LINE('h')//"&
