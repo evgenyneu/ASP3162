@@ -214,7 +214,9 @@ subroutine solve_equation(options, solution, x_points, t_points)
     ! -------
 
     t_points(1) = tmin
-    call set_initial(x_points=x_points, solution=solution)
+
+    call set_initial(type=options%initial_conditions, &
+                     x_points=x_points, solution=solution)
 
     ! Calculate the steps
     dx = x_points(2) - x_points(1)

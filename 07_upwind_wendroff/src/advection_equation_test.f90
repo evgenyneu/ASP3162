@@ -62,6 +62,7 @@ subroutine solve_eqn_ftcs_test(failures)
     real(dp), allocatable :: x_points(:), t_points(:)
 
     options%method = 'ftcs'
+    options%initial_conditions = 'square'
     options%x_start = 0
     options%x_end = 1
     options%nx = 100
@@ -161,6 +162,7 @@ subroutine solve_eqn_lax_test(failures)
     real(dp), allocatable :: x_points(:), t_points(:)
 
     options%method = 'lax'
+    options%initial_conditions = 'square'
     options%x_start = 0
     options%x_end = 1
     options%nx = 100
@@ -261,6 +263,7 @@ subroutine solve_eqn_upwind_test(failures)
     real(dp), allocatable :: x_points(:), t_points(:)
 
     options%method = 'upwind'
+    options%initial_conditions = 'square'
     options%x_start = 0
     options%x_end = 1
     options%nx = 100
@@ -361,6 +364,7 @@ subroutine solve_eqn_lax_wendroff_test(failures)
     real(dp), allocatable :: x_points(:), t_points(:)
 
     options%method = 'lax-wendroff'
+    options%initial_conditions = 'square'
     options%x_start = 0
     options%x_end = 1
     options%nx = 100
@@ -464,6 +468,7 @@ subroutine solve_and_create_output_test(failures)
     options%output_path = "test_output.dat"
 
     options%method = 'ftcs'
+    options%initial_conditions = 'square'
     options%x_start = 0
     options%x_end = 1
     options%nx = 100
