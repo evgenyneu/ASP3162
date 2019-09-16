@@ -156,5 +156,6 @@ def plot_animated(method, t_end, ylim):
 
 
 if __name__ == '__main__':
-    plot_animated(method='ftcs', t_end=1, ylim=(-0.5, 1.5))
-    plot_animated(method='lax', t_end=1, ylim=(-0.5, 1.5))
+    # plot_animated(method='ftcs', t_end=1, ylim=(-0.5, 1.5))
+    # plot_animated(method='lax', t_end=1, ylim=(-0.5, 1.5))
+    plot_animated(method='upwind', t_end=1, ylim=(-0.5, 1.5))

@@ -42,7 +42,7 @@ type, public :: program_settings
     ! The velocity parameter of the advection equation
     real(dp) :: velocity
 
-    ! Neumerical method used: ('ftcs', 'lax', 'upwind')
+    ! Numerical method used: ('ftcs', 'lax', 'upwind')
     character(len=1024) :: method
 end type program_settings
 
@@ -97,8 +97,8 @@ real(dp), parameter :: DEFAULT_T_END = 1._dp
 real(dp), parameter :: DEFAULT_VELOCITY = 1.0_dp
 
 character(len=100), parameter :: DEFAULT_METHOD = "lax"
-character(len=100), parameter :: ALLOWED_METHODS(2) = &
-     [character(len=100) :: 'ftcs', 'lax']
+character(len=100), parameter :: ALLOWED_METHODS(3) = &
+     [character(len=100) :: 'ftcs', 'lax', 'upwind']
 
 contains
 

@@ -72,13 +72,14 @@ subroutine read_from_parsed_command_line_test__named(failures)
     parsed%named_value(5) = "0.222"
 
     parsed%named_name(6) = "method"
-    parsed%named_value(6) = "ftcs"
+    parsed%named_value(6) = "upwind"
 
     parsed%named_name(7) = "velocity"
     parsed%named_value(7) = "1.5"
 
 
-    call read_from_parsed_command_line(parsed=parsed, settings=settings, error_message=error_message)
+    call read_from_parsed_command_line(parsed=parsed, settings=settings, &
+                                       error_message=error_message)
 
     call assert_true(string_is_empty(error_message), __FILE__, __LINE__, failures)
 
@@ -91,7 +92,7 @@ subroutine read_from_parsed_command_line_test__named(failures)
 
     call assert_approx(settings%velocity, 1.5_dp, 1e-5_dp, __FILE__, __LINE__, failures)
 
-    call assert_equal(settings%method, 'ftcs', __FILE__, __LINE__, failures)
+    call assert_equal(settings%method, 'upwind', __FILE__, __LINE__, failures)
 end
 
 
