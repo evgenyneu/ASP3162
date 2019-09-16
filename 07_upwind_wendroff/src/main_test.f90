@@ -12,6 +12,7 @@ program MainTest
     implicit none
 
     integer :: failures = 0
+    character(len=1024) :: test_word = "TESTS"
 
     call command_line_args_test_all(failures)
     call string_test_all(failures)
@@ -28,7 +29,13 @@ program MainTest
     if (failures == 0) then
         print *, NEW_LINE('h')//'Tests finished successfully'
     else
-        print *, NEW_LINE('h')//'TEST FAILED'
+        if (failures == 1) then
+            test_word = "TEST"
+        end if
+
+        print '(a, i4, x, a, x, a)', NEW_LINE('h'), failures, &
+              trim(test_word), 'FAILED'
+
         call exit(42)
     end if
 end program MainTest

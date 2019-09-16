@@ -44,10 +44,14 @@ type, public :: program_settings
 
     ! Numerical method used: ('ftcs', 'lax', 'upwind')
     character(len=1024) :: method
+
+    ! Numerical method used: ('square', 'sine')
+    character(len=1024) :: initial_conditions
 end type program_settings
 
 ! Help message to be shown
-character(len=HELP_MESSAGE_LENGTH), parameter :: HELP_MESSAGE = NEW_LINE('h')//"&
+character(len=HELP_MESSAGE_LENGTH), parameter :: HELP_MESSAGE = &
+    NEW_LINE('h')//"&
     &This program solves advection equation"//NEW_LINE('h')//"&
     &"//NEW_LINE('h')//"&
     &  u_t + v u_x = 0"//NEW_LINE('h')//"&
@@ -56,14 +60,21 @@ character(len=HELP_MESSAGE_LENGTH), parameter :: HELP_MESSAGE = NEW_LINE('h')//"
     &Usage:&
     &"//NEW_LINE('h')//"&
     &"//NEW_LINE('h')//"&
-    & ./build/main OUTPUT [--method=lax] [--x_start=-1.5] [--x_end=1.5]"//NEW_LINE('h')//"&
-    &    [--nx=100] [--t_start=0] [--t_end=1.4] [--velocity=1]"//NEW_LINE('h')//"&
+    & ./build/main OUTPUT [--method=lax] [--initial_conditions=square]"&
+    //NEW_LINE('h')//"&
+    &       [--x_start=0] [--x_end=1] [--nx=100] [--t_start=0]"&
+    //NEW_LINE('h')//"&
+    &       [--t_end=1] [--velocity=1]"//NEW_LINE('h')//"&
     &"//NEW_LINE('h')//"&
     &    OUTPUT : path to the output data file"//NEW_LINE('h')//"&
     &"//NEW_LINE('h')//"&
     &    --method=NAME : numerical method to use"//NEW_LINE('h')//"&
     &                  (ftcs, lax, upwind, lax-wendroff). "//NEW_LINE('h')//"&
     &                  Default: lax."//NEW_LINE('h')//"&
+    &"//NEW_LINE('h')//"&
+    &    --initial_conditions=NAME : initial conditions (square, sine)."&
+    //NEW_LINE('h')//"&
+    &                  Default: square."//NEW_LINE('h')//"&
     &"//NEW_LINE('h')//"&
     &    --x_start=NUMBER : the smallest x value,"//NEW_LINE('h')//"&
     &                  Default: 0."//NEW_LINE('h')//"&
@@ -97,8 +108,14 @@ real(dp), parameter :: DEFAULT_T_END = 1._dp
 real(dp), parameter :: DEFAULT_VELOCITY = 1.0_dp
 
 character(len=100), parameter :: DEFAULT_METHOD = "lax"
+character(len=100), parameter :: DEFAULT_INITIAL_CONDITIONS = "square"
+
 character(len=100), parameter :: ALLOWED_METHODS(4) = &
      [character(len=100) :: 'ftcs', 'lax', 'upwind', 'lax-wendroff']
+
+
+character(len=100), parameter :: ALLOWED_INITIAL_CONDITIONS(2) = &
+     [character(len=100) :: 'square', 'sine']
 
 contains
 
@@ -184,7 +201,7 @@ subroutine read_from_parsed_command_line(parsed, settings, error_message)
     logical :: success
     character(len=ARGUMENT_MAX_LENGTH), allocatable :: unrecognized(:)
     integer :: unrecognized_count
-    character(len=ARGUMENT_MAX_LENGTH) :: valid_args(10)
+    character(len=ARGUMENT_MAX_LENGTH) :: valid_args(11)
 
     error_message = ""
 
@@ -209,8 +226,9 @@ subroutine read_from_parsed_command_line(parsed, settings, error_message)
     valid_args(6) = "nt"
     valid_args(7) = "velocity"
     valid_args(8) = "method"
-    valid_args(9) = "h"
-    valid_args(10) = "help"
+    valid_args(9) = "initial_conditions"
+    valid_args(10) = "h"
+    valid_args(11) = "help"
 
     call unrecognized_named_args(valid=valid_args, parsed=parsed, &
         unrecognized=unrecognized, count=unrecognized_count)
@@ -332,6 +350,25 @@ subroutine read_from_parsed_command_line(parsed, settings, error_message)
 
     if (.not. any(ALLOWED_METHODS == settings%method)) then
         call make_message("Incorrect method name", error_message)
+        return
+    end if
+
+    ! intial condition
+    ! --------------
+
+    call get_named_value_or_default(name='initial_conditions', parsed=parsed, &
+                                    default=DEFAULT_INITIAL_CONDITIONS, &
+                                    value=settings%initial_conditions, &
+                                    success=success)
+
+    if (.not. success) then
+        call make_message("Failed to read initial_conditions", error_message)
+        return
+    end if
+
+    if (.not. any(ALLOWED_INITIAL_CONDITIONS == settings%initial_conditions)) &
+        then
+        call make_message("Incorrect initial_conditions", error_message)
         return
     end if
 end subroutine
