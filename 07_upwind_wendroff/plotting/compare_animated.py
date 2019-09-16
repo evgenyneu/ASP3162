@@ -3,6 +3,7 @@
 import matplotlib.pyplot as plt
 from solver import solve_equation
 from matplotlib import animation
+from itertools import cycle
 
 
 def animate(i, lines, text, x_values, t_values, solution):
@@ -141,9 +142,13 @@ def prepare_for_animation(methods, initial_conditions, t_end, ylim):
     plt.tight_layout()
 
     lines = []
+    line_styles = ["-", "--", "-.", ":"]
+    line_style_cycler = cycle(line_styles)
 
     for method in methods:
-        line, = ax.plot([], [], label=method)
+        line, = ax.plot([], [], label=method.capitalize(),
+                        linestyle=next(line_style_cycler))
+
         lines.append(line)
 
     plt.legend()
@@ -198,6 +203,6 @@ if __name__ == '__main__':
     # plot_animated(method='lax-wendroff', initial_conditions='square',
     #               t_end=1, ylim=(-0.5, 1.5))
 
-    compare_animated(methods=['upwind', 'lax-wendroff'],
-                     initial_conditions='square',
-                     t_end=1, ylim=(-0.5, 1.5))
+    compare_animated(methods=['lax', 'upwind', 'lax-wendroff'],
+                     initial_conditions='sine',
+                     t_end=1, ylim=(-1.5, 1.5))
