@@ -70,7 +70,7 @@ def read_solution_from_file(path_to_data):
 
 
 def solve_equation(x_start, x_end, nx,
-                   t_start, t_end, method):
+                   t_start, t_end, method, initial_conditions):
     """
     Runs Fortran program that solves equation
 
@@ -99,7 +99,10 @@ def solve_equation(x_start, x_end, nx,
         The number of t points in the grid
 
     method : str
-        Numerical method to be used: ftcs, lax
+        Numerical method to be used: ftcs, lax, upwind, lax-wendroff
+
+    initial_conditions : str
+        Type of initial conditions: square, sine
 
     Returns
     -------
@@ -119,12 +122,13 @@ def solve_equation(x_start, x_end, nx,
     parameters = [
         (
             f'../build/main {path_to_data}'
+            f' --method={method}'
+            f' --initial_conditions={initial_conditions}'
             f' --x_start={x_start}'
             f' --x_end={x_end}'
             f' --nx={nx}'
             f' --t_start={t_start}'
             f' --t_end={t_end}'
-            f' --method={method}'
         )
     ]
 

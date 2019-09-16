@@ -50,7 +50,7 @@ def animate(i, line, text, x_values, t_values, solution):
     return line, text
 
 
-def prepare_for_animation(method, t_end, ylim):
+def prepare_for_animation(method, initial_conditions, t_end, ylim):
     """
     Makes a 2D that is used in animation.
 
@@ -58,7 +58,10 @@ def prepare_for_animation(method, t_end, ylim):
     ----------
 
     method : str
-        Numerical method to be used: ftcs, lax
+        Numerical method to be used: ftcs, lax, upwind, lax-wendroff
+
+    initial_conditions : str
+        Type of initial conditions: square, sine
 
     t_end : float
         The largest time of the solution.
@@ -90,7 +93,8 @@ def prepare_for_animation(method, t_end, ylim):
     """
 
     result = solve_equation(x_start=0, x_end=1,
-                            nx=100, t_start=0, t_end=t_end, method=method)
+                            nx=100, t_start=0, t_end=t_end, method=method,
+                            initial_conditions=initial_conditions)
 
     if result is None:
         return
@@ -120,13 +124,12 @@ def prepare_for_animation(method, t_end, ylim):
         transform=ax.transAxes,
         bbox=dict(facecolor='white', alpha=0.8, edgecolor='0.7'))
 
-
     plt.tight_layout()
     line, = ax.plot([], [])
     return (fig, line, text, x, y, z)
 
 
-def plot_animated(method, t_end, ylim):
+def plot_animated(method, initial_conditions, t_end, ylim):
     """
     Show animated plots of solutions of advection equation.
 
@@ -134,7 +137,10 @@ def plot_animated(method, t_end, ylim):
     ----------
 
     method : str
-        Numerical method to be used: ftcs, lax
+        Numerical method to be used: ftcs, lax, upwind, lax-wendroff
+
+    initial_conditions : str
+        Type of initial conditions: square, sine
 
     t_end : float
         The largest time of the solution.
@@ -144,7 +150,9 @@ def plot_animated(method, t_end, ylim):
     """
 
     fig, line, text, x, y, z = \
-        prepare_for_animation(method=method, t_end=t_end, ylim=ylim)
+        prepare_for_animation(method=method,
+                              initial_conditions=initial_conditions,
+                              t_end=t_end, ylim=ylim)
 
     timesteps = z.shape[0]
 
@@ -156,7 +164,17 @@ def plot_animated(method, t_end, ylim):
 
 
 if __name__ == '__main__':
-    # plot_animated(method='ftcs', t_end=1, ylim=(-0.5, 1.5))
-    # plot_animated(method='lax', t_end=1, ylim=(-0.5, 1.5))
-    # plot_animated(method='upwind', t_end=1, ylim=(-0.5, 1.5))
-    plot_animated(method='lax-wendroff', t_end=1, ylim=(-0.5, 1.5))
+    plot_animated(method='ftcs', initial_conditions='square',
+                  t_end=1, ylim=(-0.5, 1.5))
+
+    plot_animated(method='lax', initial_conditions='square',
+                  t_end=1, ylim=(-0.5, 1.5))
+
+    plot_animated(method='upwind', initial_conditions='square',
+                  t_end=1, ylim=(-0.5, 1.5))
+
+    plot_animated(method='lax-wendroff', initial_conditions='square',
+                  t_end=1, ylim=(-0.5, 1.5))
+
+    # plot_animated(method='upwind', initial_conditions='sine',
+    #               t_end=1, ylim=(-1.5, 1.5))
