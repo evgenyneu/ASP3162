@@ -5,7 +5,7 @@ from solver import solve_equation
 from matplotlib import animation
 
 
-def animate(i, lines, text, x_values, t_values, solution):
+def animate(i, line, line2, text, x_values, t_values, solution):
     """
     Updates the curve and text on the plot. Called during animation.
 
@@ -15,7 +15,7 @@ def animate(i, lines, text, x_values, t_values, solution):
     i : int
         Index of the frame to draw: 0, 1, ...
 
-    lines : list Line2D,
+    line : Line2D,
         Plot curve that will be updated during the animation
 
     text : matplotlib.text.Text
@@ -35,7 +35,7 @@ def animate(i, lines, text, x_values, t_values, solution):
 
     Tuple (line, text)
 
-    lines : list of Line2D,
+    line : Line2D,
            Updated plot curve
 
     text : matplotlib.text.Text
@@ -45,12 +45,15 @@ def animate(i, lines, text, x_values, t_values, solution):
     time = t_values[0][i]
     text.set_text(f't = {time:.2f} s')
 
-    for i_line, line in enumerate(lines):
-        x = x_values[i_line]
-        y = solution[i_line][i, :]
-        line.set_data(x, y)
+    x = x_values[0]
+    y = solution[0][i, :]
+    line.set_data(x, y)
 
-    return lines, text
+    x = x_values[1]
+    y = solution[1][i, :]
+    line2.set_data(x, y)
+
+    return line, line2, text
 
 
 def prepare_for_animation(methods, initial_conditions, t_end, ylim):
@@ -136,14 +139,9 @@ def prepare_for_animation(methods, initial_conditions, t_end, ylim):
         bbox=dict(facecolor='white', alpha=0.8, edgecolor='0.7'))
 
     plt.tight_layout()
-
-    lines = []
-
-    for method in methods:
-        line = ax.plot([], [])
-        lines.append(line)
-
-    return (fig, lines, text, x_values, y_values, z_values)
+    line, = ax.plot([], [])
+    line2, = ax.plot([], [])
+    return (fig, line, line2, text, x_values, y_values, z_values)
 
 
 def compare_animated(methods, initial_conditions, t_end, ylim):
