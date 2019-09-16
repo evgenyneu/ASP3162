@@ -50,7 +50,11 @@ def animate(i, lines, text, x_values, t_values, solution):
         y = solution[i_line][i, :]
         line.set_data(x, y)
 
-    return lines[0], lines[1], text
+    artists = []
+    artists += lines
+    artists.append(text)
+
+    return artists
 
 
 def prepare_for_animation(methods, initial_conditions, t_end, ylim):
@@ -116,13 +120,12 @@ def prepare_for_animation(methods, initial_conditions, t_end, ylim):
     ax = plt.axes(xlim=(0, 1), ylim=ylim)
 
     title = (
-        "Solution of advection equation "
+        "Solution of advection equation\n"
         f"for dx={dx:.3f} m, dt={dt:.3f} s, "
         "$v \\Delta t / \\Delta x$"
         f"={dt_dx:.2f}"
     )
 
-    plt.legend()
     plt.title(title)
     plt.xlabel("Position x [m]")
     plt.ylabel("Density $\\rho$ [$kg \\ m^{-3}$]")
@@ -140,8 +143,10 @@ def prepare_for_animation(methods, initial_conditions, t_end, ylim):
     lines = []
 
     for method in methods:
-        line, = ax.plot([], [])
+        line, = ax.plot([], [], label=method)
         lines.append(line)
+
+    plt.legend()
 
     return (fig, lines, text, x_values, y_values, z_values)
 
