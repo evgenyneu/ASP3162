@@ -170,8 +170,6 @@ subroutine solve_eqn_lax_test(failures)
 
     call solve_equation(options, solution, x_points, t_points)
 
-    call assert_true(.true., __FILE__, __LINE__, failures)
-
     ! x_points
     ! ----------
 
