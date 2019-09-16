@@ -8,6 +8,7 @@ use Settings, only: program_settings, read_from_command_line
 use FloatUtils, only: linspace
 use Output, only: write_output
 use Grid, only: set_grid
+use Init, only: set_initial
 implicit none
 private
 public :: solve_equation, solve_and_create_output, &
@@ -274,12 +275,7 @@ subroutine solve_equation(options, solution, x_points, t_points)
     ! -------
 
     t_points(1) = tmin
-
-    where (x_points > 0.25 .and. x_points <= 0.75)
-        solution(2: size(solution, 1) - 1, 1) = 1
-    elsewhere
-        solution(2: size(solution, 1) - 1, 1) = 0
-    end where
+    call set_initial(x_points=x_points, solution=solution)
 
     ! Calculate the steps
     dx = x_points(2) - x_points(1)
