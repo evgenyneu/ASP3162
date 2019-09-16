@@ -5,7 +5,7 @@ from solver import solve_equation
 from matplotlib import animation
 
 
-def animate(i, line, line2, text, x_values, t_values, solution):
+def animate(i, lines, text, x_values, t_values, solution):
     """
     Updates the curve and text on the plot. Called during animation.
 
@@ -45,15 +45,12 @@ def animate(i, line, line2, text, x_values, t_values, solution):
     time = t_values[0][i]
     text.set_text(f't = {time:.2f} s')
 
-    x = x_values[0]
-    y = solution[0][i, :]
-    line.set_data(x, y)
+    for i_line, line in enumerate(lines):
+        x = x_values[i_line]
+        y = solution[i_line][i, :]
+        line.set_data(x, y)
 
-    x = x_values[1]
-    y = solution[1][i, :]
-    line2.set_data(x, y)
-
-    return line, line2, text
+    return lines[0], lines[1], text
 
 
 def prepare_for_animation(methods, initial_conditions, t_end, ylim):
@@ -178,7 +175,7 @@ def compare_animated(methods, initial_conditions, t_end, ylim):
 
     animation.FuncAnimation(fig, animate,
                             frames=timesteps, interval=100, blit=True,
-                            fargs=(lines[0], lines[1], text, x, y, z))
+                            fargs=(lines, text, x, y, z))
 
     plt.show()
 
