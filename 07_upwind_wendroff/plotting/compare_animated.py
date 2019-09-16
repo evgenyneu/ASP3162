@@ -127,6 +127,7 @@ def prepare_for_animation(methods, initial_conditions, t_end, ylim):
 
     plt.tight_layout()
     line, = ax.plot([], [])
+    line2, = ax.plot([], [])
     return (fig, line, text, x, y, z)
 
 
