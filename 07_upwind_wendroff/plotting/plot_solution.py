@@ -73,7 +73,7 @@ def plot_at_time_index(plot_dir, plot_file_name, method,
     plt.show()
 
 
-def plot_timesteps(plot_dir, method, t_values):
+def plot_timesteps(plot_dir, method, initial_conditions, t_values):
     """
     Makes a 2D plot of the velocity at different time values
     and saves it to a file.
@@ -96,12 +96,16 @@ def plot_timesteps(plot_dir, method, t_values):
     method : str
         Numerical method to be used: ftcs, lax
 
+    initial_conditions : str
+        Type of initial conditions: square, sine
+
     plot_timesteps : int
         number of timesteps to plot
     """
 
     result = solve_equation(x_start=0, x_end=1,
-                            nx=100, t_start=0, t_end=1, method=method)
+                            nx=100, t_start=0, t_end=1, method=method,
+                            initial_conditions=initial_conditions)
 
     if result is None:
         return
@@ -126,7 +130,11 @@ def plot_timesteps(plot_dir, method, t_values):
 
 
 if __name__ == '__main__':
-    times = [0, 0.2, 0.5, 1]
+    # times = [0, 0.2, 0.5, 1]
+    times = [0]
 
-    plot_timesteps(plot_dir="plots", method='ftcs', t_values=times)
-    plot_timesteps(plot_dir="plots", method='lax', t_values=times)
+    # plot_timesteps(plot_dir="plots", initial_conditions="square",
+    #                method='ftcs', t_values=times)
+
+    plot_timesteps(plot_dir="plots", initial_conditions="square",
+                   method='lax', t_values=times)
