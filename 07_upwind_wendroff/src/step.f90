@@ -3,6 +3,7 @@
 !
 module Step
 use Types, only: dp
+use Settings, only: program_settings
 implicit none
 private
 public :: step_exact, step_ftcs, step_lax, step_upwind, step_lax_wendroff
@@ -15,6 +16,8 @@ contains
 !
 ! Inputs:
 ! -------
+!
+! options : program options
 !
 ! t : time value.
 !
@@ -38,12 +41,15 @@ contains
 ! solution : 2D array containing the solution for the advection equation
 !        first coordinate is x, second is time.
 !
-subroutine step_exact(t, x_points, nx, nt, dx, dt, v, solution)
+subroutine step_exact(options, t, x_points, nx, nt, dx, dt, v, solution)
+    type(program_settings), intent(in) :: options
     integer, intent(in) :: nt, nx
     real(dp), intent(in) :: t, dx, dt, v
     real(dp), allocatable, intent(in) :: x_points(:)
     real(dp), intent(inout) :: solution(:,:)
-    real(dp) :: a
+    real(dp) :: a, qv
+
+    ! q = mod(v * t, )
 
     a = 0.5_dp * v * dt / dx
 

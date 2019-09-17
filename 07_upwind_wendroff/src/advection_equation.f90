@@ -158,7 +158,7 @@ subroutine iterate(options, tmax, dx, dt, v, &
 
         select case (options%method)
         case ("exact")
-           call step_exact(t=t_points(nt), x_points=x_points,&
+           call step_exact(options=options, t=t_points(nt), x_points=x_points,&
                            nx=nx, nt=nt, dx=dx, dt=dt, v=v, &
                            solution=solution)
         case ("ftcs")
