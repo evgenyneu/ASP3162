@@ -58,7 +58,8 @@ def animate(i, lines, text, x_values, t_values, solution):
     return artists
 
 
-def prepare_for_animation(methods, initial_conditions, t_end, ylim):
+def prepare_for_animation(methods, initial_conditions, t_end, ylim,
+                          courant_factor):
     """
     Makes a 2D that is used in animation.
 
@@ -106,18 +107,18 @@ def prepare_for_animation(methods, initial_conditions, t_end, ylim):
 
     for method in methods:
         nx = 100
-        courant_factor = 0.5
+        courant_current = courant_factor
 
         if method == "exact" and initial_conditions == "square":
             # Increase x resolution for square exact method
             # to make animation smoother
             nx *= 100
-            courant_factor *= 100
+            courant_current *= 100
 
         result = solve_equation(x_start=0, x_end=1,
                                 nx=nx, t_start=0, t_end=t_end, method=method,
                                 initial_conditions=initial_conditions,
-                                velocity=1, courant_factor=courant_factor)
+                                velocity=1, courant_factor=courant_current)
 
         if result is None:
             return
@@ -166,7 +167,7 @@ def prepare_for_animation(methods, initial_conditions, t_end, ylim):
     return (fig, lines, text, x_values, y_values, z_values)
 
 
-def compare_animated(methods, initial_conditions, t_end, ylim):
+def compare_animated(methods, initial_conditions, t_end, ylim, courant_factor):
     """
     Show animated plots of solutions of advection equation.
 
@@ -189,7 +190,8 @@ def compare_animated(methods, initial_conditions, t_end, ylim):
     fig, lines, text, x, y, z = \
         prepare_for_animation(methods=methods,
                               initial_conditions=initial_conditions,
-                              t_end=t_end, ylim=ylim)
+                              t_end=t_end, ylim=ylim,
+                              courant_factor=courant_factor)
 
     timesteps = z[0].shape[0]
 
@@ -214,5 +216,6 @@ if __name__ == '__main__':
     #               t_end=1, ylim=(-0.5, 1.5))
 
     compare_animated(methods=['exact', 'lax', 'upwind', 'lax-wendroff'],
-                     initial_conditions='square',
-                     t_end=2, ylim=(-0.5, 1.5))
+                     initial_conditions='sine',
+                     t_end=2, ylim=(-1.5, 1.5),
+                     courant_factor=0.5)
