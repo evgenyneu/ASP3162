@@ -164,17 +164,17 @@ def plot_animated(method, initial_conditions, t_end, ylim):
 
 
 if __name__ == '__main__':
-    plot_animated(method='ftcs', initial_conditions='square',
-                  t_end=1, ylim=(-0.5, 1.5))
+    # plot_animated(method='ftcs', initial_conditions='square',
+    #               t_end=1, ylim=(-0.5, 1.5))
 
-    plot_animated(method='lax', initial_conditions='square',
-                  t_end=1, ylim=(-0.5, 1.5))
+    # plot_animated(method='lax', initial_conditions='square',
+    #               t_end=1, ylim=(-0.5, 1.5))
 
-    plot_animated(method='upwind', initial_conditions='square',
-                  t_end=1, ylim=(-0.5, 1.5))
+    # plot_animated(method='upwind', initial_conditions='square',
+    #               t_end=1, ylim=(-0.5, 1.5))
 
-    plot_animated(method='lax-wendroff', initial_conditions='square',
-                  t_end=1, ylim=(-0.5, 1.5))
+    # plot_animated(method='lax-wendroff', initial_conditions='square',
+    #               t_end=1, ylim=(-0.5, 1.5))
 
-    # plot_animated(method='upwind', initial_conditions='sine',
-    #               t_end=1, ylim=(-1.5, 1.5))
+    plot_animated(method='exact', initial_conditions='sine',
+                  t_end=1, ylim=(-1.5, 1.5))
