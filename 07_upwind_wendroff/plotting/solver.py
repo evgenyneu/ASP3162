@@ -70,7 +70,8 @@ def read_solution_from_file(path_to_data):
 
 
 def solve_equation(x_start, x_end, nx,
-                   t_start, t_end, method, initial_conditions):
+                   t_start, t_end, method,
+                   initial_conditions, velocity):
     """
     Runs Fortran program that solves equation
 
@@ -104,6 +105,9 @@ def solve_equation(x_start, x_end, nx,
     initial_conditions : str
         Type of initial conditions: square, sine
 
+    velocity : float
+        Parameter v in the advectino equation
+
     Returns
     -------
         (x, y, z, dx, dt, courant) tuple
@@ -129,6 +133,7 @@ def solve_equation(x_start, x_end, nx,
             f' --nx={nx}'
             f' --t_start={t_start}'
             f' --t_end={t_end}'
+            f' --velocity={velocity}'
         )
     ]
 

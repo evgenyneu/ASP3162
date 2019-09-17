@@ -94,7 +94,8 @@ def prepare_for_animation(method, initial_conditions, t_end, ylim):
 
     result = solve_equation(x_start=0, x_end=1,
                             nx=100, t_start=0, t_end=t_end, method=method,
-                            initial_conditions=initial_conditions)
+                            initial_conditions=initial_conditions,
+                            velocity=1)
 
     if result is None:
         return
