@@ -42,6 +42,9 @@ type, public :: program_settings
     ! The velocity parameter of the advection equation
     real(dp) :: velocity
 
+    ! Courant factor parameter use in the numerical method
+    real(dp) :: courant_factor
+
     ! Numerical method used: ftcs, lax, upwind, exact
     character(len=1024) :: method
 
@@ -64,7 +67,8 @@ character(len=HELP_MESSAGE_LENGTH), parameter :: HELP_MESSAGE = &
     //NEW_LINE('h')//"&
     &       [--x_start=0] [--x_end=1] [--nx=100] [--t_start=0]"&
     //NEW_LINE('h')//"&
-    &       [--t_end=1] [--velocity=1]"//NEW_LINE('h')//"&
+    &       [--t_end=1] [--velocity=1] [--courant_factor=0.5]"&
+    //NEW_LINE('h')//"&
     &"//NEW_LINE('h')//"&
     &    OUTPUT : path to the output data file"//NEW_LINE('h')//"&
     &"//NEW_LINE('h')//"&
@@ -95,6 +99,10 @@ character(len=HELP_MESSAGE_LENGTH), parameter :: HELP_MESSAGE = &
     &    --velocity=NUMBER : value of velocity parameter,"//NEW_LINE('h')//"&
     &                  Default: 1."//NEW_LINE('h')//"&
     &"//NEW_LINE('h')//"&
+    &    --courant_factor=NUMBER : parameter used in numerical methods,"&
+    //NEW_LINE('h')//"&
+    &                  Default: 0.5."//NEW_LINE('h')//"&
+    &"//NEW_LINE('h')//"&
     &    --help  : show this message."//NEW_LINE('h')
 
 ! Default values for the settings
@@ -107,6 +115,7 @@ integer, parameter :: DEFAULT_NX = 100
 real(dp), parameter :: DEFAULT_T_START = 0._dp
 real(dp), parameter :: DEFAULT_T_END = 1._dp
 real(dp), parameter :: DEFAULT_VELOCITY = 1.0_dp
+real(dp), parameter :: DEFAULT_COURANT_FACTOR = 0.5_dp
 
 character(len=100), parameter :: DEFAULT_METHOD = "lax"
 character(len=100), parameter :: DEFAULT_INITIAL_CONDITIONS = "square"
@@ -202,7 +211,7 @@ subroutine read_from_parsed_command_line(parsed, settings, error_message)
     logical :: success
     character(len=ARGUMENT_MAX_LENGTH), allocatable :: unrecognized(:)
     integer :: unrecognized_count
-    character(len=ARGUMENT_MAX_LENGTH) :: valid_args(11)
+    character(len=ARGUMENT_MAX_LENGTH) :: valid_args(12)
 
     error_message = ""
 
@@ -226,10 +235,11 @@ subroutine read_from_parsed_command_line(parsed, settings, error_message)
     valid_args(5) = "t_end"
     valid_args(6) = "nt"
     valid_args(7) = "velocity"
-    valid_args(8) = "method"
-    valid_args(9) = "initial_conditions"
-    valid_args(10) = "h"
-    valid_args(11) = "help"
+    valid_args(8) = "courant_factor"
+    valid_args(9) = "method"
+    valid_args(10) = "initial_conditions"
+    valid_args(11) = "h"
+    valid_args(12) = "help"
 
     call unrecognized_named_args(valid=valid_args, parsed=parsed, &
         unrecognized=unrecognized, count=unrecognized_count)
@@ -334,6 +344,20 @@ subroutine read_from_parsed_command_line(parsed, settings, error_message)
 
     if (.not. success) then
         call make_message("velocity is not a number", error_message)
+        return
+    end if
+
+
+    ! courant_factor
+    ! --------------
+
+    call get_named_value_or_default(name='courant_factor', parsed=parsed, &
+                                    default=DEFAULT_COURANT_FACTOR, &
+                                    value=settings%courant_factor, &
+                                    success=success)
+
+    if (.not. success) then
+        call make_message("courant_factor is not a number", error_message)
         return
     end if
 

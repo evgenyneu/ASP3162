@@ -69,6 +69,7 @@ subroutine solve_eqn_ftcs_test(failures)
     options%t_start = 0
     options%t_end = 1
     options%velocity = 1.0_dp
+    options%courant_factor = 0.5_dp
 
     call solve_equation(options, solution, x_points, t_points)
 
@@ -169,6 +170,7 @@ subroutine solve_eqn_lax_test(failures)
     options%t_start = 0
     options%t_end = 1
     options%velocity = 1.0_dp
+    options%courant_factor = 0.5_dp
 
     call solve_equation(options, solution, x_points, t_points)
 
@@ -270,6 +272,7 @@ subroutine solve_eqn_upwind_test(failures)
     options%t_start = 0
     options%t_end = 1
     options%velocity = 1.0_dp
+    options%courant_factor = 0.5_dp
 
     call solve_equation(options, solution, x_points, t_points)
 
@@ -371,6 +374,7 @@ subroutine solve_eqn_lax_wendroff_test(failures)
     options%t_start = 0
     options%t_end = 1
     options%velocity = 1.0_dp
+    options%courant_factor = 0.5_dp
 
     call solve_equation(options, solution, x_points, t_points)
 
@@ -475,6 +479,7 @@ subroutine solve_and_create_output_test(failures)
     options%t_start = 0
     options%t_end = 1
     options%velocity = 1.0_dp
+    options%courant_factor = 0.5_dp
 
     call solve_and_create_output(options)
 

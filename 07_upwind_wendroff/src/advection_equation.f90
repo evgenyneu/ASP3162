@@ -202,7 +202,7 @@ subroutine solve_equation(options, solution, x_points, t_points)
     type(program_settings), intent(in) :: options
     real(dp), allocatable, intent(out) :: solution(:,:)
     real(dp), allocatable, intent(out) :: x_points(:), t_points(:)
-    real(dp) :: dx, tmin, tmax, dt, v
+    real(dp) :: dx, tmin, tmax, dt, v, courant
     integer :: nt, nt_allocated
 
     ! Assign shortcut variables from settings
@@ -211,6 +211,7 @@ subroutine solve_equation(options, solution, x_points, t_points)
     tmin = options%t_start
     tmax = options%t_end
     v = options%velocity
+    courant = options%courant_factor
 
     ! Initialize the arrays
     call set_grid(options=options, solution=solution, &
@@ -227,7 +228,7 @@ subroutine solve_equation(options, solution, x_points, t_points)
 
     ! Calculate the steps
     dx = x_points(2) - x_points(1)
-    dt = 0.5_dp * dx / v
+    dt = courant * dx / v
 
     call iterate(options=options, tmax=tmax, dx=dx, dt=dt, v=v, &
                  nt=nt, nt_allocated=nt_allocated, solution=solution, &
