@@ -105,10 +105,19 @@ def prepare_for_animation(methods, initial_conditions, t_end, ylim):
     z_values = []
 
     for method in methods:
+        nx = 100
+        courant_factor = 0.5
+
+        if method == "exact" and initial_conditions == "square":
+            # Increase x resolution for square exact method
+            # to make animation smoother
+            nx *= 100
+            courant_factor *= 100
+
         result = solve_equation(x_start=0, x_end=1,
-                                nx=100, t_start=0, t_end=t_end, method=method,
+                                nx=nx, t_start=0, t_end=t_end, method=method,
                                 initial_conditions=initial_conditions,
-                                velocity=1)
+                                velocity=1, courant_factor=courant_factor)
 
         if result is None:
             return
@@ -206,4 +215,4 @@ if __name__ == '__main__':
 
     compare_animated(methods=['exact', 'lax', 'upwind', 'lax-wendroff'],
                      initial_conditions='square',
-                     t_end=1, ylim=(-0.5, 1.5))
+                     t_end=2, ylim=(-0.5, 1.5))

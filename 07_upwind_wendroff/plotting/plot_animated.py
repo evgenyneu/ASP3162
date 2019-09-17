@@ -95,7 +95,7 @@ def prepare_for_animation(method, initial_conditions, t_end, ylim):
     result = solve_equation(x_start=0, x_end=1,
                             nx=100, t_start=0, t_end=t_end, method=method,
                             initial_conditions=initial_conditions,
-                            velocity=1)
+                            velocity=1, courant_factor=0.5)
 
     if result is None:
         return
@@ -177,5 +177,5 @@ if __name__ == '__main__':
     # plot_animated(method='lax-wendroff', initial_conditions='square',
     #               t_end=1, ylim=(-0.5, 1.5))
 
-    plot_animated(method='exact', initial_conditions='square',
+    plot_animated(method='exact', initial_conditions='sine',
                   t_end=1, ylim=(-0.5, 1.5))
