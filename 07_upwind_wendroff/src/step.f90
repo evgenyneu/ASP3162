@@ -4,6 +4,7 @@
 module Step
 use Types, only: dp
 use Settings, only: program_settings
+use InitialConditions, only: calculate_initial
 implicit none
 private
 public :: step_exact, step_ftcs, step_lax, step_upwind, step_lax_wendroff
@@ -46,15 +47,37 @@ subroutine step_exact(options, t, x_points, nx, nt, dx, dt, v, solution)
     integer, intent(in) :: nt, nx
     real(dp), intent(in) :: t, dx, dt, v
     real(dp), allocatable, intent(in) :: x_points(:)
+    real(dp) :: x_points_shifted(size(x_points))
     real(dp), intent(inout) :: solution(:,:)
-    real(dp) :: a, qv
+    real(dp) :: a, q, xmax
+    integer :: i
 
-    ! q = mod(v * t, )
+    xmax = options%x_end
 
-    a = 0.5_dp * v * dt / dx
+    q = mod(v * t, xmax)
 
-    solution(2 : nx - 1, nt) = solution(2 : nx - 1, nt - 1) &
-            - a * (solution(3 : nx, nt - 1) - solution(1 : nx - 2, nt - 1))
+    do i = 1, size(x_points)
+        if (x_points(i) >= q) then
+            x_points_shifted(i) = x_points(i) - q
+        else
+            x_points_shifted(i) = x_points(i) - q + xmax
+        end if
+    end do
+
+    call calculate_initial(type=options%initial_conditions, &
+                           x_points=x_points_shifted, &
+                           solution=solution(:, nt))
+
+    ! where (x_points > 0.25 .and. x_points <= 0.75)
+    !     solution(2: size(solution) - 1) = 1
+    ! elsewhere
+    !     solution(2: size(solution) - 1) = 0
+    ! end where
+
+    ! a = 0.5_dp * v * dt / dx
+
+    ! solution(2 : nx - 1, nt) = solution(2 : nx - 1, nt - 1) &
+    !         - a * (solution(3 : nx, nt - 1) - solution(1 : nx - 2, nt - 1))
 end subroutine
 
 

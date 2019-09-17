@@ -37,7 +37,8 @@ def find_nearest_index(array, value):
 
 def plot_at_time_index(plot_dir, plot_file_name, method,
                        time, it, x_values,
-                       solution, dx, dt, dt_dx):
+                       solution, dx, dt, dt_dx,
+                       ylim):
 
     y = solution[it, :]
     plt.plot(x_values, y)
@@ -63,7 +64,7 @@ def plot_at_time_index(plot_dir, plot_file_name, method,
         transform=ax.transAxes,
         bbox=dict(facecolor='white', alpha=0.8, edgecolor='0.7'))
 
-    plt.ylim(-0.5, 1.5)
+    plt.ylim(ylim)
     plt.tight_layout()
 
     create_dir(plot_dir)
@@ -73,7 +74,7 @@ def plot_at_time_index(plot_dir, plot_file_name, method,
     plt.show()
 
 
-def plot_timesteps(plot_dir, method, initial_conditions, t_values):
+def plot_timesteps(plot_dir, method, initial_conditions, t_values, ylim):
     """
     Makes a 2D plot of the velocity at different time values
     and saves it to a file.
@@ -126,15 +127,16 @@ def plot_timesteps(plot_dir, method, initial_conditions, t_values):
                            solution=z,
                            dx=dx,
                            dt=dt,
-                           dt_dx=dt_dx)
+                           dt_dx=dt_dx,
+                           ylim=ylim)
 
 
 if __name__ == '__main__':
     # times = [0, 0.2, 0.5, 1]
-    times = [0.2]
+    times = [0.4]
 
     # plot_timesteps(plot_dir="plots", initial_conditions="square",
     #                method='ftcs', t_values=times)
 
-    plot_timesteps(plot_dir="plots", initial_conditions="square",
-                   method='exact', t_values=times)
+    plot_timesteps(plot_dir="plots", initial_conditions="sine",
+                   method='exact', t_values=times, ylim=(-1.5, 1.5))
