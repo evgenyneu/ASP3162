@@ -9,7 +9,7 @@ use FloatUtils, only: linspace
 use Output, only: write_output
 use Grid, only: set_grid
 use InitialConditions, only: set_initial
-use Step, only: step_ftcs, step_lax, step_upwind, step_lax_wendroff
+use Step, only: step_exact, step_ftcs, step_lax, step_upwind, step_lax_wendroff
 implicit none
 private
 public :: solve_equation, solve_and_create_output, &
@@ -115,16 +115,19 @@ end subroutine
 ! solution : 2D array containing the solution for the advection equation
 !        first coordinate is x, second is time.
 !
+! x_points : A 1D array containing the values of the x coordinate
+!
 ! t_points : A 1D array containing the values of the time coordinate
 !  first coordinate is x, second is time.
 !
 subroutine iterate(options, tmax, dx, dt, v, &
-                 nt, nt_allocated, solution, t_points)
+                   nt, nt_allocated, solution, x_points, t_points)
 
     type(program_settings), intent(in) :: options
     integer, intent(inout) :: nt_allocated
     integer, intent(out) :: nt
     real(dp), intent(in) :: tmax, dx, dt, v
+    real(dp), allocatable, intent(in) :: x_points(:)
     real(dp), allocatable, intent(inout) :: solution(:,:)
     real(dp), allocatable, intent(inout) :: t_points(:)
     integer :: nx
@@ -154,6 +157,10 @@ subroutine iterate(options, tmax, dx, dt, v, &
         end if
 
         select case (options%method)
+        case ("exact")
+           call step_exact(t=t_points(nt), x_points=x_points,&
+                           nx=nx, nt=nt, dx=dx, dt=dt, v=v, &
+                           solution=solution)
         case ("ftcs")
            call step_ftcs(nx=nx, nt=nt, dx=dx, dt=dt, v=v, solution=solution)
         case ("lax")
@@ -224,7 +231,7 @@ subroutine solve_equation(options, solution, x_points, t_points)
 
     call iterate(options=options, tmax=tmax, dx=dx, dt=dt, v=v, &
                  nt=nt, nt_allocated=nt_allocated, solution=solution, &
-                 t_points=t_points)
+                 x_points=x_points, t_points=t_points)
 
     ! Remove unused elements from t dimension of arrays
     call resize_arrays(new_size=nt, keep_elements=nt, &

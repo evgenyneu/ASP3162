@@ -131,10 +131,10 @@ def plot_timesteps(plot_dir, method, initial_conditions, t_values):
 
 if __name__ == '__main__':
     # times = [0, 0.2, 0.5, 1]
-    times = [0]
+    times = [0.2]
 
     # plot_timesteps(plot_dir="plots", initial_conditions="square",
     #                method='ftcs', t_values=times)
 
     plot_timesteps(plot_dir="plots", initial_conditions="square",
-                   method='lax', t_values=times)
+                   method='exact', t_values=times)

@@ -42,7 +42,7 @@ type, public :: program_settings
     ! The velocity parameter of the advection equation
     real(dp) :: velocity
 
-    ! Numerical method used: ('ftcs', 'lax', 'upwind')
+    ! Numerical method used: ftcs, lax, upwind, exact
     character(len=1024) :: method
 
     ! Numerical method used: ('square', 'sine')
@@ -69,7 +69,8 @@ character(len=HELP_MESSAGE_LENGTH), parameter :: HELP_MESSAGE = &
     &    OUTPUT : path to the output data file"//NEW_LINE('h')//"&
     &"//NEW_LINE('h')//"&
     &    --method=NAME : numerical method to use"//NEW_LINE('h')//"&
-    &                  (ftcs, lax, upwind, lax-wendroff). "//NEW_LINE('h')//"&
+    &                  (exact, ftcs, lax, upwind, lax-wendroff). "&
+    //NEW_LINE('h')//"&
     &                  Default: lax."//NEW_LINE('h')//"&
     &"//NEW_LINE('h')//"&
     &    --initial_conditions=NAME : initial conditions (square, sine)."&
@@ -110,8 +111,8 @@ real(dp), parameter :: DEFAULT_VELOCITY = 1.0_dp
 character(len=100), parameter :: DEFAULT_METHOD = "lax"
 character(len=100), parameter :: DEFAULT_INITIAL_CONDITIONS = "square"
 
-character(len=100), parameter :: ALLOWED_METHODS(4) = &
-     [character(len=100) :: 'ftcs', 'lax', 'upwind', 'lax-wendroff']
+character(len=100), parameter :: ALLOWED_METHODS(5) = &
+     [character(len=100) :: 'exact', 'ftcs', 'lax', 'upwind', 'lax-wendroff']
 
 
 character(len=100), parameter :: ALLOWED_INITIAL_CONDITIONS(2) = &
