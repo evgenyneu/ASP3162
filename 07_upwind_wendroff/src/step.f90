@@ -13,7 +13,8 @@ contains
 
 
 !
-! Calculate the exact solution
+! Calculate the exact solution by moving the initial initial_condition
+! to the right by v * t
 !
 ! Inputs:
 ! -------
@@ -67,17 +68,6 @@ subroutine step_exact(options, t, x_points, nx, nt, dx, dt, v, solution)
     call calculate_initial(type=options%initial_conditions, &
                            x_points=x_points_shifted, &
                            solution=solution(:, nt))
-
-    ! where (x_points > 0.25 .and. x_points <= 0.75)
-    !     solution(2: size(solution) - 1) = 1
-    ! elsewhere
-    !     solution(2: size(solution) - 1) = 0
-    ! end where
-
-    ! a = 0.5_dp * v * dt / dx
-
-    ! solution(2 : nx - 1, nt) = solution(2 : nx - 1, nt - 1) &
-    !         - a * (solution(3 : nx, nt - 1) - solution(1 : nx - 2, nt - 1))
 end subroutine
 
 
