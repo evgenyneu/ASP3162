@@ -70,14 +70,26 @@ def make_movies():
     Create movies of solutions of advection equation
     """
 
-    # create_movie(method='lax', movie_dir='movies', filename='lax.mp4',
-    #              t_end=2, ylim=(-0.5, 1.5), fps=10)
-
     create_movie(methods=['exact', 'lax-wendroff', 'lax', 'upwind'],
                  initial_conditions='sine',
                  courant_factor=0.5,
-                 movie_dir='movies', filename='ftcs.mp4',
-                 t_end=1, ylim=(-0.5, 1.5), fps=10)
+                 movie_dir='movies', filename='01_sine_c_0.5.mp4',
+                 t_end=1, ylim=(-1.5, 1.5), fps=10)
+
+    # compare_animated(methods=['exact', 'lax-wendroff', 'lax', 'upwind'],
+    #                  initial_conditions='square',
+    #                  courant_factor=0.5,
+    #                  t_end=2, ylim=(-0.5, 1.5))
+
+    # compare_animated(methods=['exact', 'lax-wendroff', 'lax', 'upwind'],
+    #                  initial_conditions='sine',
+    #                  courant_factor=1,
+    #                  t_end=2, ylim=(-1.5, 1.5))
+
+    # compare_animated(methods=['exact', 'lax-wendroff', 'lax', 'upwind'],
+    #                  initial_conditions='square',
+    #                  courant_factor=1,
+    #                  t_end=2, ylim=(-0.5, 1.5))
 
 
 if __name__ == '__main__':

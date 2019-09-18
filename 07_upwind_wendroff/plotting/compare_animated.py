@@ -128,7 +128,7 @@ def prepare_for_animation(methods, initial_conditions, t_end, ylim,
             y_values.append(y)
             z_values.append(z)
 
-    fig = plt.figure()
+    fig = plt.figure(figsize=(8, 6))
     ax = plt.axes(xlim=(0, 1), ylim=ylim)
 
     title = (
@@ -205,8 +205,27 @@ def compare_animated(methods, initial_conditions, t_end, ylim, courant_factor):
     plt.show()
 
 
-if __name__ == '__main__':
+def make_plots():
     compare_animated(methods=['exact', 'lax-wendroff', 'lax', 'upwind'],
                      initial_conditions='sine',
-                     t_end=2, ylim=(-1.5, 1.5),
-                     courant_factor=0.5)
+                     courant_factor=0.5,
+                     t_end=2, ylim=(-1.5, 1.5))
+
+    compare_animated(methods=['exact', 'lax-wendroff', 'lax', 'upwind'],
+                     initial_conditions='square',
+                     courant_factor=0.5,
+                     t_end=2, ylim=(-0.5, 1.5))
+
+    compare_animated(methods=['exact', 'lax-wendroff', 'lax', 'upwind'],
+                     initial_conditions='sine',
+                     courant_factor=1,
+                     t_end=2, ylim=(-1.5, 1.5))
+
+    compare_animated(methods=['exact', 'lax-wendroff', 'lax', 'upwind'],
+                     initial_conditions='square',
+                     courant_factor=1,
+                     t_end=2, ylim=(-0.5, 1.5))
+
+
+if __name__ == '__main__':
+    make_plots()
