@@ -23,18 +23,10 @@ contains
 !
 ! t : time value.
 !
-! x_points : A 1D array containing the values of the x coordinate
-!
-! nx : total number of x points in solution array.
-!
 ! nt : the current time index in solutions array for which the solution needs
 !      to be calcualted.
 !
-! dx : size of space step
-!
-! dt : size of time step
-!
-! v : velocity parameter in advection equation
+! x_points : A 1D array containing the values of the x coordinate
 !
 !
 ! Outputs:
@@ -56,7 +48,7 @@ subroutine step_exact(options, t, nt, x_points, solution)
     xmax = options%x_end
     v = options%velocity
 
-    ! Calculate the ditance `shift` solution has moved
+    ! Calculate the distance the solution has moved to the right (for v > 0)
     shift = mod(v * t, xmax - xmin)
 
     ! Shift the x values
