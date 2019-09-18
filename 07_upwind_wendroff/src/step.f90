@@ -53,11 +53,11 @@ subroutine step_exact(options, t, x_points, nx, nt, dx, dt, v, solution)
     real(dp) :: q, xmax
 
     xmax = options%x_end
-    q = mod(v * t, xmax)
+    q = mod(v * t, xmax - options%x_start)
     x_points_shifted = x_points - q
 
-    where (x_points < q)
-        x_points_shifted = x_points_shifted + xmax
+    where (x_points - options%x_start < q)
+        x_points_shifted = x_points_shifted + xmax - options%x_start
     end where
 
     call calculate_initial(type=options%initial_conditions, &
