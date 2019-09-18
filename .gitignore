@@ -5,6 +5,7 @@ plots/
 # Python
 __pycache__
 
+# Moviews
 *.mp4
 
 # Latex
@@ -15,3 +16,6 @@ assignment.pdf
 *.blg
 *.bbl
 *.toc
+
+# Sublime text
+*.sublime-workspace
