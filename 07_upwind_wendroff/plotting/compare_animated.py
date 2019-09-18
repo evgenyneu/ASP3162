@@ -145,7 +145,7 @@ def prepare_for_animation(methods, initial_conditions, t_end, nx, ylim,
 
     plt.title(title)
     plt.xlabel("Position x [m]")
-    plt.ylabel("Density $\\rho$ [$kg \\ m^{-3}$]")
+    plt.ylabel("Advected quantity")
 
     text = plt.text(
         0.05, 0.92,
