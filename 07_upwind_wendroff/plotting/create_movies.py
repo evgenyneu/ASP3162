@@ -77,7 +77,7 @@ def make_movies():
 
     movies_dir = "movies"
     print(
-            (f"Creating movies in '{movies_dir}'' directory.\n"
+            (f"Creating movies in '{movies_dir}' directory.\n"
              "This will take a couple of minutes.")
          )
 

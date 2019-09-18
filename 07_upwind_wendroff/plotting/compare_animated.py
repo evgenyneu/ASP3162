@@ -138,7 +138,10 @@ def prepare_for_animation(methods, initial_conditions, t_end, nx, ylim,
 
     title = (
         "Solution of advection equation\n"
-        f"for dx={dx:.3f} m, dt={dt:.3f} s, "
+        r"for $\Delta x$"
+        f"={dx:.3f} m, "
+        r"$\Delta t$"
+        f"={dt:.3f} s, "
         "$v \\Delta t / \\Delta x$"
         f"={dt_dx:.2f}"
     )

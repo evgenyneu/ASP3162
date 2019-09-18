@@ -6,7 +6,7 @@ This is a Fortran program that solves advection equation
 u_t + v u_x = 0
 ```
 
-numerically using FTCS and Lax methods.
+numerically using FTCS, Lax, Upwind and Lax-Wendroff methods.
 
 
 ## YouTube movies of solutions
@@ -25,6 +25,37 @@ make
 Gfortran compiler is required to build the program (tested with GCC 6.3.0 and 7.4.0). Alternatively, one can uncomment `FC=ifort` and `FFLAGS` in the Makefile and compile using ifort.
 
 
+## Make plots
+
+
+The plotting codes runs the Fortran executable. Run `make` before executing Python code.
+
+
+### Plot solutions
+
+Create plots in `plots` directory.
+
+```
+python plotting/plot_solution.py
+```
+
+
+### Show animated plot of the solutions
+
+```
+python plotting/compare_animated.py 
+```
+
+
+### Create movies
+
+Create mp4 movies for the solutions in the `movies` directory:
+
+```
+python plotting/create_movies.py
+```
+
+
 ## Run
 
 Running the program:
@@ -33,72 +64,7 @@ Running the program:
 ./build/main data.bin
 ```
 
-The program will print the solution into the binary file `data.bin`.
-
-
-### The binary file format
-
-Here is how data is stored in the binary file:
-
-```
-[x]
-[
-    nx: number of x values
-    Size: 4 bytes
-    Type: signed int
-]
-[x]
-
-[x]
-[
-    nt: number of t values
-    Size: 4 bytes
-    Type: Signed int
-]
-[x]
-
-[x]
-[
-    x_values: array of x values
-    Size: nx * 8 bytes
-    Type: Array of double floats. Length nx.
-]
-[x]
-
-[x]
-[
-    t_values: array of t values
-    Size: nt * 8 bytes
-    Type: Array of double floats. Length: tx.
-]
-[x]
-
-[x]
-[
-    solution: a 2D array containing solution.
-
-    Size: nx * nt * 8 bytes
-    Type: 2D array of double floats. Length: nx * nt.
-]
-[x]
-```
-
-
-#### Notes
-
-* Here [x] means 4-byte separator. This is added by Fortran's `write`
-function. This separator is written before and after a data block,
-and its value is the length in bytes of this block.
-
-* `solution` is a 2D array saved as a sequence of double precision
-float numbers in the column-major order. For example, for nx=3, nt=2,
-the data will be saved as:
-
-```
-    [1, 1] [2, 1] [3, 1] [1, 2] [2, 2] [3, 2],
-```
-
-where first index is x and second index is t.
+The program will print the solution into the binary file `data.bin`. See the description of the format below.
 
 
 
@@ -177,35 +143,66 @@ Tests finished successfully
 ```
 
 
-## Plotting
+## The binary file format
 
-To make plots, first cd into plotting directory:
-
-```
-cd plotting
-```
-
-The plotting codes require the Fortran executable to be present.
-
-
-### Plot solutions
+Here is how data is stored in the binary file:
 
 ```
-python plot_solution.py
+[x]
+[
+    nx: number of x values
+    Size: 4 bytes
+    Type: signed int
+]
+[x]
+
+[x]
+[
+    nt: number of t values
+    Size: 4 bytes
+    Type: Signed int
+]
+[x]
+
+[x]
+[
+    x_values: array of x values
+    Size: nx * 8 bytes
+    Type: Array of double floats. Length nx.
+]
+[x]
+
+[x]
+[
+    t_values: array of t values
+    Size: nt * 8 bytes
+    Type: Array of double floats. Length: tx.
+]
+[x]
+
+[x]
+[
+    solution: a 2D array containing solution.
+
+    Size: nx * nt * 8 bytes
+    Type: 2D array of double floats. Length: nx * nt.
+]
+[x]
 ```
 
 
-### Show animated plot of the solutions
+#### Notes
+
+* Here [x] means 4-byte separator. This is added by Fortran's `write`
+function. This separator is written before and after a data block,
+and its value is the length in bytes of this block.
+
+* `solution` is a 2D array saved as a sequence of double precision
+float numbers in the column-major order. For example, for nx=3, nt=2,
+the data will be saved as:
 
 ```
-python plot_animated.py
+    [1, 1] [2, 1] [3, 1] [1, 2] [2, 2] [3, 2],
 ```
 
-
-### Create movies
-
-Create mp4 movies for the solutions in the `movies` directory.
-
-```
-python create_movies.py
-```
+where first index is x and second index is t.
