@@ -143,7 +143,7 @@ def prepare_for_animation(methods, initial_conditions, t_end, nx, ylim,
         r"$\Delta t$"
         f"={dt:.3f} s, "
         "$v \\Delta t / \\Delta x$"
-        f"={dt_dx:.2f}"
+        f"={dt_dx:.2G}"
     )
 
     plt.title(title)

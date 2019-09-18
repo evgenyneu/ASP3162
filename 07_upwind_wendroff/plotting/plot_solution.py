@@ -73,7 +73,7 @@ def plot_at_time(methods, initial_conditions, courant_factor, nx,
         r"$\Delta t$"
         f"={dt:.3f} s, "
         "$v \\Delta t / \\Delta x$"
-        f"={dt_dx:.2f}"
+        f"={dt_dx:.2G}"
     )
 
     plt.xlim([0, 1])
