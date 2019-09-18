@@ -84,7 +84,7 @@ make
 pytest
 ```
 
-Note: *pytest* Python package.
+Note: Requires *pytest* Python package.
 
 
 ## Run
