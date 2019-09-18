@@ -224,7 +224,7 @@ subroutine step_lax_wendroff_test(failures)
                      __FILE__, __LINE__, failures)
 end
 
-subroutine step_exact_test(failures)
+subroutine step_exact_test__square(failures)
     integer, intent(inout) :: failures
     real(dp) :: x_points(6)
     real(dp) :: solution(8, 3)
@@ -305,6 +305,88 @@ subroutine step_exact_test(failures)
                      __FILE__, __LINE__, failures)
 end
 
+subroutine step_exact_test__sine(failures)
+    integer, intent(inout) :: failures
+    real(dp) :: x_points(6)
+    real(dp) :: solution(8, 3)
+    type(program_settings) :: options
+
+    options%initial_conditions = 'sine'
+    options%x_start = 0
+    options%x_end = 1
+    x_points = [0._dp, 0.2_dp, 0.4_dp, 0.6_dp, 0.8_dp, 1._dp]
+    solution = -42
+
+    solution(:, 1) = [0.1_dp, 1.1_dp, 2._dp, 3.9_dp, &
+                      4._dp, 5._dp, 6.99_dp, 9.1_dp]
+
+    call step_exact(options=options, t=0.5_dp, x_points=x_points, &
+                    nx=5, nt=2, dx=0.01_dp, dt=0.05_dp, v=1._dp, &
+                    solution=solution)
+
+
+    ! First time index
+    ! --------
+
+    call assert_approx(solution(1, 1), 0.1_dp, 1e-10_dp, __FILE__, &
+                       __LINE__, failures)
+
+    call assert_approx(solution(2, 1), 1.1_dp, 1e-10_dp, __FILE__, &
+                       __LINE__, failures)
+
+    call assert_approx(solution(3, 1), 2._dp, 1e-10_dp, __FILE__, &
+                       __LINE__, failures)
+
+    call assert_approx(solution(4, 1), 3.9_dp, 1e-10_dp, __FILE__, &
+                       __LINE__, failures)
+
+    call assert_approx(solution(5, 1), 4._dp, 1e-10_dp, __FILE__, &
+                       __LINE__, failures)
+
+    call assert_approx(solution(6, 1), 5._dp, 1e-10_dp, __FILE__, &
+                       __LINE__, failures)
+
+    call assert_approx(solution(7, 1), 6.99_dp, 1e-10_dp, __FILE__, &
+                       __LINE__, failures)
+
+    call assert_approx(solution(8, 1), 9.1_dp, 1e-10_dp, __FILE__, &
+                       __LINE__, failures)
+
+    ! Secon time index
+    ! --------
+
+    ! Ghost is untouched
+    call assert_approx(solution(1, 2), -42._dp, 1e-10_dp, __FILE__, &
+                       __LINE__, failures)
+
+    call assert_approx(solution(2, 2), 0._dp, 1e-10_dp, __FILE__, &
+                       __LINE__, failures)
+
+    call assert_approx(solution(3, 2), -0.9510565162_dp, 1e-10_dp, __FILE__, &
+                       __LINE__, failures)
+
+    call assert_approx(solution(4, 2), -0.58778525229_dp, 1e-10_dp, __FILE__, &
+                       __LINE__, failures)
+
+    call assert_approx(solution(5, 2), 0.58778525229_dp, 1e-10_dp, __FILE__, &
+                       __LINE__, failures)
+
+    call assert_approx(solution(6, 2), 0.95105651629_dp, 1e-10_dp, __FILE__, &
+                       __LINE__, failures)
+
+    call assert_approx(solution(7, 2), 0._dp, 1e-10_dp, __FILE__, &
+                       __LINE__, failures)
+
+    ! Ghost is untouched
+    call assert_approx(solution(8, 2), -42._dp, 1e-10_dp, __FILE__, &
+                       __LINE__, failures)
+
+    ! Third time index is untouched
+    call assert_true(all((solution(:, 3) + 42._dp) < 1.e-10_dp), &
+                     __FILE__, __LINE__, failures)
+end
+
+
 subroutine step_test_all(failures)
     integer, intent(inout) :: failures
 
@@ -312,7 +394,8 @@ subroutine step_test_all(failures)
     call step_lax_test(failures)
     call step_upwind_test(failures)
     call step_lax_wendroff_test(failures)
-    call step_exact_test(failures)
+    call step_exact_test__square(failures)
+    call step_exact_test__sine(failures)
 end
 
 end module StepTest
