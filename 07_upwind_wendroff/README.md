@@ -41,7 +41,7 @@ python plotting/plot_solution.py
 ```
 
 
-### Show animated plot of the solutions
+### Show animated plots
 
 ```
 python plotting/compare_animated.py
