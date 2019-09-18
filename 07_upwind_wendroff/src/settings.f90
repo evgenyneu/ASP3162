@@ -96,10 +96,10 @@ character(len=HELP_MESSAGE_LENGTH), parameter :: HELP_MESSAGE = &
     &    --t_end=NUMBER : the largest t value,"//NEW_LINE('h')//"&
     &                  Default: 1."//NEW_LINE('h')//"&
     &"//NEW_LINE('h')//"&
-    &    --velocity=NUMBER : value of velocity parameter,"//NEW_LINE('h')//"&
+    &    --velocity=NUMBER : value of v parameter,"//NEW_LINE('h')//"&
     &                  Default: 1."//NEW_LINE('h')//"&
     &"//NEW_LINE('h')//"&
-    &    --courant_factor=NUMBER : parameter used in numerical methods,"&
+    &    --courant_factor=NUMBER : parameter equal to v*dt/dx,"&
     //NEW_LINE('h')//"&
     &                  Default: 0.5."//NEW_LINE('h')//"&
     &"//NEW_LINE('h')//"&

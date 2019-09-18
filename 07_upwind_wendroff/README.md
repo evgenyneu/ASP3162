@@ -43,7 +43,7 @@ python plotting/plot_solution.py
 ### Show animated plot of the solutions
 
 ```
-python plotting/compare_animated.py 
+python plotting/compare_animated.py
 ```
 
 
@@ -56,71 +56,9 @@ python plotting/create_movies.py
 ```
 
 
-## Run
-
-Running the program:
-
-```
-./build/main data.bin
-```
-
-The program will print the solution into the binary file `data.bin`. See the description of the format below.
-
-
-
-## Run with settings
-
-One can also customize program settings, for example:
-
-```
-./build/main data.bin --method=lax --x_start=0 --x_end=1 --nx=101
-
-```
-
-Run the program with `--help` flag to see the description of parameters:
-
-```
-./build/main --help
-
-This program solves advection equation
-
-  u_t + v u_x = 0
-
-
-Usage:
-
- ./build/main OUTPUT [--method=lax] [--x_start=-1.5] [--x_end=1.5]
-    [--nx=100] [--t_start=0] [--t_end=1.4] [--velocity=1]
-
-    OUTPUT : path to the output data file
-
-    --method=NAME : numerical method to use
-                  (ftcs, lax). 
-                  Default: lax.
-
-    --x_start=NUMBER : the smallest x value,
-                  Default: 0.
-
-    --x_end=NUMBER : the largest x value,
-                  Default: 1.
-
-    --nx=NUMBER : number of x points in the grid,
-                  Default: 101.
-
-    --t_start=NUMBER : the smallest t value,
-                  Default: 0.
-
-    --t_end=NUMBER : the largest t value,
-                  Default: 1.
-
-    --velocity=NUMBER : value of velocity parameter,
-                  Default: 1.
-
-    --help  : show this message.
-```
-
-
 ## Run unit tests
+
+### Fortran unit tests
 
 First make the test executable:
 
@@ -143,7 +81,90 @@ Tests finished successfully
 ```
 
 
-## The binary file format
+### Python unit tests
+
+Run unit tests for plotting code:
+
+```
+make
+pytest
+```
+
+Note: *pytest* Python package.
+
+
+## Run
+
+Running the program:
+
+```
+./build/main data.bin
+```
+
+The program will print the solution into the binary file `data.bin`. See the description of the format below.
+
+
+
+## Run with settings
+
+To specify program settings, run:
+
+```
+./build/main data.bin --method=upwind --initial_conditions=sine --courant_factor=0.5
+
+```
+
+Run the program with `--help` flag to see the description of all settings:
+
+```
+./build/main --help
+
+This program solves advection equation
+
+  u_t + v u_x = 0
+
+
+Usage:
+
+ ./build/main OUTPUT [--method=lax] [--initial_conditions=square]
+       [--x_start=0] [--x_end=1] [--nx=100] [--t_start=0]
+       [--t_end=1] [--velocity=1] [--courant_factor=0.5]
+
+    OUTPUT : path to the output data file
+
+    --method=NAME : numerical method to use
+                  (exact, ftcs, lax, upwind, lax-wendroff). 
+                  Default: lax.
+
+    --initial_conditions=NAME : initial conditions (square, sine).
+                  Default: square.
+
+    --x_start=NUMBER : the smallest x value,
+                  Default: 0.
+
+    --x_end=NUMBER : the largest x value,
+                  Default: 1.
+
+    --nx=NUMBER : number of x points in the grid,
+                  Default: 100.
+
+    --t_start=NUMBER : the smallest t value,
+                  Default: 0.
+
+    --t_end=NUMBER : the largest t value,
+                  Default: 1.
+
+    --velocity=NUMBER : value of v parameter,
+                  Default: 1.
+
+    --courant_factor=NUMBER : parameter equal to v*dt/dx,
+                  Default: 0.5.
+
+    --help  : show this message.
+```
+
+
+## Binary file format
 
 Here is how data is stored in the binary file:
 
@@ -206,3 +227,9 @@ the data will be saved as:
 ```
 
 where first index is x and second index is t.
+
+
+
+## The unlicense
+
+This work is in [public domain](LICENSE).
