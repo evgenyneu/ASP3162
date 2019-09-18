@@ -105,7 +105,6 @@ To specify program settings, run:
 
 ```
 ./build/main data.bin --method=upwind --initial_conditions=sine --courant_factor=0.5
-
 ```
 
 Run the program with `--help` flag to see the description of all settings:
