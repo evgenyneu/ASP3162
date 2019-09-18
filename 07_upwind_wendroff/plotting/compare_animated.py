@@ -58,7 +58,7 @@ def animate(i, lines, text, x_values, t_values, solution):
     return artists
 
 
-def prepare_for_animation(methods, initial_conditions, t_end, ylim,
+def prepare_for_animation(methods, initial_conditions, t_end, nx, ylim,
                           courant_factor):
     """
     Makes a 2D that is used in animation.
@@ -74,6 +74,10 @@ def prepare_for_animation(methods, initial_conditions, t_end, ylim,
 
     t_end : float
         The largest time of the solution.
+
+    nx : integer
+
+        Number of x points.
 
     ylim : tuple
         Minimum and maximum values of the y-axis.
@@ -106,19 +110,20 @@ def prepare_for_animation(methods, initial_conditions, t_end, ylim,
     z_values = []
 
     for method in methods:
-        nx = 100
-        courant_current = courant_factor
+        this_courant = courant_factor
+        this_nx = nx
 
-        if method == "exact":
+        if method.lower() == "exact" and courant_factor != 1:
             # Increase x resolution for square exact method
             # to make animation smoother
-            nx *= 100
-            courant_current *= 100
+            this_nx *= 100
+            this_courant *= 100
 
         result = solve_equation(x_start=0, x_end=1,
-                                nx=nx, t_start=0, t_end=t_end, method=method,
+                                nx=this_nx, t_start=0, t_end=t_end,
+                                method=method.lower(),
                                 initial_conditions=initial_conditions,
-                                velocity=1, courant_factor=courant_current)
+                                velocity=1, courant_factor=this_courant)
 
         if result is None:
             return
@@ -143,7 +148,7 @@ def prepare_for_animation(methods, initial_conditions, t_end, ylim,
     plt.ylabel("Density $\\rho$ [$kg \\ m^{-3}$]")
 
     text = plt.text(
-        0.05, 0.89,
+        0.05, 0.92,
         f'',
         horizontalalignment='left',
         verticalalignment='center',
@@ -157,17 +162,18 @@ def prepare_for_animation(methods, initial_conditions, t_end, ylim,
     line_style_cycler = cycle(line_styles)
 
     for method in methods:
-        line, = ax.plot([], [], label=method.capitalize(),
+        line, = ax.plot([], [], label=method,
                         linestyle=next(line_style_cycler))
 
         lines.append(line)
 
-    plt.legend()
+    plt.legend(loc='upper right')
 
     return (fig, lines, text, x_values, y_values, z_values)
 
 
-def compare_animated(methods, initial_conditions, t_end, ylim, courant_factor):
+def compare_animated(methods, initial_conditions, t_end, ylim,
+                     nx, courant_factor):
     """
     Show animated plots of solutions of advection equation.
 
@@ -186,6 +192,9 @@ def compare_animated(methods, initial_conditions, t_end, ylim, courant_factor):
     ylim : tuple
         Minimum and maximum values of the y-axis.
 
+    nx : int
+        Number of x points.
+
     courant_factor : float
         Parameter used in the numerical methods
     """
@@ -193,7 +202,7 @@ def compare_animated(methods, initial_conditions, t_end, ylim, courant_factor):
     fig, lines, text, x, y, z = \
         prepare_for_animation(methods=methods,
                               initial_conditions=initial_conditions,
-                              t_end=t_end, ylim=ylim,
+                              t_end=t_end, nx=nx, ylim=ylim,
                               courant_factor=courant_factor)
 
     timesteps = z[0].shape[0]
@@ -206,25 +215,28 @@ def compare_animated(methods, initial_conditions, t_end, ylim, courant_factor):
 
 
 def make_plots():
-    compare_animated(methods=['exact', 'lax-wendroff', 'lax', 'upwind'],
+    methods = ['Exact', 'Lax-Wendroff', 'Lax', 'Upwind']
+    t_end = 2
+
+    compare_animated(methods=methods,
                      initial_conditions='sine',
                      courant_factor=0.5,
-                     t_end=2, ylim=(-1.5, 1.5))
+                     t_end=t_end, nx=100, ylim=(-1.5, 1.5))
 
-    compare_animated(methods=['exact', 'lax-wendroff', 'lax', 'upwind'],
+    compare_animated(methods=methods,
                      initial_conditions='square',
                      courant_factor=0.5,
-                     t_end=2, ylim=(-0.5, 1.5))
+                     t_end=t_end, nx=100, ylim=(-0.5, 1.5))
 
-    compare_animated(methods=['exact', 'lax-wendroff', 'lax', 'upwind'],
+    compare_animated(methods=methods,
                      initial_conditions='sine',
                      courant_factor=1,
-                     t_end=2, ylim=(-1.5, 1.5))
+                     t_end=t_end, nx=200, ylim=(-1.5, 1.5))
 
-    compare_animated(methods=['exact', 'lax-wendroff', 'lax', 'upwind'],
+    compare_animated(methods=methods,
                      initial_conditions='square',
                      courant_factor=1,
-                     t_end=2, ylim=(-0.5, 1.5))
+                     t_end=t_end, nx=200, ylim=(-0.5, 1.5))
 
 
 if __name__ == '__main__':
