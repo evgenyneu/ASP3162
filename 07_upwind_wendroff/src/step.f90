@@ -13,7 +13,7 @@ contains
 
 
 !
-! Calculate the exact solution by moving the initial initial_condition
+! Calculate the exact solution by moving the initial initial_condition 
 ! to the right by v * t
 !
 ! Inputs:
@@ -47,7 +47,7 @@ subroutine step_exact(options, t, x_points, nx, nt, dx, dt, v, solution)
     type(program_settings), intent(in) :: options
     integer, intent(in) :: nt, nx
     real(dp), intent(in) :: t, dx, dt, v
-    real(dp), allocatable, intent(in) :: x_points(:)
+    real(dp), intent(in) :: x_points(:)
     real(dp) :: x_points_shifted(size(x_points))
     real(dp), intent(inout) :: solution(:,:)
     real(dp) :: a, q, xmax

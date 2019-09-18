@@ -218,4 +218,4 @@ if __name__ == '__main__':
     compare_animated(methods=['exact', 'lax', 'upwind', 'lax-wendroff'],
                      initial_conditions='sine',
                      t_end=2, ylim=(-1.5, 1.5),
-                     courant_factor=0.5)
+                     courant_factor=1)
