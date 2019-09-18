@@ -185,6 +185,9 @@ def compare_animated(methods, initial_conditions, t_end, ylim, courant_factor):
 
     ylim : tuple
         Minimum and maximum values of the y-axis.
+
+    courant_factor : float
+        Parameter used in the numerical methods
     """
 
     fig, lines, text, x, y, z = \
