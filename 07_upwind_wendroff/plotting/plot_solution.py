@@ -74,69 +74,85 @@ def plot_at_time_index(plot_dir, plot_file_name, method,
     plt.show()
 
 
-def plot_timesteps(plot_dir, method, initial_conditions, t_values, ylim):
+def plot_at_time(methods, initial_conditions, courant_factor, nx,
+                 plot_dir, file_name, time, ylim):
     """
-    Makes a 2D plot of the velocity at different time values
-    and saves it to a file.
+    Makes a 2D plot of advection equation solution at specified `time`.
 
     Parameters
     ----------
 
-    plot_dir : str
-        Directory where the plot file is saved
-
-    plot_file_name : str
-        Plot file name
-
-    nx : int
-        The number of x points in the grid
-
-    nt : int
-        The number of t points in the grid
-
-    method : str
-        Numerical method to be used: ftcs, lax
+    methods : list of str
+        Numerical methods to be used: ftcs, lax, upwind, lax-wendroff
 
     initial_conditions : str
         Type of initial conditions: square, sine
 
-    plot_timesteps : int
-        number of timesteps to plot
+    courant_factor : float
+        Parameter used in the numerical methods
+
+    nx : integer
+
+        Number of x points.
+
+    plot_dir : str
+        Directory where the plot file is saved
+
+    file_name : str
+        Plot file name
+
+    time : float
+        Time of the solution to be plotted.
+
+    ylim : tuple
+        Minimum and maximum values of the y-axis.
     """
 
-    result = solve_equation(x_start=0, x_end=1,
-                            nx=100, t_start=0, t_end=1, method=method,
-                            initial_conditions=initial_conditions)
+    x_values = []
+    y_values = []
+    z_values = []
 
-    if result is None:
-        return
-    else:
+    for method in methods:
+        result = solve_equation(x_start=0, x_end=1,
+                                nx=nx, t_start=0, t_end=time,
+                                method=method.lower(),
+                                initial_conditions=initial_conditions,
+                                velocity=1, courant_factor=courant_factor)
+
         x, y, z, dx, dt, dt_dx = result
 
-    for t in t_values:
-        it = find_nearest_index(y, t)
+        if result is None:
+            return
+        else:
+            x, y, z, dx, dt, dt_dx = result
+            x_values.append(x)
+            y_values.append(y)
+            z_values.append(z)
 
-        file_name = f"{method}_{t:.2f}.pdf"
+    # for t in t_values:
+    #     it = find_nearest_index(y, t)
 
-        plot_at_time_index(plot_dir=plot_dir,
-                           plot_file_name=file_name,
-                           method=method,
-                           time=t,
-                           it=it,
-                           x_values=x,
-                           solution=z,
-                           dx=dx,
-                           dt=dt,
-                           dt_dx=dt_dx,
-                           ylim=ylim)
+    #     file_name = f"{method}_{t:.2f}.pdf"
+
+    #     plot_at_time_index(plot_dir=plot_dir,
+    #                        plot_file_name=file_name,
+    #                        method=method,
+    #                        time=t,
+    #                        it=it,
+    #                        x_values=x,
+    #                        solution=z,
+    #                        dx=dx,
+    #                        dt=dt,
+    #                        dt_dx=dt_dx,
+    #                        ylim=ylim)
 
 
 if __name__ == '__main__':
     # times = [0, 0.2, 0.5, 1]
-    times = [0.4]
 
     # plot_timesteps(plot_dir="plots", initial_conditions="square",
     #                method='ftcs', t_values=times)
 
-    plot_timesteps(plot_dir="plots", initial_conditions="sine",
-                   method='exact', t_values=times, ylim=(-1.5, 1.5))
+    plot_at_time(plot_dir="plots", file_name='plot.pdf',
+                 initial_conditions="sine",
+                   method='exact', time=1, ylim=(-1.5, 1.5))

@@ -214,7 +214,11 @@ def compare_animated(methods, initial_conditions, t_end, ylim,
     plt.show()
 
 
-def make_plots():
+def show_plots():
+    """
+    Show animated plots.
+    """
+
     methods = ['Exact', 'Lax-Wendroff', 'Lax', 'Upwind']
     t_end = 2
 
@@ -240,4 +244,4 @@ def make_plots():
 
 
 if __name__ == '__main__':
-    make_plots()
+    show_plots()

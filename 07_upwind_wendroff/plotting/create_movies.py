@@ -86,29 +86,29 @@ def make_movies():
     t_end = 2
     fps = 10
 
-    # create_movie(methods=methods,
-    #              initial_conditions='sine',
-    #              courant_factor=0.5,
-    #              movie_dir=movies_dir, filename='01_sine_c_0.5.mp4',
-    #              t_end=t_end, nx=100, ylim=(-1.5, 1.5), fps=fps)
+    create_movie(methods=methods,
+                 initial_conditions='sine',
+                 courant_factor=0.5,
+                 movie_dir=movies_dir, filename='01_sine_c_0.5.mp4',
+                 t_end=t_end, nx=100, ylim=(-1.5, 1.5), fps=fps)
 
     create_movie(methods=methods,
                  initial_conditions='square',
                  courant_factor=0.5,
-                 movie_dir=movies_dir, filename='02_square_c_0.5_2.mp4',
+                 movie_dir=movies_dir, filename='02_square_c_0.5.mp4',
                  t_end=t_end, nx=100, ylim=(-0.5, 1.5), fps=fps)
 
-    # create_movie(methods=methods,
-    #              initial_conditions='sine',
-    #              courant_factor=1,
-    #              movie_dir=movies_dir, filename='03_sine_c_1.mp4',
-    #              t_end=t_end, nx=200, ylim=(-1.5, 1.5), fps=fps)
+    create_movie(methods=methods,
+                 initial_conditions='sine',
+                 courant_factor=1,
+                 movie_dir=movies_dir, filename='03_sine_c_1.mp4',
+                 t_end=t_end, nx=200, ylim=(-1.5, 1.5), fps=fps)
 
-    # create_movie(methods=methods,
-    #              initial_conditions='square',
-    #              courant_factor=1,
-    #              movie_dir=movies_dir, filename='04_square_c_1.mp4',
-    #              t_end=t_end, nx=200, ylim=(-0.5, 1.5), fps=fps)
+    create_movie(methods=methods,
+                 initial_conditions='square',
+                 courant_factor=1,
+                 movie_dir=movies_dir, filename='04_square_c_1.mp4',
+                 t_end=t_end, nx=200, ylim=(-0.5, 1.5), fps=fps)
 
 
 if __name__ == '__main__':
