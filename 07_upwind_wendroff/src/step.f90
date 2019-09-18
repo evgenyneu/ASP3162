@@ -50,20 +50,15 @@ subroutine step_exact(options, t, x_points, nx, nt, dx, dt, v, solution)
     real(dp), intent(in) :: x_points(:)
     real(dp) :: x_points_shifted(size(x_points))
     real(dp), intent(inout) :: solution(:,:)
-    real(dp) :: a, q, xmax
-    integer :: i
+    real(dp) :: q, xmax
 
     xmax = options%x_end
-
     q = mod(v * t, xmax)
+    x_points_shifted = x_points - q
 
-    do i = 1, size(x_points)
-        if (x_points(i) >= q) then
-            x_points_shifted(i) = x_points(i) - q
-        else
-            x_points_shifted(i) = x_points(i) - q + xmax
-        end if
-    end do
+    where (x_points < q)
+        x_points_shifted = x_points_shifted + xmax
+    end where
 
     call calculate_initial(type=options%initial_conditions, &
                            x_points=x_points_shifted, &

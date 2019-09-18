@@ -216,6 +216,6 @@ if __name__ == '__main__':
     #               t_end=1, ylim=(-0.5, 1.5))
 
     compare_animated(methods=['exact', 'lax', 'upwind', 'lax-wendroff'],
-                     initial_conditions='sine',
+                     initial_conditions='square',
                      t_end=2, ylim=(-1.5, 1.5),
-                     courant_factor=1)
+                     courant_factor=0.5)
