@@ -54,8 +54,6 @@ def plot_at_time(methods, initial_conditions, courant_factor, nx,
                                 initial_conditions=initial_conditions,
                                 velocity=1, courant_factor=courant_factor)
 
-        x, y, z, dx, dt, dt_dx = result
-
         if result is None:
             return
         else:

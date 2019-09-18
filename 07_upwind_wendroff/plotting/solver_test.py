@@ -1,10 +1,11 @@
-from solver import read_solution_from_file
+from solver import read_solution_from_file, solve_equation
 from pytest import approx
 import numpy as np
 
 
 def test_read_solution_from_file():
-    (x_values, t_values, solution) = read_solution_from_file("plotting/test_data/test_output.dat")
+    (x_values, t_values, solution) = read_solution_from_file(
+        "plotting/test_data/test_output.dat")
 
     # x_values
     # -------
@@ -29,61 +30,42 @@ def test_read_solution_from_file():
     assert solution[2, :].tolist() == [5, 6]
 
 
-# def test_calculate_orbit():
-#     result = calculate_orbit(tmax=10 * np.pi, nt=3142, eccentricity=0)
-#     (times, positions, velocities) = result
+def test_solve_equation():
+    result = solve_equation(x_start=0, x_end=1,
+                            nx=100, t_start=0, t_end=1,
+                            method='upwind',
+                            initial_conditions='sine',
+                            velocity=1, courant_factor=0.5)
 
-#     # times
-#     # -------
+    x, y, z, dx, dt, dt_dx = result
 
-#     times = times.tolist()
-#     assert len(times) == 3142
-#     assert times[0] == 0
-#     assert times[1] == approx(0.01000188683, rel=1e-10)
-#     assert times[3141] == approx(31.4159265359, rel=1e-10)
+    assert dx == approx(0.01, rel=1e-10)
+    assert dt == approx(0.005, rel=1e-10)
+    assert dt_dx == approx(0.5, rel=1e-10)
 
-#     # positions
-#     # -------
+    # x
+    # --------
 
-#     assert positions.shape == (3142, 3)
+    assert len(x) == 100
+    assert x[0] == approx(0.005, rel=1e-10)
+    assert x[1] == approx(0.015, rel=1e-10)
+    assert x[99] == approx(0.995, rel=1e-10)
 
-#     # Initial position
-#     assert positions[0, :] == approx([1, 0, 0], rel=1e-10)
+    # t
+    # --------
 
-#     # After one iteration
-#     assert positions[1, :] == approx(
-#         [0.9999499811, 0.01000188683091, 0],
-#         rel=1e-10)
+    assert len(y) == 201
+    assert y[0] == approx(0, rel=1e-10)
+    assert y[1] == approx(0.005, rel=1e-10)
+    assert y[200] == approx(1, rel=1e-10)
 
-#     # At angle pi/2
-#     assert positions[157, :] == approx(
-#         [0.0005024508275483, 1.0000248703756, 0],
-#         rel=1e-10)
+    # Solution
+    # ---------
 
-#     # At angle 10 * pi, returned to initial state
-#     assert positions[3141, :] == approx(
-#         [0.9999994513, -0.00104755262807, 0],
-#         rel=1e-10)
+    assert z[0, 1] == approx(0.0941083133185, rel=1e-10)
+    assert z[0, 20] == approx(0.96029368567, rel=1e-10)
+    assert z[0, 99] == approx(-0.031410759078, rel=1e-10)
 
-#     # velocities
-#     # -------
-
-#     assert velocities.shape == (3142, 3)
-
-#     # Initial position
-#     assert velocities[0, :] == approx([0, 1, 0], rel=1e-10)
-
-#     # After one iteration
-#     assert velocities[1, :] == approx(
-#         [-0.010001636670, 0.99994998113, 0],
-#         rel=1e-10)
-
-#     # At angle pi/2
-#     assert velocities[157, :] == approx(
-#         [-0.999974865239, 0.000527435138589, 0],
-#         rel=1e-10)
-
-#     # At angle 10 * pi, returned to initial state
-#     assert velocities[3141, :] == approx(
-#         [0.0010475460769, 0.9999994513226, 0],
-#         rel=1e-10)
+    assert z[100, 1] == approx(-0.089576252581, rel=1e-10)
+    assert z[100, 20] == approx(-0.914047938031, rel=1e-10)
+    assert z[100, 99] == approx(0.0298980822175, rel=1e-10)

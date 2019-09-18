@@ -129,7 +129,7 @@ def solve_equation(x_start, x_end, nx,
 
     parameters = [
         (
-            f'../build/main {path_to_data}'
+            f'build/main {path_to_data}'
             f' --method={method}'
             f' --initial_conditions={initial_conditions}'
             f' --x_start={x_start}'
