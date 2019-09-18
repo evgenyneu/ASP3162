@@ -11,9 +11,13 @@ numerically using FTCS, Lax, Upwind and Lax-Wendroff methods.
 
 ## YouTube movies of solutions
 
-  * FTCS: http://bit.ly/asp3162_ftcs
+  * C=0.5 Sine: https://youtu.be/zWhv5VOyjhE
 
-  * Lax: http://bit.ly/asp3162_lax
+  * C=0.5 Square: https://youtu.be/7sHFfG8Rf-A
+
+  * C=1.0 Sine: https://youtu.be/Y47G1ylsle8
+
+  * C=1.0 Square: https://youtu.be/K3C1n1MkSzQ
 
 
 ## Compile
