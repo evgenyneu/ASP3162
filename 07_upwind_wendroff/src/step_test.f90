@@ -233,14 +233,14 @@ subroutine step_exact_test__square(failures)
     options%initial_conditions = 'square'
     options%x_start = 0
     options%x_end = 1
+    options%velocity = 1
     x_points = [0._dp, 0.2_dp, 0.4_dp, 0.6_dp, 0.8_dp, 1._dp]
     solution = -42
 
     solution(:, 1) = [0.1_dp, 1.1_dp, 2._dp, 3.9_dp, &
                       4._dp, 5._dp, 6.99_dp, 9.1_dp]
 
-    call step_exact(options=options, t=0.5_dp, x_points=x_points, &
-                    nx=5, nt=2, dx=0.01_dp, dt=0.05_dp, v=1._dp, &
+    call step_exact(options=options, t=0.5_dp, nt=2, x_points=x_points, &
                     solution=solution)
 
 
@@ -314,14 +314,14 @@ subroutine step_exact_test__sine(failures)
     options%initial_conditions = 'sine'
     options%x_start = 0
     options%x_end = 1
+    options%velocity = 1
     x_points = [0._dp, 0.2_dp, 0.4_dp, 0.6_dp, 0.8_dp, 1._dp]
     solution = -42
 
     solution(:, 1) = [0.1_dp, 1.1_dp, 2._dp, 3.9_dp, &
                       4._dp, 5._dp, 6.99_dp, 9.1_dp]
 
-    call step_exact(options=options, t=0.5_dp, x_points=x_points, &
-                    nx=5, nt=2, dx=0.01_dp, dt=0.05_dp, v=1._dp, &
+    call step_exact(options=options, t=0.5_dp, nt=2, x_points=x_points, &
                     solution=solution)
 
 
@@ -397,14 +397,14 @@ subroutine step_exact_test__sine__custom_xmin_xmax(failures)
     options%initial_conditions = 'sine'
     options%x_start = 0.2
     options%x_end = 0.9
+    options%velocity = 1
     x_points = [0.2_dp, 0.4_dp, 0.6_dp, 0.7_dp, 0.8_dp, 0.9_dp]
     solution = -42
 
     solution(:, 1) = [0.1_dp, 1.1_dp, 2._dp, 3.9_dp, &
                       4._dp, 5._dp, 6.99_dp, 9.1_dp]
 
-    call step_exact(options=options, t=0.5_dp, x_points=x_points, &
-                    nx=5, nt=2, dx=0.01_dp, dt=0.05_dp, v=1._dp, &
+    call step_exact(options=options, t=0.5_dp, nt=2, x_points=x_points, &
                     solution=solution)
 
 

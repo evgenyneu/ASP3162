@@ -43,17 +43,18 @@ contains
 ! solution : 2D array containing the solution for the advection equation
 !        first coordinate is x, second is time.
 !
-subroutine step_exact(options, t, x_points, nx, nt, dx, dt, v, solution)
+subroutine step_exact(options, t, nt, x_points, solution)
     type(program_settings), intent(in) :: options
-    integer, intent(in) :: nt, nx
-    real(dp), intent(in) :: t, dx, dt, v
+    integer, intent(in) :: nt
+    real(dp), intent(in) :: t
     real(dp), intent(in) :: x_points(:)
-    real(dp) :: x_points_shifted(size(x_points))
     real(dp), intent(inout) :: solution(:,:)
-    real(dp) :: shift, xmin, xmax
+    real(dp) :: x_points_shifted(size(x_points))
+    real(dp) :: shift, xmin, xmax, v
 
     xmin = options%x_start
     xmax = options%x_end
+    v = options%velocity
 
     ! Calculate the ditance `shift` solution has moved
     shift = mod(v * t, xmax - xmin)
