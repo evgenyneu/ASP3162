@@ -50,14 +50,22 @@ subroutine step_exact(options, t, x_points, nx, nt, dx, dt, v, solution)
     real(dp), intent(in) :: x_points(:)
     real(dp) :: x_points_shifted(size(x_points))
     real(dp), intent(inout) :: solution(:,:)
-    real(dp) :: q, xmax
+    real(dp) :: shift, xmin, xmax
 
+    xmin = options%x_start
     xmax = options%x_end
-    q = mod(v * t, xmax - options%x_start)
-    x_points_shifted = x_points - q
 
-    where (x_points - options%x_start < q)
-        x_points_shifted = x_points_shifted + xmax - options%x_start
+    ! Calculate the ditance `shift` solution has moved
+    shift = mod(v * t, xmax - xmin)
+
+    ! Shift the x values
+    x_points_shifted = x_points - shift
+
+    where (x_points - xmin < shift)
+        ! For x values smaller than shift
+        ! add xmax - xmin to make the initial initial_condition
+        ! continue from the start
+        x_points_shifted = x_points_shifted + xmax - xmin
     end where
 
     call calculate_initial(type=options%initial_conditions, &
