@@ -10,7 +10,7 @@ from solver import solve_equation
 
 
 def plot_at_time(methods, initial_conditions, courant_factor, nx,
-                 plot_dir, file_name, time, ylim):
+                 plot_dir, file_name, time, ylim, show_plot):
     """
     Makes a 2D plot of advection equation solution at specified `time`.
 
@@ -41,6 +41,10 @@ def plot_at_time(methods, initial_conditions, courant_factor, nx,
 
     ylim : tuple
         Minimum and maximum values of the y-axis.
+
+    show_plot : bool
+        If False the plot will not be shown on screen (only saved to a file).
+        False value is used in unit tests.
     """
 
     plt.figure(figsize=(8, 6))
@@ -93,12 +97,22 @@ def plot_at_time(methods, initial_conditions, courant_factor, nx,
     pdf_file = os.path.join(plot_dir, file_name)
     plt.savefig(pdf_file)
 
-    plt.show()
+    if show_plot:
+        plt.show()
 
 
-def make_plots():
+def make_plots(plot_dir, show_plot):
     """
     Create multiple plots.
+
+    Parameters
+    ----------
+    plot_dir : str
+        Directory where the plot file will be saved.
+
+    show_plot : bool
+        If False the plot will not be shown on screen (only saved to a file).
+        False value is used in unit tests.
     """
 
     methods = ['Exact', 'Lax-Wendroff', 'Lax', 'Upwind']
@@ -107,27 +121,27 @@ def make_plots():
     plot_at_time(methods=methods,
                  initial_conditions='sine',
                  courant_factor=0.5,
-                 plot_dir="plots", file_name='01_sine_c_0.5.pdf',
-                 time=time, nx=100, ylim=(-1.5, 1.5))
+                 plot_dir=plot_dir, file_name='01_sine_c_0.5.pdf',
+                 time=time, nx=100, ylim=(-1.5, 1.5), show_plot=show_plot)
 
     plot_at_time(methods=methods,
                  initial_conditions='square',
                  courant_factor=0.5,
-                 plot_dir="plots", file_name='02_square_c_0.5.pdf',
-                 time=time, nx=100, ylim=(-0.5, 1.5))
+                 plot_dir=plot_dir, file_name='02_square_c_0.5.pdf',
+                 time=time, nx=100, ylim=(-0.5, 1.5), show_plot=show_plot)
 
     plot_at_time(methods=methods,
                  initial_conditions='sine',
                  courant_factor=1,
-                 plot_dir="plots", file_name='03_sine_c_1.pdf',
-                 time=time, nx=100, ylim=(-1.5, 1.5))
+                 plot_dir=plot_dir, file_name='03_sine_c_1.pdf',
+                 time=time, nx=100, ylim=(-1.5, 1.5), show_plot=show_plot)
 
     plot_at_time(methods=methods,
                  initial_conditions='square',
                  courant_factor=1,
-                 plot_dir="plots", file_name='04_square_c_1.pdf',
-                 time=time, nx=100, ylim=(-0.5, 1.5))
+                 plot_dir=plot_dir, file_name='04_square_c_1.pdf',
+                 time=time, nx=100, ylim=(-0.5, 1.5), show_plot=show_plot)
 
 
 if __name__ == '__main__':
-    make_plots()
+    make_plots(plot_dir="plots", show_plot=True)
