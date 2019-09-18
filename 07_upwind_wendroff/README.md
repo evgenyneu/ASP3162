@@ -36,6 +36,7 @@ The plotting codes runs the Fortran executable. Run `make` before executing Pyth
 Create plots in `plots` directory.
 
 ```
+make
 python plotting/plot_solution.py
 ```
 
@@ -60,15 +61,8 @@ python plotting/create_movies.py
 
 ### Fortran unit tests
 
-First make the test executable:
-
 ```
 make test
-```
-
-Next, run the tests:
-
-```
 ./build/test
 ```
 
