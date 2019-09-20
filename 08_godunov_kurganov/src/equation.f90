@@ -240,7 +240,7 @@ subroutine solve_equation(options, solution, x_points, t_points)
     ! call resize_arrays(new_size=nt, keep_elements=nt, &
     !                    solution=solution, t_points=t_points)
 
-    ! call remove_ghost_cells(solution)
+    call remove_ghost_cells(solution)
 end subroutine
 
 

@@ -111,8 +111,8 @@ subroutine solve_eqn_test(failures)
     ! --------
 
     call assert_equal(size(solution, 1), 1, __FILE__, __LINE__, failures)
-    call assert_equal(size(solution, 2), 102, __FILE__, __LINE__, failures)
-    ! call assert_equal(size(solution, 3), 201, __FILE__, __LINE__, failures)
+    call assert_equal(size(solution, 2), 100, __FILE__, __LINE__, failures)
+    call assert_equal(size(solution, 3), 201, __FILE__, __LINE__, failures)
 
     ! Initial condition
     ! ----------
