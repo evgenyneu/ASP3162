@@ -9,7 +9,10 @@ use FloatUtils, only: linspace
 use Output, only: write_output
 use Grid, only: set_grid
 use InitialConditions, only: set_initial
-use Step, only: step_exact, step_ftcs, step_lax, step_upwind, step_lax_wendroff
+
+use Step, only: step_exact, step_ftcs, step_lax, step_upwind, &
+                step_lax_wendroff, step_godunov
+
 implicit none
 private
 public :: solve_equation, solve_and_create_output, &
@@ -173,6 +176,9 @@ subroutine iterate(options, tmax, dx, dt, v, &
         case ("lax-wendroff")
            call step_lax_wendroff(nx=nx, nt=nt, dx=dx, dt=dt, v=v, &
                                   solution=solution)
+        case ("godunov")
+           call step_godunov(nx=nx, nt=nt, dx=dx, dt=dt, v=v,&
+                             solution=solution)
         case default
            print "(a, a)", "ERROR: unknown method ", trim(options%method)
            call exit(41)

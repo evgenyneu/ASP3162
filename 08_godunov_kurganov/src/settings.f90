@@ -124,8 +124,9 @@ real(dp), parameter :: DEFAULT_COURANT_FACTOR = 0.5_dp
 character(len=100), parameter :: DEFAULT_METHOD = "lax"
 character(len=100), parameter :: DEFAULT_INITIAL_CONDITIONS = "square"
 
-character(len=100), parameter :: ALLOWED_METHODS(5) = &
-     [character(len=100) :: 'exact', 'ftcs', 'lax', 'upwind', 'lax-wendroff']
+character(len=100), parameter :: ALLOWED_METHODS(6) = &
+     [character(len=100) :: 'exact', 'ftcs', 'lax', 'upwind',&
+                            'lax-wendroff', 'godunov']
 
 
 character(len=100), parameter :: ALLOWED_INITIAL_CONDITIONS(2) = &

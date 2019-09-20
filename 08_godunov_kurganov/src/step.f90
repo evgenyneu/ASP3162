@@ -7,7 +7,8 @@ use Settings, only: program_settings
 use InitialConditions, only: calculate_initial
 implicit none
 private
-public :: step_exact, step_ftcs, step_lax, step_upwind, step_lax_wendroff
+public :: step_exact, step_ftcs, step_lax, step_upwind, &
+          step_lax_wendroff, step_godunov
 
 contains
 
@@ -217,6 +218,26 @@ subroutine step_lax_wendroff(nx, nt, dx, dt, v, solution)
     real(dp), intent(in) :: dx, dt, v
     real(dp), intent(inout) :: solution(:, :, :)
     real(dp) :: a
+
+    a = v * dt / dx
+
+    solution(1, 2 : nx - 1, nt) = solution(1, 2 : nx - 1, nt - 1) &
+        - 0.5_dp * a * &
+           (solution(1, 3 : nx, nt - 1) - solution(1, 1 : nx - 3, nt - 1)) &
+        + 0.5_dp * (a**2) * &
+           (solution(1, 3 : nx, nt - 1) &
+                - 2 * solution(1, 2 : nx - 1, nt - 1) &
+                + solution(1, 1 : nx - 3, nt - 1))
+end subroutine
+
+
+subroutine step_godunov(nx, nt, dx, dt, v, solution)
+    integer, intent(in) :: nt, nx
+    real(dp), intent(in) :: dx, dt, v
+    real(dp), intent(inout) :: solution(:, :, :)
+    real(dp) :: a
+
+    implement here!!!
 
     a = v * dt / dx
 
