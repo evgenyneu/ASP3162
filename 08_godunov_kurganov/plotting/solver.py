@@ -41,6 +41,13 @@ def read_solution_from_file(path_to_data):
     end = start + 4*3
     (_, nt, _) = struct.unpack("@iii", data[start: end])
 
+    # unit_vector_dimension
+    # ----------
+
+    start = end
+    end = start + 4*3
+    (_, unit_vector_dimension, _) = struct.unpack("@iii", data[start: end])
+
     # x values
     # ---------
 
@@ -57,14 +64,14 @@ def read_solution_from_file(path_to_data):
     t_values = array.array("d")
     t_values.frombytes(data[start:end])
 
-    # Solution: 2D array
+    # Solution: array
     # ---------
 
     start = end + 8
-    end = start + nx * nt * 8
+    end = start + unit_vector_dimension * nx * nt * 8
     solution = array.array("d")
     solution.frombytes(data[start:end])
-    solution = np.reshape(solution, (nt, nx), order='C')
+    solution = np.reshape(solution, (nt, nx, unit_vector_dimension), order='C')
 
     return (x_values, t_values, solution)
 

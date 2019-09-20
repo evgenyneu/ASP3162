@@ -255,13 +255,13 @@ end subroutine
 !
 subroutine solve_and_create_output(options)
     type(program_settings), intent(in) :: options
-    real(dp), allocatable :: solution(:,:)
+    real(dp), allocatable :: solution(:, :, :)
     real(dp), allocatable :: x_points(:), t_points(:)
 
-    ! call solve_equation(options, solution, x_points, t_points)
+    call solve_equation(options, solution, x_points, t_points)
 
-    ! call write_output(filename=options%output_path, &
-    !                   solution=solution, x_points=x_points, t_points=t_points)
+    call write_output(filename=options%output_path, &
+                      solution=solution, x_points=x_points, t_points=t_points)
 end subroutine
 
 

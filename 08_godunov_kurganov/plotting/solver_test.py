@@ -1,6 +1,5 @@
 from solver import read_solution_from_file, solve_equation
 from pytest import approx
-import numpy as np
 
 
 def test_read_solution_from_file():
@@ -24,10 +23,10 @@ def test_read_solution_from_file():
     # solution
     # -------
 
-    assert solution.shape == (3, 2)
-    assert solution[0, :].tolist() == [1, 2]
-    assert solution[1, :].tolist() == [3, 4]
-    assert solution[2, :].tolist() == [5, 6]
+    assert solution.shape == (3, 2, 1)
+    assert solution[0, :, 0].tolist() == [1, 2]
+    assert solution[1, :, 0].tolist() == [3, 4]
+    assert solution[2, :, 0].tolist() == [5, 6]
 
 
 def test_solve_equation():
