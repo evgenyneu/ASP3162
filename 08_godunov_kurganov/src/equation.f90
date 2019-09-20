@@ -1,7 +1,7 @@
 !
-! Solves an advection equation
+! Solves a PDE
 !
-module AdvectionEquation
+module Equation
 use Types, only: dp
 use Constants, only: pi
 use Settings, only: program_settings, read_from_command_line
@@ -72,7 +72,7 @@ end subroutine
 ! Outputs:
 ! -------
 !
-! solution : 2D array containing the solution for the advection equation
+! solution : 2D array containing the solution for the PDE's
 !        first coordinate is x, second is time.
 !
 subroutine remove_ghost_cells(solution)
@@ -292,4 +292,4 @@ subroutine read_settings_solve_and_create_output(silent)
 end subroutine
 
 
-end module AdvectionEquation
+end module Equation

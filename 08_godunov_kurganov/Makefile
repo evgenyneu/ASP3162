@@ -63,8 +63,8 @@ SOURCE_FILES = 	types.f90 \
 							initial_conditions_test.f90 \
 							step.f90 \
 							step_test.f90 \
-							advection_equation.f90 \
-							advection_equation_test.f90 \
+							equation.f90 \
+							equation_test.f90 \
 							main.f90 \
 							main_test.f90
 

@@ -1,10 +1,10 @@
-module AdvectionEquationTest
+module EquationTest
 use Types, only: dp
 use AssertsTest, only: assert_true, assert_approx, assert_equal
 use Constants, only: pi
 use, intrinsic :: ieee_arithmetic, only: ieee_is_nan
 
-use AdvectionEquation, only: solve_equation, &
+use Equation, only: solve_equation, &
     solve_and_create_output, read_settings_solve_and_create_output, &
     remove_ghost_cells
 
@@ -12,7 +12,7 @@ use Settings, only: program_settings
 use FileUtils, only: file_exists, delete_file
 implicit none
 private
-public advection_equation_test_all
+public equation_test_all
 
 contains
 
@@ -589,7 +589,7 @@ subroutine read_settings_solve_and_create_output_test(failures)
 end
 
 
-subroutine advection_equation_test_all(failures)
+subroutine equation_test_all(failures)
     integer, intent(inout) :: failures
 
     call remove_ghost_cells_test(failures)
@@ -601,4 +601,4 @@ subroutine advection_equation_test_all(failures)
     call read_settings_solve_and_create_output_test(failures)
 end
 
-end module AdvectionEquationTest
+end module EquationTest

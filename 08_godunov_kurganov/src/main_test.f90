@@ -4,7 +4,7 @@ program MainTest
     use SettingsTest, only: settings_test_all
     use FloatUtilsTest, only: float_utils_test_all
     use FileUtilsTest, only: file_utils_test_all
-    use AdvectionEquationTest, only: advection_equation_test_all
+    use EquationTest, only: equation_test_all
     use OutputTest, only: output_test_all
     use GridTest, only: grid_test_all
     use InitialConditionsTest, only: init_test_all
@@ -20,7 +20,7 @@ program MainTest
 
     call float_utils_test_all(failures)
     call file_utils_test_all(failures)
-    call advection_equation_test_all(failures)
+    call equation_test_all(failures)
     call output_test_all(failures)
     call grid_test_all(failures)
     call init_test_all(failures)
