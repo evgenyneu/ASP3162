@@ -63,7 +63,8 @@ def plot_at_time(methods, initial_conditions, courant_factor, nx,
         else:
             x, y, z, dx, dt, dt_dx = result
             actual_time = y[-1]
-            plt.plot(x, z[-1, :], label=method,
+
+            plt.plot(x, z[-1, :, 0], label=method,
                      linestyle=next(line_style_cycler))
 
     title = (
