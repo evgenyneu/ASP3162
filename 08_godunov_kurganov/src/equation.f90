@@ -76,12 +76,15 @@ end subroutine
 !        first coordinate is x, second is time.
 !
 subroutine remove_ghost_cells(solution)
-    real(dp), allocatable, intent(inout) :: solution(:,:)
-    real(dp), allocatable :: solution_buffer(:,:)
+    real(dp), allocatable, intent(inout) :: solution(:, :, :)
+    real(dp), allocatable :: solution_buffer(:, :, :)
 
-    allocate(solution_buffer(size(solution, 1) - 2, size(solution, 2)))
+    allocate(solution_buffer(size(solution, 1), &
+                             size(solution, 2) - 2, &
+                             size(solution, 3)))
+
     solution_buffer = 0
-    solution_buffer(:, :) = solution(2 : size(solution, 1) - 1,:)
+    solution_buffer(:, :, : ) = solution(:, 2 : size(solution, 2) - 1, :)
     deallocate(solution)
     call move_alloc(solution_buffer, solution)
 end subroutine
@@ -217,13 +220,13 @@ subroutine solve_equation(options, solution, x_points, t_points)
                   x_points=x_points, t_points=t_points, &
                   nt_allocated=nt_allocated)
 
-    ! ! Set initial conditions
-    ! ! -------
+    ! Set initial conditions
+    ! -------
 
-    ! t_points(1) = tmin
+    t_points(1) = tmin
 
-    ! call set_initial(type=options%initial_conditions, &
-    !                  x_points=x_points, solution=solution)
+    call set_initial(type=options%initial_conditions, &
+                     x_points=x_points, solution=solution)
 
     ! ! Calculate the steps
     ! dx = x_points(2) - x_points(1)

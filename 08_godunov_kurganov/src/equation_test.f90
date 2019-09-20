@@ -19,12 +19,14 @@ contains
 
 subroutine remove_ghost_cells_test(failures)
     integer, intent(inout) :: failures
-    real(dp), allocatable :: solution(:, :)
+    real(dp), allocatable :: solution(:, :, :)
 
-    allocate(solution(4, 3))
+    allocate(solution(1, 4, 3))
 
     solution = reshape((/ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 /), &
                        shape(solution))
+
+
 
     call remove_ghost_cells(solution)
 
@@ -32,25 +34,26 @@ subroutine remove_ghost_cells_test(failures)
     ! Solution size
     ! --------
 
-    call assert_equal(size(solution, 1), 2, __FILE__, __LINE__, failures)
-    call assert_equal(size(solution, 2), 3, __FILE__, __LINE__, failures)
+    call assert_equal(size(solution, 1), 1, __FILE__, __LINE__, failures)
+    call assert_equal(size(solution, 2), 2, __FILE__, __LINE__, failures)
+    call assert_equal(size(solution, 3), 3, __FILE__, __LINE__, failures)
 
-    call assert_approx(solution(1,1), 2._dp, 1e-5_dp, __FILE__, &
+    call assert_approx(solution(1, 1, 1), 2._dp, 1e-5_dp, __FILE__, &
         __LINE__, failures)
 
-    call assert_approx(solution(2,1), 3._dp, 1e-5_dp, __FILE__, &
+    call assert_approx(solution(1, 2, 1), 3._dp, 1e-5_dp, __FILE__, &
         __LINE__, failures)
 
-    call assert_approx(solution(1,2), 6._dp, 1e-5_dp, __FILE__, &
+    call assert_approx(solution(1, 1, 2), 6._dp, 1e-5_dp, __FILE__, &
         __LINE__, failures)
 
-    call assert_approx(solution(2,2), 7._dp, 1e-5_dp, __FILE__, &
+    call assert_approx(solution(1, 2, 2), 7._dp, 1e-5_dp, __FILE__, &
         __LINE__, failures)
 
-    call assert_approx(solution(1,3), 10._dp, 1e-5_dp, __FILE__, &
+    call assert_approx(solution(1, 1, 3), 10._dp, 1e-5_dp, __FILE__, &
         __LINE__, failures)
 
-    call assert_approx(solution(2,3), 11._dp, 1e-5_dp, __FILE__, &
+    call assert_approx(solution(1, 2, 3), 11._dp, 1e-5_dp, __FILE__, &
         __LINE__, failures)
 end
 
@@ -111,32 +114,32 @@ subroutine solve_eqn_test(failures)
     call assert_equal(size(solution, 2), 102, __FILE__, __LINE__, failures)
     ! call assert_equal(size(solution, 3), 201, __FILE__, __LINE__, failures)
 
-    ! ! Initial condition
-    ! ! ----------
+    ! Initial condition
+    ! ----------
 
-    ! call assert_approx(solution(1, 1), 0.0_dp, 1e-5_dp, __FILE__, &
-    !     __LINE__, failures)
+    call assert_approx(solution(1, 1, 1), 0.0_dp, 1e-5_dp, __FILE__, &
+        __LINE__, failures)
 
-    ! call assert_approx(solution(2, 1), 0.0_dp, 1e-5_dp, __FILE__, &
-    !     __LINE__, failures)
+    call assert_approx(solution(1, 2, 1), 0.0_dp, 1e-5_dp, __FILE__, &
+        __LINE__, failures)
 
-    ! call assert_approx(solution(25, 1), 0.0_dp, 1e-5_dp, __FILE__, &
-    !     __LINE__, failures)
+    call assert_approx(solution(1, 25, 1), 0.0_dp, 1e-5_dp, __FILE__, &
+        __LINE__, failures)
 
-    ! call assert_approx(solution(26, 1), 1.0_dp, 1e-5_dp, __FILE__, &
-    !     __LINE__, failures)
+    call assert_approx(solution(1, 26, 1), 1.0_dp, 1e-5_dp, __FILE__, &
+        __LINE__, failures)
 
-    ! call assert_approx(solution(27, 1), 1.0_dp, 1e-5_dp, __FILE__, &
-    !     __LINE__, failures)
+    call assert_approx(solution(1, 27, 1), 1.0_dp, 1e-5_dp, __FILE__, &
+        __LINE__, failures)
 
-    ! call assert_approx(solution(75, 1), 1.0_dp, 1e-5_dp, __FILE__, &
-    !     __LINE__, failures)
+    call assert_approx(solution(1, 75, 1), 1.0_dp, 1e-5_dp, __FILE__, &
+        __LINE__, failures)
 
-    ! call assert_approx(solution(76, 1), 0.0_dp, 1e-5_dp, __FILE__, &
-    !     __LINE__, failures)
+    call assert_approx(solution(1, 76, 1), 0.0_dp, 1e-5_dp, __FILE__, &
+        __LINE__, failures)
 
-    ! call assert_approx(solution(100, 1), 0.0_dp, 1e-5_dp, __FILE__, &
-    !     __LINE__, failures)
+    call assert_approx(solution(1, 100, 1), 0.0_dp, 1e-5_dp, __FILE__, &
+        __LINE__, failures)
 
 
     ! ! Ensure there are no NaN values
@@ -696,7 +699,7 @@ subroutine equation_test_all(failures)
     integer, intent(inout) :: failures
 
     call solve_eqn_test(failures)
-    ! call remove_ghost_cells_test(failures)
+    call remove_ghost_cells_test(failures)
     ! call solve_eqn_ftcs_test(failures)
     ! call solve_eqn_lax_test(failures)
     ! call solve_eqn_upwind_test(failures)

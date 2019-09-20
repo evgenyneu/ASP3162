@@ -34,12 +34,12 @@ subroutine calculate_initial(type, x_points, solution)
     select case (type)
     case ("square")
         where (x_points > 0.25 .and. x_points <= 0.75)
-            solution(1, 2: size(solution) - 1) = 1
+            solution(1, 2: size(solution, 2) - 1) = 1
         elsewhere
-            solution(1, 2: size(solution) - 1) = 0
+            solution(1, 2: size(solution, 2) - 1) = 0
         end where
     case ("sine")
-        solution(1, 2: size(solution) - 1) = sin(2 * pi * x_points)
+        solution(1, 2: size(solution, 2) - 1) = sin(2 * pi * x_points)
     case default
        print "(a, a)", "ERROR: unknown initial conditions type ", trim(type)
        call exit(41)
