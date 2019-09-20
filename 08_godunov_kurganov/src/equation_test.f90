@@ -60,10 +60,10 @@ end
 
 subroutine resize_arrays_test(failures)
     integer, intent(inout) :: failures
-    real(dp), allocatable :: solution(:, :)
+    real(dp), allocatable :: solution(:, :, :)
     real(dp), allocatable :: t_points(:)
 
-    allocate(solution(2, 3))
+    allocate(solution(1, 2, 3))
 
     solution = reshape([1, 2, 3, 4, 5, 6], &
                        shape(solution))
@@ -78,35 +78,36 @@ subroutine resize_arrays_test(failures)
     ! Solution size
     ! --------
 
-    call assert_equal(size(solution, 1), 2, __FILE__, __LINE__, failures)
-    call assert_equal(size(solution, 2), 5, __FILE__, __LINE__, failures)
+    call assert_equal(size(solution, 1), 1, __FILE__, __LINE__, failures)
+    call assert_equal(size(solution, 2), 2, __FILE__, __LINE__, failures)
+    call assert_equal(size(solution, 3), 5, __FILE__, __LINE__, failures)
 
-    call assert_approx(solution(1, 1), 1._dp, 1e-5_dp, __FILE__, &
+    call assert_approx(solution(1, 1, 1), 1._dp, 1e-5_dp, __FILE__, &
         __LINE__, failures)
 
-    call assert_approx(solution(2, 1), 2._dp, 1e-5_dp, __FILE__, &
+    call assert_approx(solution(1, 2, 1), 2._dp, 1e-5_dp, __FILE__, &
         __LINE__, failures)
 
-    call assert_approx(solution(1, 2), 3._dp, 1e-5_dp, __FILE__, &
+    call assert_approx(solution(1, 1, 2), 3._dp, 1e-5_dp, __FILE__, &
         __LINE__, failures)
 
-    call assert_approx(solution(2, 2), 4._dp, 1e-5_dp, __FILE__, &
+    call assert_approx(solution(1, 2, 2), 4._dp, 1e-5_dp, __FILE__, &
         __LINE__, failures)
 
-    call assert_approx(solution(1, 3), 5._dp, 1e-5_dp, __FILE__, &
+    call assert_approx(solution(1, 1, 3), 5._dp, 1e-5_dp, __FILE__, &
         __LINE__, failures)
 
-    call assert_approx(solution(2, 3), 6._dp, 1e-5_dp, __FILE__, &
+    call assert_approx(solution(1, 2, 3), 6._dp, 1e-5_dp, __FILE__, &
         __LINE__, failures)
 
 
     ! Ensure the added elements are zero
     ! ----------
 
-    call assert_true(all(abs(solution(:, 4)) < 1.e-10_dp), __FILE__, &
+    call assert_true(all(abs(solution(:, :, 4)) < 1.e-10_dp), __FILE__, &
         __LINE__, failures)
 
-    call assert_true(all(abs(solution(:, 5)) < 1.e-10_dp), __FILE__, &
+    call assert_true(all(abs(solution(:, :, 5)) < 1.e-10_dp), __FILE__, &
         __LINE__, failures)
 
 end

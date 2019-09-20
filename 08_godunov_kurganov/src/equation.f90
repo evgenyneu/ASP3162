@@ -40,8 +40,8 @@ contains
 !
 subroutine resize_arrays(new_size, keep_elements, solution, t_points)
     integer, intent(in) :: new_size, keep_elements
-    real(dp), allocatable, intent(inout) :: solution(:,:)
-    real(dp), allocatable :: solution_buffer(:,:)
+    real(dp), allocatable, intent(inout) :: solution(:, :, :)
+    real(dp), allocatable :: solution_buffer(:, :, :)
     real(dp), allocatable, intent(inout) :: t_points(:)
     real(dp), allocatable :: t_points_buffer(:)
 
@@ -57,9 +57,9 @@ subroutine resize_arrays(new_size, keep_elements, solution, t_points)
     ! Enlarge t axis of the solution array
     ! -------
 
-    allocate(solution_buffer(size(solution, 1), new_size))
+    allocate(solution_buffer(size(solution, 1), size(solution, 2), new_size))
     solution_buffer = 0
-    solution_buffer(:, 1:keep_elements) = solution
+    solution_buffer(:, :, 1:keep_elements) = solution
     deallocate(solution)
     call move_alloc(solution_buffer, solution)
 end subroutine
