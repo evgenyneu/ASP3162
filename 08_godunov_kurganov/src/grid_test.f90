@@ -11,7 +11,7 @@ contains
 
 subroutine set_grid_test(failures)
     integer, intent(inout) :: failures
-    real(dp), allocatable :: solution(:,:)
+    real(dp), allocatable :: solution(:, :, :)
     real(dp), allocatable :: x_points(:), t_points(:)
     type(program_settings) :: options
     integer :: nt_allocated
@@ -19,6 +19,7 @@ subroutine set_grid_test(failures)
     options%x_start = 10
     options%x_end = 20
     options%nx = 10
+    options%state_vector_dimension = 1
 
     call set_grid(options=options, solution=solution, &
                   x_points=x_points, t_points=t_points, &
@@ -52,8 +53,9 @@ subroutine set_grid_test(failures)
     ! Solution
     ! --------
 
-    call assert_equal(size(solution, 1), 12, __FILE__, __LINE__, failures)
-    call assert_equal(size(solution, 2), 13, __FILE__, __LINE__, failures)
+    call assert_equal(size(solution, 1), 1, __FILE__, __LINE__, failures)
+    call assert_equal(size(solution, 2), 12, __FILE__, __LINE__, failures)
+    call assert_equal(size(solution, 3), 13, __FILE__, __LINE__, failures)
 
     call assert_true(all(abs(solution) < 1.e-10_dp), __FILE__, &
         __LINE__, failures)

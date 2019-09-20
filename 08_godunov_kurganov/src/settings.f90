@@ -50,6 +50,10 @@ type, public :: program_settings
 
     ! Numerical method used: ('square', 'sine')
     character(len=1024) :: initial_conditions
+
+    ! Dimension of the state vector
+    ! For Burger's equation, state vector has one element: velocity
+    integer :: state_vector_dimension = 1
 end type program_settings
 
 ! Help message to be shown

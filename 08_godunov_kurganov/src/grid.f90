@@ -34,7 +34,7 @@ contains
 !
 subroutine set_grid(options, solution, x_points, t_points, nt_allocated)
     type(program_settings), intent(in) :: options
-    real(dp), allocatable, intent(out) :: solution(:,:)
+    real(dp), allocatable, intent(out) :: solution(:, :, :)
     real(dp), allocatable, intent(out) :: x_points(:), t_points(:)
     integer, intent(out) :: nt_allocated
     real(dp) :: xmin, xmax, dx
@@ -80,7 +80,7 @@ subroutine set_grid(options, solution, x_points, t_points, nt_allocated)
     ! two more points: these are left and right ghost cells that help
     ! make calculations simpler. The ghost cells will be removed
     ! when calculations are finished.
-    allocate(solution(nx + 2, nt_allocated))
+    allocate(solution(options%state_vector_dimension, nx + 2, nt_allocated))
 
     ! Initialize the arrays with zeros
     solution = 0
