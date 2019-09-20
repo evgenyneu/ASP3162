@@ -6,7 +6,7 @@ use, intrinsic :: ieee_arithmetic, only: ieee_is_nan
 
 use Equation, only: solve_equation, &
     solve_and_create_output, read_settings_solve_and_create_output, &
-    remove_ghost_cells
+    remove_ghost_cells, resize_arrays
 
 use Settings, only: program_settings
 use FileUtils, only: file_exists, delete_file
@@ -55,6 +55,60 @@ subroutine remove_ghost_cells_test(failures)
 
     call assert_approx(solution(1, 2, 3), 11._dp, 1e-5_dp, __FILE__, &
         __LINE__, failures)
+end
+
+
+subroutine resize_arrays_test(failures)
+    integer, intent(inout) :: failures
+    real(dp), allocatable :: solution(:, :)
+    real(dp), allocatable :: t_points(:)
+
+    allocate(solution(2, 3))
+
+    solution = reshape([1, 2, 3, 4, 5, 6], &
+                       shape(solution))
+
+    allocate(t_points(3))
+    t_points = [1.1_dp, 1.2_dp, 1.3_dp]
+
+    call resize_arrays(new_size=5, keep_elements=3, solution=solution, &
+                       t_points=t_points)
+
+
+    ! Solution size
+    ! --------
+
+    call assert_equal(size(solution, 1), 2, __FILE__, __LINE__, failures)
+    call assert_equal(size(solution, 2), 5, __FILE__, __LINE__, failures)
+
+    call assert_approx(solution(1, 1), 1._dp, 1e-5_dp, __FILE__, &
+        __LINE__, failures)
+
+    call assert_approx(solution(2, 1), 2._dp, 1e-5_dp, __FILE__, &
+        __LINE__, failures)
+
+    call assert_approx(solution(1, 2), 3._dp, 1e-5_dp, __FILE__, &
+        __LINE__, failures)
+
+    call assert_approx(solution(2, 2), 4._dp, 1e-5_dp, __FILE__, &
+        __LINE__, failures)
+
+    call assert_approx(solution(1, 3), 5._dp, 1e-5_dp, __FILE__, &
+        __LINE__, failures)
+
+    call assert_approx(solution(2, 3), 6._dp, 1e-5_dp, __FILE__, &
+        __LINE__, failures)
+
+
+    ! Ensure the added elements are zero
+    ! ----------
+
+    call assert_true(all(abs(solution(:, 4)) < 1.e-10_dp), __FILE__, &
+        __LINE__, failures)
+
+    call assert_true(all(abs(solution(:, 5)) < 1.e-10_dp), __FILE__, &
+        __LINE__, failures)
+
 end
 
 
@@ -700,6 +754,7 @@ subroutine equation_test_all(failures)
 
     call solve_eqn_test(failures)
     call remove_ghost_cells_test(failures)
+    call resize_arrays_test(failures)
     ! call solve_eqn_ftcs_test(failures)
     ! call solve_eqn_lax_test(failures)
     ! call solve_eqn_upwind_test(failures)

@@ -13,7 +13,8 @@ use Step, only: step_exact, step_ftcs, step_lax, step_upwind, step_lax_wendroff
 implicit none
 private
 public :: solve_equation, solve_and_create_output, &
-          read_settings_solve_and_create_output, remove_ghost_cells
+          read_settings_solve_and_create_output, remove_ghost_cells, &
+          resize_arrays
 
 contains
 
@@ -131,52 +132,52 @@ subroutine iterate(options, tmax, dx, dt, v, &
     integer, intent(out) :: nt
     real(dp), intent(in) :: tmax, dx, dt, v
     real(dp), allocatable, intent(in) :: x_points(:)
-    real(dp), allocatable, intent(inout) :: solution(:,:)
+    real(dp), allocatable, intent(inout) :: solution(:, :, :)
     real(dp), allocatable, intent(inout) :: t_points(:)
     integer :: nx
 
-    nx = size(solution, 1) ! number of x points plus two ghost points
+    nx = size(solution, 2) ! number of x points plus two ghost points
     nt = 1
 
     ! Calculate numerical solution
-    do while (t_points(nt) < tmax)
+    ! do while (t_points(nt) < tmax)
         ! Update the ghost cells.
         ! The leftmost cell gets the values of nx-1 x cell
         ! and the rightmost cell gets the value of the second x cell.
-        solution(1, nt) = solution(nx - 1, nt)
-        solution(nx, nt) = solution(2, nt)
+        ! solution(1, 1, nt) = solution(1, nx - 1, nt)
+        ! solution(1, nx, nt) = solution(1, 2, nt)
 
         ! Increment the time value
-        nt = nt + 1
-        t_points(nt) = t_points(nt - 1) + dt
+        ! nt = nt + 1
+        ! t_points(nt) = t_points(nt - 1) + dt
 
-        ! Resize the time dimension of the arrays if needed
-        if (nt > nt_allocated / 2) then
-            nt_allocated = 2 * nt_allocated
+        ! ! Resize the time dimension of the arrays if needed
+        ! if (nt > nt_allocated / 2) then
+        !     nt_allocated = 2 * nt_allocated
 
-            call resize_arrays(new_size=nt_allocated, &
-                               keep_elements=size(t_points), &
-                               solution=solution, t_points=t_points)
-        end if
+        !     call resize_arrays(new_size=nt_allocated, &
+        !                        keep_elements=size(t_points), &
+        !                        solution=solution, t_points=t_points)
+        ! end if
 
-        select case (options%method)
-        case ("exact")
-           call step_exact(options=options, t=t_points(nt), x_points=x_points,&
-                           nt=nt, solution=solution)
-        case ("ftcs")
-           call step_ftcs(nx=nx, nt=nt, dx=dx, dt=dt, v=v, solution=solution)
-        case ("lax")
-           call step_lax(nx=nx, nt=nt, dx=dx, dt=dt, v=v, solution=solution)
-        case ("upwind")
-           call step_upwind(nx=nx, nt=nt, dx=dx, dt=dt, v=v, solution=solution)
-        case ("lax-wendroff")
-           call step_lax_wendroff(nx=nx, nt=nt, dx=dx, dt=dt, v=v, &
-                                  solution=solution)
-        case default
-           print "(a, a)", "ERROR: unknown method ", trim(options%method)
-           call exit(41)
-        end select
-    end do
+        ! select case (options%method)
+        ! case ("exact")
+        !    call step_exact(options=options, t=t_points(nt), x_points=x_points,&
+        !                    nt=nt, solution=solution)
+        ! case ("ftcs")
+        !    call step_ftcs(nx=nx, nt=nt, dx=dx, dt=dt, v=v, solution=solution)
+        ! case ("lax")
+        !    call step_lax(nx=nx, nt=nt, dx=dx, dt=dt, v=v, solution=solution)
+        ! case ("upwind")
+        !    call step_upwind(nx=nx, nt=nt, dx=dx, dt=dt, v=v, solution=solution)
+        ! case ("lax-wendroff")
+        !    call step_lax_wendroff(nx=nx, nt=nt, dx=dx, dt=dt, v=v, &
+        !                           solution=solution)
+        ! case default
+        !    print "(a, a)", "ERROR: unknown method ", trim(options%method)
+        !    call exit(41)
+        ! end select
+    ! end do
 end subroutine
 
 
@@ -228,13 +229,13 @@ subroutine solve_equation(options, solution, x_points, t_points)
     call set_initial(type=options%initial_conditions, &
                      x_points=x_points, solution=solution)
 
-    ! ! Calculate the steps
-    ! dx = x_points(2) - x_points(1)
-    ! dt = courant * dx / v
+    ! Calculate the steps
+    dx = x_points(2) - x_points(1)
+    dt = courant * dx / v
 
-    ! call iterate(options=options, tmax=tmax, dx=dx, dt=dt, v=v, &
-    !              nt=nt, nt_allocated=nt_allocated, solution=solution, &
-    !              x_points=x_points, t_points=t_points)
+    call iterate(options=options, tmax=tmax, dx=dx, dt=dt, v=v, &
+                 nt=nt, nt_allocated=nt_allocated, solution=solution, &
+                 x_points=x_points, t_points=t_points)
 
     ! ! Remove unused elements from t dimension of arrays
     ! call resize_arrays(new_size=nt, keep_elements=nt, &
