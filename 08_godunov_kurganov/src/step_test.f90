@@ -119,10 +119,10 @@ end
 
 subroutine step_upwind_test(failures)
     integer, intent(inout) :: failures
-    real(dp) :: solution(5, 3)
+    real(dp) :: solution(1, 5, 3)
 
     solution = -42
-    solution(:, 1) = [1.1_dp, 2._dp, 3.9_dp, 4._dp, 5._dp]
+    solution(1, :, 1) = [1.1_dp, 2._dp, 3.9_dp, 4._dp, 5._dp]
     call step_upwind(nx=5, nt=2, dx=0.01_dp, dt=0.05_dp, v=1._dp, &
                      solution=solution)
 
@@ -130,43 +130,43 @@ subroutine step_upwind_test(failures)
     ! First time index
     ! --------
 
-    call assert_approx(solution(1, 1), 1.1_dp, 1e-10_dp, __FILE__, &
+    call assert_approx(solution(1, 1, 1), 1.1_dp, 1e-10_dp, __FILE__, &
                        __LINE__, failures)
 
-    call assert_approx(solution(2, 1), 2._dp, 1e-10_dp, __FILE__, &
+    call assert_approx(solution(1, 2, 1), 2._dp, 1e-10_dp, __FILE__, &
                        __LINE__, failures)
 
-    call assert_approx(solution(3, 1), 3.9_dp, 1e-10_dp, __FILE__, &
+    call assert_approx(solution(1, 3, 1), 3.9_dp, 1e-10_dp, __FILE__, &
                        __LINE__, failures)
 
-    call assert_approx(solution(4, 1), 4._dp, 1e-10_dp, __FILE__, &
+    call assert_approx(solution(1, 4, 1), 4._dp, 1e-10_dp, __FILE__, &
                        __LINE__, failures)
 
-    call assert_approx(solution(5, 1), 5._dp, 1e-10_dp, __FILE__, &
+    call assert_approx(solution(1, 5, 1), 5._dp, 1e-10_dp, __FILE__, &
                        __LINE__, failures)
 
     ! Secon time index
     ! --------
 
     ! Ghost is untouched
-    call assert_approx(solution(1, 2), -42._dp, 1e-10_dp, __FILE__, &
+    call assert_approx(solution(1, 1, 2), -42._dp, 1e-10_dp, __FILE__, &
                        __LINE__, failures)
 
-    call assert_approx(solution(2, 2), -2.5_dp, 1e-10_dp, __FILE__, &
+    call assert_approx(solution(1, 2, 2), -2.5_dp, 1e-10_dp, __FILE__, &
                        __LINE__, failures)
 
-    call assert_approx(solution(3, 2), -5.6_dp, 1e-10_dp, __FILE__, &
+    call assert_approx(solution(1, 3, 2), -5.6_dp, 1e-10_dp, __FILE__, &
                        __LINE__, failures)
 
-    call assert_approx(solution(4, 2), 3.5_dp, 1e-10_dp, __FILE__, &
+    call assert_approx(solution(1, 4, 2), 3.5_dp, 1e-10_dp, __FILE__, &
                        __LINE__, failures)
 
     ! Ghost is untouched
-    call assert_approx(solution(5, 2), -42._dp, 1e-10_dp, __FILE__, &
+    call assert_approx(solution(1, 5, 2), -42._dp, 1e-10_dp, __FILE__, &
                        __LINE__, failures)
 
     ! Third time index is untouched
-    call assert_true(all((solution(:, 3) + 42._dp) < 1.e-10_dp), &
+    call assert_true(all((solution(:, :, 3) + 42._dp) < 1.e-10_dp), &
                      __FILE__, __LINE__, failures)
 end
 
@@ -475,7 +475,7 @@ subroutine step_test_all(failures)
 
     ! call step_ftcs_test(failures)
     ! call step_lax_test(failures)
-    ! call step_upwind_test(failures)
+    call step_upwind_test(failures)
     ! call step_lax_wendroff_test(failures)
     ! call step_exact_test__square(failures)
     ! call step_exact_test__sine(failures)

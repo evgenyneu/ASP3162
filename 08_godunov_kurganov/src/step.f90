@@ -169,17 +169,19 @@ end subroutine
 subroutine step_upwind(nx, nt, dx, dt, v, solution)
     integer, intent(in) :: nt, nx
     real(dp), intent(in) :: dx, dt, v
-    real(dp), intent(inout) :: solution(:,:)
+    real(dp), intent(inout) :: solution(:, :, :)
     real(dp) :: a
 
     a = v * dt / dx
 
     if (v > 0) then
-        solution(2 : nx - 1, nt) = solution(2 : nx - 1, nt - 1) &
-            - a * (solution(2 : nx - 1, nt - 1) - solution(1 : nx - 2, nt - 1))
+        solution(1, 2 : nx - 1, nt) = solution(1, 2 : nx - 1, nt - 1) &
+            - a * (solution(1, 2 : nx - 1, nt - 1) &
+                    - solution(1, 1 : nx - 2, nt - 1))
     else
-        solution(2 : nx - 1, nt) = solution(2 : nx - 1, nt - 1) &
-            - a * (solution(3 : nx, nt - 1) - solution(2 : nx - 1, nt - 1))
+        solution(1, 2 : nx - 1, nt) = solution(1, 2 : nx - 1, nt - 1) &
+            - a * (solution(1, 3 : nx, nt - 1) &
+                    - solution(1, 2 : nx - 1, nt - 1))
     end if
 end subroutine
 
