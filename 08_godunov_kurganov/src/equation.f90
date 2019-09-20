@@ -199,7 +199,7 @@ end subroutine
 !
 subroutine solve_equation(options, solution, x_points, t_points)
     type(program_settings), intent(in) :: options
-    real(dp), allocatable, intent(out) :: solution(:,:)
+    real(dp), allocatable, intent(out) :: solution(:, :, :)
     real(dp), allocatable, intent(out) :: x_points(:), t_points(:)
     real(dp) :: dx, tmin, tmax, dt, v, courant
     integer :: nt, nt_allocated
@@ -212,10 +212,10 @@ subroutine solve_equation(options, solution, x_points, t_points)
     v = options%velocity
     courant = options%courant_factor
 
-    ! ! Initialize the arrays
-    ! call set_grid(options=options, solution=solution, &
-    !               x_points=x_points, t_points=t_points, &
-    !               nt_allocated=nt_allocated)
+    ! Initialize the arrays
+    call set_grid(options=options, solution=solution, &
+                  x_points=x_points, t_points=t_points, &
+                  nt_allocated=nt_allocated)
 
     ! ! Set initial conditions
     ! ! -------
@@ -254,10 +254,10 @@ subroutine solve_and_create_output(options)
     real(dp), allocatable :: solution(:,:)
     real(dp), allocatable :: x_points(:), t_points(:)
 
-    call solve_equation(options, solution, x_points, t_points)
+    ! call solve_equation(options, solution, x_points, t_points)
 
-    call write_output(filename=options%output_path, &
-                      solution=solution, x_points=x_points, t_points=t_points)
+    ! call write_output(filename=options%output_path, &
+    !                   solution=solution, x_points=x_points, t_points=t_points)
 end subroutine
 
 
