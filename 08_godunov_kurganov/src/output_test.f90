@@ -12,14 +12,14 @@ contains
 
 subroutine write_output_test(failures)
     integer, intent(inout) :: failures
-    real(dp) :: solution(2, 3)
-    real(dp) :: solution_read(2, 3)
+    real(dp) :: solution(1, 2, 3)
+    real(dp) :: solution_read(1, 2, 3)
     real(dp) :: x_points(2), t_points(3)
     real(dp) :: x_points_read(2), t_points_read(3)
     integer, parameter :: unit=20
-    integer :: nx, nt
+    integer :: nx, nt, state_vector_dimension
 
-    solution = reshape((/ 1, 2, 3, 4, 5, 6 /), shape(solution))
+    solution = reshape([1, 2, 3, 4, 5, 6], shape(solution))
     x_points = [1.1_dp, 1.2_dp]
     t_points = [0.1_dp, 0.2_dp, 0.3_dp]
 
@@ -37,22 +37,46 @@ subroutine write_output_test(failures)
     read (unit) nt
     call assert_equal(nt, 3, __FILE__, __LINE__, failures)
 
+    read (unit) state_vector_dimension
+    call assert_equal(state_vector_dimension, 1, __FILE__, __LINE__, failures)
+
     read (unit) x_points_read
-    call assert_approx(x_points_read(1), 1.1_dp, 1e-5_dp, __FILE__, __LINE__, failures)
-    call assert_approx(x_points_read(2), 1.2_dp, 1e-5_dp, __FILE__, __LINE__, failures)
+
+    call assert_approx(x_points_read(1), 1.1_dp, 1e-5_dp, &
+                       __FILE__, __LINE__, failures)
+
+    call assert_approx(x_points_read(2), 1.2_dp, 1e-5_dp, &
+                       __FILE__, __LINE__, failures)
 
     read (unit) t_points_read
-    call assert_approx(t_points_read(1), 0.1_dp, 1e-5_dp, __FILE__, __LINE__, failures)
-    call assert_approx(t_points_read(2), 0.2_dp, 1e-5_dp, __FILE__, __LINE__, failures)
-    call assert_approx(t_points_read(3), 0.3_dp, 1e-5_dp, __FILE__, __LINE__, failures)
+
+    call assert_approx(t_points_read(1), 0.1_dp, 1e-5_dp, &
+                       __FILE__, __LINE__, failures)
+
+    call assert_approx(t_points_read(2), 0.2_dp, 1e-5_dp, &
+                       __FILE__, __LINE__, failures)
+
+    call assert_approx(t_points_read(3), 0.3_dp, 1e-5_dp, &
+                       __FILE__, __LINE__, failures)
 
     read (unit) solution_read
-    call assert_approx(solution_read(1,1), 1._dp, 1e-5_dp, __FILE__, __LINE__, failures)
-    call assert_approx(solution_read(2,1), 2._dp, 1e-5_dp, __FILE__, __LINE__, failures)
-    call assert_approx(solution_read(1,2), 3._dp, 1e-5_dp, __FILE__, __LINE__, failures)
-    call assert_approx(solution_read(2,2), 4._dp, 1e-5_dp, __FILE__, __LINE__, failures)
-    call assert_approx(solution_read(1,3), 5._dp, 1e-5_dp, __FILE__, __LINE__, failures)
-    call assert_approx(solution_read(2,3), 6._dp, 1e-5_dp, __FILE__, __LINE__, failures)
+    call assert_approx(solution_read(1, 1, 1), 1._dp, 1e-5_dp, &
+                       __FILE__, __LINE__, failures)
+
+    call assert_approx(solution_read(1, 2, 1), 2._dp, 1e-5_dp, &
+                       __FILE__, __LINE__, failures)
+
+    call assert_approx(solution_read(1, 1, 2), 3._dp, 1e-5_dp, &
+                       __FILE__, __LINE__, failures)
+
+    call assert_approx(solution_read(1, 2, 2), 4._dp, 1e-5_dp, &
+                       __FILE__, __LINE__, failures)
+
+    call assert_approx(solution_read(1, 1, 3), 5._dp, 1e-5_dp, &
+                       __FILE__, __LINE__, failures)
+
+    call assert_approx(solution_read(1, 2, 3), 6._dp, 1e-5_dp, &
+                       __FILE__, __LINE__, failures)
 
     close(unit=unit)
 

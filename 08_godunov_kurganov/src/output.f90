@@ -27,7 +27,7 @@ contains
 !
 subroutine write_output(filename, solution, x_points, t_points)
     character(len=*), intent(in) :: filename
-    real(dp), intent(in) :: solution(:, :)
+    real(dp), intent(in) :: solution(:, :, :)
     real(dp), intent(in) :: x_points(:), t_points(:)
 
     integer, parameter :: out_unit=20
@@ -37,6 +37,7 @@ subroutine write_output(filename, solution, x_points, t_points)
 
     write(out_unit) size(x_points)
     write(out_unit) size(t_points)
+    write(out_unit) size(solution, 1)
     write(out_unit) x_points
     write(out_unit) t_points
     write(out_unit) solution
