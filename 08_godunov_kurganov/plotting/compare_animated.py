@@ -48,7 +48,7 @@ def animate(i, lines, text, x_values, t_values, solution):
 
     for i_line, line in enumerate(lines):
         x = x_values[i_line]
-        y = solution[i_line][i, :]
+        y = solution[i_line][i, :, 0]
         line.set_data(x, y)
 
     artists = []
