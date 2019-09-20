@@ -113,7 +113,110 @@ subroutine resize_arrays_test(failures)
 end
 
 
-subroutine solve_eqn_test(failures)
+! subroutine solve_eqn_test(failures)
+!     integer, intent(inout) :: failures
+!     type(program_settings) :: options
+!     real(dp), allocatable :: solution(:, :, :)
+!     real(dp), allocatable :: x_points(:), t_points(:)
+
+!     options%method = 'ftcs'
+!     options%initial_conditions = 'square'
+!     options%x_start = 0
+!     options%x_end = 1
+!     options%nx = 100
+!     options%t_start = 0
+!     options%t_end = 1
+!     options%velocity = 1.0_dp
+!     options%courant_factor = 0.5_dp
+
+!     call solve_equation(options, solution, x_points, t_points)
+
+!     ! x_points
+!     ! ----------
+
+!     call assert_equal(size(x_points), 100, __FILE__, __LINE__, failures)
+
+!     call assert_approx(x_points(1), 0.005_dp, 1e-5_dp, __FILE__, &
+!         __LINE__, failures)
+
+!     call assert_approx(x_points(2), 0.015_dp, 1e-5_dp, __FILE__, &
+!         __LINE__, failures)
+
+!     call assert_approx(x_points(100), 0.995_dp, 1e-5_dp, __FILE__, &
+!         __LINE__, failures)
+
+!     ! t_points
+!     ! ----------
+
+!     ! call assert_equal(size(t_points), 201, __FILE__, __LINE__, failures)
+
+!     ! call assert_approx(t_points(1), 0.0_dp, 1e-5_dp, __FILE__, &
+!     !     __LINE__, failures)
+
+!     ! call assert_approx(t_points(2), 0.005_dp, 1e-5_dp, __FILE__, &
+!     !     __LINE__, failures)
+
+!     ! call assert_approx(t_points(200), 0.995_dp, 1e-5_dp, __FILE__, &
+!     !     __LINE__, failures)
+
+!     ! call assert_approx(t_points(201), 1._dp, 1e-5_dp, __FILE__, &
+!     !     __LINE__, failures)
+
+!     ! Solution size
+!     ! --------
+
+!     call assert_equal(size(solution, 1), 1, __FILE__, __LINE__, failures)
+!     call assert_equal(size(solution, 2), 100, __FILE__, __LINE__, failures)
+!     call assert_equal(size(solution, 3), 201, __FILE__, __LINE__, failures)
+
+!     ! Initial condition
+!     ! ----------
+
+!     call assert_approx(solution(1, 1, 1), 0.0_dp, 1e-5_dp, __FILE__, &
+!         __LINE__, failures)
+
+!     call assert_approx(solution(1, 2, 1), 0.0_dp, 1e-5_dp, __FILE__, &
+!         __LINE__, failures)
+
+!     call assert_approx(solution(1, 25, 1), 0.0_dp, 1e-5_dp, __FILE__, &
+!         __LINE__, failures)
+
+!     call assert_approx(solution(1, 26, 1), 1.0_dp, 1e-5_dp, __FILE__, &
+!         __LINE__, failures)
+
+!     call assert_approx(solution(1, 27, 1), 1.0_dp, 1e-5_dp, __FILE__, &
+!         __LINE__, failures)
+
+!     call assert_approx(solution(1, 75, 1), 1.0_dp, 1e-5_dp, __FILE__, &
+!         __LINE__, failures)
+
+!     call assert_approx(solution(1, 76, 1), 0.0_dp, 1e-5_dp, __FILE__, &
+!         __LINE__, failures)
+
+!     call assert_approx(solution(1, 100, 1), 0.0_dp, 1e-5_dp, __FILE__, &
+!         __LINE__, failures)
+
+
+!     ! ! Ensure there are no NaN values
+!     ! call assert_true(all(.not. ieee_is_nan(solution)), &
+!     !     __FILE__, __LINE__, failures)
+
+
+!     ! ! Solution
+!     ! ! ----------
+
+!     ! call assert_approx(solution(30, 20), -1.057714_dp, 1e-5_dp, __FILE__, &
+!     !     __LINE__, failures)
+
+!     ! call assert_approx(solution(50, 20), 1._dp, 1e-5_dp, __FILE__, &
+!     !     __LINE__, failures)
+
+!     ! call assert_approx(solution(70, 20), 0.72453224_dp, 1e-5_dp, __FILE__, &
+!     !     __LINE__, failures)
+! end
+
+
+subroutine solve_eqn_ftcs_test(failures)
     integer, intent(inout) :: failures
     type(program_settings) :: options
     real(dp), allocatable :: solution(:, :, :)
@@ -148,19 +251,19 @@ subroutine solve_eqn_test(failures)
     ! t_points
     ! ----------
 
-    ! call assert_equal(size(t_points), 201, __FILE__, __LINE__, failures)
+    call assert_equal(size(t_points), 201, __FILE__, __LINE__, failures)
 
-    ! call assert_approx(t_points(1), 0.0_dp, 1e-5_dp, __FILE__, &
-    !     __LINE__, failures)
+    call assert_approx(t_points(1), 0.0_dp, 1e-5_dp, __FILE__, &
+        __LINE__, failures)
 
-    ! call assert_approx(t_points(2), 0.005_dp, 1e-5_dp, __FILE__, &
-    !     __LINE__, failures)
+    call assert_approx(t_points(2), 0.005_dp, 1e-5_dp, __FILE__, &
+        __LINE__, failures)
 
-    ! call assert_approx(t_points(200), 0.995_dp, 1e-5_dp, __FILE__, &
-    !     __LINE__, failures)
+    call assert_approx(t_points(200), 0.995_dp, 1e-5_dp, __FILE__, &
+        __LINE__, failures)
 
-    ! call assert_approx(t_points(201), 1._dp, 1e-5_dp, __FILE__, &
-    !     __LINE__, failures)
+    call assert_approx(t_points(201), 1._dp, 1e-5_dp, __FILE__, &
+        __LINE__, failures)
 
     ! Solution size
     ! --------
@@ -197,430 +300,331 @@ subroutine solve_eqn_test(failures)
         __LINE__, failures)
 
 
-    ! ! Ensure there are no NaN values
-    ! call assert_true(all(.not. ieee_is_nan(solution)), &
-    !     __FILE__, __LINE__, failures)
+    ! Ensure there are no NaN values
+    call assert_true(all(.not. ieee_is_nan(solution)), &
+        __FILE__, __LINE__, failures)
 
 
-    ! ! Solution
-    ! ! ----------
+    ! Solution
+    ! ----------
 
-    ! call assert_approx(solution(30, 20), -1.057714_dp, 1e-5_dp, __FILE__, &
-    !     __LINE__, failures)
+    call assert_approx(solution(1, 30, 20), -1.057714_dp, 1e-5_dp, __FILE__, &
+        __LINE__, failures)
 
-    ! call assert_approx(solution(50, 20), 1._dp, 1e-5_dp, __FILE__, &
-    !     __LINE__, failures)
+    call assert_approx(solution(1, 50, 20), 1._dp, 1e-5_dp, __FILE__, &
+        __LINE__, failures)
 
-    ! call assert_approx(solution(70, 20), 0.72453224_dp, 1e-5_dp, __FILE__, &
-    !     __LINE__, failures)
+    call assert_approx(solution(1, 70, 20), 0.72453224_dp, 1e-5_dp, __FILE__, &
+        __LINE__, failures)
+end
+
+subroutine solve_eqn_lax_test(failures)
+    integer, intent(inout) :: failures
+    type(program_settings) :: options
+    real(dp), allocatable :: solution(:, :, :)
+    real(dp), allocatable :: x_points(:), t_points(:)
+
+    options%method = 'lax'
+    options%initial_conditions = 'square'
+    options%x_start = 0
+    options%x_end = 1
+    options%nx = 100
+    options%t_start = 0
+    options%t_end = 1
+    options%velocity = 1.0_dp
+    options%courant_factor = 0.5_dp
+
+    call solve_equation(options, solution, x_points, t_points)
+
+    ! x_points
+    ! ----------
+
+    call assert_equal(size(x_points), 100, __FILE__, __LINE__, failures)
+
+    call assert_approx(x_points(1), 0.005_dp, 1e-5_dp, __FILE__, &
+        __LINE__, failures)
+
+    call assert_approx(x_points(2), 0.015_dp, 1e-5_dp, __FILE__, &
+        __LINE__, failures)
+
+    call assert_approx(x_points(100), 0.995_dp, 1e-5_dp, __FILE__, &
+        __LINE__, failures)
+
+    ! t_points
+    ! ----------
+
+    call assert_equal(size(t_points), 201, __FILE__, __LINE__, failures)
+
+    call assert_approx(t_points(1), 0.0_dp, 1e-5_dp, __FILE__, &
+        __LINE__, failures)
+
+    call assert_approx(t_points(2), 0.005_dp, 1e-5_dp, __FILE__, &
+        __LINE__, failures)
+
+    call assert_approx(t_points(200), 0.995_dp, 1e-5_dp, __FILE__, &
+        __LINE__, failures)
+
+    call assert_approx(t_points(201), 1._dp, 1e-5_dp, __FILE__, &
+        __LINE__, failures)
+
+    ! Solution size
+    ! --------
+
+    call assert_equal(size(solution, 1), 1, __FILE__, __LINE__, failures)
+    call assert_equal(size(solution, 2), 100, __FILE__, __LINE__, failures)
+    call assert_equal(size(solution, 3), 201, __FILE__, __LINE__, failures)
+
+    ! Initial condition
+    ! ----------
+
+    call assert_approx(solution(1, 1, 1), 0.0_dp, 1e-5_dp, __FILE__, &
+        __LINE__, failures)
+
+    call assert_approx(solution(1, 2, 1), 0.0_dp, 1e-5_dp, __FILE__, &
+        __LINE__, failures)
+
+    call assert_approx(solution(1, 25, 1), 0.0_dp, 1e-5_dp, __FILE__, &
+        __LINE__, failures)
+
+    call assert_approx(solution(1, 26, 1), 1.0_dp, 1e-5_dp, __FILE__, &
+        __LINE__, failures)
+
+    call assert_approx(solution(1, 27, 1), 1.0_dp, 1e-5_dp, __FILE__, &
+        __LINE__, failures)
+
+    call assert_approx(solution(1, 75, 1), 1.0_dp, 1e-5_dp, __FILE__, &
+        __LINE__, failures)
+
+    call assert_approx(solution(1, 76, 1), 0.0_dp, 1e-5_dp, __FILE__, &
+        __LINE__, failures)
+
+    call assert_approx(solution(1, 100, 1), 0.0_dp, 1e-5_dp, __FILE__, &
+        __LINE__, failures)
+
+
+    ! Ensure there are no NaN values
+    call assert_true(all(.not. ieee_is_nan(solution)), &
+        __FILE__, __LINE__, failures)
+
+
+    ! Solution
+    ! ----------
+
+    call assert_approx(solution(1, 1, 100), 0.995249_dp, 1e-5_dp, __FILE__, &
+        __LINE__, failures)
+
+    call assert_approx(solution(1, 50, 100), 0.3447980e-2_dp, 1e-5_dp, __FILE__, &
+        __LINE__, failures)
+
+    call assert_approx(solution(1, 100, 100), 0.99655201_dp, 1e-5_dp, __FILE__, &
+        __LINE__, failures)
 end
 
 
-! subroutine solve_eqn_ftcs_test(failures)
-!     integer, intent(inout) :: failures
-!     type(program_settings) :: options
-!     real(dp), allocatable :: solution(:,:)
-!     real(dp), allocatable :: x_points(:), t_points(:)
+subroutine solve_eqn_upwind_test(failures)
+    integer, intent(inout) :: failures
+    type(program_settings) :: options
+    real(dp), allocatable :: solution(:, :, :)
+    real(dp), allocatable :: x_points(:), t_points(:)
 
-!     options%method = 'ftcs'
-!     options%initial_conditions = 'square'
-!     options%x_start = 0
-!     options%x_end = 1
-!     options%nx = 100
-!     options%t_start = 0
-!     options%t_end = 1
-!     options%velocity = 1.0_dp
-!     options%courant_factor = 0.5_dp
+    options%method = 'upwind'
+    options%initial_conditions = 'square'
+    options%x_start = 0
+    options%x_end = 1
+    options%nx = 100
+    options%t_start = 0
+    options%t_end = 1
+    options%velocity = 1.0_dp
+    options%courant_factor = 0.5_dp
 
-!     call solve_equation(options, solution, x_points, t_points)
+    call solve_equation(options, solution, x_points, t_points)
 
-!     ! x_points
-!     ! ----------
+    ! x_points
+    ! ----------
 
-!     call assert_equal(size(x_points), 100, __FILE__, __LINE__, failures)
+    call assert_equal(size(x_points), 100, __FILE__, __LINE__, failures)
 
-!     call assert_approx(x_points(1), 0.005_dp, 1e-5_dp, __FILE__, &
-!         __LINE__, failures)
+    call assert_approx(x_points(1), 0.005_dp, 1e-5_dp, __FILE__, &
+        __LINE__, failures)
 
-!     call assert_approx(x_points(2), 0.015_dp, 1e-5_dp, __FILE__, &
-!         __LINE__, failures)
+    call assert_approx(x_points(2), 0.015_dp, 1e-5_dp, __FILE__, &
+        __LINE__, failures)
 
-!     call assert_approx(x_points(100), 0.995_dp, 1e-5_dp, __FILE__, &
-!         __LINE__, failures)
+    call assert_approx(x_points(100), 0.995_dp, 1e-5_dp, __FILE__, &
+        __LINE__, failures)
 
-!     ! t_points
-!     ! ----------
+    ! t_points
+    ! ----------
 
-!     call assert_equal(size(t_points), 201, __FILE__, __LINE__, failures)
+    call assert_equal(size(t_points), 201, __FILE__, __LINE__, failures)
 
-!     call assert_approx(t_points(1), 0.0_dp, 1e-5_dp, __FILE__, &
-!         __LINE__, failures)
+    call assert_approx(t_points(1), 0.0_dp, 1e-5_dp, __FILE__, &
+        __LINE__, failures)
 
-!     call assert_approx(t_points(2), 0.005_dp, 1e-5_dp, __FILE__, &
-!         __LINE__, failures)
+    call assert_approx(t_points(2), 0.005_dp, 1e-5_dp, __FILE__, &
+        __LINE__, failures)
 
-!     call assert_approx(t_points(200), 0.995_dp, 1e-5_dp, __FILE__, &
-!         __LINE__, failures)
+    call assert_approx(t_points(200), 0.995_dp, 1e-5_dp, __FILE__, &
+        __LINE__, failures)
 
-!     call assert_approx(t_points(201), 1._dp, 1e-5_dp, __FILE__, &
-!         __LINE__, failures)
+    call assert_approx(t_points(201), 1._dp, 1e-5_dp, __FILE__, &
+        __LINE__, failures)
 
-!     ! Solution size
-!     ! --------
+    ! Solution size
+    ! --------
 
-!     call assert_equal(size(solution, 1), 100, __FILE__, __LINE__, failures)
-!     call assert_equal(size(solution, 2), 201, __FILE__, __LINE__, failures)
+    call assert_equal(size(solution, 1), 1, __FILE__, __LINE__, failures)
+    call assert_equal(size(solution, 2), 100, __FILE__, __LINE__, failures)
+    call assert_equal(size(solution, 3), 201, __FILE__, __LINE__, failures)
 
-!     ! Initial condition
-!     ! ----------
+    ! Initial condition
+    ! ----------
 
-!     call assert_approx(solution(1, 1), 0.0_dp, 1e-5_dp, __FILE__, &
-!         __LINE__, failures)
+    call assert_approx(solution(1, 1, 1), 0.0_dp, 1e-5_dp, __FILE__, &
+        __LINE__, failures)
 
-!     call assert_approx(solution(2, 1), 0.0_dp, 1e-5_dp, __FILE__, &
-!         __LINE__, failures)
+    call assert_approx(solution(1, 2, 1), 0.0_dp, 1e-5_dp, __FILE__, &
+        __LINE__, failures)
 
-!     call assert_approx(solution(25, 1), 0.0_dp, 1e-5_dp, __FILE__, &
-!         __LINE__, failures)
+    call assert_approx(solution(1, 25, 1), 0.0_dp, 1e-5_dp, __FILE__, &
+        __LINE__, failures)
 
-!     call assert_approx(solution(26, 1), 1.0_dp, 1e-5_dp, __FILE__, &
-!         __LINE__, failures)
+    call assert_approx(solution(1, 26, 1), 1.0_dp, 1e-5_dp, __FILE__, &
+        __LINE__, failures)
 
-!     call assert_approx(solution(27, 1), 1.0_dp, 1e-5_dp, __FILE__, &
-!         __LINE__, failures)
+    call assert_approx(solution(1, 27, 1), 1.0_dp, 1e-5_dp, __FILE__, &
+        __LINE__, failures)
 
-!     call assert_approx(solution(75, 1), 1.0_dp, 1e-5_dp, __FILE__, &
-!         __LINE__, failures)
+    call assert_approx(solution(1, 75, 1), 1.0_dp, 1e-5_dp, __FILE__, &
+        __LINE__, failures)
 
-!     call assert_approx(solution(76, 1), 0.0_dp, 1e-5_dp, __FILE__, &
-!         __LINE__, failures)
+    call assert_approx(solution(1, 76, 1), 0.0_dp, 1e-5_dp, __FILE__, &
+        __LINE__, failures)
 
-!     call assert_approx(solution(100, 1), 0.0_dp, 1e-5_dp, __FILE__, &
-!         __LINE__, failures)
+    call assert_approx(solution(1, 100, 1), 0.0_dp, 1e-5_dp, __FILE__, &
+        __LINE__, failures)
 
 
-!     ! Ensure there are no NaN values
-!     call assert_true(all(.not. ieee_is_nan(solution)), &
-!         __FILE__, __LINE__, failures)
+    ! Ensure there are no NaN values
+    call assert_true(all(.not. ieee_is_nan(solution)), &
+        __FILE__, __LINE__, failures)
 
 
-!     ! Solution
-!     ! ----------
+    ! Solution
+    ! ----------
 
-!     call assert_approx(solution(30, 20), -1.057714_dp, 1e-5_dp, __FILE__, &
-!         __LINE__, failures)
+    call assert_approx(solution(1, 1, 100), 0.999999532028_dp, 1e-10_dp, &
+        __FILE__, __LINE__, failures)
 
-!     call assert_approx(solution(50, 20), 1._dp, 1e-5_dp, __FILE__, &
-!         __LINE__, failures)
+    call assert_approx(solution(1, 50, 100), 0.27665724745e-6_dp, 1e-10_dp, &
+        __FILE__, __LINE__, failures)
 
-!     call assert_approx(solution(70, 20), 0.72453224_dp, 1e-5_dp, __FILE__, &
-!         __LINE__, failures)
-! end
+    call assert_approx(solution(1, 100, 100), 0.999999723342_dp, 1e-10_dp, &
+        __FILE__, __LINE__, failures)
+end
 
-! subroutine solve_eqn_lax_test(failures)
-!     integer, intent(inout) :: failures
-!     type(program_settings) :: options
-!     real(dp), allocatable :: solution(:,:)
-!     real(dp), allocatable :: x_points(:), t_points(:)
 
-!     options%method = 'lax'
-!     options%initial_conditions = 'square'
-!     options%x_start = 0
-!     options%x_end = 1
-!     options%nx = 100
-!     options%t_start = 0
-!     options%t_end = 1
-!     options%velocity = 1.0_dp
-!     options%courant_factor = 0.5_dp
+subroutine solve_eqn_lax_wendroff_test(failures)
+    integer, intent(inout) :: failures
+    type(program_settings) :: options
+    real(dp), allocatable :: solution(:, :, :)
+    real(dp), allocatable :: x_points(:), t_points(:)
 
-!     call solve_equation(options, solution, x_points, t_points)
+    options%method = 'lax-wendroff'
+    options%initial_conditions = 'square'
+    options%x_start = 0
+    options%x_end = 1
+    options%nx = 100
+    options%t_start = 0
+    options%t_end = 1
+    options%velocity = 1.0_dp
+    options%courant_factor = 0.5_dp
 
-!     ! x_points
-!     ! ----------
+    call solve_equation(options, solution, x_points, t_points)
 
-!     call assert_equal(size(x_points), 100, __FILE__, __LINE__, failures)
+    ! x_points
+    ! ----------
 
-!     call assert_approx(x_points(1), 0.005_dp, 1e-5_dp, __FILE__, &
-!         __LINE__, failures)
+    call assert_equal(size(x_points), 100, __FILE__, __LINE__, failures)
 
-!     call assert_approx(x_points(2), 0.015_dp, 1e-5_dp, __FILE__, &
-!         __LINE__, failures)
+    call assert_approx(x_points(1), 0.005_dp, 1e-5_dp, __FILE__, &
+        __LINE__, failures)
 
-!     call assert_approx(x_points(100), 0.995_dp, 1e-5_dp, __FILE__, &
-!         __LINE__, failures)
+    call assert_approx(x_points(2), 0.015_dp, 1e-5_dp, __FILE__, &
+        __LINE__, failures)
 
-!     ! t_points
-!     ! ----------
+    call assert_approx(x_points(100), 0.995_dp, 1e-5_dp, __FILE__, &
+        __LINE__, failures)
 
-!     call assert_equal(size(t_points), 201, __FILE__, __LINE__, failures)
+    ! t_points
+    ! ----------
 
-!     call assert_approx(t_points(1), 0.0_dp, 1e-5_dp, __FILE__, &
-!         __LINE__, failures)
+    call assert_equal(size(t_points), 201, __FILE__, __LINE__, failures)
 
-!     call assert_approx(t_points(2), 0.005_dp, 1e-5_dp, __FILE__, &
-!         __LINE__, failures)
+    call assert_approx(t_points(1), 0.0_dp, 1e-5_dp, __FILE__, &
+        __LINE__, failures)
 
-!     call assert_approx(t_points(200), 0.995_dp, 1e-5_dp, __FILE__, &
-!         __LINE__, failures)
+    call assert_approx(t_points(2), 0.005_dp, 1e-5_dp, __FILE__, &
+        __LINE__, failures)
 
-!     call assert_approx(t_points(201), 1._dp, 1e-5_dp, __FILE__, &
-!         __LINE__, failures)
+    call assert_approx(t_points(200), 0.995_dp, 1e-5_dp, __FILE__, &
+        __LINE__, failures)
 
-!     ! Solution size
-!     ! --------
+    call assert_approx(t_points(201), 1._dp, 1e-5_dp, __FILE__, &
+        __LINE__, failures)
 
-!     call assert_equal(size(solution, 1), 100, __FILE__, __LINE__, failures)
-!     call assert_equal(size(solution, 2), 201, __FILE__, __LINE__, failures)
+    ! Solution size
+    ! --------
 
-!     ! Initial condition
-!     ! ----------
+    call assert_equal(size(solution, 1), 1, __FILE__, __LINE__, failures)
+    call assert_equal(size(solution, 2), 100, __FILE__, __LINE__, failures)
+    call assert_equal(size(solution, 3), 201, __FILE__, __LINE__, failures)
 
-!     call assert_approx(solution(1, 1), 0.0_dp, 1e-5_dp, __FILE__, &
-!         __LINE__, failures)
+    ! Initial condition
+    ! ----------
 
-!     call assert_approx(solution(2, 1), 0.0_dp, 1e-5_dp, __FILE__, &
-!         __LINE__, failures)
+    call assert_approx(solution(1, 1, 1), 0.0_dp, 1e-5_dp, __FILE__, &
+        __LINE__, failures)
 
-!     call assert_approx(solution(25, 1), 0.0_dp, 1e-5_dp, __FILE__, &
-!         __LINE__, failures)
+    call assert_approx(solution(1, 2, 1), 0.0_dp, 1e-5_dp, __FILE__, &
+        __LINE__, failures)
 
-!     call assert_approx(solution(26, 1), 1.0_dp, 1e-5_dp, __FILE__, &
-!         __LINE__, failures)
+    call assert_approx(solution(1, 25, 1), 0.0_dp, 1e-5_dp, __FILE__, &
+        __LINE__, failures)
 
-!     call assert_approx(solution(27, 1), 1.0_dp, 1e-5_dp, __FILE__, &
-!         __LINE__, failures)
+    call assert_approx(solution(1, 26, 1), 1.0_dp, 1e-5_dp, __FILE__, &
+        __LINE__, failures)
 
-!     call assert_approx(solution(75, 1), 1.0_dp, 1e-5_dp, __FILE__, &
-!         __LINE__, failures)
+    call assert_approx(solution(1, 27, 1), 1.0_dp, 1e-5_dp, __FILE__, &
+        __LINE__, failures)
 
-!     call assert_approx(solution(76, 1), 0.0_dp, 1e-5_dp, __FILE__, &
-!         __LINE__, failures)
+    call assert_approx(solution(1, 75, 1), 1.0_dp, 1e-5_dp, __FILE__, &
+        __LINE__, failures)
 
-!     call assert_approx(solution(100, 1), 0.0_dp, 1e-5_dp, __FILE__, &
-!         __LINE__, failures)
+    call assert_approx(solution(1, 76, 1), 0.0_dp, 1e-5_dp, __FILE__, &
+        __LINE__, failures)
 
+    call assert_approx(solution(1, 100, 1), 0.0_dp, 1e-5_dp, __FILE__, &
+        __LINE__, failures)
 
-!     ! Ensure there are no NaN values
-!     call assert_true(all(.not. ieee_is_nan(solution)), &
-!         __FILE__, __LINE__, failures)
 
+    ! Ensure there are no NaN values
+    call assert_true(all(.not. ieee_is_nan(solution)), &
+        __FILE__, __LINE__, failures)
 
-!     ! Solution
-!     ! ----------
 
-!     call assert_approx(solution(1, 100), 0.995249_dp, 1e-5_dp, __FILE__, &
-!         __LINE__, failures)
+    ! Solution
+    ! ----------
 
-!     call assert_approx(solution(50, 100), 0.3447980e-2_dp, 1e-5_dp, __FILE__, &
-!         __LINE__, failures)
+    call assert_approx(solution(1, 1, 100), 0.99700430617_dp, 1e-10_dp, &
+        __FILE__, __LINE__, failures)
 
-!     call assert_approx(solution(100, 100), 0.99655201_dp, 1e-5_dp, __FILE__, &
-!         __LINE__, failures)
-! end
+    call assert_approx(solution(1, 50, 100), 0.184237044915e-2_dp, 1e-10_dp, &
+        __FILE__, __LINE__, failures)
 
-
-! subroutine solve_eqn_upwind_test(failures)
-!     integer, intent(inout) :: failures
-!     type(program_settings) :: options
-!     real(dp), allocatable :: solution(:,:)
-!     real(dp), allocatable :: x_points(:), t_points(:)
-
-!     options%method = 'upwind'
-!     options%initial_conditions = 'square'
-!     options%x_start = 0
-!     options%x_end = 1
-!     options%nx = 100
-!     options%t_start = 0
-!     options%t_end = 1
-!     options%velocity = 1.0_dp
-!     options%courant_factor = 0.5_dp
-
-!     call solve_equation(options, solution, x_points, t_points)
-
-!     ! x_points
-!     ! ----------
-
-!     call assert_equal(size(x_points), 100, __FILE__, __LINE__, failures)
-
-!     call assert_approx(x_points(1), 0.005_dp, 1e-5_dp, __FILE__, &
-!         __LINE__, failures)
-
-!     call assert_approx(x_points(2), 0.015_dp, 1e-5_dp, __FILE__, &
-!         __LINE__, failures)
-
-!     call assert_approx(x_points(100), 0.995_dp, 1e-5_dp, __FILE__, &
-!         __LINE__, failures)
-
-!     ! t_points
-!     ! ----------
-
-!     call assert_equal(size(t_points), 201, __FILE__, __LINE__, failures)
-
-!     call assert_approx(t_points(1), 0.0_dp, 1e-5_dp, __FILE__, &
-!         __LINE__, failures)
-
-!     call assert_approx(t_points(2), 0.005_dp, 1e-5_dp, __FILE__, &
-!         __LINE__, failures)
-
-!     call assert_approx(t_points(200), 0.995_dp, 1e-5_dp, __FILE__, &
-!         __LINE__, failures)
-
-!     call assert_approx(t_points(201), 1._dp, 1e-5_dp, __FILE__, &
-!         __LINE__, failures)
-
-!     ! Solution size
-!     ! --------
-
-!     call assert_equal(size(solution, 1), 100, __FILE__, __LINE__, failures)
-!     call assert_equal(size(solution, 2), 201, __FILE__, __LINE__, failures)
-
-!     ! Initial condition
-!     ! ----------
-
-!     call assert_approx(solution(1, 1), 0.0_dp, 1e-5_dp, __FILE__, &
-!         __LINE__, failures)
-
-!     call assert_approx(solution(2, 1), 0.0_dp, 1e-5_dp, __FILE__, &
-!         __LINE__, failures)
-
-!     call assert_approx(solution(25, 1), 0.0_dp, 1e-5_dp, __FILE__, &
-!         __LINE__, failures)
-
-!     call assert_approx(solution(26, 1), 1.0_dp, 1e-5_dp, __FILE__, &
-!         __LINE__, failures)
-
-!     call assert_approx(solution(27, 1), 1.0_dp, 1e-5_dp, __FILE__, &
-!         __LINE__, failures)
-
-!     call assert_approx(solution(75, 1), 1.0_dp, 1e-5_dp, __FILE__, &
-!         __LINE__, failures)
-
-!     call assert_approx(solution(76, 1), 0.0_dp, 1e-5_dp, __FILE__, &
-!         __LINE__, failures)
-
-!     call assert_approx(solution(100, 1), 0.0_dp, 1e-5_dp, __FILE__, &
-!         __LINE__, failures)
-
-
-!     ! Ensure there are no NaN values
-!     call assert_true(all(.not. ieee_is_nan(solution)), &
-!         __FILE__, __LINE__, failures)
-
-
-!     ! Solution
-!     ! ----------
-
-!     call assert_approx(solution(1, 100), 0.999999532028_dp, 1e-10_dp, &
-!         __FILE__, __LINE__, failures)
-
-!     call assert_approx(solution(50, 100), 0.27665724745e-6_dp, 1e-10_dp, &
-!         __FILE__, __LINE__, failures)
-
-!     call assert_approx(solution(100, 100), 0.999999723342_dp, 1e-10_dp, &
-!         __FILE__, __LINE__, failures)
-! end
-
-
-! subroutine solve_eqn_lax_wendroff_test(failures)
-!     integer, intent(inout) :: failures
-!     type(program_settings) :: options
-!     real(dp), allocatable :: solution(:,:)
-!     real(dp), allocatable :: x_points(:), t_points(:)
-
-!     options%method = 'lax-wendroff'
-!     options%initial_conditions = 'square'
-!     options%x_start = 0
-!     options%x_end = 1
-!     options%nx = 100
-!     options%t_start = 0
-!     options%t_end = 1
-!     options%velocity = 1.0_dp
-!     options%courant_factor = 0.5_dp
-
-!     call solve_equation(options, solution, x_points, t_points)
-
-!     ! x_points
-!     ! ----------
-
-!     call assert_equal(size(x_points), 100, __FILE__, __LINE__, failures)
-
-!     call assert_approx(x_points(1), 0.005_dp, 1e-5_dp, __FILE__, &
-!         __LINE__, failures)
-
-!     call assert_approx(x_points(2), 0.015_dp, 1e-5_dp, __FILE__, &
-!         __LINE__, failures)
-
-!     call assert_approx(x_points(100), 0.995_dp, 1e-5_dp, __FILE__, &
-!         __LINE__, failures)
-
-!     ! t_points
-!     ! ----------
-
-!     call assert_equal(size(t_points), 201, __FILE__, __LINE__, failures)
-
-!     call assert_approx(t_points(1), 0.0_dp, 1e-5_dp, __FILE__, &
-!         __LINE__, failures)
-
-!     call assert_approx(t_points(2), 0.005_dp, 1e-5_dp, __FILE__, &
-!         __LINE__, failures)
-
-!     call assert_approx(t_points(200), 0.995_dp, 1e-5_dp, __FILE__, &
-!         __LINE__, failures)
-
-!     call assert_approx(t_points(201), 1._dp, 1e-5_dp, __FILE__, &
-!         __LINE__, failures)
-
-!     ! Solution size
-!     ! --------
-
-!     call assert_equal(size(solution, 1), 100, __FILE__, __LINE__, failures)
-!     call assert_equal(size(solution, 2), 201, __FILE__, __LINE__, failures)
-
-!     ! Initial condition
-!     ! ----------
-
-!     call assert_approx(solution(1, 1), 0.0_dp, 1e-5_dp, __FILE__, &
-!         __LINE__, failures)
-
-!     call assert_approx(solution(2, 1), 0.0_dp, 1e-5_dp, __FILE__, &
-!         __LINE__, failures)
-
-!     call assert_approx(solution(25, 1), 0.0_dp, 1e-5_dp, __FILE__, &
-!         __LINE__, failures)
-
-!     call assert_approx(solution(26, 1), 1.0_dp, 1e-5_dp, __FILE__, &
-!         __LINE__, failures)
-
-!     call assert_approx(solution(27, 1), 1.0_dp, 1e-5_dp, __FILE__, &
-!         __LINE__, failures)
-
-!     call assert_approx(solution(75, 1), 1.0_dp, 1e-5_dp, __FILE__, &
-!         __LINE__, failures)
-
-!     call assert_approx(solution(76, 1), 0.0_dp, 1e-5_dp, __FILE__, &
-!         __LINE__, failures)
-
-!     call assert_approx(solution(100, 1), 0.0_dp, 1e-5_dp, __FILE__, &
-!         __LINE__, failures)
-
-
-!     ! Ensure there are no NaN values
-!     call assert_true(all(.not. ieee_is_nan(solution)), &
-!         __FILE__, __LINE__, failures)
-
-
-!     ! Solution
-!     ! ----------
-
-!     call assert_approx(solution(1, 100), 0.99700430617_dp, 1e-10_dp, &
-!         __FILE__, __LINE__, failures)
-
-!     call assert_approx(solution(50, 100), 0.184237044915e-2_dp, 1e-10_dp, &
-!         __FILE__, __LINE__, failures)
-
-!     call assert_approx(solution(100, 100), 0.99815762955_dp, 1e-10_dp, &
-!         __FILE__, __LINE__, failures)
-! end
+    call assert_approx(solution(1, 100, 100), 0.99815762955_dp, 1e-10_dp, &
+        __FILE__, __LINE__, failures)
+end
 
 
 ! subroutine solve_and_create_output_test(failures)
@@ -753,13 +757,13 @@ end
 subroutine equation_test_all(failures)
     integer, intent(inout) :: failures
 
-    call solve_eqn_test(failures)
+    ! call solve_eqn_test(failures)
     call remove_ghost_cells_test(failures)
     call resize_arrays_test(failures)
-    ! call solve_eqn_ftcs_test(failures)
-    ! call solve_eqn_lax_test(failures)
-    ! call solve_eqn_upwind_test(failures)
-    ! call solve_eqn_lax_wendroff_test(failures)
+    call solve_eqn_ftcs_test(failures)
+    call solve_eqn_lax_test(failures)
+    call solve_eqn_upwind_test(failures)
+    call solve_eqn_lax_wendroff_test(failures)
     ! call solve_and_create_output_test(failures)
     ! call read_settings_solve_and_create_output_test(failures)
 end
