@@ -473,13 +473,13 @@ end
 subroutine step_test_all(failures)
     integer, intent(inout) :: failures
 
-    call step_ftcs_test(failures)
-    call step_lax_test(failures)
-    call step_upwind_test(failures)
-    call step_lax_wendroff_test(failures)
-    call step_exact_test__square(failures)
-    call step_exact_test__sine(failures)
-    call step_exact_test__sine__custom_xmin_xmax(failures)
+    ! call step_ftcs_test(failures)
+    ! call step_lax_test(failures)
+    ! call step_upwind_test(failures)
+    ! call step_lax_wendroff_test(failures)
+    ! call step_exact_test__square(failures)
+    ! call step_exact_test__sine(failures)
+    ! call step_exact_test__sine__custom_xmin_xmax(failures)
 end
 
 end module StepTest

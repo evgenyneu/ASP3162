@@ -61,9 +61,9 @@ subroutine step_exact(options, t, nt, x_points, solution)
         x_points_shifted = x_points_shifted + xmax - xmin
     end where
 
-    call calculate_initial(type=options%initial_conditions, &
-                           x_points=x_points_shifted, &
-                           solution=solution(:, nt))
+    ! call calculate_initial(type=options%initial_conditions, &
+    !                        x_points=x_points_shifted, &
+    !                        solution=solution(:, nt))
 end subroutine
 
 

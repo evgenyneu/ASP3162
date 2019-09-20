@@ -11,7 +11,7 @@ contains
 subroutine set_initial_test__square(failures)
     integer, intent(inout) :: failures
     real(dp) :: x_points(9)
-    real(dp) :: solution(11, 3)
+    real(dp) :: solution(1, 11, 3)
 
     solution = -42._dp
 
@@ -21,38 +21,38 @@ subroutine set_initial_test__square(failures)
     call set_initial(type="square", x_points=x_points, solution=solution)
 
     ! ghost
-    call assert_approx(solution(1, 1), -42._dp, 1e-10_dp, __FILE__, &
+    call assert_approx(solution(1, 1, 1), -42._dp, 1e-10_dp, __FILE__, &
         __LINE__, failures)
 
-    call assert_approx(solution(2, 1), 0._dp, 1e-10_dp, __FILE__, &
+    call assert_approx(solution(1, 2, 1), 0._dp, 1e-10_dp, __FILE__, &
         __LINE__, failures)
 
-    call assert_approx(solution(3, 1), 0._dp, 1e-10_dp, __FILE__, &
+    call assert_approx(solution(1, 3, 1), 0._dp, 1e-10_dp, __FILE__, &
         __LINE__, failures)
 
-    call assert_approx(solution(4, 1), 0._dp, 1e-10_dp, __FILE__, &
+    call assert_approx(solution(1, 4, 1), 0._dp, 1e-10_dp, __FILE__, &
         __LINE__, failures)
 
-    call assert_approx(solution(5, 1), 0._dp, 1e-10_dp, __FILE__, &
+    call assert_approx(solution(1, 5, 1), 0._dp, 1e-10_dp, __FILE__, &
         __LINE__, failures)
 
-    call assert_approx(solution(6, 1), 1._dp, 1e-10_dp, __FILE__, &
+    call assert_approx(solution(1, 6, 1), 1._dp, 1e-10_dp, __FILE__, &
         __LINE__, failures)
 
-    call assert_approx(solution(7, 1), 1._dp, 1e-10_dp, __FILE__, &
+    call assert_approx(solution(1, 7, 1), 1._dp, 1e-10_dp, __FILE__, &
         __LINE__, failures)
 
-    call assert_approx(solution(8, 1), 1._dp, 1e-10_dp, __FILE__, &
+    call assert_approx(solution(1, 8, 1), 1._dp, 1e-10_dp, __FILE__, &
         __LINE__, failures)
 
-    call assert_approx(solution(9, 1), 0._dp, 1e-10_dp, __FILE__, &
+    call assert_approx(solution(1, 9, 1), 0._dp, 1e-10_dp, __FILE__, &
         __LINE__, failures)
 
-    call assert_approx(solution(10, 1), 0._dp, 1e-10_dp, __FILE__, &
+    call assert_approx(solution(1, 10, 1), 0._dp, 1e-10_dp, __FILE__, &
         __LINE__, failures)
 
     ! ghost
-    call assert_approx(solution(11, 1), -42._dp, 1e-10_dp, __FILE__, &
+    call assert_approx(solution(1, 11, 1), -42._dp, 1e-10_dp, __FILE__, &
         __LINE__, failures)
 end
 
@@ -60,7 +60,7 @@ end
 subroutine set_initial_test__sine(failures)
     integer, intent(inout) :: failures
     real(dp) :: x_points(9)
-    real(dp) :: solution(11, 3)
+    real(dp) :: solution(1, 11, 3)
 
     solution = -42._dp
 
@@ -70,38 +70,38 @@ subroutine set_initial_test__sine(failures)
     call set_initial(type="sine", x_points=x_points, solution=solution)
 
     ! ghost
-    call assert_approx(solution(1, 1), -42._dp, 1e-10_dp, __FILE__, &
+    call assert_approx(solution(1, 1, 1), -42._dp, 1e-10_dp, __FILE__, &
         __LINE__, failures)
 
-    call assert_approx(solution(2, 1), 0._dp, 1e-10_dp, __FILE__, &
+    call assert_approx(solution(1, 2, 1), 0._dp, 1e-10_dp, __FILE__, &
         __LINE__, failures)
 
-    call assert_approx(solution(3, 1), 0.587785252292_dp, 1e-10_dp, &
+    call assert_approx(solution(1, 3, 1), 0.587785252292_dp, 1e-10_dp, &
                        __FILE__, __LINE__, failures)
 
-    call assert_approx(solution(4, 1), 0.998026728428_dp, 1e-10_dp, &
+    call assert_approx(solution(1, 4, 1), 0.998026728428_dp, 1e-10_dp, &
                        __FILE__, __LINE__, failures)
 
-    call assert_approx(solution(5, 1), 1._dp, 1e-10_dp, &
+    call assert_approx(solution(1, 5, 1), 1._dp, 1e-10_dp, &
                       __FILE__, __LINE__, failures)
 
-    call assert_approx(solution(6, 1), 0.99802672842_dp, 1e-10_dp, &
+    call assert_approx(solution(1, 6, 1), 0.99802672842_dp, 1e-10_dp, &
                       __FILE__, __LINE__, failures)
 
-    call assert_approx(solution(7, 1), -0.99802672842_dp, 1e-10_dp, &
+    call assert_approx(solution(1, 7, 1), -0.99802672842_dp, 1e-10_dp, &
                       __FILE__, __LINE__, failures)
 
-    call assert_approx(solution(8, 1), -1._dp, 1e-10_dp, &
+    call assert_approx(solution(1, 8, 1), -1._dp, 1e-10_dp, &
                       __FILE__, __LINE__, failures)
 
-    call assert_approx(solution(9, 1), -0.99802672842_dp, 1e-10_dp, &
+    call assert_approx(solution(1, 9, 1), -0.99802672842_dp, 1e-10_dp, &
                       __FILE__, __LINE__, failures)
 
-    call assert_approx(solution(10, 1), 0._dp, 1e-10_dp, &
+    call assert_approx(solution(1, 10, 1), 0._dp, 1e-10_dp, &
                       __FILE__, __LINE__, failures)
 
     ! ghost
-    call assert_approx(solution(11, 1), -42._dp, 1e-10_dp, __FILE__, &
+    call assert_approx(solution(1, 11, 1), -42._dp, 1e-10_dp, __FILE__, &
         __LINE__, failures)
 end
 
