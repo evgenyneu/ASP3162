@@ -185,7 +185,6 @@ subroutine iterate(options, tmax, dx, dt, v, &
         call get_time_step(state_vectors=solution(:, :, nt), dx=dx, &
                       courant_factor=options%courant_factor, dt=dt_new)
 
-        print *, 'dt=', dt, 'dt_new=', dt_new
         dt = dt_new
 
         ! Increment the time value
