@@ -222,7 +222,7 @@ def show_plots():
     Show animated plots.
     """
 
-    methods = ['Exact', 'Lax-Wendroff', 'Lax', 'Upwind', 'Godunov']
+    methods = ['Godunov']
     t_end = 2
 
     compare_animated(methods=methods,
