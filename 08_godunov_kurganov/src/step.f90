@@ -236,9 +236,8 @@ subroutine step_godunov(nx, nt, dx, dt, v, solution)
     real(dp), intent(in) :: dx, dt, v
     real(dp), intent(inout) :: solution(:, :, :)
 
-    real(dp) :: a, flux_right_interface(size(solution, 1)), &
-                flux_left_interface(size(solution, 1))
-
+    real(dp) :: a, flux_right_interface(size(solution, 1))
+    real(dp) :: flux_left_interface(size(solution, 1))
     integer :: ix
 
     a = dt / dx
@@ -259,6 +258,8 @@ subroutine step_godunov(nx, nt, dx, dt, v, solution)
         solution(:, ix, nt) = solution(:, ix, nt - 1) &
             - a * (flux_right_interface(:) - flux_left_interface(:))
     end do
+
+
 end subroutine
 
 

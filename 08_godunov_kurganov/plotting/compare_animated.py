@@ -222,7 +222,7 @@ def show_plots():
     Show animated plots.
     """
 
-    methods = ['Exact', 'Lax-Wendroff', 'Lax', 'Upwind']
+    methods = ['Exact', 'Lax-Wendroff', 'Lax', 'Upwind', 'Godunov']
     t_end = 2
 
     compare_animated(methods=methods,
@@ -230,20 +230,20 @@ def show_plots():
                      courant_factor=0.5,
                      t_end=t_end, nx=100, ylim=(-1.5, 1.5))
 
-    compare_animated(methods=methods,
-                     initial_conditions='square',
-                     courant_factor=0.5,
-                     t_end=t_end, nx=100, ylim=(-0.5, 1.5))
+    # compare_animated(methods=methods,
+    #                  initial_conditions='square',
+    #                  courant_factor=0.5,
+    #                  t_end=t_end, nx=100, ylim=(-0.5, 1.5))
 
-    compare_animated(methods=methods,
-                     initial_conditions='sine',
-                     courant_factor=1,
-                     t_end=t_end, nx=200, ylim=(-1.5, 1.5))
+    # compare_animated(methods=methods,
+    #                  initial_conditions='sine',
+    #                  courant_factor=1,
+    #                  t_end=t_end, nx=200, ylim=(-1.5, 1.5))
 
-    compare_animated(methods=methods,
-                     initial_conditions='square',
-                     courant_factor=1,
-                     t_end=t_end, nx=200, ylim=(-0.5, 1.5))
+    # compare_animated(methods=methods,
+    #                  initial_conditions='square',
+    #                  courant_factor=1,
+    #                  t_end=t_end, nx=200, ylim=(-0.5, 1.5))
 
 
 if __name__ == '__main__':

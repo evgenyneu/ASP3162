@@ -9,6 +9,7 @@ use FloatUtils, only: linspace
 use Output, only: write_output
 use Grid, only: set_grid
 use InitialConditions, only: set_initial
+use Flux, only: max_eigenvalue_from_state_vector
 
 use Step, only: step_exact, step_ftcs, step_lax, step_upwind, &
                 step_lax_wendroff, step_godunov
@@ -94,6 +95,34 @@ subroutine remove_ghost_cells(solution)
 end subroutine
 
 
+subroutine max_eigenvalue_from_state_vectors(state_vectors, max_eigenvalue)
+    real(dp), intent(in) :: state_vectors(:, :)
+    real(dp), intent(out) :: max_eigenvalue
+    real(dp) :: max_eigenvalue_cell
+    integer :: ix
+    max_eigenvalue = 0
+
+    do ix = 1, size(state_vectors, 2)
+        call max_eigenvalue_from_state_vector( &
+            state_vector=state_vectors(:,ix), &
+            max_eigenvalue=max_eigenvalue_cell)
+
+        max_eigenvalue = max(max_eigenvalue, abs(max_eigenvalue_cell))
+    end do
+end subroutine
+
+subroutine get_time_step(state_vectors, dx, courant_factor, dt)
+    real(dp), intent(in) :: state_vectors(:, :), dx, courant_factor
+    real(dp), intent(out) :: dt
+    real(dp) :: max_eigenvalue
+
+    call max_eigenvalue_from_state_vectors( &
+        state_vectors=state_vectors, &
+        max_eigenvalue=max_eigenvalue)
+
+    dt = courant_factor * dx / max_eigenvalue
+end subroutine
+
 !
 ! Iterate over the time values and solve the equation
 ! for each of them
@@ -133,11 +162,13 @@ subroutine iterate(options, tmax, dx, dt, v, &
     type(program_settings), intent(in) :: options
     integer, intent(inout) :: nt_allocated
     integer, intent(out) :: nt
-    real(dp), intent(in) :: tmax, dx, dt, v
+    real(dp), intent(in) :: tmax, dx, v
+    real(dp), intent(inout) :: dt
     real(dp), allocatable, intent(in) :: x_points(:)
     real(dp), allocatable, intent(inout) :: solution(:, :, :)
     real(dp), allocatable, intent(inout) :: t_points(:)
     integer :: nx
+    real(dp) :: dt_new
 
     nx = size(solution, 2) ! number of x points plus two ghost points
     nt = 1
@@ -147,8 +178,15 @@ subroutine iterate(options, tmax, dx, dt, v, &
         ! Update the ghost cells.
         ! The leftmost cell gets the values of nx-1 x cell
         ! and the rightmost cell gets the value of the second x cell.
-        solution(1, 1, nt) = solution(1, nx - 1, nt)
-        solution(1, nx, nt) = solution(1, 2, nt)
+        solution(:, 1, nt) = solution(:, nx - 1, nt)
+        solution(:, nx, nt) = solution(:, 2, nt)
+
+        ! Update the time step
+        call get_time_step(state_vectors=solution(:, :, nt), dx=dx, &
+                      courant_factor=options%courant_factor, dt=dt_new)
+
+        print *, 'dt=', dt, 'dt_new=', dt_new
+        dt = dt_new
 
         ! Increment the time value
         nt = nt + 1
