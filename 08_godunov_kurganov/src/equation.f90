@@ -214,7 +214,7 @@ subroutine iterate(options, tmax, dx, dt, v, &
         case ("lax-wendroff")
            call step_lax_wendroff(nx=nx, nt=nt, dx=dx, dt=dt, v=v, &
                                   solution=solution)
-        case ("godunov")
+        case ("godunov", "kurganov")
            call step_godunov(options=options, nx=nx, nt=nt, dx=dx, dt=dt, v=v,&
                              solution=solution)
         case default

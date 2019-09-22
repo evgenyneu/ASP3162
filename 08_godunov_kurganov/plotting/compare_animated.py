@@ -222,11 +222,11 @@ def show_plots():
     Show animated plots.
     """
 
-    methods = ['Godunov']
+    methods = ['Godunov', 'Kurganov']
     t_end = 2
 
     compare_animated(methods=methods,
-                     initial_conditions='sine',
+                     initial_conditions='square',
                      courant_factor=0.5,
                      t_end=t_end, nx=100, ylim=(-1.5, 1.5))
 
