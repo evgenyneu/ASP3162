@@ -15,14 +15,20 @@ subroutine flux_from_state_vector(state_vector, flux, max_eigenvalue)
     real(dp), intent(out) :: flux(size(state_vector))
     real(dp), intent(out) :: max_eigenvalue
 
+    ! Burgers equation
+    ! flux(1) = 0.5_dp * state_vector(1)**2
+    ! max_eigenvalue = state_vector(1)
 
+    ! for advection equation
+    flux(1) = state_vector(1)
+    max_eigenvalue = 1._dp
 end subroutine
 
 
 subroutine interface_flux(state_vector_left, state_vector_right, flux)
     real(dp), intent(in) :: state_vector_left(:), state_vector_right(:)
     real(dp), intent(out) :: flux(size(state_vector_left))
-    real(dp) :: shock_speed, ul, ur, max_eigenvalue
+    real(dp) :: shock_speed, ul, ur, max_eigenvalue_left, max_eigenvalue_right
     real(dp) :: flux_left(size(state_vector_left))
     real(dp) :: flux_right(size(state_vector_left))
 
@@ -31,10 +37,12 @@ subroutine interface_flux(state_vector_left, state_vector_right, flux)
     ur = state_vector_right(1)
 
     call flux_from_state_vector(state_vector=state_vector_left, &
-                                flux=flux_left, max_eigenvalue=max_eigenvalue)
+                                flux=flux_left, &
+                                max_eigenvalue=max_eigenvalue_left)
 
     call flux_from_state_vector(state_vector=state_vector_right, &
-                                flux=flux_right, max_eigenvalue=max_eigenvalue)
+                                flux=flux_right, &
+                                max_eigenvalue=max_eigenvalue_right)
 
     if (ul > ur) then
         shock_speed = 0.5_dp * (ul + ur)
@@ -54,7 +62,6 @@ subroutine interface_flux(state_vector_left, state_vector_right, flux)
         end if
     end if
 end subroutine
-
 
 
 end module Flux
