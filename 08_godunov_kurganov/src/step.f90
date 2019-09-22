@@ -5,6 +5,7 @@ module Step
 use Types, only: dp
 use Settings, only: program_settings
 use InitialConditions, only: calculate_initial
+use Flux, only: interface_flux
 implicit none
 private
 public :: step_exact, step_ftcs, step_lax, step_upwind, &
@@ -235,19 +236,36 @@ subroutine step_godunov(nx, nt, dx, dt, v, solution)
     integer, intent(in) :: nt, nx
     real(dp), intent(in) :: dx, dt, v
     real(dp), intent(inout) :: solution(:, :, :)
-    real(dp) :: a
 
-    implement here!!!
+    real(dp) :: a, flux_right_interface(size(solution, 1)), &
+                flux_left_interface(size(solution, 1))
 
-    a = v * dt / dx
+    integer :: ix
 
-    solution(1, 2 : nx - 1, nt) = solution(1, 2 : nx - 1, nt - 1) &
-        - 0.5_dp * a * &
-           (solution(1, 3 : nx, nt - 1) - solution(1, 1 : nx - 3, nt - 1)) &
-        + 0.5_dp * (a**2) * &
-           (solution(1, 3 : nx, nt - 1) &
-                - 2 * solution(1, 2 : nx - 1, nt - 1) &
-                + solution(1, 1 : nx - 3, nt - 1))
+    a = dt / dx
+
+    do ix = 2, nx - 1
+        call interface_flux( &
+            state_vector_left=solution(:, ix, nt - 1), &
+            state_vector_right=solution(:, ix + 1, nt - 1), &
+            flux=flux_right_interface)
+
+        call interface_flux( &
+            state_vector_left=solution(:, ix - 1, nt - 1), &
+            state_vector_right=solution(:, ix, nt - 1), &
+            flux=flux_right_interface)
+
+        solution(:, ix, nt) = solution(:, ix, nt - 1) &
+            - a * (flux_right_interface(:) - flux_left_interface(:))
+    end do
+
+    ! solution(1, 2 : nx - 1, nt) = solution(1, 2 : nx - 1, nt - 1) &
+    !     - a * &
+    !        (solution(1, 3 : nx, nt - 1) - solution(1, 1 : nx - 3, nt - 1)) &
+    !     + 0.5_dp * (a**2) * &
+    !        (solution(1, 3 : nx, nt - 1) &
+    !             - 2 * solution(1, 2 : nx - 1, nt - 1) &
+    !             + solution(1, 1 : nx - 3, nt - 1))
 end subroutine
 
 
