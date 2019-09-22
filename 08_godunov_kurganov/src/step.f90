@@ -236,7 +236,6 @@ subroutine step_godunov(options, nx, nt, dx, dt, v, solution)
     integer, intent(in) :: nt, nx
     real(dp), intent(in) :: dx, dt, v
     real(dp), intent(inout) :: solution(:, :, :)
-
     real(dp) :: a, flux_right_interface(size(solution, 1))
     real(dp) :: flux_left_interface(size(solution, 1))
     integer :: ix
