@@ -207,7 +207,7 @@ subroutine assert_approx_real_dp(value, expectation, tolerance, filename, line, 
 
     call print_dot()
 
-    if (abs(expectation) < 1e-80) then
+    if (abs(expectation) < 1.e-80_dp) then
         ! If expectation is very small, calculate absolute difference
         ! between expectation and actual value
         difference = abs(value - expectation)

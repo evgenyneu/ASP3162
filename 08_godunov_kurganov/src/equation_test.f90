@@ -263,7 +263,7 @@ subroutine solve_eqn_godunovs_test__sine(failures)
     call assert_approx(t_points(149), 0.99691854507207378_dp, 1e-10_dp, &
         __FILE__, __LINE__, failures)
 
-    call assert_approx(t_points(150), 1.0085650816438056 _dp, 1e-10_dp, &
+    call assert_approx(t_points(150), 1.0085650816438056_dp, 1e-10_dp, &
         __FILE__, __LINE__, failures)
 
 
@@ -295,7 +295,7 @@ subroutine solve_eqn_godunovs_test__sine(failures)
     call assert_approx(solution(1, 75, 1), -0.99950656036573160_dp, &
         1e-10_dp, __FILE__, __LINE__, failures)
 
-    call assert_approx(solution(1, 76, 1), -0.99950656036573160 _dp, &
+    call assert_approx(solution(1, 76, 1), -0.99950656036573160_dp, &
         1e-10_dp, __FILE__, __LINE__, failures)
 
     call assert_approx(solution(1, 100, 1), -0.31410759078127473e-1_dp, &
@@ -566,6 +566,7 @@ subroutine equation_test_all(failures)
 
     call solve_eqn_kurganov_test__square(failures)
     ! call solve_and_create_output_test(failures)
+
     ! call read_settings_solve_and_create_output_test(failures)
 end
 
