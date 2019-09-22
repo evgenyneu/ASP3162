@@ -8,24 +8,34 @@ private
 public assert_true, assert_approx, assert_equal, assert_string_starts_with
 
 !
-! Verify if two floating point values are within the given distance from each other.
-! Shows an error message and increments `failures` if two numbers are further apart.
+! Check if two floating point values are close to each other.
+! Here we calculate relative differences between `value` and `expectation`
+! numbers:
 !
-! Example, check that `result` contains a value that is within 1e-5 from 43.321:
+!  difference = abs(value - expectation) / abs(expectation)
 !
-!   call assert_approx(result, 43.321_dp, 1e-5_dp, __FILE__, __LINE__, failures)
+! and then ensure that the difference is smaller than `tolerance`.
+!
+! Shows an error message and increments `failures` if two numbers are
+! further apart.
+!
+! Example, check that `result` contains a value that is within 1e-5 from
+! 43.321:
+!
+!   call assert_approx(result, 43.321_dp, 1e-5_dp, __FILE__, __LINE__, &
+!                      failures)
 !
 ! Inputs:
 ! --------
 ! value, expectation : two values to be compared
 !
-! tolerance : the maximum allowed distance between two values.
+! tolerance : the maximum allowed relative difference between two values.
 !
 ! filename : the name of the test file, usually set to __FILE__
 !
 ! line : the line number where this function is called, usually set to __LINE__
 !
-! failures : the counter of failed unit tests. If this assertion failes, 
+! failures : the counter of failed unit tests. If this assertion fails,
 !            the counter is incremented.
 !
 interface assert_approx
@@ -193,10 +203,20 @@ subroutine assert_approx_real_dp(value, expectation, tolerance, filename, line, 
     real(dp), intent(in) :: value, expectation, tolerance
     integer, intent(inout) :: failures
     character(len=1024) :: error_message
+    real(dp) :: difference
 
     call print_dot()
 
-    if ((abs(value - expectation) > tolerance)  .or. &
+    if (abs(expectation) < 1e-80) then
+        ! If expectation is very small, calculate absolute difference
+        ! between expectation and actual value
+        difference = abs(value - expectation)
+    else
+        ! Otherwise, calculate relative difference
+        difference = abs(value - expectation)/abs(expectation)
+    end if
+
+    if (difference > tolerance  .or. &
         ! Handle NaN case
         (ISNAN(value) .neqv. ISNAN(expectation))) then
 

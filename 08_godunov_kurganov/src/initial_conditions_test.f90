@@ -97,8 +97,8 @@ subroutine set_initial_test__sine(failures)
     call assert_approx(solution(1, 9, 1), -0.99802672842_dp, 1e-10_dp, &
                       __FILE__, __LINE__, failures)
 
-    call assert_approx(solution(1, 10, 1), 0._dp, 1e-10_dp, &
-                      __FILE__, __LINE__, failures)
+    call assert_approx(solution(1, 10, 1), -0.24492935982947064E-015_dp, &
+                      1e-7_dp, __FILE__, __LINE__, failures)
 
     ! ghost
     call assert_approx(solution(1, 11, 1), -42._dp, 1e-10_dp, __FILE__, &

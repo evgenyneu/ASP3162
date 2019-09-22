@@ -257,8 +257,8 @@ subroutine solve_eqn_godunovs_test__sine(failures)
     call assert_approx(t_points(1), 0.0_dp, 1e-5_dp, __FILE__, &
         __LINE__, failures)
 
-    call assert_approx(t_points(2), 0.005_dp, 1e-5_dp, __FILE__, &
-        __LINE__, failures)
+    call assert_approx(t_points(2), 0.500246841618572e-2_dp, 1e-10_dp, &
+        __FILE__, __LINE__, failures)
 
     call assert_approx(t_points(149), 0.99691854507207378_dp, 1e-10_dp, &
         __FILE__, __LINE__, failures)
