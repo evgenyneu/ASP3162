@@ -4,6 +4,7 @@ import matplotlib.pyplot as plt
 from solver import solve_equation
 from matplotlib import animation
 from itertools import cycle
+from plot_solution import find_nearest_index
 
 
 def animate(i, lines, text, x_values, t_values, solution):
@@ -43,12 +44,21 @@ def animate(i, lines, text, x_values, t_values, solution):
            Updated plot text
     """
 
-    time = t_values[0][i]
+    time = t_values[0][i]  # Get time form the first method
     text.set_text(f't = {time:.2f} s')
 
     for i_line, line in enumerate(lines):
         x = x_values[i_line]
-        y = solution[i_line][i, :, 0]
+
+        if i_line == 0:
+            # Use i as time index for the first method
+            time_index = i
+        else:
+            # If it's not the first method, find the time index
+            # corresponding to `time` value
+            time_index = find_nearest_index(t_values[i_line], time)
+
+        y = solution[i_line][time_index, :, 0]
         line.set_data(x, y)
 
     artists = []
@@ -208,7 +218,7 @@ def compare_animated(methods, initial_conditions, t_end, ylim,
                               t_end=t_end, nx=nx, ylim=ylim,
                               courant_factor=courant_factor)
 
-    timesteps = z[0].shape[0]
+    timesteps = len(y[0])  # Get number of time steps from the first method
 
     animation.FuncAnimation(fig, animate,
                             frames=timesteps, interval=100, blit=True,

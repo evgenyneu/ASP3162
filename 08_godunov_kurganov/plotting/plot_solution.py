@@ -35,6 +35,7 @@ def find_nearest_index(array, value):
     idx = (np.abs(array - value)).argmin()
     return idx
 
+
 def plot_at_time(methods, initial_conditions, courant_factor, nx,
                  plot_dir, file_name, time, ylim, show_plot):
     """
