@@ -3,6 +3,7 @@
 !
 module Flux
 use Types, only: dp
+use Settings, only: program_settings
 implicit none
 private
 public :: interface_flux, flux_from_state_vector, &
@@ -28,8 +29,8 @@ subroutine flux_from_state_vector(state_vector, flux)
 end subroutine
 
 
-subroutine interface_flux(state_vector_left, state_vector_right, flux)
-
+subroutine interface_flux(options, state_vector_left, state_vector_right, flux)
+    type(program_settings), intent(in) :: options
     real(dp), intent(in) :: state_vector_left(:), state_vector_right(:)
     real(dp), intent(out) :: flux(size(state_vector_left))
     real(dp) :: shock_speed, ul, ur

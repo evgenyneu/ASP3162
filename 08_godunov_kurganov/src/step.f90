@@ -231,7 +231,8 @@ subroutine step_lax_wendroff(nx, nt, dx, dt, v, solution)
                 + solution(1, 1 : nx - 3, nt - 1))
 end subroutine
 
-subroutine step_godunov(nx, nt, dx, dt, v, solution)
+subroutine step_godunov(options, nx, nt, dx, dt, v, solution)
+    type(program_settings), intent(in) :: options
     integer, intent(in) :: nt, nx
     real(dp), intent(in) :: dx, dt, v
     real(dp), intent(inout) :: solution(:, :, :)
@@ -245,12 +246,14 @@ subroutine step_godunov(nx, nt, dx, dt, v, solution)
     do ix = 2, nx - 1
         ! Calculate flux through the left cell interface
         call interface_flux( &
+            options=options, &
             state_vector_left=solution(:, ix - 1, nt - 1), &
             state_vector_right=solution(:, ix, nt - 1), &
             flux=flux_left_interface)
 
         ! Calculate flux through the right cell interface
         call interface_flux( &
+            options=options, &
             state_vector_left=solution(:, ix, nt - 1), &
             state_vector_right=solution(:, ix + 1, nt - 1), &
             flux=flux_right_interface)

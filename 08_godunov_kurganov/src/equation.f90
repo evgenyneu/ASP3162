@@ -215,7 +215,7 @@ subroutine iterate(options, tmax, dx, dt, v, &
            call step_lax_wendroff(nx=nx, nt=nt, dx=dx, dt=dt, v=v, &
                                   solution=solution)
         case ("godunov")
-           call step_godunov(nx=nx, nt=nt, dx=dx, dt=dt, v=v,&
+           call step_godunov(options=options, nx=nx, nt=nt, dx=dx, dt=dt, v=v,&
                              solution=solution)
         case default
            print "(a, a)", "ERROR: unknown method ", trim(options%method)

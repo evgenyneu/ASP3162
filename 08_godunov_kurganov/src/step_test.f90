@@ -475,11 +475,15 @@ end
 subroutine step_godunov_test(failures)
     integer, intent(inout) :: failures
     real(dp) :: solution(1, 5, 3)
+    type(program_settings) :: options
+
+    options%method = 'godunov'
 
     solution = -42
     solution(1, :, 1) = [1.1_dp, 2._dp, 3.9_dp, 4._dp, 5._dp]
 
-    call step_godunov(nx=5, nt=2, dx=0.01_dp, dt=0.05_dp, v=1._dp, &
+    call step_godunov(options=options,&
+                      nx=5, nt=2, dx=0.01_dp, dt=0.05_dp, v=1._dp, &
                       solution=solution)
 
 
