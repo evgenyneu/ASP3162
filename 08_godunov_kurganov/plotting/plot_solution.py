@@ -7,7 +7,33 @@ import matplotlib.pyplot as plt
 from itertools import cycle
 import os
 from solver import solve_equation
+import numpy as np
 
+
+def find_nearest_index(array, value):
+    """
+    Returns the index of an array element that is closes to the supplied `value`.
+
+    Parameters
+    ----------
+
+    array : list
+        An array of numbers
+
+    value : int or float
+        A value.
+
+    Returns
+    -------
+
+    int
+
+    Index of the `array` element.
+    """
+
+    array = np.asarray(array)
+    idx = (np.abs(array - value)).argmin()
+    return idx
 
 def plot_at_time(methods, initial_conditions, courant_factor, nx,
                  plot_dir, file_name, time, ylim, show_plot):
@@ -51,6 +77,12 @@ def plot_at_time(methods, initial_conditions, courant_factor, nx,
     line_styles = ["-", "--", "-.", ":"]
     line_style_cycler = cycle(line_styles)
 
+    plot_at_time = time
+
+    # If we want to plot at time 0, we still need to evolve solution a little bit
+    if time == 0:
+        time += 0.1
+
     for method in methods:
         result = solve_equation(x_start=0, x_end=1,
                                 nx=nx, t_start=0, t_end=time,
@@ -62,13 +94,14 @@ def plot_at_time(methods, initial_conditions, courant_factor, nx,
             return
         else:
             x, y, z, dx, dt, dt_dx = result
-            actual_time = y[-1]
+            time_index = find_nearest_index(y, value=plot_at_time)
+            actual_time = y[time_index]
 
-            plt.plot(x, z[-1, :, 0], label=method,
+            plt.plot(x, z[time_index, :, 0], label=method,
                      linestyle=next(line_style_cycler))
 
     title = (
-        f"Solution of advection equation\n"
+        f"Solutions of Burgers' equation\n"
         r"for $\Delta x$"
         f"={dx:.3f} m, "
         r"$\Delta t$"
@@ -90,7 +123,7 @@ def plot_at_time(methods, initial_conditions, courant_factor, nx,
 
     plt.title(title)
     plt.xlabel("Position x [m]")
-    plt.ylabel("Advected quantity")
+    plt.ylabel("Speed u [m/s]")
     plt.legend(loc='upper right')
     plt.tight_layout()
 
@@ -116,33 +149,25 @@ def make_plots(plot_dir, show_plot):
         False value is used in unit tests.
     """
 
-    methods = ['Exact', 'Lax-Wendroff', 'Lax', 'Upwind']
-    time = 1
+    methods = ['Godunov', 'Kurganov']
 
     plot_at_time(methods=methods,
                  initial_conditions='sine',
                  courant_factor=0.5,
-                 plot_dir=plot_dir, file_name='01_sine_c_0.5.pdf',
-                 time=time, nx=100, ylim=(-1.5, 1.5), show_plot=show_plot)
-
-    plot_at_time(methods=methods,
-                 initial_conditions='square',
-                 courant_factor=0.5,
-                 plot_dir=plot_dir, file_name='02_square_c_0.5.pdf',
-                 time=time, nx=100, ylim=(-0.5, 1.5), show_plot=show_plot)
+                 plot_dir=plot_dir, file_name='01_sine_c_0.5_time_0.0.pdf',
+                 time=0., nx=100, ylim=(-1.5, 1.5), show_plot=show_plot)
 
     plot_at_time(methods=methods,
                  initial_conditions='sine',
-                 courant_factor=1,
-                 plot_dir=plot_dir, file_name='03_sine_c_1.pdf',
-                 time=time, nx=100, ylim=(-1.5, 1.5), show_plot=show_plot)
+                 courant_factor=0.5,
+                 plot_dir=plot_dir, file_name='02_sine_c_0.5_time_0.5.pdf',
+                 time=0.5, nx=100, ylim=(-1.5, 1.5), show_plot=show_plot)
 
     plot_at_time(methods=methods,
-                 initial_conditions='square',
-                 courant_factor=1,
-                 plot_dir=plot_dir, file_name='04_square_c_1.pdf',
-                 time=time, nx=100, ylim=(-0.5, 1.5), show_plot=show_plot)
-
+                 initial_conditions='sine',
+                 courant_factor=0.5,
+                 plot_dir=plot_dir, file_name='03_sine_c_0.5_time_1.0.pdf',
+                 time=1, nx=100, ylim=(-1.5, 1.5), show_plot=show_plot)
 
 if __name__ == '__main__':
     make_plots(plot_dir="plots", show_plot=True)

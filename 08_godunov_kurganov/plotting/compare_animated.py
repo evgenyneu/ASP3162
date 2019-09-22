@@ -137,7 +137,7 @@ def prepare_for_animation(methods, initial_conditions, t_end, nx, ylim,
     ax = plt.axes(xlim=(0, 1), ylim=ylim)
 
     title = (
-        "Solution of advection equation\n"
+        "Solutions of Burger' equation\n"
         r"for $\Delta x$"
         f"={dx:.3f} m, "
         r"$\Delta t$"
@@ -148,7 +148,7 @@ def prepare_for_animation(methods, initial_conditions, t_end, nx, ylim,
 
     plt.title(title)
     plt.xlabel("Position x [m]")
-    plt.ylabel("Advected quantity")
+    plt.ylabel("Speed u [m/s]")
 
     text = plt.text(
         0.05, 0.92,
@@ -230,20 +230,10 @@ def show_plots():
                      courant_factor=0.5,
                      t_end=t_end, nx=100, ylim=(-1.5, 1.5))
 
-    # compare_animated(methods=methods,
-    #                  initial_conditions='square',
-    #                  courant_factor=0.5,
-    #                  t_end=t_end, nx=100, ylim=(-0.5, 1.5))
-
-    # compare_animated(methods=methods,
-    #                  initial_conditions='sine',
-    #                  courant_factor=1,
-    #                  t_end=t_end, nx=200, ylim=(-1.5, 1.5))
-
-    # compare_animated(methods=methods,
-    #                  initial_conditions='square',
-    #                  courant_factor=1,
-    #                  t_end=t_end, nx=200, ylim=(-0.5, 1.5))
+    compare_animated(methods=methods,
+                     initial_conditions='sine',
+                     courant_factor=0.5,
+                     t_end=t_end, nx=100, ylim=(-1.5, 1.5))
 
 
 if __name__ == '__main__':
