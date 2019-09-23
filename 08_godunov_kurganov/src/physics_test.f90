@@ -35,22 +35,13 @@ end
 subroutine many_state_vectors_to_primitive_test(failures)
     integer, intent(inout) :: failures
     real(dp) :: state_vectors(1, 3, 2)
-    real(dp), allocatable :: primitive_vectors(:, :, :)
+    real(dp) :: primitive_vectors(1, 3, 2)
 
     state_vectors = reshape([1, 2, 3, 4, 5, 6], shape(state_vectors))
 
     call many_state_vectors_to_primitive(&
         state_vectors=state_vectors, &
         primitive_vectors=primitive_vectors)
-
-    call assert_equal(size(primitive_vectors, 1), 1, &
-                      __FILE__, __LINE__, failures)
-
-    call assert_equal(size(primitive_vectors, 2), 3, &
-                      __FILE__, __LINE__, failures)
-
-    call assert_equal(size(primitive_vectors, 3), 2, &
-                      __FILE__, __LINE__, failures)
 
     call assert_approx(primitive_vectors(1, 1, 1), 1.0_dp, 1e-5_dp, &
                        __FILE__, __LINE__, failures)

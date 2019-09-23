@@ -26,18 +26,11 @@ end subroutine
 
 subroutine many_state_vectors_to_primitive(state_vectors, primitive_vectors)
     real(dp), intent(in) :: state_vectors(:, :, :)
-    real(dp), allocatable, intent(out) :: primitive_vectors(:, :, :)
-    integer :: nx, nt, stat, i, j
+    real(dp), intent(inout) :: primitive_vectors(:, :, :)
+    integer :: nx, nt, i, j
 
     nx = size(state_vectors, 2)
     nt = size(state_vectors, 3)
-
-    allocate(primitive_vectors(size(state_vectors, 1), nx, nt), stat=stat)
-
-    if (stat /= 0) then
-        write (0, *) "Failed to allocate primitive vector array"
-        call exit(41)
-    end if
 
     FORALL(i = 1:nx, j = 1:nt)
         primitive_vectors(1, i, j) = state_vectors(1, i, j)

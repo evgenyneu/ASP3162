@@ -128,6 +128,21 @@ subroutine set_grid(options, solution, x_points, t_points, &
     fluxes = 0
 end subroutine
 
+
+!
+! Allocates memory for array for storing primitive variables
+!
+! Inputs:
+! -------
+!
+! array_shape : array shape
+!
+!
+! Outputs:
+! -------
+!
+! primitive_vectors : array for primitive variables
+!
 subroutine allocate_primitive_array(array_shape, primitive_vectors)
     integer, intent(in) :: array_shape(:)
     real(dp), allocatable, intent(out) :: primitive_vectors(:, :, :)
