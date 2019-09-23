@@ -566,9 +566,10 @@ subroutine equation_test_all(failures)
     call solve_eqn_godunovs_test__sine(failures)
 
     call solve_eqn_kurganov_test__square(failures)
+
     call solve_and_create_output_test(failures)
 
-    call read_settings_solve_and_create_output_test(failures)
+    ! call read_settings_solve_and_create_output_test(failures)
 end
 
 end module EquationTest

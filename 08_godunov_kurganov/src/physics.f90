@@ -37,7 +37,7 @@ end subroutine
 
 subroutine single_state_vector_to_primitive(state_vector, primitive)
     real(dp), intent(in) :: state_vector(:)
-    real(dp), intent(out) :: primitive(size(state_vector))
+    real(dp), intent(inout) :: primitive(size(state_vector))
 
     ! For Burger's equation the primitive variable is the same
     ! as state state_vector variable u, the velocity
