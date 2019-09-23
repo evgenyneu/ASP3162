@@ -60,6 +60,7 @@ SOURCE_FILES = 	types.f90 \
 							physics.f90 \
 							physics_test.f90 \
 							interface_flux.f90 \
+							interface_flux_test.f90 \
 							grid.f90 \
 							grid_test.f90 \
 							initial_conditions.f90 \
@@ -104,8 +105,6 @@ $(BUILD_DIR)/$(BIN) : $(OBJ)
 
 
 # Build target for every single object file.
-# The potential dependency on header files is covered
-# by calling `-include $(DEP)`.
 $(BUILD_DIR)/%.o : %.f90
 	mkdir -p $(@D)
 # Complile *.f90 files into the object files.

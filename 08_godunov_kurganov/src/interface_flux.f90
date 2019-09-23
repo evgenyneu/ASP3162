@@ -6,7 +6,7 @@ use Types, only: dp
 use Settings, only: program_settings
 implicit none
 private
-public :: interface_flux
+public :: interface_flux, godunov_flux
 
 contains
 
