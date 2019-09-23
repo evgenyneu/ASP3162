@@ -11,7 +11,7 @@ use Grid, only: set_grid
 use InitialConditions, only: set_initial
 use Physics, only: max_eigenvalue_from_state_vector, &
                    many_state_vectors_to_primitive, &
-                   calculate_fluxes
+                   calculate_fluxes, calculate_eigenvalues
 
 use Step, only: step_finite_volume
 
@@ -94,35 +94,6 @@ subroutine remove_ghost_cells(solution)
     call move_alloc(solution_buffer, solution)
 end subroutine
 
-
-subroutine max_eigenvalue_from_state_vectors(state_vectors, max_eigenvalue)
-    real(dp), intent(in) :: state_vectors(:, :)
-    real(dp), intent(out) :: max_eigenvalue
-    real(dp) :: max_eigenvalue_cell
-    integer :: ix
-    max_eigenvalue = 0
-
-    do ix = 1, size(state_vectors, 2)
-        call max_eigenvalue_from_state_vector( &
-            state_vector=state_vectors(:,ix), &
-            max_eigenvalue=max_eigenvalue_cell)
-
-        max_eigenvalue = max(max_eigenvalue, abs(max_eigenvalue_cell))
-    end do
-end subroutine
-
-subroutine get_time_step(state_vectors, dx, courant_factor, dt)
-    real(dp), intent(in) :: state_vectors(:, :), dx, courant_factor
-    real(dp), intent(out) :: dt
-    real(dp) :: max_eigenvalue
-
-    call max_eigenvalue_from_state_vectors( &
-        state_vectors=state_vectors, &
-        max_eigenvalue=max_eigenvalue)
-
-    dt = courant_factor * dx / max_eigenvalue
-end subroutine
-
 !
 ! Iterate over the time values and solve the equation
 ! for each of them
@@ -179,12 +150,12 @@ subroutine iterate(options, tmax, dx, &
 
         call calculate_fluxes(state_vectors=solution(:, :, nt), fluxes=fluxes)
 
-        ! Update the time step
-        call get_time_step(state_vectors=solution(:, :, nt), dx=dx, &
-                      courant_factor=options%courant_factor, dt=dt)
+        call calculate_eigenvalues(state_vectors=solution(:, :, nt), &
+                                   eigenvalues=eigenvalues)
 
         ! Increment the time value
         nt = nt + 1
+        dt = options%courant_factor * dx / maxval(eigenvalues)
         t_points(nt) = t_points(nt - 1) + dt
 
         ! Resize the time dimension of the arrays if needed
