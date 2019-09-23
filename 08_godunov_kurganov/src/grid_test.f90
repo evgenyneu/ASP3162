@@ -13,6 +13,7 @@ subroutine set_grid_test(failures)
     integer, intent(inout) :: failures
     real(dp), allocatable :: solution(:, :, :)
     real(dp), allocatable :: x_points(:), t_points(:)
+    real(dp), allocatable :: fluxes(:, :), eigenvalues(:)
     type(program_settings) :: options
     integer :: nt_allocated
 
@@ -23,6 +24,7 @@ subroutine set_grid_test(failures)
 
     call set_grid(options=options, solution=solution, &
                   x_points=x_points, t_points=t_points, &
+                  fluxes=fluxes, eigenvalues=eigenvalues, &
                   nt_allocated=nt_allocated)
 
 
@@ -58,6 +60,25 @@ subroutine set_grid_test(failures)
     call assert_equal(size(solution, 3), 13, __FILE__, __LINE__, failures)
 
     call assert_true(all(abs(solution) < 1.e-10_dp), __FILE__, &
+        __LINE__, failures)
+
+
+    ! fluxes
+    ! --------
+
+    call assert_equal(size(fluxes, 1), 1, __FILE__, __LINE__, failures)
+    call assert_equal(size(fluxes, 2), 12, __FILE__, __LINE__, failures)
+
+    call assert_true(all(abs(fluxes) < 1.e-10_dp), __FILE__, &
+        __LINE__, failures)
+
+
+    ! eigenvalues
+    ! ----------
+
+    call assert_equal(size(eigenvalues), 12, __FILE__, __LINE__, failures)
+
+    call assert_true(all(abs(eigenvalues) < 1.e-10_dp), __FILE__, &
         __LINE__, failures)
 end
 

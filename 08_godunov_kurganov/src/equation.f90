@@ -37,8 +37,7 @@ contains
 ! Outputs:
 ! -------
 !
-! solution : 2D array containing the solution for the advection equation
-!        first coordinate is x, second is time.
+! solution : array containing the solution for the equation
 !
 ! t_points : A 1D array containing the values of the time coordinate
 !
@@ -171,6 +170,8 @@ subroutine iterate(options, tmax, dx, &
         solution(:, 1, nt) = solution(:, nx - 1, nt)
         solution(:, nx, nt) = solution(:, 2, nt)
 
+        ! call calculate_fluxes(state_vectors=solution(:, :, nt), fluxes=fluxes)
+
         ! Update the time step
         call get_time_step(state_vectors=solution(:, :, nt), dx=dx, &
                       courant_factor=options%courant_factor, dt=dt)
@@ -219,6 +220,7 @@ subroutine solve_equation(options, primitive_vectors, x_points, t_points)
     real(dp), allocatable, intent(out) :: primitive_vectors(:, :, :)
     real(dp), allocatable, intent(out) :: x_points(:), t_points(:)
     real(dp), allocatable :: solution(:, :, :)
+    real(dp), allocatable :: fluxes(:, :), eigenvalues(:)
     real(dp) :: dx, tmin, tmax, courant
     integer :: nt, nt_allocated
 
@@ -232,6 +234,7 @@ subroutine solve_equation(options, primitive_vectors, x_points, t_points)
     ! Initialize the arrays
     call set_grid(options=options, solution=solution, &
                   x_points=x_points, t_points=t_points, &
+                  fluxes=fluxes, eigenvalues=eigenvalues, &
                   nt_allocated=nt_allocated)
 
     ! Set initial conditions

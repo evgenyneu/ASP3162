@@ -30,12 +30,19 @@ contains
 !
 ! t_points : A 1D array containing the values of the time coordinate
 !
+! fluxes : array of flux vectors
+!
+! eigenvalues : array of eigenvalues
+!
 ! nt_allocated : the number of t points allocated in the arrays.
 !
-subroutine set_grid(options, solution, x_points, t_points, nt_allocated)
+subroutine set_grid(options, solution, x_points, t_points, &
+                    fluxes, eigenvalues, nt_allocated)
+
     type(program_settings), intent(in) :: options
     real(dp), allocatable, intent(out) :: solution(:, :, :)
     real(dp), allocatable, intent(out) :: x_points(:), t_points(:)
+    real(dp), allocatable, intent(out) :: fluxes(:, :), eigenvalues(:)
     integer, intent(out) :: nt_allocated
     real(dp) :: xmin, xmax, dx
     integer :: nx, allocate_result
@@ -98,9 +105,28 @@ subroutine set_grid(options, solution, x_points, t_points, nt_allocated)
         call exit(41)
     end if
 
+    ! Allocate memory for fluxes
+    allocate(fluxes(options%state_vector_dimension, nx + 2), &
+             stat=allocate_result)
+
+    if (allocate_result /= 0) then
+        write (0, *) "Failed to allocate fluxes array"
+        call exit(41)
+    end if
+
+    ! Allocate memory for eigenvalues
+    allocate(eigenvalues(nx + 2), stat=allocate_result)
+
+    if (allocate_result /= 0) then
+        write (0, *) "Failed to allocate eigenvalue array"
+        call exit(41)
+    end if
+
     ! Initialize the arrays with zeros
     solution = 0
     t_points = 0
+    eigenvalues = 0
+    fluxes = 0
 end subroutine
 
 end module Grid
