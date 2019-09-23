@@ -68,6 +68,21 @@ subroutine many_state_vectors_to_primitive(state_vectors, primitive_vectors)
     end forall
 end subroutine
 
+
+!
+! Calculates fluxes from state vectors
+!
+! Inputs:
+! -------
+!
+! state_vectors : array containing state vectors
+!
+!
+! Outputs:
+! -------
+!
+! fluxes : array containing fluxes
+!
 subroutine calculate_fluxes(state_vectors, fluxes)
     real(dp), intent(in) :: state_vectors(:, :)
     real(dp), intent(inout) :: fluxes(:, :)
