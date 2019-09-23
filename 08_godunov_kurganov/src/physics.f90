@@ -13,16 +13,18 @@ contains
 
 subroutine many_state_vectors_to_primitive(state_vectors, primitive_vectors)
     real(dp), intent(in) :: state_vectors(:, :, :)
-
-    real(dp), intent(out) :: primitive_vectors( &
-        size(state_vectors, 1), &
-        size(state_vectors, 2), &
-        size(state_vectors, 3))
-
-    integer :: nx, nt, ix, it
+    real(dp), allocatable, intent(out) :: primitive_vectors(:, :, :)
+    integer :: nx, nt, ix, it, stat
 
     nx = size(state_vectors, 2)
     nt = size(state_vectors, 3)
+
+    allocate(primitive_vectors(size(state_vectors, 1), nx, nt), stat=stat)
+
+    if (stat /= 0) then
+        write (0, *) "Failed to allocate primitive vector array"
+        call exit(41)
+    end if
 
     do it = 1, nt
         do ix = 1, nx

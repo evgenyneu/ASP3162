@@ -38,7 +38,7 @@ subroutine set_grid(options, solution, x_points, t_points, nt_allocated)
     real(dp), allocatable, intent(out) :: x_points(:), t_points(:)
     integer, intent(out) :: nt_allocated
     real(dp) :: xmin, xmax, dx
-    integer :: nx
+    integer :: nx, allocate_result
 
     ! Assign shortcut variables from settings
     xmin = options%x_start
@@ -51,10 +51,20 @@ subroutine set_grid(options, solution, x_points, t_points, nt_allocated)
     nt_allocated = 13
 
     ! Allocate memory for t values
-    allocate(t_points(nt_allocated))
+    allocate(t_points(nt_allocated), stat=allocate_result)
+
+    if (allocate_result /= 0) then
+        write (0, *) "Failed to allocate time array"
+        call exit(41)
+    end if
 
     ! Allocate memory for x values
-    allocate(x_points(nx))
+    allocate(x_points(nx), stat=allocate_result)
+
+    if (allocate_result /= 0) then
+        write (0, *) "Failed to allocate position array"
+        call exit(41)
+    end if
 
     !
     ! Assign evenly spaced x values.
@@ -80,7 +90,13 @@ subroutine set_grid(options, solution, x_points, t_points, nt_allocated)
     ! two more points: these are left and right ghost cells that help
     ! make calculations simpler. The ghost cells will be removed
     ! when calculations are finished.
-    allocate(solution(options%state_vector_dimension, nx + 2, nt_allocated))
+    allocate(solution(options%state_vector_dimension, nx + 2, nt_allocated), &
+             stat=allocate_result)
+
+    if (allocate_result /= 0) then
+        write (0, *) "Failed to allocate solution array"
+        call exit(41)
+    end if
 
     ! Initialize the arrays with zeros
     solution = 0

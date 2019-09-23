@@ -432,7 +432,7 @@ subroutine solve_and_create_output_test(failures)
     integer :: nx, nt, state_vector_dimension
     real(dp) :: x_points(100), t_points(200), solution(1, 100, 200)
 
-    options%output_path = "test_output12.dat"
+    options%output_path = "test_output.dat"
 
     options%method = 'godunov'
     options%initial_conditions = 'square'
@@ -446,12 +446,12 @@ subroutine solve_and_create_output_test(failures)
 
     call solve_and_create_output(options)
 
-    call assert_true(file_exists("test_output12.dat"), __FILE__, __LINE__, failures)
+    call assert_true(file_exists("test_output.dat"), __FILE__, __LINE__, failures)
 
     ! Check output file
     ! ----------
 
-    open(newunit=unit, file="test_output12.dat", form='unformatted', &
+    open(newunit=unit, file="test_output.dat", form='unformatted', &
         status='old', action='read' )
 
     read (unit) nx
@@ -540,7 +540,7 @@ subroutine solve_and_create_output_test(failures)
 
     close(unit=unit)
 
-    call delete_file("test_output12.dat")
+    call delete_file("test_output.dat")
 end
 
 

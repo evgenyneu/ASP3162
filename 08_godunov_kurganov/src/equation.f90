@@ -304,12 +304,12 @@ subroutine solve_and_create_output(options)
 
     call solve_equation(options, solution, x_points, t_points)
 
-    ! call many_state_vectors_to_primitive( &
-    !         state_vectors=solution, &
-    !         primitive_vectors=primitive)
+    call many_state_vectors_to_primitive( &
+            state_vectors=solution, &
+            primitive_vectors=primitive)
 
     call write_output(filename=options%output_path, &
-                      solution=solution, &
+                      solution=primitive, &
                       x_points=x_points, t_points=t_points)
 end subroutine
 
