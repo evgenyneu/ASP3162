@@ -7,9 +7,35 @@ implicit none
 private
 public :: flux_from_state_vector, &
           max_eigenvalue_from_state_vector, &
-          many_state_vectors_to_primitive
+          many_state_vectors_to_primitive, &
+          many_primitive_vectors_to_state_vectors
 
 contains
+
+subroutine many_primitive_vectors_to_state_vectors(&
+    primitive_vectors, state_vectors)
+
+    real(dp), intent(in) :: primitive_vectors(:, :)
+    real(dp), intent(out) :: state_vectors(:, :)
+    integer :: nx, nt, ix, it
+
+    nx = size(state_vectors, 2)
+
+    do ix = 1, nx
+        call single_primitive_vector_to_state_vector( &
+            primitive = primitive_vectors(:, ix), &
+            state_vector = state_vectors(:, ix))
+    end do
+end subroutine
+
+subroutine single_primitive_vector_to_state_vector(primitive, state_vector)
+    real(dp), intent(in) :: primitive(:)
+    real(dp), intent(inout) :: state_vector(:)
+
+    ! For Burger's equation the primitive variable is the same
+    ! as state state_vector variable u, the velocity
+    state_vector = primitive
+end subroutine
 
 subroutine many_state_vectors_to_primitive(state_vectors, primitive_vectors)
     real(dp), intent(in) :: state_vectors(:, :, :)
@@ -37,7 +63,7 @@ end subroutine
 
 subroutine single_state_vector_to_primitive(state_vector, primitive)
     real(dp), intent(in) :: state_vector(:)
-    real(dp), intent(inout) :: primitive(size(state_vector))
+    real(dp), intent(inout) :: primitive(:)
 
     ! For Burger's equation the primitive variable is the same
     ! as state state_vector variable u, the velocity

@@ -3,6 +3,7 @@ module InitialConditions
 use Types, only: dp
 use Constants, only: pi
 use Settings, only: program_settings
+use Physics, only: many_primitive_vectors_to_state_vectors
 implicit none
 private
 public :: set_initial, calculate_initial
@@ -30,20 +31,25 @@ subroutine calculate_initial(type, x_points, solution)
     character(len=*), intent(in) :: type
     real(dp), intent(in) :: x_points(:)
     real(dp), intent(inout) :: solution(:, :)
+    real(dp) :: primitive_vectors(size(solution, 1), size(solution, 2) - 2)
 
     select case (type)
     case ("square")
         where (x_points > 0.25 .and. x_points <= 0.75)
-            solution(1, 2: size(solution, 2) - 1) = 1
+            primitive_vectors(1, :) = 1
         elsewhere
-            solution(1, 2: size(solution, 2) - 1) = 0
+            primitive_vectors(1, :) = 0
         end where
     case ("sine")
-        solution(1, 2: size(solution, 2) - 1) = sin(2 * pi * x_points)
+        primitive_vectors(1, :) = sin(2 * pi * x_points)
     case default
        print "(a, a)", "ERROR: unknown initial conditions type ", trim(type)
        call exit(41)
     end select
+
+    call many_primitive_vectors_to_state_vectors( &
+            primitive_vectors=primitive_vectors, &
+            state_vectors=solution(:, 2: size(solution, 2) - 1))
 end subroutine
 
 
