@@ -39,13 +39,10 @@ type, public :: program_settings
     ! The largest t value
     real(dp) :: t_end
 
-    ! The velocity parameter of the advection equation
-    real(dp) :: velocity
-
     ! Courant factor parameter use in the numerical method
     real(dp) :: courant_factor
 
-    ! Numerical method used: ftcs, lax, upwind, exact
+    ! Numerical method used: godunov, kurganov
     character(len=1024) :: method
 
     ! Numerical method used: ('square', 'sine')
@@ -59,9 +56,9 @@ end type program_settings
 ! Help message to be shown
 character(len=HELP_MESSAGE_LENGTH), parameter :: HELP_MESSAGE = &
     NEW_LINE('h')//"&
-    &This program solves advection equation"//NEW_LINE('h')//"&
+    &This program solves Burgers' equation"//NEW_LINE('h')//"&
     &"//NEW_LINE('h')//"&
-    &  u_t + v u_x = 0"//NEW_LINE('h')//"&
+    &  u_t + u u_x = 0"//NEW_LINE('h')//"&
     &"//NEW_LINE('h')//"&
     &"//NEW_LINE('h')//"&
     &Usage:&
@@ -71,15 +68,15 @@ character(len=HELP_MESSAGE_LENGTH), parameter :: HELP_MESSAGE = &
     //NEW_LINE('h')//"&
     &       [--x_start=0] [--x_end=1] [--nx=100] [--t_start=0]"&
     //NEW_LINE('h')//"&
-    &       [--t_end=1] [--velocity=1] [--courant_factor=0.5]"&
+    &       [--t_end=1] [--courant_factor=0.5]"&
     //NEW_LINE('h')//"&
     &"//NEW_LINE('h')//"&
     &    OUTPUT : path to the output data file"//NEW_LINE('h')//"&
     &"//NEW_LINE('h')//"&
     &    --method=NAME : numerical method to use"//NEW_LINE('h')//"&
-    &                  (exact, ftcs, lax, upwind, lax-wendroff). "&
+    &                  (godunov, kurganov). "&
     //NEW_LINE('h')//"&
-    &                  Default: lax."//NEW_LINE('h')//"&
+    &                  Default: godunov."//NEW_LINE('h')//"&
     &"//NEW_LINE('h')//"&
     &    --initial_conditions=NAME : initial conditions (square, sine)."&
     //NEW_LINE('h')//"&
@@ -100,9 +97,6 @@ character(len=HELP_MESSAGE_LENGTH), parameter :: HELP_MESSAGE = &
     &    --t_end=NUMBER : the largest t value,"//NEW_LINE('h')//"&
     &                  Default: 1."//NEW_LINE('h')//"&
     &"//NEW_LINE('h')//"&
-    &    --velocity=NUMBER : value of v parameter,"//NEW_LINE('h')//"&
-    &                  Default: 1."//NEW_LINE('h')//"&
-    &"//NEW_LINE('h')//"&
     &    --courant_factor=NUMBER : parameter equal to v*dt/dx,"&
     //NEW_LINE('h')//"&
     &                  Default: 0.5."//NEW_LINE('h')//"&
@@ -118,15 +112,13 @@ integer, parameter :: DEFAULT_NX = 100
 
 real(dp), parameter :: DEFAULT_T_START = 0._dp
 real(dp), parameter :: DEFAULT_T_END = 1._dp
-real(dp), parameter :: DEFAULT_VELOCITY = 1.0_dp
 real(dp), parameter :: DEFAULT_COURANT_FACTOR = 0.5_dp
 
-character(len=100), parameter :: DEFAULT_METHOD = "lax"
+character(len=100), parameter :: DEFAULT_METHOD = "godunov"
 character(len=100), parameter :: DEFAULT_INITIAL_CONDITIONS = "square"
 
-character(len=100), parameter :: ALLOWED_METHODS(7) = &
-     [character(len=100) :: 'exact', 'ftcs', 'lax', 'upwind',&
-                            'lax-wendroff', 'godunov', 'kurganov']
+character(len=100), parameter :: ALLOWED_METHODS(2) = &
+     [character(len=100) :: 'godunov', 'kurganov']
 
 
 character(len=100), parameter :: ALLOWED_INITIAL_CONDITIONS(2) = &
@@ -239,12 +231,11 @@ subroutine read_from_parsed_command_line(parsed, settings, error_message)
     valid_args(4) = "t_start"
     valid_args(5) = "t_end"
     valid_args(6) = "nt"
-    valid_args(7) = "velocity"
-    valid_args(8) = "courant_factor"
-    valid_args(9) = "method"
-    valid_args(10) = "initial_conditions"
-    valid_args(11) = "h"
-    valid_args(12) = "help"
+    valid_args(7) = "courant_factor"
+    valid_args(8) = "method"
+    valid_args(9) = "initial_conditions"
+    valid_args(10) = "h"
+    valid_args(11) = "help"
 
     call unrecognized_named_args(valid=valid_args, parsed=parsed, &
         unrecognized=unrecognized, count=unrecognized_count)
@@ -336,19 +327,6 @@ subroutine read_from_parsed_command_line(parsed, settings, error_message)
 
     if (.not. success) then
         call make_message("t_end is not a number", error_message)
-        return
-    end if
-
-
-    ! velocity
-    ! --------------
-
-    call get_named_value_or_default(name='velocity', parsed=parsed, &
-                                    default=DEFAULT_VELOCITY, &
-                                    value=settings%velocity, success=success)
-
-    if (.not. success) then
-        call make_message("velocity is not a number", error_message)
         return
     end if
 

@@ -17,7 +17,7 @@ subroutine many_primitive_vectors_to_state_vectors(&
 
     real(dp), intent(in) :: primitive_vectors(:, :)
     real(dp), intent(out) :: state_vectors(:, :)
-    integer :: nx, nt, ix, it
+    integer :: nx, ix
 
     nx = size(state_vectors, 2)
 
