@@ -12,8 +12,7 @@ use InitialConditions, only: set_initial
 use Physics, only: max_eigenvalue_from_state_vector, &
                    many_state_vectors_to_primitive
 
-use Step, only: step_exact, step_ftcs, step_lax, step_upwind, &
-                step_lax_wendroff, step_godunov
+use Step, only: step_finite_volume
 
 implicit none
 private
@@ -137,8 +136,6 @@ end subroutine
 !
 ! dx : size of space step
 !
-! v : velocity parameter in advection equation
-!
 !
 ! Outputs:
 ! -------
@@ -147,22 +144,17 @@ end subroutine
 !
 ! nt_allocated : the number of t points allocated in the arrays.
 !
-! solution : 2D array containing the solution for the advection equation
-!        first coordinate is x, second is time.
-!
-! x_points : A 1D array containing the values of the x coordinate
+! solution : array containing the solution for the equation
 !
 ! t_points : A 1D array containing the values of the time coordinate
-!  first coordinate is x, second is time.
 !
-subroutine iterate(options, tmax, dx, v, &
-                   nt, nt_allocated, solution, x_points, t_points)
+subroutine iterate(options, tmax, dx, &
+                   nt, nt_allocated, solution, t_points)
 
     type(program_settings), intent(in) :: options
     integer, intent(inout) :: nt_allocated
     integer, intent(out) :: nt
-    real(dp), intent(in) :: tmax, dx, v
-    real(dp), allocatable, intent(in) :: x_points(:)
+    real(dp), intent(in) :: tmax, dx
     real(dp), allocatable, intent(inout) :: solution(:, :, :)
     real(dp), allocatable, intent(inout) :: t_points(:)
     real(dp) :: dt
@@ -196,26 +188,8 @@ subroutine iterate(options, tmax, dx, v, &
                                solution=solution, t_points=t_points)
         end if
 
-        select case (options%method)
-        case ("exact")
-           call step_exact(options=options, t=t_points(nt), x_points=x_points,&
-                           nt=nt, solution=solution)
-        case ("ftcs")
-           call step_ftcs(nx=nx, nt=nt, dx=dx, dt=dt, v=v, solution=solution)
-        case ("lax")
-           call step_lax(nx=nx, nt=nt, dx=dx, dt=dt, v=v, solution=solution)
-        case ("upwind")
-           call step_upwind(nx=nx, nt=nt, dx=dx, dt=dt, v=v, solution=solution)
-        case ("lax-wendroff")
-           call step_lax_wendroff(nx=nx, nt=nt, dx=dx, dt=dt, v=v, &
-                                  solution=solution)
-        case ("godunov", "kurganov")
-           call step_godunov(options=options, nx=nx, nt=nt, dx=dx, dt=dt, v=v,&
-                             solution=solution)
-        case default
-           print "(a, a)", "ERROR: unknown method ", trim(options%method)
-           call exit(41)
-        end select
+       call step_finite_volume(options=options, nx=nx, nt=nt, dx=dx, dt=dt, &
+                               solution=solution)
     end do
 end subroutine
 
@@ -245,7 +219,7 @@ subroutine solve_equation(options, primitive_vectors, x_points, t_points)
     real(dp), allocatable, intent(out) :: primitive_vectors(:, :, :)
     real(dp), allocatable, intent(out) :: x_points(:), t_points(:)
     real(dp), allocatable :: solution(:, :, :)
-    real(dp) :: dx, tmin, tmax, v, courant
+    real(dp) :: dx, tmin, tmax, courant
     integer :: nt, nt_allocated
 
     ! Assign shortcut variables from settings
@@ -253,7 +227,6 @@ subroutine solve_equation(options, primitive_vectors, x_points, t_points)
 
     tmin = options%t_start
     tmax = options%t_end
-    v = options%velocity
     courant = options%courant_factor
 
     ! Initialize the arrays
@@ -272,9 +245,9 @@ subroutine solve_equation(options, primitive_vectors, x_points, t_points)
     ! Calculate the steps
     dx = x_points(2) - x_points(1)
 
-    call iterate(options=options, tmax=tmax, dx=dx, v=v, &
+    call iterate(options=options, tmax=tmax, dx=dx, &
                  nt=nt, nt_allocated=nt_allocated, solution=solution, &
-                 x_points=x_points, t_points=t_points)
+                 t_points=t_points)
 
     ! Remove unused elements from t dimension of arrays
     call resize_arrays(new_size=nt, keep_elements=nt, &
@@ -282,9 +255,9 @@ subroutine solve_equation(options, primitive_vectors, x_points, t_points)
 
     call remove_ghost_cells(solution)
 
-     call many_state_vectors_to_primitive( &
-            state_vectors=solution, &
-            primitive_vectors=primitive_vectors)
+    call many_state_vectors_to_primitive( &
+        state_vectors=solution, &
+        primitive_vectors=primitive_vectors)
 end subroutine
 
 
@@ -298,7 +271,7 @@ end subroutine
 !
 subroutine solve_and_create_output(options)
     type(program_settings), intent(in) :: options
-    real(dp), allocatable :: solution(:, :, :), primitive_vectors(:, :, :)
+    real(dp), allocatable :: solution(:, :, :)
     real(dp), allocatable :: x_points(:), t_points(:)
 
     call solve_equation(options, solution, x_points, t_points)
