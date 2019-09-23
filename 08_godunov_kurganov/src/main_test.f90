@@ -9,6 +9,7 @@ program MainTest
     use GridTest, only: grid_test_all
     use InitialConditionsTest, only: init_test_all
     use StepTest, only: step_test_all
+    use PhysicsTest, only: physics_test_all
     implicit none
 
     integer :: failures = 0
@@ -25,6 +26,7 @@ program MainTest
     call grid_test_all(failures)
     call init_test_all(failures)
     call step_test_all(failures)
+    call physics_test_all(failures)
 
     if (failures == 0) then
         print *, NEW_LINE('h')//'Tests finished successfully'

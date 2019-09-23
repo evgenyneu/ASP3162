@@ -1,5 +1,5 @@
 !
-! Initialize the arrays for x, t values and the solution
+! Initialize the arrays
 !
 module Grid
 use Types, only: dp
@@ -23,8 +23,7 @@ contains
 ! Outputs:
 ! -------
 !
-! solution : 2D array containing the solution for the advection equation
-!        first coordinate is x, second is time.
+! solution : array containing the solution equation
 !
 ! x_points : A 1D array containing the values of the x coordinate
 !

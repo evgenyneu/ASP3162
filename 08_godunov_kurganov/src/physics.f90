@@ -7,7 +7,8 @@ implicit none
 private
 public :: many_state_vectors_to_primitive, &
           many_primitive_vectors_to_state_vectors, &
-          calculate_fluxes, calculate_eigenvalues
+          calculate_fluxes, calculate_eigenvalues, &
+          single_primitive_vector_to_state_vector
 
 contains
 

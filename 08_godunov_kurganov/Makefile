@@ -58,6 +58,7 @@ SOURCE_FILES = 	types.f90 \
 							output.f90 \
 							output_test.f90 \
 							physics.f90 \
+							physics_test.f90 \
 							interface_flux.f90 \
 							grid.f90 \
 							grid_test.f90 \

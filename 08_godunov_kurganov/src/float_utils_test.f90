@@ -23,6 +23,7 @@ subroutine can_convert_real_to_int_test(failures)
         error_message=error_message)
 
     call assert_true(.not. success, __FILE__, __LINE__, failures)
+
     call assert_equal(error_message, &
             "Can not convert   9.999999999999999E+22 to integer", &
             __FILE__, __LINE__, failures)

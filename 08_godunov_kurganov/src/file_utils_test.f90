@@ -7,7 +7,7 @@ public file_utils_test_all
 
 contains
 
-subroutine file_exsts(failures)
+subroutine file_exists_test(failures)
     integer, intent(inout) :: failures
     logical :: result
 
@@ -22,7 +22,7 @@ end
 subroutine file_utils_test_all(failures)
     integer, intent(inout) :: failures
 
-    call file_exsts(failures)
+    call file_exists_test(failures)
 end
 
 end module FileUtilsTest
