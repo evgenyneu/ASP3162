@@ -186,7 +186,6 @@ end subroutine
 ! -------
 !
 ! primitive_vectors : array containing the solution for
-!        the equation first coordinate is x, second is time.
 !
 ! x_points : A 1D array containing the values of the x coordinate
 !
