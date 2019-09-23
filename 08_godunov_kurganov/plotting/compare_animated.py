@@ -235,10 +235,10 @@ def show_plots():
     methods = ['Godunov', 'Kurganov']
     t_end = 2
 
-    compare_animated(methods=methods,
-                     initial_conditions='square',
-                     courant_factor=0.5,
-                     t_end=t_end, nx=100, ylim=(-1.5, 1.5))
+    # compare_animated(methods=methods,
+    #                  initial_conditions='square',
+    #                  courant_factor=0.5,
+    #                  t_end=t_end, nx=100, ylim=(-0.5, 1.5))
 
     compare_animated(methods=methods,
                      initial_conditions='sine',
