@@ -238,17 +238,18 @@ end subroutine
 ! Outputs:
 ! -------
 !
-! solution : 2D array containing the solution for the advection equation
-!        first coordinate is x, second is time.
+! primitive_vectors : array containing the solution for
+!        the equation first coordinate is x, second is time.
 !
 ! x_points : A 1D array containing the values of the x coordinate
 !
 ! t_points : A 1D array containing the values of the time coordinate
 !
-subroutine solve_equation(options, solution, x_points, t_points)
+subroutine solve_equation(options, primitive_vectors, x_points, t_points)
     type(program_settings), intent(in) :: options
-    real(dp), allocatable, intent(out) :: solution(:, :, :)
+    real(dp), allocatable, intent(out) :: primitive_vectors(:, :, :)
     real(dp), allocatable, intent(out) :: x_points(:), t_points(:)
+    real(dp), allocatable :: solution(:, :, :)
     real(dp) :: dx, tmin, tmax, dt, v, courant
     integer :: nt, nt_allocated
 
@@ -286,6 +287,10 @@ subroutine solve_equation(options, solution, x_points, t_points)
                        solution=solution, t_points=t_points)
 
     call remove_ghost_cells(solution)
+
+     call many_state_vectors_to_primitive( &
+            state_vectors=solution, &
+            primitive_vectors=primitive_vectors)
 end subroutine
 
 
@@ -304,12 +309,8 @@ subroutine solve_and_create_output(options)
 
     call solve_equation(options, solution, x_points, t_points)
 
-    call many_state_vectors_to_primitive( &
-            state_vectors=solution, &
-            primitive_vectors=primitive_vectors)
-
     call write_output(filename=options%output_path, &
-                      solution=primitive_vectors, &
+                      solution=solution, &
                       x_points=x_points, t_points=t_points)
 end subroutine
 
