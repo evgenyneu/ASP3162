@@ -29,10 +29,9 @@ subroutine write_output(filename, solution, x_points, t_points)
     character(len=*), intent(in) :: filename
     real(dp), intent(in) :: solution(:, :, :)
     real(dp), intent(in) :: x_points(:), t_points(:)
+    integer :: out_unit
 
-    integer, parameter :: out_unit=20
-
-    open(unit=out_unit, file=filename, form="unformatted", action="write", &
+    open(newunit=out_unit, file=filename, form="unformatted", action="write", &
         status="replace")
 
     write(out_unit) size(x_points)

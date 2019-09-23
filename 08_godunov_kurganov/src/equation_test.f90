@@ -1,4 +1,4 @@
-! module EquationTest
+module EquationTest
 use Types, only: dp
 use AssertsTest, only: assert_true, assert_approx, assert_equal
 use Constants, only: pi
@@ -428,13 +428,13 @@ end
 subroutine solve_and_create_output_test(failures)
     integer, intent(inout) :: failures
     type(program_settings) :: options
-    integer, parameter :: unit=15
+    integer :: unit
     integer :: nx, nt, state_vector_dimension
-    real(dp) :: x_points(100), t_points(201), solution(1, 100, 201)
+    real(dp) :: x_points(100), t_points(200), solution(1, 100, 200)
 
-    options%output_path = "test_output.dat"
+    options%output_path = "test_output12.dat"
 
-    options%method = 'ftcs'
+    options%method = 'godunov'
     options%initial_conditions = 'square'
     options%x_start = 0
     options%x_end = 1
@@ -446,19 +446,19 @@ subroutine solve_and_create_output_test(failures)
 
     call solve_and_create_output(options)
 
-    call assert_true(file_exists("test_output.dat"), __FILE__, __LINE__, failures)
+    call assert_true(file_exists("test_output12.dat"), __FILE__, __LINE__, failures)
 
     ! Check output file
     ! ----------
 
-    open(unit=unit, file="test_output.dat", form='unformatted', &
+    open(newunit=unit, file="test_output12.dat", form='unformatted', &
         status='old', action='read' )
 
     read (unit) nx
     call assert_equal(nx, 100, __FILE__, __LINE__, failures)
 
     read (unit) nt
-    call assert_equal(nt, 201, __FILE__, __LINE__, failures)
+    call assert_equal(nt, 200, __FILE__, __LINE__, failures)
 
     read (unit) state_vector_dimension
     call assert_equal(state_vector_dimension, 1, __FILE__, __LINE__, failures)
@@ -489,11 +489,12 @@ subroutine solve_and_create_output_test(failures)
     call assert_approx(t_points(2), 0.005_dp, 1e-5_dp, __FILE__, &
         __LINE__, failures)
 
-    call assert_approx(t_points(200), 0.995_dp, 1e-5_dp, __FILE__, &
-        __LINE__, failures)
+    call assert_approx(t_points(199), 0.9994054169217213_dp, &
+        1e-10_dp, __FILE__, __LINE__, failures)
 
-    call assert_approx(t_points(201), 1._dp, 1e-5_dp, __FILE__, &
-        __LINE__, failures)
+    call assert_approx(t_points(200), 1.0047891945143437_dp, &
+        1e-10_dp, __FILE__, __LINE__, failures)
+
 
     ! Initial condition
     ! ----------
@@ -528,18 +529,18 @@ subroutine solve_and_create_output_test(failures)
     ! Solution
     ! ----------
 
-    call assert_approx(solution(1, 30, 20), -1.057714_dp, 1e-5_dp, __FILE__, &
-        __LINE__, failures)
+    call assert_approx(solution(1, 1, 100), 0.122216125834515_dp, &
+        1e-10_dp, __FILE__, __LINE__, failures)
 
-    call assert_approx(solution(1, 50, 20), 1._dp, 1e-5_dp, __FILE__, &
-        __LINE__, failures)
+    call assert_approx(solution(1, 50, 100), 0.509752081141659_dp, &
+        1e-10_dp, __FILE__, __LINE__, failures)
 
-    call assert_approx(solution(1, 70, 20), 0.72453224_dp, 1e-5_dp, __FILE__, &
-        __LINE__, failures)
+    call assert_approx(solution(1, 100, 100), 0.673395555247192_dp, &
+        1e-10_dp, __FILE__, __LINE__, failures)
 
     close(unit=unit)
 
-    call delete_file("test_output.dat")
+    call delete_file("test_output12.dat")
 end
 
 
@@ -565,9 +566,9 @@ subroutine equation_test_all(failures)
     call solve_eqn_godunovs_test__sine(failures)
 
     call solve_eqn_kurganov_test__square(failures)
-    ! call solve_and_create_output_test(failures)
+    call solve_and_create_output_test(failures)
 
-    ! call read_settings_solve_and_create_output_test(failures)
+    call read_settings_solve_and_create_output_test(failures)
 end
 
 end module EquationTest
