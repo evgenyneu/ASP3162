@@ -1,33 +1,15 @@
 !
-! Calculate flux from unit vector
+! Calculate the flux through interface between two cells
 !
 module Flux
 use Types, only: dp
 use Settings, only: program_settings
+use Physics, only: flux_from_state_vector, max_eigenvalue_from_state_vector
 implicit none
 private
-public :: interface_flux, flux_from_state_vector, &
-          max_eigenvalue_from_state_vector
+public :: interface_flux
 
 contains
-
-subroutine max_eigenvalue_from_state_vector(state_vector, max_eigenvalue)
-    real(dp), intent(in) :: state_vector(:)
-    real(dp), intent(out) :: max_eigenvalue
-
-    ! Flux for Burgers equation
-    max_eigenvalue = state_vector(1)
-end subroutine
-
-
-subroutine flux_from_state_vector(state_vector, flux)
-    real(dp), intent(in) :: state_vector(:)
-    real(dp), intent(out) :: flux(size(state_vector))
-
-    ! Flux for Burgers equation
-    flux(1) = 0.5_dp * state_vector(1)**2
-end subroutine
-
 
 subroutine interface_flux(options, state_vector_left, state_vector_right, flux)
     type(program_settings), intent(in) :: options
