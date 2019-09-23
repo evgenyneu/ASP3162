@@ -78,7 +78,7 @@ def read_solution_from_file(path_to_data):
 
 def solve_equation(x_start, x_end, nx,
                    t_start, t_end, method,
-                   initial_conditions, velocity,
+                   initial_conditions,
                    courant_factor):
     """
     Runs Fortran program that solves equation
@@ -108,13 +108,10 @@ def solve_equation(x_start, x_end, nx,
         The number of t points in the grid
 
     method : str
-        Numerical method to be used: ftcs, lax, upwind, lax-wendroff
+        Numerical method to be used: godunov, kurganov
 
     initial_conditions : str
         Type of initial conditions: square, sine
-
-    velocity : float
-        Parameter v in the advectino equation
 
     courant_factor : float
         Courant factor parameter of the numerical methods.
@@ -144,7 +141,6 @@ def solve_equation(x_start, x_end, nx,
             f' --nx={nx}'
             f' --t_start={t_start}'
             f' --t_end={t_end}'
-            f' --velocity={velocity}'
             f' --courant_factor={courant_factor}'
         )
     ]
@@ -164,12 +160,9 @@ def solve_equation(x_start, x_end, nx,
 
     x, y, z = read_solution_from_file(path_to_data)
     dx = x[1] - x[0]
-    dt = y[1] - y[0]
 
     os.remove(path_to_data)
     os.rmdir(subdir)
-
-    dt_dx = dt/dx
     z = np.nan_to_num(z)
 
-    return (x, y, z, dx, dt, dt_dx)
+    return (x, y, z, dx)

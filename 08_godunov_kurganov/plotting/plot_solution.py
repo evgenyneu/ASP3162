@@ -89,12 +89,12 @@ def plot_at_time(methods, initial_conditions, courant_factor, nx,
                                 nx=nx, t_start=0, t_end=time,
                                 method=method.lower(),
                                 initial_conditions=initial_conditions,
-                                velocity=1, courant_factor=courant_factor)
+                                courant_factor=courant_factor)
 
         if result is None:
             return
         else:
-            x, y, z, dx, dt, dt_dx = result
+            x, y, z, dx = result
             time_index = find_nearest_index(y, value=plot_at_time)
             actual_time = y[time_index]
 
@@ -102,13 +102,9 @@ def plot_at_time(methods, initial_conditions, courant_factor, nx,
                      linestyle=next(line_style_cycler))
 
     title = (
-        f"Solutions of Burgers' equation\n"
+        f"Solutions of Burgers' equation "
         r"for $\Delta x$"
-        f"={dx:.3f} m, "
-        r"$\Delta t$"
-        f"={dt:.3f} s, "
-        "$v \\Delta t / \\Delta x$"
-        f"={dt_dx:.2G}"
+        f"={dx:.3f} m"
     )
 
     plt.xlim([0, 1])
@@ -169,6 +165,7 @@ def make_plots(plot_dir, show_plot):
                  courant_factor=0.5,
                  plot_dir=plot_dir, file_name='03_sine_c_0.5_time_1.0.pdf',
                  time=1, nx=100, ylim=(-1.5, 1.5), show_plot=show_plot)
+
 
 if __name__ == '__main__':
     make_plots(plot_dir="plots", show_plot=True)

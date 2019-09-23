@@ -133,12 +133,12 @@ def prepare_for_animation(methods, initial_conditions, t_end, nx, ylim,
                                 nx=this_nx, t_start=0, t_end=t_end,
                                 method=method.lower(),
                                 initial_conditions=initial_conditions,
-                                velocity=1, courant_factor=this_courant)
+                                courant_factor=this_courant)
 
         if result is None:
             return
         else:
-            x, y, z, dx, dt, dt_dx = result
+            x, y, z, dx = result
             x_values.append(x)
             y_values.append(y)
             z_values.append(z)
@@ -147,13 +147,9 @@ def prepare_for_animation(methods, initial_conditions, t_end, nx, ylim,
     ax = plt.axes(xlim=(0, 1), ylim=ylim)
 
     title = (
-        "Solutions of Burger' equation\n"
+        "Solutions of Burgers' equation "
         r"for $\Delta x$"
-        f"={dx:.3f} m, "
-        r"$\Delta t$"
-        f"={dt:.3f} s, "
-        "$v \\Delta t / \\Delta x$"
-        f"={dt_dx:.2G}"
+        f"={dx:.3f} m"
     )
 
     plt.title(title)
@@ -235,10 +231,10 @@ def show_plots():
     methods = ['Godunov', 'Kurganov']
     t_end = 2
 
-    # compare_animated(methods=methods,
-    #                  initial_conditions='square',
-    #                  courant_factor=0.5,
-    #                  t_end=t_end, nx=100, ylim=(-0.5, 1.5))
+    compare_animated(methods=methods,
+                     initial_conditions='square',
+                     courant_factor=0.5,
+                     t_end=t_end, nx=100, ylim=(-0.5, 1.5))
 
     compare_animated(methods=methods,
                      initial_conditions='sine',
