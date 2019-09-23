@@ -7,7 +7,7 @@ use Constants, only: pi
 use Settings, only: program_settings, read_from_command_line
 use FloatUtils, only: linspace
 use Output, only: write_output
-use Grid, only: set_grid
+use Grid, only: set_grid, allocate_primitive_array
 use InitialConditions, only: set_initial
 use Physics, only: many_state_vectors_to_primitive, &
                    calculate_fluxes, calculate_eigenvalues
@@ -234,6 +234,9 @@ subroutine solve_equation(options, primitive_vectors, x_points, t_points)
                        solution=solution, t_points=t_points)
 
     call remove_ghost_cells(solution)
+
+    call allocate_primitive_array(array_shape=shape(solution), &
+        primitive_vectors=primitive_vectors)
 
     call many_state_vectors_to_primitive( &
         state_vectors=solution, &

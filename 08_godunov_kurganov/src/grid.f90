@@ -7,7 +7,7 @@ use Settings, only: program_settings
 use FloatUtils, only: linspace
 implicit none
 private
-public :: set_grid
+public :: set_grid, allocate_primitive_array
 
 contains
 
@@ -126,6 +126,20 @@ subroutine set_grid(options, solution, x_points, t_points, &
     t_points = 0
     eigenvalues = 0
     fluxes = 0
+end subroutine
+
+subroutine allocate_primitive_array(array_shape, primitive_vectors)
+    integer, intent(in) :: array_shape(:)
+    real(dp), allocatable, intent(out) :: primitive_vectors(:, :, :)
+    integer :: result
+
+    allocate(primitive_vectors(array_shape(1), array_shape(2), &
+        array_shape(3)), stat=result)
+
+    if (result /= 0) then
+        write (0, *) "Failed to allocate primitive vector array"
+        call exit(41)
+    end if
 end subroutine
 
 end module Grid

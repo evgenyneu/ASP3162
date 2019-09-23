@@ -19,6 +19,7 @@ subroutine many_primitive_vectors_to_state_vectors(&
     integer :: i
 
     forall(i = 1: size(state_vectors, 2))
+        ! For Burgers' equation primitive vector is also a state vector
         state_vectors(:, i) = primitive_vectors(:, i)
     end forall
 end subroutine
@@ -26,7 +27,7 @@ end subroutine
 subroutine many_state_vectors_to_primitive(state_vectors, primitive_vectors)
     real(dp), intent(in) :: state_vectors(:, :, :)
     real(dp), allocatable, intent(out) :: primitive_vectors(:, :, :)
-    integer :: nx, nt, ix, it, stat
+    integer :: nx, nt, stat, i, j
 
     nx = size(state_vectors, 2)
     nt = size(state_vectors, 3)
@@ -38,22 +39,9 @@ subroutine many_state_vectors_to_primitive(state_vectors, primitive_vectors)
         call exit(41)
     end if
 
-    do it = 1, nt
-        do ix = 1, nx
-            call single_state_vector_to_primitive( &
-                state_vector = state_vectors(:, ix, it), &
-                primitive = primitive_vectors(:, ix, it))
-        end do
-    end do
-end subroutine
-
-subroutine single_state_vector_to_primitive(state_vector, primitive)
-    real(dp), intent(in) :: state_vector(:)
-    real(dp), intent(inout) :: primitive(:)
-
-    ! For Burger's equation the primitive variable is the same
-    ! as state state_vector variable u, the velocity
-    primitive = state_vector
+    FORALL(i = 1:nx, j = 1:nt)
+        primitive_vectors(1, i, j) = state_vectors(1, i, j)
+    END FORALL
 end subroutine
 
 subroutine calculate_fluxes(state_vectors, fluxes)
