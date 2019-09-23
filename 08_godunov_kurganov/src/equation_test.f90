@@ -23,7 +23,7 @@ subroutine remove_ghost_cells_test(failures)
 
     allocate(solution(1, 4, 3))
 
-    solution = reshape((/ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 /), &
+    solution = reshape([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12], &
                        shape(solution))
 
 
