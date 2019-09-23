@@ -7,8 +7,7 @@ implicit none
 private
 public :: many_state_vectors_to_primitive, &
           many_primitive_vectors_to_state_vectors, &
-          calculate_fluxes, calculate_eigenvalues, &
-          single_primitive_vector_to_state_vector
+          calculate_fluxes, calculate_eigenvalues
 
 contains
 
@@ -17,24 +16,11 @@ subroutine many_primitive_vectors_to_state_vectors(&
 
     real(dp), intent(in) :: primitive_vectors(:, :)
     real(dp), intent(out) :: state_vectors(:, :)
-    integer :: nx, ix
+    integer :: i
 
-    nx = size(state_vectors, 2)
-
-    do ix = 1, nx
-        call single_primitive_vector_to_state_vector( &
-            primitive = primitive_vectors(:, ix), &
-            state_vector = state_vectors(:, ix))
-    end do
-end subroutine
-
-subroutine single_primitive_vector_to_state_vector(primitive, state_vector)
-    real(dp), intent(in) :: primitive(:)
-    real(dp), intent(inout) :: state_vector(:)
-
-    ! For Burger's equation the primitive variable is the same
-    ! as state state_vector variable u, the velocity
-    state_vector = primitive
+    forall(i = 1: size(state_vectors, 2))
+        state_vectors(:, i) = primitive_vectors(:, i)
+    end forall
 end subroutine
 
 subroutine many_state_vectors_to_primitive(state_vectors, primitive_vectors)
