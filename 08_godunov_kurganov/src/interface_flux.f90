@@ -55,16 +55,18 @@ subroutine interface_flux(options, &
     real(dp) :: max_eigenvalue
 
     select case (options%method)
-        case ("godunov")
-            call godunov_flux(state_vector_left=state_vector_left, &
-                              state_vector_right=state_vector_right, &
-                              flux_left=flux_left, flux_right=flux_right, &
-                              flux=flux)
+    case ("godunov")
+        call godunov_flux(state_vector_left=state_vector_left, &
+                          state_vector_right=state_vector_right, &
+                          flux_left=flux_left, flux_right=flux_right, &
+                          flux=flux)
+
     case ("kurganov")
         max_eigenvalue = max(eigenvalue_left, eigenvalue_right)
 
         flux = 0.5_dp * (flux_left + flux_right - max_eigenvalue * &
                 (state_vector_right - state_vector_left))
+
     case default
        print "(a, a)", "ERROR: unknown method ", trim(options%method)
        call exit(41)

@@ -29,6 +29,10 @@ contains
 !
 ! dt : size of time step
 !
+! fluxes : fluxes for previous time step
+!
+! eigenvalues : eigenvalues for previous time step
+!
 !
 ! Outputs:
 ! -------

@@ -76,8 +76,7 @@ end subroutine
 ! Outputs:
 ! -------
 !
-! solution : 2D array containing the solution for the PDE's
-!        first coordinate is x, second is time.
+! solution : array containing the solution for the PDE's
 !
 subroutine remove_ghost_cells(solution)
     real(dp), allocatable, intent(inout) :: solution(:, :, :)

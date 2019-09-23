@@ -94,6 +94,21 @@ subroutine calculate_fluxes(state_vectors, fluxes)
     end forall
 end subroutine
 
+
+!
+! Calculates eigenvalues for state vectors
+!
+! Inputs:
+! -------
+!
+! state_vectors : array containing state vectors
+!
+!
+! Outputs:
+! -------
+!
+! eigenvalues : array of eigenvalues
+!
 subroutine calculate_eigenvalues(state_vectors, eigenvalues)
     real(dp), intent(in) :: state_vectors(:, :)
     real(dp), intent(out) :: eigenvalues(:)
