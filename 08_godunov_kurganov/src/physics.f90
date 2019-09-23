@@ -1,5 +1,5 @@
 !
-! Describe physics of the problem
+! Physics of the problem (calculation of fluxes, eigenvalues etc.)
 !
 module Physics
 use Types, only: dp
