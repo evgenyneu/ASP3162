@@ -5,9 +5,7 @@ module Physics
 use Types, only: dp
 implicit none
 private
-public :: flux_from_state_vector, &
-          max_eigenvalue_from_state_vector, &
-          many_state_vectors_to_primitive, &
+public :: many_state_vectors_to_primitive, &
           many_primitive_vectors_to_state_vectors, &
           calculate_fluxes, calculate_eigenvalues
 
@@ -69,23 +67,6 @@ subroutine single_state_vector_to_primitive(state_vector, primitive)
     ! For Burger's equation the primitive variable is the same
     ! as state state_vector variable u, the velocity
     primitive = state_vector
-end subroutine
-
-subroutine max_eigenvalue_from_state_vector(state_vector, max_eigenvalue)
-    real(dp), intent(in) :: state_vector(:)
-    real(dp), intent(out) :: max_eigenvalue
-
-    ! Flux for Burgers equation
-    max_eigenvalue = state_vector(1)
-end subroutine
-
-
-subroutine flux_from_state_vector(state_vector, flux)
-    real(dp), intent(in) :: state_vector(:)
-    real(dp), intent(out) :: flux(size(state_vector))
-
-    ! Flux for Burgers equation
-    flux(1) = 0.5_dp * state_vector(1)**2
 end subroutine
 
 subroutine calculate_fluxes(state_vectors, fluxes)

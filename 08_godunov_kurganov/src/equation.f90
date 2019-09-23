@@ -9,8 +9,7 @@ use FloatUtils, only: linspace
 use Output, only: write_output
 use Grid, only: set_grid
 use InitialConditions, only: set_initial
-use Physics, only: max_eigenvalue_from_state_vector, &
-                   many_state_vectors_to_primitive, &
+use Physics, only: many_state_vectors_to_primitive, &
                    calculate_fluxes, calculate_eigenvalues
 
 use Step, only: step_finite_volume
