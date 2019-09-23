@@ -11,6 +11,22 @@ public :: many_state_vectors_to_primitive, &
 
 contains
 
+
+!
+! Returns an array containing state variables from
+! given an array of primitive variables
+!
+! Inputs:
+! -------
+!
+! primitive_vectors : array containing primitive vectors
+!
+!
+! Outputs:
+! -------
+!
+! state_vectors : array containing state vectors
+!
 subroutine many_primitive_vectors_to_state_vectors(&
     primitive_vectors, state_vectors)
 
@@ -24,6 +40,21 @@ subroutine many_primitive_vectors_to_state_vectors(&
     end forall
 end subroutine
 
+!
+! Returns an array containing state variables from
+! given an array of primitive variables
+!
+! Inputs:
+! -------
+!
+! state_vectors : array containing state vectors
+!
+!
+! Outputs:
+! -------
+!
+! primitive_vectors : array containing primitive vectors
+!
 subroutine many_state_vectors_to_primitive(state_vectors, primitive_vectors)
     real(dp), intent(in) :: state_vectors(:, :, :)
     real(dp), intent(inout) :: primitive_vectors(:, :, :)
@@ -32,9 +63,9 @@ subroutine many_state_vectors_to_primitive(state_vectors, primitive_vectors)
     nx = size(state_vectors, 2)
     nt = size(state_vectors, 3)
 
-    FORALL(i = 1:nx, j = 1:nt)
+    forall(i = 1:nx, j = 1:nt)
         primitive_vectors(1, i, j) = state_vectors(1, i, j)
-    END FORALL
+    end forall
 end subroutine
 
 subroutine calculate_fluxes(state_vectors, fluxes)
