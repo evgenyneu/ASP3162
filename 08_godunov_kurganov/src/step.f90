@@ -35,10 +35,13 @@ contains
 !
 ! solution : array containing the solution for the equation
 !
-subroutine step_finite_volume(options, nx, nt, dx, dt, solution)
+subroutine step_finite_volume(options, nx, nt, dx, dt, fluxes, &
+                              eigenvalues, solution)
+
     type(program_settings), intent(in) :: options
     integer, intent(in) :: nt, nx
     real(dp), intent(in) :: dx, dt
+    real(dp), intent(in) :: fluxes(:, :), eigenvalues(:)
     real(dp), intent(inout) :: solution(:, :, :)
     real(dp) :: a, flux_right_interface(size(solution, 1))
     real(dp) :: flux_left_interface(size(solution, 1))
@@ -52,6 +55,10 @@ subroutine step_finite_volume(options, nx, nt, dx, dt, solution)
             options=options, &
             state_vector_left=solution(:, ix - 1, nt - 1), &
             state_vector_right=solution(:, ix, nt - 1), &
+            flux_left=fluxes(:, ix - 1), &
+            flux_right=fluxes(:, ix), &
+            eigenvalue_left=eigenvalues(ix - 1), &
+            eigenvalue_right=eigenvalues(ix), &
             flux=flux_left_interface)
 
         ! Calculate flux through the right cell interface
@@ -59,6 +66,10 @@ subroutine step_finite_volume(options, nx, nt, dx, dt, solution)
             options=options, &
             state_vector_left=solution(:, ix, nt - 1), &
             state_vector_right=solution(:, ix + 1, nt - 1), &
+            flux_left=fluxes(:, ix), &
+            flux_right=fluxes(:, ix + 1), &
+            eigenvalue_left=eigenvalues(ix), &
+            eigenvalue_right=eigenvalues(ix + 1), &
             flux=flux_right_interface)
 
         solution(:, ix, nt) = solution(:, ix, nt - 1) &

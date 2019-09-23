@@ -143,8 +143,6 @@ subroutine iterate(options, tmax, dx, &
     ! Calculate numerical solution
     do while (t_points(nt) < tmax)
         ! Update the ghost cells.
-        ! The leftmost cell gets the values of nx-1 x cell
-        ! and the rightmost cell gets the value of the second x cell.
         solution(:, 1, nt) = solution(:, nx - 1, nt)
         solution(:, nx, nt) = solution(:, 2, nt)
 
@@ -168,6 +166,8 @@ subroutine iterate(options, tmax, dx, &
         end if
 
        call step_finite_volume(options=options, nx=nx, nt=nt, dx=dx, dt=dt, &
+                               fluxes=fluxes, &
+                               eigenvalues=eigenvalues, &
                                solution=solution)
     end do
 end subroutine

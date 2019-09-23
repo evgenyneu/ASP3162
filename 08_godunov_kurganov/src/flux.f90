@@ -4,34 +4,30 @@
 module Flux
 use Types, only: dp
 use Settings, only: program_settings
-use Physics, only: flux_from_state_vector, max_eigenvalue_from_state_vector
 implicit none
 private
 public :: interface_flux
 
 contains
 
-subroutine interface_flux(options, state_vector_left, state_vector_right, flux)
+subroutine interface_flux(options, &
+                          state_vector_left, state_vector_right, &
+                          flux_left, flux_right, &
+                          eigenvalue_left, eigenvalue_right, &
+                          flux)
     type(program_settings), intent(in) :: options
     real(dp), intent(in) :: state_vector_left(:), state_vector_right(:)
     real(dp), intent(out) :: flux(size(state_vector_left))
+    real(dp), intent(in) :: flux_left(:), flux_right(:)
+    real(dp), intent(in) :: eigenvalue_left, eigenvalue_right
     real(dp) :: shock_speed, ul, ur
-    real(dp) :: flux_left(size(state_vector_left))
-    real(dp) :: flux_right(size(state_vector_left))
-    real(dp) :: eigenvalue_left, eigenvalue_right, max_eigenvalue
-
-    ! Shortcuts
-    ul = state_vector_left(1)
-    ur = state_vector_right(1)
-
-    call flux_from_state_vector(state_vector=state_vector_left, &
-                                flux=flux_left)
-
-    call flux_from_state_vector(state_vector=state_vector_right, &
-                                flux=flux_right)
+    real(dp) :: max_eigenvalue
 
     select case (options%method)
         case ("godunov")
+            ul = state_vector_left(1)
+            ur = state_vector_right(1)
+
            if (ul > ur) then
             shock_speed = 0.5_dp * (ul + ur)
 
@@ -50,18 +46,7 @@ subroutine interface_flux(options, state_vector_left, state_vector_right, flux)
             end if
         end if
     case ("kurganov")
-        ! Find maximum eigenvalue from left and right state vectors
-        max_eigenvalue = 0
-        call max_eigenvalue_from_state_vector(&
-            state_vector=state_vector_left, &
-            max_eigenvalue=eigenvalue_left)
-
-        call max_eigenvalue_from_state_vector(&
-            state_vector=state_vector_right, &
-            max_eigenvalue=eigenvalue_right)
-
-        max_eigenvalue = max(max_eigenvalue, abs(eigenvalue_left), &
-                             abs(eigenvalue_right))
+        max_eigenvalue = max(eigenvalue_left, eigenvalue_right)
 
         flux = 0.5_dp * (flux_left + flux_right - max_eigenvalue * &
                 (state_vector_right - state_vector_left))
