@@ -225,6 +225,7 @@ subroutine solve_equation(options, primitive_vectors, x_points, t_points)
     ! Calculate the steps
     dx = x_points(2) - x_points(1)
 
+    ! Calculate solution
     call iterate(options=options, tmax=tmax, dx=dx, &
                  nt=nt, nt_allocated=nt_allocated, solution=solution, &
                  t_points=t_points, fluxes=fluxes, eigenvalues=eigenvalues)
@@ -251,13 +252,13 @@ end subroutine
 !
 subroutine solve_and_create_output(options)
     type(program_settings), intent(in) :: options
-    real(dp), allocatable :: solution(:, :, :)
+    real(dp), allocatable :: primitive_vectors(:, :, :)
     real(dp), allocatable :: x_points(:), t_points(:)
 
-    call solve_equation(options, solution, x_points, t_points)
+    call solve_equation(options, primitive_vectors, x_points, t_points)
 
     call write_output(filename=options%output_path, &
-                      solution=solution, &
+                      solution=primitive_vectors, &
                       x_points=x_points, t_points=t_points)
 end subroutine
 
