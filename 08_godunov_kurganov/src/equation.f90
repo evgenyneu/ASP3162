@@ -137,8 +137,6 @@ end subroutine
 !
 ! dx : size of space step
 !
-! dt : size of time step
-!
 ! v : velocity parameter in advection equation
 !
 !
@@ -157,19 +155,18 @@ end subroutine
 ! t_points : A 1D array containing the values of the time coordinate
 !  first coordinate is x, second is time.
 !
-subroutine iterate(options, tmax, dx, dt, v, &
+subroutine iterate(options, tmax, dx, v, &
                    nt, nt_allocated, solution, x_points, t_points)
 
     type(program_settings), intent(in) :: options
     integer, intent(inout) :: nt_allocated
     integer, intent(out) :: nt
     real(dp), intent(in) :: tmax, dx, v
-    real(dp), intent(inout) :: dt
     real(dp), allocatable, intent(in) :: x_points(:)
     real(dp), allocatable, intent(inout) :: solution(:, :, :)
     real(dp), allocatable, intent(inout) :: t_points(:)
+    real(dp) :: dt
     integer :: nx
-    real(dp) :: dt_new
 
     nx = size(solution, 2) ! number of x points plus two ghost points
     nt = 1
@@ -184,9 +181,7 @@ subroutine iterate(options, tmax, dx, dt, v, &
 
         ! Update the time step
         call get_time_step(state_vectors=solution(:, :, nt), dx=dx, &
-                      courant_factor=options%courant_factor, dt=dt_new)
-
-        dt = dt_new
+                      courant_factor=options%courant_factor, dt=dt)
 
         ! Increment the time value
         nt = nt + 1
@@ -250,7 +245,7 @@ subroutine solve_equation(options, primitive_vectors, x_points, t_points)
     real(dp), allocatable, intent(out) :: primitive_vectors(:, :, :)
     real(dp), allocatable, intent(out) :: x_points(:), t_points(:)
     real(dp), allocatable :: solution(:, :, :)
-    real(dp) :: dx, tmin, tmax, dt, v, courant
+    real(dp) :: dx, tmin, tmax, v, courant
     integer :: nt, nt_allocated
 
     ! Assign shortcut variables from settings
@@ -276,9 +271,8 @@ subroutine solve_equation(options, primitive_vectors, x_points, t_points)
 
     ! Calculate the steps
     dx = x_points(2) - x_points(1)
-    dt = courant * dx / v
 
-    call iterate(options=options, tmax=tmax, dx=dx, dt=dt, v=v, &
+    call iterate(options=options, tmax=tmax, dx=dx, v=v, &
                  nt=nt, nt_allocated=nt_allocated, solution=solution, &
                  x_points=x_points, t_points=t_points)
 
