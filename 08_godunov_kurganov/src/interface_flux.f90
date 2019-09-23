@@ -1,7 +1,7 @@
 !
 ! Calculate the flux through interface between two cells
 !
-module Flux
+module InterfaceFlux
 use Types, only: dp
 use Settings, only: program_settings
 implicit none
@@ -57,4 +57,4 @@ subroutine interface_flux(options, &
 end subroutine
 
 
-end module Flux
+end module InterfaceFlux

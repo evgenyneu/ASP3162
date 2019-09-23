@@ -5,7 +5,7 @@ module Step
 use Types, only: dp
 use Settings, only: program_settings
 use InitialConditions, only: calculate_initial
-use Flux, only: interface_flux
+use InterfaceFlux, only: interface_flux
 implicit none
 private
 public :: step_finite_volume
