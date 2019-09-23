@@ -9,7 +9,8 @@ use FloatUtils, only: linspace
 use Output, only: write_output
 use Grid, only: set_grid
 use InitialConditions, only: set_initial
-use Physics, only: max_eigenvalue_from_state_vector
+use Physics, only: max_eigenvalue_from_state_vector, &
+                   many_state_vectors_to_primitive
 
 use Step, only: step_exact, step_ftcs, step_lax, step_upwind, &
                 step_lax_wendroff, step_godunov
@@ -298,13 +299,18 @@ end subroutine
 !
 subroutine solve_and_create_output(options)
     type(program_settings), intent(in) :: options
-    real(dp), allocatable :: solution(:, :, :)
+    real(dp), allocatable :: solution(:, :, :), primitive(:,:,:)
     real(dp), allocatable :: x_points(:), t_points(:)
 
     call solve_equation(options, solution, x_points, t_points)
 
+    call many_state_vectors_to_primitive( &
+            state_vectors=solution, &
+            primitive_vectors=primitive)
+
     call write_output(filename=options%output_path, &
-                      solution=solution, x_points=x_points, t_points=t_points)
+                      solution=primitive, &
+                      x_points=x_points, t_points=t_points)
 end subroutine
 
 

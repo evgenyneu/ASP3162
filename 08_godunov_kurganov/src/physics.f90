@@ -1,14 +1,46 @@
 !
-! Desribe physics of the problem
+! Describe physics of the problem
 !
 module Physics
 use Types, only: dp
 implicit none
 private
 public :: flux_from_state_vector, &
-          max_eigenvalue_from_state_vector
+          max_eigenvalue_from_state_vector, &
+          many_state_vectors_to_primitive
 
 contains
+
+subroutine many_state_vectors_to_primitive(state_vectors, primitive_vectors)
+    real(dp), intent(in) :: state_vectors(:, :, :)
+
+    real(dp), intent(out) :: primitive_vectors( &
+        size(state_vectors, 1), &
+        size(state_vectors, 2), &
+        size(state_vectors, 3))
+
+    integer :: nx, nt, ix, it
+
+    nx = size(state_vectors, 2)
+    nt = size(state_vectors, 3)
+
+    do it = 1, nt
+        do ix = 1, nx
+            call single_state_vector_to_primitive( &
+                state_vector = state_vectors(:, ix, it), &
+                primitive = primitive_vectors(:, ix, it))
+        end do
+    end do
+end subroutine
+
+subroutine single_state_vector_to_primitive(state_vector, primitive)
+    real(dp), intent(in) :: state_vector(:)
+    real(dp), intent(out) :: primitive(size(state_vector))
+
+    ! For Burger's equation the primitive variable is the same
+    ! as state state_vector variable u, the velocity
+    primitive = state_vector
+end subroutine
 
 subroutine max_eigenvalue_from_state_vector(state_vector, max_eigenvalue)
     real(dp), intent(in) :: state_vector(:)

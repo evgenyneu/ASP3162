@@ -1,4 +1,4 @@
-module EquationTest
+! module EquationTest
 use Types, only: dp
 use AssertsTest, only: assert_true, assert_approx, assert_equal
 use Constants, only: pi
