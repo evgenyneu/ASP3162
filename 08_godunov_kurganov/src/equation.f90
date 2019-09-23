@@ -10,7 +10,8 @@ use Output, only: write_output
 use Grid, only: set_grid
 use InitialConditions, only: set_initial
 use Physics, only: max_eigenvalue_from_state_vector, &
-                   many_state_vectors_to_primitive
+                   many_state_vectors_to_primitive, &
+                   calculate_fluxes
 
 use Step, only: step_finite_volume
 
@@ -147,13 +148,19 @@ end subroutine
 !
 ! t_points : A 1D array containing the values of the time coordinate
 !
+! fluxes : array of flux vectors
+!
+! eigenvalues : array of eigenvalues
+!
 subroutine iterate(options, tmax, dx, &
-                   nt, nt_allocated, solution, t_points)
+                   nt, nt_allocated, solution, t_points, &
+                   fluxes, eigenvalues)
 
     type(program_settings), intent(in) :: options
     integer, intent(inout) :: nt_allocated
     integer, intent(out) :: nt
     real(dp), intent(in) :: tmax, dx
+    real(dp), intent(inout) :: fluxes(:, :), eigenvalues(:)
     real(dp), allocatable, intent(inout) :: solution(:, :, :)
     real(dp), allocatable, intent(inout) :: t_points(:)
     real(dp) :: dt
@@ -170,7 +177,7 @@ subroutine iterate(options, tmax, dx, &
         solution(:, 1, nt) = solution(:, nx - 1, nt)
         solution(:, nx, nt) = solution(:, 2, nt)
 
-        ! call calculate_fluxes(state_vectors=solution(:, :, nt), fluxes=fluxes)
+        call calculate_fluxes(state_vectors=solution(:, :, nt), fluxes=fluxes)
 
         ! Update the time step
         call get_time_step(state_vectors=solution(:, :, nt), dx=dx, &
@@ -250,7 +257,7 @@ subroutine solve_equation(options, primitive_vectors, x_points, t_points)
 
     call iterate(options=options, tmax=tmax, dx=dx, &
                  nt=nt, nt_allocated=nt_allocated, solution=solution, &
-                 t_points=t_points)
+                 t_points=t_points, fluxes=fluxes, eigenvalues=eigenvalues)
 
     ! Remove unused elements from t dimension of arrays
     call resize_arrays(new_size=nt, keep_elements=nt, &

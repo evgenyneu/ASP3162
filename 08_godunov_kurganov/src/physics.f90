@@ -8,7 +8,8 @@ private
 public :: flux_from_state_vector, &
           max_eigenvalue_from_state_vector, &
           many_state_vectors_to_primitive, &
-          many_primitive_vectors_to_state_vectors
+          many_primitive_vectors_to_state_vectors, &
+          calculate_fluxes
 
 contains
 
@@ -86,5 +87,17 @@ subroutine flux_from_state_vector(state_vector, flux)
     ! Flux for Burgers equation
     flux(1) = 0.5_dp * state_vector(1)**2
 end subroutine
+
+subroutine calculate_fluxes(state_vectors, fluxes)
+    real(dp), intent(in) :: state_vectors(:, :)
+    real(dp), intent(inout) :: fluxes(:, :)
+    integer :: i
+
+    forall(i = 1: size(state_vectors, 2))
+        ! Flux for Burgers equation
+        fluxes(1, i) = 0.5_dp * state_vectors(1, i)**2
+    end forall
+end subroutine
+
 
 end module Physics
