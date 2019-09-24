@@ -11,7 +11,7 @@ contains
 
 subroutine set_grid_test(failures)
     integer, intent(inout) :: failures
-    real(dp), allocatable :: solution(:, :, :)
+    real(dp), allocatable :: state_vectors(:, :, :)
     real(dp), allocatable :: x_points(:), t_points(:)
     real(dp), allocatable :: fluxes(:, :), eigenvalues(:)
     type(program_settings) :: options
@@ -22,7 +22,7 @@ subroutine set_grid_test(failures)
     options%nx = 10
     options%state_vector_dimension = 1
 
-    call set_grid(options=options, solution=solution, &
+    call set_grid(options=options, state_vectors=state_vectors, &
                   x_points=x_points, t_points=t_points, &
                   fluxes=fluxes, eigenvalues=eigenvalues, &
                   nt_allocated=nt_allocated)
@@ -52,14 +52,14 @@ subroutine set_grid_test(failures)
         __LINE__, failures)
 
 
-    ! Solution
+    ! State vectors
     ! --------
 
-    call assert_equal(size(solution, 1), 1, __FILE__, __LINE__, failures)
-    call assert_equal(size(solution, 2), 12, __FILE__, __LINE__, failures)
-    call assert_equal(size(solution, 3), 13, __FILE__, __LINE__, failures)
+    call assert_equal(size(state_vectors, 1), 1, __FILE__, __LINE__, failures)
+    call assert_equal(size(state_vectors, 2), 12, __FILE__, __LINE__, failures)
+    call assert_equal(size(state_vectors, 3), 13, __FILE__, __LINE__, failures)
 
-    call assert_true(all(abs(solution) < 1.e-10_dp), __FILE__, &
+    call assert_true(all(abs(state_vectors) < 1.e-10_dp), __FILE__, &
         __LINE__, failures)
 
 

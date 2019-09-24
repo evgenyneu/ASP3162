@@ -23,7 +23,7 @@ contains
 ! Outputs:
 ! -------
 !
-! solution : array containing the solution equation
+! state_vectors : array containing the state vectors
 !
 ! x_points : A 1D array containing the values of the x coordinate
 !
@@ -35,11 +35,11 @@ contains
 !
 ! nt_allocated : the number of t points allocated in the arrays.
 !
-subroutine set_grid(options, solution, x_points, t_points, &
+subroutine set_grid(options, state_vectors, x_points, t_points, &
                     fluxes, eigenvalues, nt_allocated)
 
     type(program_settings), intent(in) :: options
-    real(dp), allocatable, intent(out) :: solution(:, :, :)
+    real(dp), allocatable, intent(out) :: state_vectors(:, :, :)
     real(dp), allocatable, intent(out) :: x_points(:), t_points(:)
     real(dp), allocatable, intent(out) :: fluxes(:, :), eigenvalues(:)
     integer, intent(out) :: nt_allocated
@@ -92,15 +92,16 @@ subroutine set_grid(options, solution, x_points, t_points, &
     dx = (xmax - xmin) / nx
     call linspace(xmin + dx / 2, xmax - dx / 2, x_points)
 
-    ! Allocate memory for the solution array. The x dimension contains
+    ! Allocate memory for the state vector array. The x dimension contains
     ! two more points: these are left and right ghost cells that help
     ! make calculations simpler. The ghost cells will be removed
     ! when calculations are finished.
-    allocate(solution(options%state_vector_dimension, nx + 2, nt_allocated), &
-             stat=allocate_result)
+    allocate(state_vectors(&
+        options%state_vector_dimension, nx + 2, nt_allocated), &
+        stat=allocate_result)
 
     if (allocate_result /= 0) then
-        write (0, *) "Failed to allocate solution array"
+        write (0, *) "Failed to allocate state vector array"
         call exit(41)
     end if
 
@@ -122,7 +123,7 @@ subroutine set_grid(options, solution, x_points, t_points, &
     end if
 
     ! Initialize the arrays with zeros
-    solution = 0
+    state_vectors = 0
     t_points = 0
     eigenvalues = 0
     fluxes = 0

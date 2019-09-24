@@ -19,95 +19,95 @@ contains
 
 subroutine remove_ghost_cells_test(failures)
     integer, intent(inout) :: failures
-    real(dp), allocatable :: solution(:, :, :)
+    real(dp), allocatable :: state_vectors(:, :, :)
 
-    allocate(solution(1, 4, 3))
+    allocate(state_vectors(1, 4, 3))
 
-    solution = reshape([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12], &
-                       shape(solution))
-
-
-
-    call remove_ghost_cells(solution)
+    state_vectors = reshape([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12], &
+                            shape(state_vectors))
 
 
-    ! Solution size
+
+    call remove_ghost_cells(state_vectors)
+
+
+    ! State vectors size
     ! --------
 
-    call assert_equal(size(solution, 1), 1, __FILE__, __LINE__, failures)
-    call assert_equal(size(solution, 2), 2, __FILE__, __LINE__, failures)
-    call assert_equal(size(solution, 3), 3, __FILE__, __LINE__, failures)
+    call assert_equal(size(state_vectors, 1), 1, __FILE__, __LINE__, failures)
+    call assert_equal(size(state_vectors, 2), 2, __FILE__, __LINE__, failures)
+    call assert_equal(size(state_vectors, 3), 3, __FILE__, __LINE__, failures)
 
-    call assert_approx(solution(1, 1, 1), 2._dp, 1e-5_dp, __FILE__, &
+    call assert_approx(state_vectors(1, 1, 1), 2._dp, 1e-5_dp, __FILE__, &
         __LINE__, failures)
 
-    call assert_approx(solution(1, 2, 1), 3._dp, 1e-5_dp, __FILE__, &
+    call assert_approx(state_vectors(1, 2, 1), 3._dp, 1e-5_dp, __FILE__, &
         __LINE__, failures)
 
-    call assert_approx(solution(1, 1, 2), 6._dp, 1e-5_dp, __FILE__, &
+    call assert_approx(state_vectors(1, 1, 2), 6._dp, 1e-5_dp, __FILE__, &
         __LINE__, failures)
 
-    call assert_approx(solution(1, 2, 2), 7._dp, 1e-5_dp, __FILE__, &
+    call assert_approx(state_vectors(1, 2, 2), 7._dp, 1e-5_dp, __FILE__, &
         __LINE__, failures)
 
-    call assert_approx(solution(1, 1, 3), 10._dp, 1e-5_dp, __FILE__, &
+    call assert_approx(state_vectors(1, 1, 3), 10._dp, 1e-5_dp, __FILE__, &
         __LINE__, failures)
 
-    call assert_approx(solution(1, 2, 3), 11._dp, 1e-5_dp, __FILE__, &
+    call assert_approx(state_vectors(1, 2, 3), 11._dp, 1e-5_dp, __FILE__, &
         __LINE__, failures)
 end
 
 
 subroutine resize_arrays_test(failures)
     integer, intent(inout) :: failures
-    real(dp), allocatable :: solution(:, :, :)
+    real(dp), allocatable :: state_vectors(:, :, :)
     real(dp), allocatable :: t_points(:)
 
-    allocate(solution(1, 2, 3))
+    allocate(state_vectors(1, 2, 3))
 
-    solution = reshape([1, 2, 3, 4, 5, 6], &
-                       shape(solution))
+    state_vectors = reshape([1, 2, 3, 4, 5, 6], &
+                            shape(state_vectors))
 
     allocate(t_points(3))
     t_points = [1.1_dp, 1.2_dp, 1.3_dp]
 
-    call resize_arrays(new_size=5, keep_elements=3, solution=solution, &
-                       t_points=t_points)
+    call resize_arrays(new_size=5, keep_elements=3, &
+                       state_vectors=state_vectors, t_points=t_points)
 
 
-    ! Solution size
+    ! State vectors size
     ! --------
 
-    call assert_equal(size(solution, 1), 1, __FILE__, __LINE__, failures)
-    call assert_equal(size(solution, 2), 2, __FILE__, __LINE__, failures)
-    call assert_equal(size(solution, 3), 5, __FILE__, __LINE__, failures)
+    call assert_equal(size(state_vectors, 1), 1, __FILE__, __LINE__, failures)
+    call assert_equal(size(state_vectors, 2), 2, __FILE__, __LINE__, failures)
+    call assert_equal(size(state_vectors, 3), 5, __FILE__, __LINE__, failures)
 
-    call assert_approx(solution(1, 1, 1), 1._dp, 1e-5_dp, __FILE__, &
+    call assert_approx(state_vectors(1, 1, 1), 1._dp, 1e-5_dp, __FILE__, &
         __LINE__, failures)
 
-    call assert_approx(solution(1, 2, 1), 2._dp, 1e-5_dp, __FILE__, &
+    call assert_approx(state_vectors(1, 2, 1), 2._dp, 1e-5_dp, __FILE__, &
         __LINE__, failures)
 
-    call assert_approx(solution(1, 1, 2), 3._dp, 1e-5_dp, __FILE__, &
+    call assert_approx(state_vectors(1, 1, 2), 3._dp, 1e-5_dp, __FILE__, &
         __LINE__, failures)
 
-    call assert_approx(solution(1, 2, 2), 4._dp, 1e-5_dp, __FILE__, &
+    call assert_approx(state_vectors(1, 2, 2), 4._dp, 1e-5_dp, __FILE__, &
         __LINE__, failures)
 
-    call assert_approx(solution(1, 1, 3), 5._dp, 1e-5_dp, __FILE__, &
+    call assert_approx(state_vectors(1, 1, 3), 5._dp, 1e-5_dp, __FILE__, &
         __LINE__, failures)
 
-    call assert_approx(solution(1, 2, 3), 6._dp, 1e-5_dp, __FILE__, &
+    call assert_approx(state_vectors(1, 2, 3), 6._dp, 1e-5_dp, __FILE__, &
         __LINE__, failures)
 
 
     ! Ensure the added elements are zero
     ! ----------
 
-    call assert_true(all(abs(solution(:, :, 4)) < 1.e-10_dp), __FILE__, &
+    call assert_true(all(abs(state_vectors(:, :, 4)) < 1.e-10_dp), __FILE__, &
         __LINE__, failures)
 
-    call assert_true(all(abs(solution(:, :, 5)) < 1.e-10_dp), __FILE__, &
+    call assert_true(all(abs(state_vectors(:, :, 5)) < 1.e-10_dp), __FILE__, &
         __LINE__, failures)
 
 end
@@ -116,7 +116,7 @@ end
 subroutine solve_eqn_godunovs_test__square(failures)
     integer, intent(inout) :: failures
     type(program_settings) :: options
-    real(dp), allocatable :: solution(:, :, :)
+    real(dp), allocatable :: primitive_vectors(:, :, :)
     real(dp), allocatable :: x_points(:), t_points(:)
 
     options%method = 'godunov'
@@ -128,7 +128,8 @@ subroutine solve_eqn_godunovs_test__square(failures)
     options%t_end = 1
     options%courant_factor = 0.5_dp
 
-    call solve_equation(options, solution, x_points, t_points)
+    call solve_equation(options=options, primitive_vectors=primitive_vectors, &
+                        x_points=x_points, t_points=t_points)
 
     ! x_points
     ! ----------
@@ -162,56 +163,61 @@ subroutine solve_eqn_godunovs_test__square(failures)
         __FILE__, __LINE__, failures)
 
 
-    ! Solution size
+    ! Primitive vectors size
     ! --------
 
-    call assert_equal(size(solution, 1), 1, __FILE__, __LINE__, failures)
-    call assert_equal(size(solution, 2), 100, __FILE__, __LINE__, failures)
-    call assert_equal(size(solution, 3), 200, __FILE__, __LINE__, failures)
+    call assert_equal(size(primitive_vectors, 1), 1, &
+                      __FILE__, __LINE__, failures)
+
+    call assert_equal(size(primitive_vectors, 2), 100, &
+                      __FILE__, __LINE__, failures)
+
+    call assert_equal(size(primitive_vectors, 3), 200, &
+                      __FILE__, __LINE__, failures)
 
     ! Initial condition
     ! ----------
 
-    call assert_approx(solution(1, 1, 1), 0.0_dp, 1e-5_dp, __FILE__, &
+    call assert_approx(primitive_vectors(1, 1, 1), 0.0_dp, 1e-5_dp, __FILE__, &
         __LINE__, failures)
 
-    call assert_approx(solution(1, 2, 1), 0.0_dp, 1e-5_dp, __FILE__, &
+    call assert_approx(primitive_vectors(1, 2, 1), 0.0_dp, 1e-5_dp, __FILE__, &
         __LINE__, failures)
 
-    call assert_approx(solution(1, 25, 1), 0.0_dp, 1e-5_dp, __FILE__, &
+    call assert_approx(primitive_vectors(1, 25, 1), 0.0_dp, 1e-5_dp, __FILE__, &
         __LINE__, failures)
 
-    call assert_approx(solution(1, 26, 1), 1.0_dp, 1e-5_dp, __FILE__, &
+    call assert_approx(primitive_vectors(1, 26, 1), 1.0_dp, 1e-5_dp, __FILE__, &
         __LINE__, failures)
 
-    call assert_approx(solution(1, 27, 1), 1.0_dp, 1e-5_dp, __FILE__, &
+    call assert_approx(primitive_vectors(1, 27, 1), 1.0_dp, 1e-5_dp, __FILE__, &
         __LINE__, failures)
 
-    call assert_approx(solution(1, 75, 1), 1.0_dp, 1e-5_dp, __FILE__, &
+    call assert_approx(primitive_vectors(1, 75, 1), 1.0_dp, 1e-5_dp, __FILE__, &
         __LINE__, failures)
 
-    call assert_approx(solution(1, 76, 1), 0.0_dp, 1e-5_dp, __FILE__, &
+    call assert_approx(primitive_vectors(1, 76, 1), 0.0_dp, 1e-5_dp, __FILE__, &
         __LINE__, failures)
 
-    call assert_approx(solution(1, 100, 1), 0.0_dp, 1e-5_dp, __FILE__, &
+    call assert_approx(primitive_vectors(1, 100, 1), 0.0_dp, 1e-5_dp, __FILE__, &
         __LINE__, failures)
 
 
     ! Ensure there are no NaN values
-    call assert_true(all(.not. ieee_is_nan(solution)), &
+    call assert_true(all(.not. ieee_is_nan(primitive_vectors)), &
         __FILE__, __LINE__, failures)
 
 
-    ! Solution
+    ! Primitive vectors
     ! ----------
 
-    call assert_approx(solution(1, 1, 100), 0.122216125834515_dp, &
+    call assert_approx(primitive_vectors(1, 1, 100), 0.122216125834515_dp, &
         1e-10_dp, __FILE__, __LINE__, failures)
 
-    call assert_approx(solution(1, 50, 100), 0.509752081141659_dp, &
+    call assert_approx(primitive_vectors(1, 50, 100), 0.509752081141659_dp, &
         1e-10_dp, __FILE__, __LINE__, failures)
 
-    call assert_approx(solution(1, 100, 100), 0.673395555247192_dp, &
+    call assert_approx(primitive_vectors(1, 100, 100), 0.673395555247192_dp, &
         1e-10_dp, __FILE__, __LINE__, failures)
 end
 
@@ -219,7 +225,7 @@ end
 subroutine solve_eqn_godunovs_test__sine(failures)
     integer, intent(inout) :: failures
     type(program_settings) :: options
-    real(dp), allocatable :: solution(:, :, :)
+    real(dp), allocatable :: primitive_vectors(:, :, :)
     real(dp), allocatable :: x_points(:), t_points(:)
 
     options%method = 'godunov'
@@ -231,7 +237,10 @@ subroutine solve_eqn_godunovs_test__sine(failures)
     options%t_end = 1
     options%courant_factor = 0.5_dp
 
-    call solve_equation(options, solution, x_points, t_points)
+    call solve_equation(options=options,&
+                        primitive_vectors=primitive_vectors, &
+                        x_points=x_points, &
+                        t_points=t_points)
 
     ! x_points
     ! ----------
@@ -265,64 +274,69 @@ subroutine solve_eqn_godunovs_test__sine(failures)
         __FILE__, __LINE__, failures)
 
 
-    ! Solution size
+    ! Primitive vectors size
     ! --------
 
-    call assert_equal(size(solution, 1), 1, __FILE__, __LINE__, failures)
-    call assert_equal(size(solution, 2), 100, __FILE__, __LINE__, failures)
-    call assert_equal(size(solution, 3), 150, __FILE__, __LINE__, failures)
+    call assert_equal(size(primitive_vectors, 1), 1, &
+                      __FILE__, __LINE__, failures)
+
+    call assert_equal(size(primitive_vectors, 2), 100, &
+                      __FILE__, __LINE__, failures)
+
+    call assert_equal(size(primitive_vectors, 3), 150, &
+                      __FILE__, __LINE__, failures)
 
     ! Initial condition
     ! ----------
 
-    call assert_approx(solution(1, 1, 1), 0.31410759078128292e-1_dp, &
+    call assert_approx(primitive_vectors(1, 1, 1), 0.31410759078128292e-1_dp, &
         1e-10_dp, __FILE__, __LINE__, failures)
 
-    call assert_approx(solution(1, 2, 1), 0.94108313318514311e-1_dp, &
+    call assert_approx(primitive_vectors(1, 2, 1), 0.94108313318514311e-1_dp, &
         1e-10_dp, __FILE__, __LINE__, failures)
 
-    call assert_approx(solution(1, 25, 1), 0.99950656036573160_dp, &
+    call assert_approx(primitive_vectors(1, 25, 1), 0.99950656036573160_dp, &
         1e-10_dp, __FILE__, __LINE__, failures)
 
-    call assert_approx(solution(1, 26, 1), 0.99950656036573160_dp, &
+    call assert_approx(primitive_vectors(1, 26, 1), 0.99950656036573160_dp, &
         1e-10_dp, __FILE__, __LINE__, failures)
 
-    call assert_approx(solution(1, 27, 1), 0.99556196460308000_dp, &
+    call assert_approx(primitive_vectors(1, 27, 1), 0.99556196460308000_dp, &
         1e-10_dp, __FILE__, __LINE__, failures)
 
-    call assert_approx(solution(1, 75, 1), -0.99950656036573160_dp, &
+    call assert_approx(primitive_vectors(1, 75, 1), -0.99950656036573160_dp, &
         1e-10_dp, __FILE__, __LINE__, failures)
 
-    call assert_approx(solution(1, 76, 1), -0.99950656036573160_dp, &
+    call assert_approx(primitive_vectors(1, 76, 1), -0.99950656036573160_dp, &
         1e-10_dp, __FILE__, __LINE__, failures)
 
-    call assert_approx(solution(1, 100, 1), -0.31410759078127473e-1_dp, &
+    call assert_approx(primitive_vectors(1, 100, 1), -0.31410759078127473e-1_dp, &
         1e-10_dp, __FILE__, __LINE__, failures)
 
 
     ! Ensure there are no NaN values
-    call assert_true(all(.not. ieee_is_nan(solution)), &
+    call assert_true(all(.not. ieee_is_nan(primitive_vectors)), &
         __FILE__, __LINE__, failures)
 
 
-    ! Solution
+    ! Primitive vectors
     ! ----------
 
-    call assert_approx(solution(1, 1, 100), 0.16882533672516742e-1_dp, &
-        1e-10_dp, __FILE__, __LINE__, failures)
+    call assert_approx(primitive_vectors(1, 1, 100), &
+        0.16882533672516742e-1_dp, 1e-10_dp, __FILE__, __LINE__, failures)
 
-    call assert_approx(solution(1, 50, 100), 0.68687187909049474_dp, &
-        1e-10_dp, __FILE__, __LINE__, failures)
+    call assert_approx(primitive_vectors(1, 50, 100), &
+        0.68687187909049474_dp, 1e-10_dp, __FILE__, __LINE__, failures)
 
-    call assert_approx(solution(1, 100, 100), -0.16882533672516513e-1_dp, &
-        1e-10_dp, __FILE__, __LINE__, failures)
+    call assert_approx(primitive_vectors(1, 100, 100), &
+        -0.16882533672516513e-1_dp, 1e-10_dp, __FILE__, __LINE__, failures)
 end
 
 
 subroutine solve_eqn_kurganov_test__square(failures)
     integer, intent(inout) :: failures
     type(program_settings) :: options
-    real(dp), allocatable :: solution(:, :, :)
+    real(dp), allocatable :: primitive_vectors(:, :, :)
     real(dp), allocatable :: x_points(:), t_points(:)
 
     options%method = 'kurganov'
@@ -334,7 +348,10 @@ subroutine solve_eqn_kurganov_test__square(failures)
     options%t_end = 1
     options%courant_factor = 0.5_dp
 
-    call solve_equation(options, solution, x_points, t_points)
+    call solve_equation(options=options, &
+                        primitive_vectors=primitive_vectors, &
+                        x_points=x_points, &
+                        t_points=t_points)
 
     ! x_points
     ! ----------
@@ -368,56 +385,61 @@ subroutine solve_eqn_kurganov_test__square(failures)
         __FILE__, __LINE__, failures)
 
 
-    ! Solution size
+    ! Primitive vectors size
     ! --------
 
-    call assert_equal(size(solution, 1), 1, __FILE__, __LINE__, failures)
-    call assert_equal(size(solution, 2), 100, __FILE__, __LINE__, failures)
-    call assert_equal(size(solution, 3), 199, __FILE__, __LINE__, failures)
+    call assert_equal(size(primitive_vectors, 1), 1, &
+                      __FILE__, __LINE__, failures)
+
+    call assert_equal(size(primitive_vectors, 2), 100, &
+                      __FILE__, __LINE__, failures)
+
+    call assert_equal(size(primitive_vectors, 3), 199, &
+                      __FILE__, __LINE__, failures)
 
     ! Initial condition
     ! ----------
 
-    call assert_approx(solution(1, 1, 1), 0.0_dp, 1e-5_dp, __FILE__, &
+    call assert_approx(primitive_vectors(1, 1, 1), 0.0_dp, 1e-5_dp, __FILE__, &
         __LINE__, failures)
 
-    call assert_approx(solution(1, 2, 1), 0.0_dp, 1e-5_dp, __FILE__, &
+    call assert_approx(primitive_vectors(1, 2, 1), 0.0_dp, 1e-5_dp, __FILE__, &
         __LINE__, failures)
 
-    call assert_approx(solution(1, 25, 1), 0.0_dp, 1e-5_dp, __FILE__, &
+    call assert_approx(primitive_vectors(1, 25, 1), 0.0_dp, 1e-5_dp, __FILE__, &
         __LINE__, failures)
 
-    call assert_approx(solution(1, 26, 1), 1.0_dp, 1e-5_dp, __FILE__, &
+    call assert_approx(primitive_vectors(1, 26, 1), 1.0_dp, 1e-5_dp, __FILE__, &
         __LINE__, failures)
 
-    call assert_approx(solution(1, 27, 1), 1.0_dp, 1e-5_dp, __FILE__, &
+    call assert_approx(primitive_vectors(1, 27, 1), 1.0_dp, 1e-5_dp, __FILE__, &
         __LINE__, failures)
 
-    call assert_approx(solution(1, 75, 1), 1.0_dp, 1e-5_dp, __FILE__, &
+    call assert_approx(primitive_vectors(1, 75, 1), 1.0_dp, 1e-5_dp, __FILE__, &
         __LINE__, failures)
 
-    call assert_approx(solution(1, 76, 1), 0.0_dp, 1e-5_dp, __FILE__, &
+    call assert_approx(primitive_vectors(1, 76, 1), 0.0_dp, 1e-5_dp, __FILE__, &
         __LINE__, failures)
 
-    call assert_approx(solution(1, 100, 1), 0.0_dp, 1e-5_dp, __FILE__, &
+    call assert_approx(primitive_vectors(1, 100, 1), 0.0_dp, 1e-5_dp, __FILE__, &
         __LINE__, failures)
 
 
     ! Ensure there are no NaN values
-    call assert_true(all(.not. ieee_is_nan(solution)), &
+    call assert_true(all(.not. ieee_is_nan(primitive_vectors)), &
         __FILE__, __LINE__, failures)
 
 
-    ! Solution
+    ! Primitive vectors
     ! ----------
 
-    call assert_approx(solution(1, 1, 100), 0.22193347102695274_dp, &
+    call assert_approx(primitive_vectors(1, 1, 100), 0.22193347102695274_dp, &
         1e-10_dp, __FILE__, __LINE__, failures)
 
-    call assert_approx(solution(1, 50, 100), 0.50626805029687283_dp, &
+    call assert_approx(primitive_vectors(1, 50, 100), 0.50626805029687283_dp, &
         1e-10_dp, __FILE__, __LINE__, failures)
 
-    call assert_approx(solution(1, 100, 100), 0.64565582723970583_dp, &
+    call assert_approx(primitive_vectors(1, 100, 100), 0.64565582723970583_dp, &
         1e-10_dp, __FILE__, __LINE__, failures)
 end
 
@@ -427,7 +449,7 @@ subroutine solve_and_create_output_test(failures)
     type(program_settings) :: options
     integer :: unit
     integer :: nx, nt, state_vector_dimension
-    real(dp) :: x_points(100), t_points(200), solution(1, 100, 200)
+    real(dp) :: x_points(100), t_points(200), primitive_vectors(1, 100, 200)
 
     options%output_path = "test_output.dat"
 
@@ -492,46 +514,46 @@ subroutine solve_and_create_output_test(failures)
         1e-10_dp, __FILE__, __LINE__, failures)
 
 
-    ! Initial condition
+    ! Primitive condition
     ! ----------
 
-    read (unit) solution
+    read (unit) primitive_vectors
 
-    call assert_approx(solution(1, 1, 1), 0.0_dp, 1e-5_dp, __FILE__, &
+    call assert_approx(primitive_vectors(1, 1, 1), 0.0_dp, 1e-5_dp, __FILE__, &
         __LINE__, failures)
 
-    call assert_approx(solution(1, 2, 1), 0.0_dp, 1e-5_dp, __FILE__, &
+    call assert_approx(primitive_vectors(1, 2, 1), 0.0_dp, 1e-5_dp, __FILE__, &
         __LINE__, failures)
 
-    call assert_approx(solution(1, 25, 1), 0.0_dp, 1e-5_dp, __FILE__, &
+    call assert_approx(primitive_vectors(1, 25, 1), 0.0_dp, 1e-5_dp, __FILE__, &
         __LINE__, failures)
 
-    call assert_approx(solution(1, 26, 1), 1.0_dp, 1e-5_dp, __FILE__, &
+    call assert_approx(primitive_vectors(1, 26, 1), 1.0_dp, 1e-5_dp, __FILE__, &
         __LINE__, failures)
 
-    call assert_approx(solution(1, 27, 1), 1.0_dp, 1e-5_dp, __FILE__, &
+    call assert_approx(primitive_vectors(1, 27, 1), 1.0_dp, 1e-5_dp, __FILE__, &
         __LINE__, failures)
 
-    call assert_approx(solution(1, 75, 1), 1.0_dp, 1e-5_dp, __FILE__, &
+    call assert_approx(primitive_vectors(1, 75, 1), 1.0_dp, 1e-5_dp, __FILE__, &
         __LINE__, failures)
 
-    call assert_approx(solution(1, 76, 1), 0.0_dp, 1e-5_dp, __FILE__, &
+    call assert_approx(primitive_vectors(1, 76, 1), 0.0_dp, 1e-5_dp, __FILE__, &
         __LINE__, failures)
 
-    call assert_approx(solution(1, 100, 1), 0.0_dp, 1e-5_dp, __FILE__, &
+    call assert_approx(primitive_vectors(1, 100, 1), 0.0_dp, 1e-5_dp, __FILE__, &
         __LINE__, failures)
 
 
-    ! Solution
+    ! Primitive vectors
     ! ----------
 
-    call assert_approx(solution(1, 1, 100), 0.122216125834515_dp, &
+    call assert_approx(primitive_vectors(1, 1, 100), 0.122216125834515_dp, &
         1e-10_dp, __FILE__, __LINE__, failures)
 
-    call assert_approx(solution(1, 50, 100), 0.509752081141659_dp, &
+    call assert_approx(primitive_vectors(1, 50, 100), 0.509752081141659_dp, &
         1e-10_dp, __FILE__, __LINE__, failures)
 
-    call assert_approx(solution(1, 100, 100), 0.673395555247192_dp, &
+    call assert_approx(primitive_vectors(1, 100, 100), 0.673395555247192_dp, &
         1e-10_dp, __FILE__, __LINE__, failures)
 
     close(unit=unit)

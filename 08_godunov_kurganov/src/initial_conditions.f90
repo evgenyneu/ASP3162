@@ -25,13 +25,14 @@ contains
 ! Outputs:
 ! -------
 !
-! solution : array containing the initial conditions
+! state_vectors : state vector array containing the initial conditions
 !
-subroutine calculate_initial(type, x_points, solution)
+subroutine calculate_initial(type, x_points, state_vectors)
     character(len=*), intent(in) :: type
     real(dp), intent(in) :: x_points(:)
-    real(dp), intent(inout) :: solution(:, :)
-    real(dp) :: primitive_vectors(size(solution, 1), size(solution, 2) - 2)
+    real(dp), intent(inout) :: state_vectors(:, :)
+    real(dp) :: primitive_vectors(size(state_vectors, 1), &
+                                  size(state_vectors, 2) - 2)
 
     select case (type)
     case ("square")
@@ -49,12 +50,12 @@ subroutine calculate_initial(type, x_points, solution)
 
     call many_primitive_vectors_to_state_vectors( &
             primitive_vectors=primitive_vectors, &
-            state_vectors=solution(:, 2: size(solution, 2) - 1))
+            state_vectors=state_vectors(:, 2: size(state_vectors, 2) - 1))
 end subroutine
 
 
 !
-! Set initial condition in the `solution` array.
+! Set initial condition in the `state_vectors` array.
 !
 ! Inputs:
 ! -------
@@ -67,15 +68,15 @@ end subroutine
 ! Outputs:
 ! -------
 !
-! solution : array containing the solution
+! state_vectors : array containing stae vectors
 !
-subroutine set_initial(type, x_points, solution)
+subroutine set_initial(type, x_points, state_vectors)
     character(len=*), intent(in) :: type
     real(dp), intent(in) :: x_points(:)
-    real(dp), intent(inout) :: solution(:, :, :)
+    real(dp), intent(inout) :: state_vectors(:, :, :)
 
     call calculate_initial(type=type, x_points=x_points, &
-                           solution=solution(:, :, 1))
+                           state_vectors=state_vectors(:, :, 1))
 end subroutine
 
 end module InitialConditions

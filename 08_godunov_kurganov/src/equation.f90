@@ -24,7 +24,7 @@ contains
 
 
 !
-! Change the size of the time dimension in solution and t_points arrays
+! Change the size of the time dimension in state_vectors and t_points arrays
 !
 ! Inputs:
 ! -------
@@ -37,14 +37,14 @@ contains
 ! Outputs:
 ! -------
 !
-! solution : array containing the solution for the equation
+! state_vectors : array containing the solution for the equation
 !
 ! t_points : A 1D array containing the values of the time coordinate
 !
-subroutine resize_arrays(new_size, keep_elements, solution, t_points)
+subroutine resize_arrays(new_size, keep_elements, state_vectors, t_points)
     integer, intent(in) :: new_size, keep_elements
-    real(dp), allocatable, intent(inout) :: solution(:, :, :)
-    real(dp), allocatable :: solution_buffer(:, :, :)
+    real(dp), allocatable, intent(inout) :: state_vectors(:, :, :)
+    real(dp), allocatable :: state_vectors_buffer(:, :, :)
     real(dp), allocatable, intent(inout) :: t_points(:)
     real(dp), allocatable :: t_points_buffer(:)
 
@@ -57,39 +57,43 @@ subroutine resize_arrays(new_size, keep_elements, solution, t_points)
     deallocate(t_points)
     call move_alloc(t_points_buffer, t_points)
 
-    ! Enlarge t axis of the solution array
+    ! Enlarge t axis of the state_vectors array
     ! -------
 
-    allocate(solution_buffer(size(solution, 1), size(solution, 2), new_size))
-    solution_buffer = 0
-    solution_buffer(:, :, 1:keep_elements) = solution
-    deallocate(solution)
-    call move_alloc(solution_buffer, solution)
+    allocate(state_vectors_buffer(size(state_vectors, 1), &
+             size(state_vectors, 2), new_size))
+
+    state_vectors_buffer = 0
+    state_vectors_buffer(:, :, 1:keep_elements) = state_vectors
+    deallocate(state_vectors)
+    call move_alloc(state_vectors_buffer, state_vectors)
 end subroutine
 
 
 !
 ! Removes the ghost cells, which are the values corresponding to
 ! the first and last x-values. The ghost cells are temporary cells
-! and are not needed after the solution has been calculated.
+! and are not needed after the state vectors has been calculated.
 !
 ! Outputs:
 ! -------
 !
-! solution : array containing the solution for the PDE's
+! state_vectors : array containing the solution
 !
-subroutine remove_ghost_cells(solution)
-    real(dp), allocatable, intent(inout) :: solution(:, :, :)
-    real(dp), allocatable :: solution_buffer(:, :, :)
+subroutine remove_ghost_cells(state_vectors)
+    real(dp), allocatable, intent(inout) :: state_vectors(:, :, :)
+    real(dp), allocatable :: state_vectors_buffer(:, :, :)
 
-    allocate(solution_buffer(size(solution, 1), &
-                             size(solution, 2) - 2, &
-                             size(solution, 3)))
+    allocate(state_vectors_buffer(size(state_vectors, 1), &
+                                  size(state_vectors, 2) - 2, &
+                                  size(state_vectors, 3)))
 
-    solution_buffer = 0
-    solution_buffer(:, :, : ) = solution(:, 2 : size(solution, 2) - 1, :)
-    deallocate(solution)
-    call move_alloc(solution_buffer, solution)
+    state_vectors_buffer = 0
+    state_vectors_buffer(:, :, : ) = state_vectors(&
+                                    :, 2 : size(state_vectors, 2) - 1, :)
+
+    deallocate(state_vectors)
+    call move_alloc(state_vectors_buffer, state_vectors)
 end subroutine
 
 !
@@ -109,11 +113,11 @@ end subroutine
 ! Outputs:
 ! -------
 !
-! nt : the number of t points for which solution has been calculated.
+! nt : the number of t points for which state vectors has been calculated.
 !
 ! nt_allocated : the number of t points allocated in the arrays.
 !
-! solution : array containing the solution for the equation
+! state_vectors : array containing the solution
 !
 ! t_points : A 1D array containing the values of the time coordinate
 !
@@ -122,7 +126,7 @@ end subroutine
 ! eigenvalues : array of eigenvalues
 !
 subroutine iterate(options, tmax, dx, &
-                   nt, nt_allocated, solution, t_points, &
+                   nt, nt_allocated, state_vectors, t_points, &
                    fluxes, eigenvalues)
 
     type(program_settings), intent(in) :: options
@@ -130,26 +134,27 @@ subroutine iterate(options, tmax, dx, &
     integer, intent(out) :: nt
     real(dp), intent(in) :: tmax, dx
     real(dp), intent(inout) :: fluxes(:, :), eigenvalues(:)
-    real(dp), allocatable, intent(inout) :: solution(:, :, :)
+    real(dp), allocatable, intent(inout) :: state_vectors(:, :, :)
     real(dp), allocatable, intent(inout) :: t_points(:)
     real(dp) :: dt
     integer :: nx
 
-    nx = size(solution, 2) ! number of x points plus two ghost points
+    nx = size(state_vectors, 2) ! number of x points plus two ghost points
     nt = 1
 
-    ! Calculate numerical solution
+    ! Calculate state vectors for all time steps
     do while (t_points(nt) < tmax)
         ! Update the ghost cells.
-        solution(:, 1, nt) = solution(:, nx - 1, nt)
-        solution(:, nx, nt) = solution(:, 2, nt)
+        state_vectors(:, 1, nt) = state_vectors(:, nx - 1, nt)
+        state_vectors(:, nx, nt) = state_vectors(:, 2, nt)
 
         ! Calculate fluxes and eigenvalues for all the cells at current
         ! time index. The flux/eigenvalues will be used to calculate
-        ! the solution for the next time index
-        call calculate_fluxes(state_vectors=solution(:, :, nt), fluxes=fluxes)
+        ! the state vectors for the next time index
+        call calculate_fluxes(state_vectors=state_vectors(:, :, nt), &
+                              fluxes=fluxes)
 
-        call calculate_eigenvalues(state_vectors=solution(:, :, nt), &
+        call calculate_eigenvalues(state_vectors=state_vectors(:, :, nt), &
                                    eigenvalues=eigenvalues)
 
         ! Increment the time value
@@ -163,13 +168,13 @@ subroutine iterate(options, tmax, dx, &
 
             call resize_arrays(new_size=nt_allocated, &
                                keep_elements=size(t_points), &
-                               solution=solution, t_points=t_points)
+                               state_vectors=state_vectors, t_points=t_points)
         end if
 
        call step_finite_volume(options=options, nx=nx, nt=nt, dx=dx, dt=dt, &
                                fluxes=fluxes, &
                                eigenvalues=eigenvalues, &
-                               solution=solution)
+                               solution=state_vectors)
     end do
 end subroutine
 
@@ -187,8 +192,9 @@ end subroutine
 ! Outputs:
 ! -------
 !
-! primitive_vectors : array containing the solution:
-! vectors of primitive variables for all position and time values.
+! primitive_vectors : array containing the solution.
+!           These are vectors of primitive variables for all
+!           position and time values.
 !
 ! x_points : A 1D array containing the values of the x coordinate
 !
@@ -198,7 +204,7 @@ subroutine solve_equation(options, primitive_vectors, x_points, t_points)
     type(program_settings), intent(in) :: options
     real(dp), allocatable, intent(out) :: primitive_vectors(:, :, :)
     real(dp), allocatable, intent(out) :: x_points(:), t_points(:)
-    real(dp), allocatable :: solution(:, :, :)
+    real(dp), allocatable :: state_vectors(:, :, :)
     real(dp), allocatable :: fluxes(:, :), eigenvalues(:)
     real(dp) :: dx, tmin, tmax, courant
     integer :: nt, nt_allocated
@@ -211,7 +217,7 @@ subroutine solve_equation(options, primitive_vectors, x_points, t_points)
     courant = options%courant_factor
 
     ! Initialize the arrays
-    call set_grid(options=options, solution=solution, &
+    call set_grid(options=options, state_vectors=state_vectors, &
                   x_points=x_points, t_points=t_points, &
                   fluxes=fluxes, eigenvalues=eigenvalues, &
                   nt_allocated=nt_allocated)
@@ -222,33 +228,34 @@ subroutine solve_equation(options, primitive_vectors, x_points, t_points)
     t_points(1) = tmin
 
     call set_initial(type=options%initial_conditions, &
-                     x_points=x_points, solution=solution)
+                     x_points=x_points, state_vectors=state_vectors)
 
     ! Calculate the steps
     dx = x_points(2) - x_points(1)
 
-    ! Calculate solution
+    ! Calculate state vectors for all time steps
     call iterate(options=options, tmax=tmax, dx=dx, &
-                 nt=nt, nt_allocated=nt_allocated, solution=solution, &
+                 nt=nt, nt_allocated=nt_allocated, &
+                 state_vectors=state_vectors, &
                  t_points=t_points, fluxes=fluxes, eigenvalues=eigenvalues)
 
     ! Remove unused elements from t dimension of arrays
     call resize_arrays(new_size=nt, keep_elements=nt, &
-                       solution=solution, t_points=t_points)
+                       state_vectors=state_vectors, t_points=t_points)
 
-    call remove_ghost_cells(solution)
+    call remove_ghost_cells(state_vectors)
 
-    call allocate_primitive_array(array_shape=shape(solution), &
+    call allocate_primitive_array(array_shape=shape(state_vectors), &
         primitive_vectors=primitive_vectors)
 
     call many_state_vectors_to_primitive( &
-        state_vectors=solution, &
+        state_vectors=state_vectors, &
         primitive_vectors=primitive_vectors)
 end subroutine
 
 
 !
-! Solves PDE and prints solutions to a file
+! Solves PDE and prints solution containing primitive variables to a file
 !
 ! Inputs:
 ! -------
@@ -263,14 +270,14 @@ subroutine solve_and_create_output(options)
     call solve_equation(options, primitive_vectors, x_points, t_points)
 
     call write_output(filename=options%output_path, &
-                      solution=primitive_vectors, &
+                      primitive_vectors=primitive_vectors, &
                       x_points=x_points, t_points=t_points)
 end subroutine
 
 
 !
 ! Reads program settings from command line arguments,
-! solves PDE and prints solutions to a file
+! solves PDE and prints solution containing primitive variables to a file
 !
 ! Inputs:
 ! -------
