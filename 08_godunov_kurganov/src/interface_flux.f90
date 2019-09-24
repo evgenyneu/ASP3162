@@ -10,6 +10,23 @@ public :: interface_flux, godunov_flux
 
 contains
 
+!
+! Calculate flux through cell interface using Godunov's method
+!
+! Inputs:
+! -------
+!
+! state_vector_left,
+! state_vector_right : state vectors on both sides of the cell interface
+!
+! flux_left,
+! flux_right : values of flux in the cells on both sides of cell interface
+!
+! Outputs:
+! -------
+!
+! flux : flux through cell interface
+!
 subroutine godunov_flux(state_vector_left, state_vector_right, &
                         flux_left, flux_right, flux)
     real(dp), intent(in) :: state_vector_left(:), state_vector_right(:)
@@ -40,7 +57,28 @@ subroutine godunov_flux(state_vector_left, state_vector_right, &
     end if
 end subroutine
 
-
+!
+! Calculate flux through cell interface
+!
+! Inputs:
+! -------
+!
+! options : program options
+!
+! state_vector_left,
+! state_vector_right : state vectors on both sides of the cell interface
+!
+! flux_left,
+! flux_right : values of flux in the cells on both sides of cell interface
+!
+! eigenvalue_left,
+! eigenvalue_right : eigenvalues for the cells on both sides of cell interface
+!
+! Outputs:
+! -------
+!
+! flux : flux through cell interface
+!
 subroutine interface_flux(options, &
                           state_vector_left, state_vector_right, &
                           flux_left, flux_right, &
