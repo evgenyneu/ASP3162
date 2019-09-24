@@ -25,7 +25,7 @@ contains
 ! Outputs:
 ! -------
 !
-! solution : 1D array that will contain the the initial condition.
+! solution : array containing the initial conditions
 !
 subroutine calculate_initial(type, x_points, solution)
     character(len=*), intent(in) :: type
@@ -67,8 +67,7 @@ end subroutine
 ! Outputs:
 ! -------
 !
-! solution : 2D array containing the solution for the advection equation
-!        first coordinate is x, second is time.
+! solution : array containing the solution
 !
 subroutine set_initial(type, x_points, solution)
     character(len=*), intent(in) :: type
