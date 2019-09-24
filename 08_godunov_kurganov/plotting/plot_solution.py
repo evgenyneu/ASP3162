@@ -45,7 +45,7 @@ def plot_at_time(methods, initial_conditions, courant_factor, nx,
     ----------
 
     methods : list of str
-        Numerical methods to be used: ftcs, lax, upwind, lax-wendroff
+        Numerical methods to be used.
 
     initial_conditions : str
         Type of initial conditions: square, sine

@@ -77,7 +77,7 @@ def prepare_for_animation(methods, initial_conditions, t_end, nx, ylim,
     ----------
 
     methods : list of str
-        Numerical methods to be used: ftcs, lax, upwind, lax-wendroff
+        Numerical methods to be used.
 
     initial_conditions : str
         Type of initial conditions: square, sine
@@ -190,7 +190,7 @@ def compare_animated(methods, initial_conditions, t_end, ylim,
     ----------
 
     methods : list of str
-        Numerical methods to be used: ftcs, lax, upwind, lax-wendroff
+        Numerical methods to be used.
 
     initial_conditions : str
         Type of initial conditions: square, sine

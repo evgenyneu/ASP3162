@@ -17,7 +17,7 @@ def create_movie(methods, initial_conditions, courant_factor,
     ----------
 
     methods : list of str
-        Numerical methods to be used: ftcs, lax, upwind, lax-wendroff
+        Numerical methods to be used.
 
     initial_conditions : str
         Type of initial conditions: square, sine
