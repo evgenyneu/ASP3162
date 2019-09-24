@@ -144,6 +144,9 @@ subroutine iterate(options, tmax, dx, &
         solution(:, 1, nt) = solution(:, nx - 1, nt)
         solution(:, nx, nt) = solution(:, 2, nt)
 
+        ! Calculate fluxes and eigenvalues for all the cells at current
+        ! time index. The flux/eigenvalues will be used to calculate
+        ! the solution for the next time index
         call calculate_fluxes(state_vectors=solution(:, :, nt), fluxes=fluxes)
 
         call calculate_eigenvalues(state_vectors=solution(:, :, nt), &
@@ -172,7 +175,7 @@ end subroutine
 
 
 !
-! Solve the advection equation
+! Solve the equation
 !
 !
 ! Inputs:
@@ -184,7 +187,8 @@ end subroutine
 ! Outputs:
 ! -------
 !
-! primitive_vectors : array containing the solution for
+! primitive_vectors : array containing the solution:
+! vectors of primitive variables for all position and time values.
 !
 ! x_points : A 1D array containing the values of the x coordinate
 !

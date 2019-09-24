@@ -18,8 +18,7 @@ contains
 !
 ! filename : Name of the data file to print output to
 !
-! solution : 2D array containing the solution (values of v)
-!            the first coordinate is x, the second is t.
+! solution : array containing the solution
 !
 ! x_points : A 1D array containing the values of x
 !
