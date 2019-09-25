@@ -106,8 +106,6 @@ end subroutine
 !
 ! options : program options
 !
-! tmax : the largest time value
-!
 ! dx : size of space step
 !
 !
@@ -126,14 +124,15 @@ end subroutine
 !
 ! eigenvalues : array of eigenvalues
 !
-subroutine iterate(options, tmax, dx, &
+subroutine iterate(options,  dx, &
                    nt, nt_allocated, state_vectors, t_points, &
                    fluxes, eigenvalues)
 
     type(program_settings), intent(in) :: options
     integer, intent(inout) :: nt_allocated
     integer, intent(out) :: nt
-    real(dp), intent(in) :: tmax, dx
+    real(dp), intent(in) :: dx
+    real(dp) :: tmax
     real(dp), intent(inout) :: fluxes(:, :), eigenvalues(:)
     real(dp), allocatable, intent(inout) :: state_vectors(:, :, :)
     real(dp), allocatable, intent(inout) :: t_points(:)
@@ -145,8 +144,11 @@ subroutine iterate(options, tmax, dx, &
     integer :: nx
 
     nx = size(state_vectors, 2) ! number of x points plus two ghost points
-    nt = 1
+
+    ! Set initial time values
+    tmax = options%t_end
     t_points(1) = options%t_start
+    nt = 1
 
     ! Calculate state vectors for all time steps
     do while (t_points(nt) < tmax)
@@ -217,13 +219,8 @@ subroutine solve_equation(options, primitive_vectors, x_points, t_points)
     real(dp), allocatable, intent(out) :: x_points(:), t_points(:)
     real(dp), allocatable :: state_vectors(:, :, :)
     real(dp), allocatable :: fluxes(:, :), eigenvalues(:)
-    real(dp) :: dx, tmax
+    real(dp) :: dx
     integer :: nt, nt_allocated
-
-    ! Assign shortcut variables from settings
-    ! ----------
-
-    tmax = options%t_end
 
     ! Initialize the arrays
     call set_grid(options=options, state_vectors=state_vectors, &
@@ -241,7 +238,7 @@ subroutine solve_equation(options, primitive_vectors, x_points, t_points)
     dx = x_points(2) - x_points(1)
 
     ! Calculate state vectors for all time steps
-    call iterate(options=options, tmax=tmax, dx=dx, &
+    call iterate(options=options, dx=dx, &
                  nt=nt, nt_allocated=nt_allocated, &
                  state_vectors=state_vectors, &
                  t_points=t_points, fluxes=fluxes, eigenvalues=eigenvalues)
