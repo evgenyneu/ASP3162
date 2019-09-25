@@ -146,6 +146,7 @@ subroutine iterate(options, tmax, dx, &
 
     nx = size(state_vectors, 2) ! number of x points plus two ghost points
     nt = 1
+    t_points(1) = options%t_start
 
     ! Calculate state vectors for all time steps
     do while (t_points(nt) < tmax)
@@ -216,15 +217,13 @@ subroutine solve_equation(options, primitive_vectors, x_points, t_points)
     real(dp), allocatable, intent(out) :: x_points(:), t_points(:)
     real(dp), allocatable :: state_vectors(:, :, :)
     real(dp), allocatable :: fluxes(:, :), eigenvalues(:)
-    real(dp) :: dx, tmin, tmax, courant
+    real(dp) :: dx, tmax
     integer :: nt, nt_allocated
 
     ! Assign shortcut variables from settings
     ! ----------
 
-    tmin = options%t_start
     tmax = options%t_end
-    courant = options%courant_factor
 
     ! Initialize the arrays
     call set_grid(options=options, state_vectors=state_vectors, &
@@ -234,8 +233,6 @@ subroutine solve_equation(options, primitive_vectors, x_points, t_points)
 
     ! Set initial conditions
     ! -------
-
-    t_points(1) = tmin
 
     call set_initial(type=options%initial_conditions, &
                      x_points=x_points, state_vectors=state_vectors)
