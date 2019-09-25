@@ -13,7 +13,8 @@ public :: step_finite_volume
 contains
 
 !
-! Calculate solution for one step of finate volume method for nt time index
+! Calculate values of state vectors for one step of finate
+! volume method for nt time index
 !
 ! Inputs:
 ! -------
@@ -37,18 +38,18 @@ contains
 ! Outputs:
 ! -------
 !
-! solution : array containing the solution for the equation
+! state_vectors : array containing the solution for the equation
 !
 subroutine step_finite_volume(options, nx, nt, dx, dt, fluxes, &
-                              eigenvalues, solution)
+                              eigenvalues, state_vectors)
 
     type(program_settings), intent(in) :: options
     integer, intent(in) :: nt, nx
     real(dp), intent(in) :: dx, dt
     real(dp), intent(in) :: fluxes(:, :), eigenvalues(:)
-    real(dp), intent(inout) :: solution(:, :, :)
-    real(dp) :: a, flux_right_interface(size(solution, 1))
-    real(dp) :: flux_left_interface(size(solution, 1))
+    real(dp), intent(inout) :: state_vectors(:, :, :)
+    real(dp) :: a, flux_right_interface(size(state_vectors, 1))
+    real(dp) :: flux_left_interface(size(state_vectors, 1))
     integer :: ix
 
     a = dt / dx
@@ -57,8 +58,8 @@ subroutine step_finite_volume(options, nx, nt, dx, dt, fluxes, &
         ! Calculate flux through the left cell interface
         call interface_flux( &
             options=options, &
-            state_vector_left=solution(:, ix - 1, nt - 1), &
-            state_vector_right=solution(:, ix, nt - 1), &
+            state_vector_left=state_vectors(:, ix - 1, nt - 1), &
+            state_vector_right=state_vectors(:, ix, nt - 1), &
             flux_left=fluxes(:, ix - 1), &
             flux_right=fluxes(:, ix), &
             eigenvalue_left=eigenvalues(ix - 1), &
@@ -68,15 +69,15 @@ subroutine step_finite_volume(options, nx, nt, dx, dt, fluxes, &
         ! Calculate flux through the right cell interface
         call interface_flux( &
             options=options, &
-            state_vector_left=solution(:, ix, nt - 1), &
-            state_vector_right=solution(:, ix + 1, nt - 1), &
+            state_vector_left=state_vectors(:, ix, nt - 1), &
+            state_vector_right=state_vectors(:, ix + 1, nt - 1), &
             flux_left=fluxes(:, ix), &
             flux_right=fluxes(:, ix + 1), &
             eigenvalue_left=eigenvalues(ix), &
             eigenvalue_right=eigenvalues(ix + 1), &
             flux=flux_right_interface)
 
-        solution(:, ix, nt) = solution(:, ix, nt - 1) &
+        state_vectors(:, ix, nt) = state_vectors(:, ix, nt - 1) &
             - a * (flux_right_interface(:) - flux_left_interface(:))
     end do
 end subroutine

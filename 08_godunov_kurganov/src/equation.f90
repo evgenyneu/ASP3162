@@ -171,10 +171,12 @@ subroutine iterate(options, tmax, dx, &
                                state_vectors=state_vectors, t_points=t_points)
         end if
 
-       call step_finite_volume(options=options, nx=nx, nt=nt, dx=dx, dt=dt, &
+        ! call calculate_interface_fluxes()
+
+        call step_finite_volume(options=options, nx=nx, nt=nt, dx=dx, dt=dt, &
                                fluxes=fluxes, &
                                eigenvalues=eigenvalues, &
-                               solution=state_vectors)
+                               state_vectors=state_vectors)
     end do
 end subroutine
 
