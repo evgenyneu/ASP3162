@@ -168,6 +168,7 @@ subroutine iterate(options,  dx, &
 
         ! Increment the time value
         nt = nt + 1
+        ! The time step is updated
         dt = options%courant_factor * dx / maxval(eigenvalues)
         t_points(nt) = t_points(nt - 1) + dt
 
