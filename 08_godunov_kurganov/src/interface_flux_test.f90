@@ -1,7 +1,10 @@
 module InterfaceFluxTest
 use Types, only: dp
 use AssertsTest, only: assert_approx
-use InterfaceFlux, only: godunov_flux, single_interface_flux
+
+use InterfaceFlux, only: godunov_flux, single_interface_flux, &
+                         calculate_interface_fluxes
+
 use Settings, only: program_settings
 implicit none
 private
@@ -133,6 +136,37 @@ subroutine single_interface_flux_test__kurganov(failures)
         __FILE__, __LINE__, failures)
 end
 
+subroutine calculate_interface_fluxes_test(failures)
+    integer, intent(inout) :: failures
+    type(program_settings) :: options
+    real(dp) :: eigenvalues(5)
+    real(dp) :: state_vectors(1, 5), fluxes(1, 5)
+    real(dp) :: interface_fluxes(1, 4)
+
+    options%method = 'kurganov'
+    state_vectors(1, :) = [1, 2, 3, 4, 5]
+    eigenvalues = [9, 10, 11, 12, 13]
+    fluxes(1, :) = [1.1_dp, 2.2_dp, 3.3_dp, 4.4_dp, 5.5_dp]
+
+
+    call calculate_interface_fluxes(options=options, &
+        nx=5, fluxes=fluxes, &
+        eigenvalues=eigenvalues, &
+        state_vectors=state_vectors, &
+        interface_fluxes=interface_fluxes)
+
+    call assert_approx(interface_fluxes(1, 1), -3.35_dp, 1e-13_dp, &
+                       __FILE__, __LINE__, failures)
+
+    call assert_approx(interface_fluxes(1, 2), -2.75_dp, 1e-13_dp, &
+                       __FILE__, __LINE__, failures)
+
+    call assert_approx(interface_fluxes(1, 3), -2.15_dp, 1e-13_dp, &
+                       __FILE__, __LINE__, failures)
+
+    call assert_approx(interface_fluxes(1, 4), -1.55_dp, 1e-13_dp, &
+                      __FILE__, __LINE__, failures)
+end
 
 
 subroutine interface_flux_test_all(failures)
@@ -146,6 +180,8 @@ subroutine interface_flux_test_all(failures)
 
     call single_interface_flux_test__godunov(failures)
     call single_interface_flux_test__kurganov(failures)
+
+    call calculate_interface_fluxes_test(failures)
 end
 
 end module InterfaceFluxTest
