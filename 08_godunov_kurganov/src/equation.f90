@@ -143,7 +143,8 @@ subroutine iterate(options,  dx, &
     real(dp) :: dt
     integer :: nx
 
-    nx = size(state_vectors, 2) ! number of x points plus two ghost points
+    ! number of x points
+    nx = size(state_vectors, 2) - 2  ! state_vectors contains two ghost points
 
     ! Set initial time values
     tmax = options%t_end
@@ -153,8 +154,8 @@ subroutine iterate(options,  dx, &
     ! Calculate state vectors for all time steps
     do while (t_points(nt) < tmax)
         ! Update the ghost cells.
-        state_vectors(:, 1, nt) = state_vectors(:, nx - 1, nt)
-        state_vectors(:, nx, nt) = state_vectors(:, 2, nt)
+        state_vectors(:, 1, nt) = state_vectors(:, nx + 1, nt)
+        state_vectors(:, nx + 2, nt) = state_vectors(:, 2, nt)
 
         ! Calculate fluxes and eigenvalues for all the cells at current
         ! time index. The flux/eigenvalues will be used to calculate
@@ -179,15 +180,15 @@ subroutine iterate(options,  dx, &
                                state_vectors=state_vectors, t_points=t_points)
         end if
 
-        call calculate_interface_fluxes(options=options, nx=nx, &
+        call calculate_interface_fluxes(options=options, &
                     fluxes=fluxes, &
                     eigenvalues=eigenvalues, &
                     state_vectors=state_vectors(:,:,nt-1), &
                     interface_fluxes=interface_fluxes)
 
-        call step_finite_volume(nx=nx, nt=nt, dx=dx, dt=dt, &
-                               state_vectors=state_vectors, &
-                               interface_fluxes=interface_fluxes)
+        call step_finite_volume(nt=nt, dx=dx, dt=dt, &
+                                state_vectors=state_vectors, &
+                                interface_fluxes=interface_fluxes)
     end do
 end subroutine
 

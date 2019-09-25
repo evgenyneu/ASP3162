@@ -21,7 +21,7 @@ subroutine step_finite_volume_test(failures)
     interface_fluxes(1, :) = [99.1_dp, -12.2_dp, 0.001_dp, 0.7_dp]
     eigenvalues = [0.1_dp, -0.1_dp, 7.1_dp, 2.1_dp, -1.2_dp]
 
-    call step_finite_volume(nx=5, nt=2, dx=0.01_dp, dt=0.05_dp, &
+    call step_finite_volume(nt=2, dx=0.01_dp, dt=0.05_dp, &
                             interface_fluxes=interface_fluxes,&
                             state_vectors=state_vectors)
 

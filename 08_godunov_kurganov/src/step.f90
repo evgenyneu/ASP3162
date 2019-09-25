@@ -19,12 +19,10 @@ contains
 ! Inputs:
 ! -------
 !
-! nx : total number of x points in solution array.
+! dx : size of space step
 !
 ! nt : the current time index in solutions array for which the solution needs
 !      to be calcualted.
-!
-! dx : size of space step
 !
 ! dt : size of time step
 !
@@ -37,17 +35,20 @@ contains
 !
 ! state_vectors : array containing the solution for the equation
 !
-subroutine step_finite_volume(nx, nt, dx, dt, interface_fluxes, state_vectors)
-    integer, intent(in) :: nt, nx
+subroutine step_finite_volume(dx, nt, dt, interface_fluxes, state_vectors)
+    integer, intent(in) :: nt
     real(dp), intent(in) :: dx, dt
     real(dp), intent(in) :: interface_fluxes(:, :)
     real(dp), intent(inout) :: state_vectors(:, :, :)
     real(dp) :: a
-    integer :: i
+    integer :: i, nx
 
     a = dt / dx
 
-    forall(i = 2 : nx - 1)
+    ! Number of x values
+    nx = size(state_vectors, 2) - 2  ! subtract two ghost points
+
+    forall(i = 2 : nx + 1)
         state_vectors(:, i, nt) = state_vectors(:, i, nt - 1) &
             - a * (interface_fluxes(:, i) - interface_fluxes(:, i-1))
     end forall

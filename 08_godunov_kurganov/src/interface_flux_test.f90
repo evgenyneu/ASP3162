@@ -150,7 +150,7 @@ subroutine calculate_interface_fluxes_test(failures)
 
 
     call calculate_interface_fluxes(options=options, &
-        nx=5, fluxes=fluxes, &
+        fluxes=fluxes, &
         eigenvalues=eigenvalues, &
         state_vectors=state_vectors, &
         interface_fluxes=interface_fluxes)

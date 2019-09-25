@@ -120,8 +120,6 @@ end subroutine
 !
 ! options : program options
 !
-! nx : total number of x points in solution array.
-!
 ! fluxes : fluxes for previous time step
 !
 ! eigenvalues : eigenvalues for previous time step
@@ -133,27 +131,30 @@ end subroutine
 !
 ! interface_fluxes : fluxes through cell interfaces
 !
-subroutine calculate_interface_fluxes(options, nx, fluxes, &
+subroutine calculate_interface_fluxes(options, fluxes, &
                                       eigenvalues, state_vectors, &
                                       interface_fluxes)
 
     type(program_settings), intent(in) :: options
-    integer, intent(in) :: nx
     real(dp), intent(in) :: fluxes(:, :), eigenvalues(:)
     real(dp), intent(in) :: state_vectors(:, :)
     real(dp), intent(out) :: interface_fluxes(:, :)
+    integer :: nx
     integer :: ix
 
-    do ix = 2, nx
+    ! Number of x values
+    nx = size(state_vectors, 2) - 2  ! subtract two ghost points
+
+    do ix = 1, nx + 1
         call single_interface_flux( &
             options=options, &
-            state_vector_left=state_vectors(:, ix - 1), &
-            state_vector_right=state_vectors(:, ix), &
-            flux_left=fluxes(:, ix - 1), &
-            flux_right=fluxes(:, ix), &
-            eigenvalue_left=eigenvalues(ix - 1), &
-            eigenvalue_right=eigenvalues(ix), &
-            flux=interface_fluxes(:, ix-1))
+            state_vector_left=state_vectors(:, ix), &
+            state_vector_right=state_vectors(:, ix + 1), &
+            flux_left=fluxes(:, ix), &
+            flux_right=fluxes(:, ix + 1), &
+            eigenvalue_left=eigenvalues(ix), &
+            eigenvalue_right=eigenvalues(ix + 1), &
+            flux=interface_fluxes(:, ix))
     end do
 end subroutine
 
