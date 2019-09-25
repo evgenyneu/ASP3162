@@ -1,0 +1,5 @@
+# errorMatch: "ERROR at "
+cmd: "cd '{FILE_ACTIVE_PATH}' && cd .. && make test && build/test"
+errorMatch:
+  - .?ERROR at (?<file>[\\/0-9a-zA-Z\\._]+):(?<line>\d+).*
+  - (?<file>[\\/0-9a-zA-Z\\._]+):(?<line>\d+):(?<col>\d+):.*

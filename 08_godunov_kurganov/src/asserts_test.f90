@@ -58,7 +58,7 @@ end interface
 !
 ! line : the line number where this function is called, usually set to __LINE__
 !
-! failures : the counter of failed unit tests. If this assertion failes, 
+! failures : the counter of failed unit tests. If this assertion failes,
 !            the counter is incremented.
 !
 interface assert_equal
@@ -87,7 +87,8 @@ subroutine print_error(filename, line, message)
     character(*), intent(in) :: filename, message
     integer, intent(in) :: line
 
-    print '(a, "ERROR at ", a, ":", i0, ": ", a)', NEW_LINE('h'), filename, line, trim(message)
+    print '(a, "ERROR at ", a, ":", i0, ": ", a, a)', NEW_LINE('h'), filename, &
+    line, trim(message), NEW_LINE('h')
 end
 
 !
@@ -112,7 +113,7 @@ end
 !
 ! line : the line number where this function is called, usually set to __LINE__
 !
-! failures : the counter of failed unit tests. If this assertion failes, 
+! failures : the counter of failed unit tests. If this assertion failes,
 !            the counter is incremented.
 !
 subroutine assert_true(condition, filename, line, failures)
