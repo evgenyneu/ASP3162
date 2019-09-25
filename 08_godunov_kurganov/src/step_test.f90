@@ -13,19 +13,16 @@ contains
 subroutine step_finite_volume_test(failures)
     integer, intent(inout) :: failures
     real(dp) :: state_vectors(1, 5, 3)
-    real(dp) :: fluxes(1, 5), eigenvalues(5)
-    type(program_settings) :: options
-
-    options%method = 'godunov'
+    real(dp) :: interface_fluxes(1, 4)
+    real(dp) :: eigenvalues(5)
 
     state_vectors = -42
     state_vectors(1, :, 1) = [1.1_dp, 2._dp, 3.9_dp, 4._dp, 5._dp]
-    fluxes(1, :) = [0.99_dp, 1.2_dp, 9.1_dp, 12.1_dp, -0.2_dp]
+    interface_fluxes(1, :) = [99.1_dp, -12.2_dp, 0.001_dp, 0.7_dp]
     eigenvalues = [0.1_dp, -0.1_dp, 7.1_dp, 2.1_dp, -1.2_dp]
 
-    call step_finite_volume(options=options,&
-                            nx=5, nt=2, dx=0.01_dp, dt=0.05_dp, &
-                            fluxes=fluxes, eigenvalues=eigenvalues, &
+    call step_finite_volume(nx=5, nt=2, dx=0.01_dp, dt=0.05_dp, &
+                            interface_fluxes=interface_fluxes,&
                             state_vectors=state_vectors)
 
 
@@ -55,13 +52,13 @@ subroutine step_finite_volume_test(failures)
     call assert_approx(state_vectors(1, 1, 2), -42._dp, &
                        1e-10_dp, __FILE__, __LINE__, failures)
 
-    call assert_approx(state_vectors(1, 2, 2), 0.95_dp, &
+    call assert_approx(state_vectors(1, 2, 2), 558.50_dp, &
                        1e-10_dp, __FILE__, __LINE__, failures)
 
-    call assert_approx(state_vectors(1, 3, 2), -35.6_dp, &
+    call assert_approx(state_vectors(1, 3, 2), -57.105_dp, &
                        1e-10_dp, __FILE__, __LINE__, failures)
 
-    call assert_approx(state_vectors(1, 4, 2), -11._dp, &
+    call assert_approx(state_vectors(1, 4, 2), 0.505_dp, &
                        1e-10_dp, __FILE__, __LINE__, failures)
 
     ! Ghost is untouched

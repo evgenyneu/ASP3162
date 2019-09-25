@@ -8,7 +8,7 @@ use InitialConditions, only: calculate_initial
 use InterfaceFlux, only: interface_flux
 implicit none
 private
-public :: step_finite_volume
+public :: step_finite_volume, calculate_interface_fluxes
 
 contains
 
@@ -19,8 +19,6 @@ contains
 ! Inputs:
 ! -------
 !
-! options : program options
-!
 ! nx : total number of x points in solution array.
 !
 ! nt : the current time index in solutions array for which the solution needs
@@ -30,55 +28,74 @@ contains
 !
 ! dt : size of time step
 !
-! fluxes : fluxes for previous time step
-!
 ! eigenvalues : eigenvalues for previous time step
 !
+! interface_fluxes : fluxes through cell interfaces
 !
 ! Outputs:
 ! -------
 !
 ! state_vectors : array containing the solution for the equation
 !
-subroutine step_finite_volume(options, nx, nt, dx, dt, fluxes, &
-                              eigenvalues, state_vectors)
-
-    type(program_settings), intent(in) :: options
+subroutine step_finite_volume(nx, nt, dx, dt, interface_fluxes, state_vectors)
     integer, intent(in) :: nt, nx
     real(dp), intent(in) :: dx, dt
-    real(dp), intent(in) :: fluxes(:, :), eigenvalues(:)
+    real(dp), intent(in) :: interface_fluxes(:, :)
     real(dp), intent(inout) :: state_vectors(:, :, :)
-    real(dp) :: a, flux_right_interface(size(state_vectors, 1))
-    real(dp) :: flux_left_interface(size(state_vectors, 1))
-    integer :: ix
+    real(dp) :: a
+    integer :: i
 
     a = dt / dx
 
-    do ix = 2, nx - 1
-        ! Calculate flux through the left cell interface
+    forall(i = 2 : nx - 1)
+        state_vectors(:, i, nt) = state_vectors(:, i, nt - 1) &
+            - a * (interface_fluxes(:, i) - interface_fluxes(:, i-1))
+    end forall
+end subroutine
+
+
+!
+! Calculate fluxes through cell interfaces
+!
+! Inputs:
+! -------
+!
+! options : program options
+!
+! nx : total number of x points in solution array.
+!
+! fluxes : fluxes for previous time step
+!
+! eigenvalues : eigenvalues for previous time step
+!
+! state_vectors : array containing the solution for the equation
+!
+! Outputs:
+! -------
+!
+! interface_fluxes : fluxes through cell interfaces
+!
+subroutine calculate_interface_fluxes(options, nx, fluxes, &
+                                      eigenvalues, state_vectors, &
+                                      interface_fluxes)
+
+    type(program_settings), intent(in) :: options
+    integer, intent(in) :: nx
+    real(dp), intent(in) :: fluxes(:, :), eigenvalues(:)
+    real(dp), intent(in) :: state_vectors(:, :)
+    real(dp), intent(out) :: interface_fluxes(:, :)
+    integer :: ix
+
+    do ix = 2, nx
         call interface_flux( &
             options=options, &
-            state_vector_left=state_vectors(:, ix - 1, nt - 1), &
-            state_vector_right=state_vectors(:, ix, nt - 1), &
+            state_vector_left=state_vectors(:, ix - 1), &
+            state_vector_right=state_vectors(:, ix), &
             flux_left=fluxes(:, ix - 1), &
             flux_right=fluxes(:, ix), &
             eigenvalue_left=eigenvalues(ix - 1), &
             eigenvalue_right=eigenvalues(ix), &
-            flux=flux_left_interface)
-
-        ! Calculate flux through the right cell interface
-        call interface_flux( &
-            options=options, &
-            state_vector_left=state_vectors(:, ix, nt - 1), &
-            state_vector_right=state_vectors(:, ix + 1, nt - 1), &
-            flux_left=fluxes(:, ix), &
-            flux_right=fluxes(:, ix + 1), &
-            eigenvalue_left=eigenvalues(ix), &
-            eigenvalue_right=eigenvalues(ix + 1), &
-            flux=flux_right_interface)
-
-        state_vectors(:, ix, nt) = state_vectors(:, ix, nt - 1) &
-            - a * (flux_right_interface(:) - flux_left_interface(:))
+            flux=interface_fluxes(:, ix-1))
     end do
 end subroutine
 

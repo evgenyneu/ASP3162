@@ -12,7 +12,7 @@ use InitialConditions, only: set_initial
 use Physics, only: many_state_vectors_to_primitive, &
                    calculate_fluxes, calculate_eigenvalues
 
-use Step, only: step_finite_volume
+use Step, only: step_finite_volume, calculate_interface_fluxes
 
 implicit none
 private
@@ -136,6 +136,10 @@ subroutine iterate(options, tmax, dx, &
     real(dp), intent(inout) :: fluxes(:, :), eigenvalues(:)
     real(dp), allocatable, intent(inout) :: state_vectors(:, :, :)
     real(dp), allocatable, intent(inout) :: t_points(:)
+
+    real(dp) :: interface_fluxes(size(state_vectors,1), &
+                                size(state_vectors,2) - 1)
+
     real(dp) :: dt
     integer :: nx
 
@@ -171,12 +175,15 @@ subroutine iterate(options, tmax, dx, &
                                state_vectors=state_vectors, t_points=t_points)
         end if
 
-        ! call calculate_interface_fluxes()
+        call calculate_interface_fluxes(options=options, nx=nx, &
+                    fluxes=fluxes, &
+                    eigenvalues=eigenvalues, &
+                    state_vectors=state_vectors(:,:,nt-1), &
+                    interface_fluxes=interface_fluxes)
 
-        call step_finite_volume(options=options, nx=nx, nt=nt, dx=dx, dt=dt, &
-                               fluxes=fluxes, &
-                               eigenvalues=eigenvalues, &
-                               state_vectors=state_vectors)
+        call step_finite_volume(nx=nx, nt=nt, dx=dx, dt=dt, &
+                               state_vectors=state_vectors, &
+                               interface_fluxes=interface_fluxes)
     end do
 end subroutine
 
