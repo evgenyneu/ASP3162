@@ -12,7 +12,8 @@ use InitialConditions, only: set_initial
 use Physics, only: many_state_vectors_to_primitive, &
                    calculate_fluxes, calculate_eigenvalues
 
-use Step, only: step_finite_volume, calculate_interface_fluxes
+use Step, only: step_finite_volume
+use InterfaceFlux, only : calculate_interface_fluxes
 
 implicit none
 private

@@ -6,7 +6,7 @@ use Types, only: dp
 use Settings, only: program_settings
 implicit none
 private
-public :: interface_flux, godunov_flux
+public :: calculate_interface_fluxes, single_interface_flux, godunov_flux
 
 contains
 
@@ -58,7 +58,7 @@ subroutine godunov_flux(state_vector_left, state_vector_right, &
 end subroutine
 
 !
-! Calculate flux through cell interface
+! Calculate flux through a single cell interface
 !
 ! Inputs:
 ! -------
@@ -79,7 +79,7 @@ end subroutine
 !
 ! flux : flux through cell interface
 !
-subroutine interface_flux(options, &
+subroutine single_interface_flux(options, &
                           state_vector_left, state_vector_right, &
                           flux_left, flux_right, &
                           eigenvalue_left, eigenvalue_right, &
@@ -109,6 +109,52 @@ subroutine interface_flux(options, &
        print "(a, a)", "ERROR: unknown method ", trim(options%method)
        call exit(41)
     end select
+end subroutine
+
+
+!
+! Calculate fluxes through cell interfaces
+!
+! Inputs:
+! -------
+!
+! options : program options
+!
+! nx : total number of x points in solution array.
+!
+! fluxes : fluxes for previous time step
+!
+! eigenvalues : eigenvalues for previous time step
+!
+! state_vectors : array containing the solution for the equation
+!
+! Outputs:
+! -------
+!
+! interface_fluxes : fluxes through cell interfaces
+!
+subroutine calculate_interface_fluxes(options, nx, fluxes, &
+                                      eigenvalues, state_vectors, &
+                                      interface_fluxes)
+
+    type(program_settings), intent(in) :: options
+    integer, intent(in) :: nx
+    real(dp), intent(in) :: fluxes(:, :), eigenvalues(:)
+    real(dp), intent(in) :: state_vectors(:, :)
+    real(dp), intent(out) :: interface_fluxes(:, :)
+    integer :: ix
+
+    do ix = 2, nx
+        call single_interface_flux( &
+            options=options, &
+            state_vector_left=state_vectors(:, ix - 1), &
+            state_vector_right=state_vectors(:, ix), &
+            flux_left=fluxes(:, ix - 1), &
+            flux_right=fluxes(:, ix), &
+            eigenvalue_left=eigenvalues(ix - 1), &
+            eigenvalue_right=eigenvalues(ix), &
+            flux=interface_fluxes(:, ix-1))
+    end do
 end subroutine
 
 
