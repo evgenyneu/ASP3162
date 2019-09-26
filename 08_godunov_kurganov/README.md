@@ -13,7 +13,7 @@ numerically using Godunov’s and Kurganov-Tadmor methods.
 
   * Sine: https://youtu.be/Pp4WZkqskdg
 
-  * Square: https://youtu.be/jgMiUq8iSHc
+  * Square: https://youtu.be/oekOnANB0D0
 
 
 ## Compile

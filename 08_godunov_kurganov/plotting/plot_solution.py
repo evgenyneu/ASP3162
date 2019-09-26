@@ -102,9 +102,8 @@ def plot_at_time(methods, initial_conditions, courant_factor, nx,
                      linestyle=next(line_style_cycler))
 
     title = (
-        f"Solutions of Burgers' equation "
-        r"for $\Delta x$"
-        f"={dx:.3f} m"
+        f"Solutions of Burgers' equation for"
+        f" {initial_conditions} initial conditions"
     )
 
     plt.xlim([0, 1])
@@ -151,20 +150,39 @@ def make_plots(plot_dir, show_plot):
     plot_at_time(methods=methods,
                  initial_conditions='sine',
                  courant_factor=0.5,
-                 plot_dir=plot_dir, file_name='01_sine_c_0.5_time_0.0.pdf',
+                 plot_dir=plot_dir, file_name='01_sine_time_0.0.pdf',
                  time=0., nx=100, ylim=(-1.5, 1.5), show_plot=show_plot)
 
     plot_at_time(methods=methods,
                  initial_conditions='sine',
                  courant_factor=0.5,
-                 plot_dir=plot_dir, file_name='02_sine_c_0.5_time_0.5.pdf',
+                 plot_dir=plot_dir, file_name='02_sine_time_0.5.pdf',
                  time=0.5, nx=100, ylim=(-1.5, 1.5), show_plot=show_plot)
 
     plot_at_time(methods=methods,
                  initial_conditions='sine',
                  courant_factor=0.5,
-                 plot_dir=plot_dir, file_name='03_sine_c_0.5_time_1.0.pdf',
+                 plot_dir=plot_dir, file_name='03_sine_time_1.0.pdf',
                  time=1, nx=100, ylim=(-1.5, 1.5), show_plot=show_plot)
+
+
+    plot_at_time(methods=methods,
+                  initial_conditions='square',
+                  courant_factor=0.5,
+                  plot_dir=plot_dir, file_name='04_square_time_0.0.pdf',
+                  time=0., nx=100, ylim=(-0.5, 1.5), show_plot=show_plot)
+
+    plot_at_time(methods=methods,
+                  initial_conditions='square',
+                  courant_factor=0.5,
+                  plot_dir=plot_dir, file_name='05_square_time_0.5.pdf',
+                  time=0.5, nx=100, ylim=(-0.5, 1.5), show_plot=show_plot)
+
+    plot_at_time(methods=methods,
+                  initial_conditions='square',
+                  courant_factor=0.5,
+                  plot_dir=plot_dir, file_name='06_square_time_1.0.pdf',
+                  time=1, nx=100, ylim=(-0.5, 1.5), show_plot=show_plot)
 
 
 if __name__ == '__main__':
