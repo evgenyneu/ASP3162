@@ -2,9 +2,12 @@
 cmd: "cd '{FILE_ACTIVE_PATH}' && cd .. && make test && build/test"
 name: "Fortran Build and Test"
 errorMatch:
-  - .?ERROR at (?<file>[\\/0-9a-zA-Z\\._]+):(?<line>\d+).*
-  - (?<file>[\\/0-9a-zA-Z\\._]+):(?<line>\d+):(?<col>\d+):.*
+    - .?ERROR at (?<file>[\\/0-9a-zA-Z\\._]+):(?<line>\d+).*
+    - (?<file>[\\/0-9a-zA-Z\\._]+):(?<line>\d+):(?<col>\d+):.*
 
 targets:
-  makeClean:
-      cmd: "cd '{FILE_ACTIVE_PATH}' && cd .. && make clean"
+    makeClean:
+        cmd: "cd '{FILE_ACTIVE_PATH}' && cd .. && make clean"
+
+    runPython:
+        cmd: "/Users/evgenii/miniconda3/bin/python -u '{FILE_ACTIVE}'"

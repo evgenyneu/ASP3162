@@ -1,12 +1,12 @@
-# A Fortran program for solving an advection equation
+# A Fortran program for solving Burgers' equation
 
 This is a Fortran program that solves advection equation
 
 ```
-u_t + v u_x = 0
+v_t + v v_x = 0
 ```
 
-numerically using FTCS, Lax, Upwind and Lax-Wendroff methods.
+numerically using Godunov’s and Kurganov-Tadmor methods.
 
 
 ## YouTube movies of solutions
@@ -74,7 +74,7 @@ You will see the following output, if tests are successful:
 
 ```
 ./build/test
- · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · 
+ · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · · ·
 Tests finished successfully
 ```
 
@@ -130,7 +130,7 @@ Usage:
     OUTPUT : path to the output data file
 
     --method=NAME : numerical method to use
-                  (exact, ftcs, lax, upwind, lax-wendroff). 
+                  (exact, ftcs, lax, upwind, lax-wendroff).
                   Default: lax.
 
     --initial_conditions=NAME : initial conditions (square, sine).
