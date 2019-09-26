@@ -6,7 +6,7 @@ This is a Fortran program that solves advection equation
 v_t + v v_x = 0
 ```
 
-numerically using Godunov’s and Kurganov-Tadmor methods.
+numerically using Godunov’s and Kurganov-Tadmor's methods.
 
 
 ## YouTube movies of solutions
