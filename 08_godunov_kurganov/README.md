@@ -1,6 +1,6 @@
 # A Fortran program for solving Burgers' equation
 
-This is a Fortran program that solves advection equation
+This is a Fortran program that solves Burgers' equation
 
 ```
 v_t + v v_x = 0
@@ -11,9 +11,9 @@ numerically using Godunov’s and Kurganov-Tadmor's methods.
 
 ## YouTube movies of solutions
 
-  * Sine: https://youtu.be/Pp4WZkqskdg
+  * Sine: https://youtu.be/bDNXNGpYj0c
 
-  * Square: https://youtu.be/oekOnANB0D0
+  * Square: https://youtu.be/IfFQsQHDGUc
 
 
 ## Compile
