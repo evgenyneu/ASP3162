@@ -147,9 +147,7 @@ def prepare_for_animation(methods, initial_conditions, t_end, nx, ylim,
     ax = plt.axes(xlim=(0, 1), ylim=ylim)
 
     title = (
-        "Solutions of Burgers' equation "
-        r"for $\Delta x$"
-        f"={dx:.3f} m"
+        "Solutions of Burgers' equation"
     )
 
     plt.title(title)
@@ -164,8 +162,7 @@ def prepare_for_animation(methods, initial_conditions, t_end, nx, ylim,
         transform=ax.transAxes,
         bbox=dict(facecolor='white', alpha=0.8, edgecolor='0.7'))
 
-    plt.tight_layout()
-
+    plt.grid()
     lines = []
     line_styles = ["-", "--", "-.", ":"]
     line_style_cycler = cycle(line_styles)
@@ -177,6 +174,7 @@ def prepare_for_animation(methods, initial_conditions, t_end, nx, ylim,
         lines.append(line)
 
     plt.legend(loc='upper right')
+    plt.tight_layout()
 
     return (fig, lines, text, x_values, y_values, z_values)
 
@@ -234,13 +232,12 @@ def show_plots():
     compare_animated(methods=methods,
                      initial_conditions='sine',
                      courant_factor=0.5,
-                     t_end=t_end, nx=100, ylim=(-1.5, 1.5))
-
+                     t_end=t_end, nx=100, ylim=(-1.1, 1.1))
 
     compare_animated(methods=methods,
                      initial_conditions='square',
                      courant_factor=0.5,
-                     t_end=t_end, nx=100, ylim=(-0.5, 1.5))
+                     t_end=t_end, nx=100, ylim=(-0.3, 1.1))
 
 
 if __name__ == '__main__':

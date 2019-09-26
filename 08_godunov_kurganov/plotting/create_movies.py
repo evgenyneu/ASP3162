@@ -93,14 +93,14 @@ def make_movies():
                  initial_conditions='sine',
                  courant_factor=0.5,
                  movie_dir=movies_dir, filename='01_sine.mp4',
-                 t_end=t_end, nx=100, ylim=(-1.5, 1.5), fps=fps,
+                 t_end=t_end, nx=100, ylim=(-1.1, 1.1), fps=fps,
                  keep_frame=1)
 
     create_movie(methods=methods,
                  initial_conditions='square',
                  courant_factor=0.5,
                  movie_dir=movies_dir, filename='02_square.mp4',
-                 t_end=t_end, nx=100, ylim=(-0.5, 1.5), fps=fps,
+                 t_end=t_end, nx=100, ylim=(-0.2, 1.1), fps=fps,
                  keep_frame=1)
 
 
