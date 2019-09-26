@@ -11,13 +11,9 @@ numerically using Godunov’s and Kurganov-Tadmor methods.
 
 ## YouTube movies of solutions
 
-  * C=0.5 Sine: https://youtu.be/zWhv5VOyjhE
+  * Sine: https://youtu.be/Pp4WZkqskdg
 
-  * C=0.5 Square: https://youtu.be/7sHFfG8Rf-A
-
-  * C=1.0 Sine: https://youtu.be/Y47G1ylsle8
-
-  * C=1.0 Square: https://youtu.be/K3C1n1MkSzQ
+  * Square: https://youtu.be/jgMiUq8iSHc
 
 
 ## Compile
@@ -116,22 +112,22 @@ Run the program with `--help` flag to see the description of all settings:
 ```
 ./build/main --help
 
-This program solves advection equation
+This program solves Burgers' equation
 
-  u_t + v u_x = 0
+  u_t + u u_x = 0
 
 
 Usage:
 
- ./build/main OUTPUT [--method=lax] [--initial_conditions=square]
+ ./build/main OUTPUT [--method=kurganov] [--initial_conditions=square]
        [--x_start=0] [--x_end=1] [--nx=100] [--t_start=0]
-       [--t_end=1] [--velocity=1] [--courant_factor=0.5]
+       [--t_end=1] [--courant_factor=0.5]
 
     OUTPUT : path to the output data file
 
     --method=NAME : numerical method to use
-                  (exact, ftcs, lax, upwind, lax-wendroff).
-                  Default: lax.
+                  (godunov, kurganov).
+                  Default: godunov.
 
     --initial_conditions=NAME : initial conditions (square, sine).
                   Default: square.
@@ -151,13 +147,11 @@ Usage:
     --t_end=NUMBER : the largest t value,
                   Default: 1.
 
-    --velocity=NUMBER : value of v parameter,
-                  Default: 1.
-
     --courant_factor=NUMBER : parameter equal to v*dt/dx,
                   Default: 0.5.
 
     --help  : show this message.
+
 ```
 
 

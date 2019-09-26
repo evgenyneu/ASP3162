@@ -64,7 +64,7 @@ character(len=HELP_MESSAGE_LENGTH), parameter :: HELP_MESSAGE = &
     &Usage:&
     &"//NEW_LINE('h')//"&
     &"//NEW_LINE('h')//"&
-    & ./build/main OUTPUT [--method=lax] [--initial_conditions=square]"&
+    & ./build/main OUTPUT [--method=kurganov] [--initial_conditions=square]"&
     //NEW_LINE('h')//"&
     &       [--x_start=0] [--x_end=1] [--nx=100] [--t_start=0]"&
     //NEW_LINE('h')//"&
@@ -74,7 +74,7 @@ character(len=HELP_MESSAGE_LENGTH), parameter :: HELP_MESSAGE = &
     &    OUTPUT : path to the output data file"//NEW_LINE('h')//"&
     &"//NEW_LINE('h')//"&
     &    --method=NAME : numerical method to use"//NEW_LINE('h')//"&
-    &                  (godunov, kurganov). "&
+    &                  (godunov, kurganov)."&
     //NEW_LINE('h')//"&
     &                  Default: godunov."//NEW_LINE('h')//"&
     &"//NEW_LINE('h')//"&

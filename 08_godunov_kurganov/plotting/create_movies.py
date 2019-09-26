@@ -9,7 +9,7 @@ matplotlib.use("Agg")
 
 
 def create_movie(methods, initial_conditions, courant_factor,
-                 movie_dir, filename, t_end, nx, fps, ylim):
+                 movie_dir, filename, t_end, nx, fps, ylim, keep_frame):
     """
     Create a movie of solution of advection equation
 
@@ -43,6 +43,9 @@ def create_movie(methods, initial_conditions, courant_factor,
 
     ylim : tuple
         Minimum and maximum values of the y-axis.
+
+    keep_frame: int
+        Keeps every n-th frame. Example, if 3, keeps every 3rd frame.
     """
     print("...")
 
@@ -81,34 +84,24 @@ def make_movies():
              "This will take a couple of minutes.")
          )
 
-    methods = ['Exact', 'Lax-Wendroff', 'Lax', 'Upwind']
+    methods = ['Godunov', 'Kurganov']
 
-    t_end = 2
+    t_end = 4
     fps = 10
 
     create_movie(methods=methods,
                  initial_conditions='sine',
                  courant_factor=0.5,
-                 movie_dir=movies_dir, filename='01_sine_c_0.5.mp4',
-                 t_end=t_end, nx=100, ylim=(-1.5, 1.5), fps=fps)
+                 movie_dir=movies_dir, filename='01_sine.mp4',
+                 t_end=t_end, nx=100, ylim=(-1.5, 1.5), fps=fps,
+                 keep_frame=1)
 
     create_movie(methods=methods,
                  initial_conditions='square',
                  courant_factor=0.5,
-                 movie_dir=movies_dir, filename='02_square_c_0.5.mp4',
-                 t_end=t_end, nx=100, ylim=(-0.5, 1.5), fps=fps)
-
-    create_movie(methods=methods,
-                 initial_conditions='sine',
-                 courant_factor=1,
-                 movie_dir=movies_dir, filename='03_sine_c_1.mp4',
-                 t_end=t_end, nx=200, ylim=(-1.5, 1.5), fps=fps)
-
-    create_movie(methods=methods,
-                 initial_conditions='square',
-                 courant_factor=1,
-                 movie_dir=movies_dir, filename='04_square_c_1.mp4',
-                 t_end=t_end, nx=200, ylim=(-0.5, 1.5), fps=fps)
+                 movie_dir=movies_dir, filename='02_square.mp4',
+                 t_end=t_end, nx=100, ylim=(-0.5, 1.5), fps=fps,
+                 keep_frame=1)
 
 
 if __name__ == '__main__':
