@@ -121,6 +121,7 @@ def plot_at_time(methods, initial_conditions, courant_factor, nx,
     plt.xlabel("Position x [m]")
     plt.ylabel("Speed u [m/s]")
     plt.legend(loc='upper right')
+    plt.grid()
     plt.tight_layout()
 
     create_dir(plot_dir)
@@ -165,24 +166,23 @@ def make_plots(plot_dir, show_plot):
                  plot_dir=plot_dir, file_name='03_sine_time_1.0.pdf',
                  time=1, nx=100, ylim=(-1.5, 1.5), show_plot=show_plot)
 
+    plot_at_time(methods=methods,
+                 initial_conditions='square',
+                 courant_factor=0.5,
+                 plot_dir=plot_dir, file_name='04_square_time_0.0.pdf',
+                 time=0., nx=100, ylim=(-0.5, 1.5), show_plot=show_plot)
 
     plot_at_time(methods=methods,
-                  initial_conditions='square',
-                  courant_factor=0.5,
-                  plot_dir=plot_dir, file_name='04_square_time_0.0.pdf',
-                  time=0., nx=100, ylim=(-0.5, 1.5), show_plot=show_plot)
+                 initial_conditions='square',
+                 courant_factor=0.5,
+                 plot_dir=plot_dir, file_name='05_square_time_0.5.pdf',
+                 time=0.5, nx=100, ylim=(-0.5, 1.5), show_plot=show_plot)
 
     plot_at_time(methods=methods,
-                  initial_conditions='square',
-                  courant_factor=0.5,
-                  plot_dir=plot_dir, file_name='05_square_time_0.5.pdf',
-                  time=0.5, nx=100, ylim=(-0.5, 1.5), show_plot=show_plot)
-
-    plot_at_time(methods=methods,
-                  initial_conditions='square',
-                  courant_factor=0.5,
-                  plot_dir=plot_dir, file_name='06_square_time_1.0.pdf',
-                  time=1, nx=100, ylim=(-0.5, 1.5), show_plot=show_plot)
+                 initial_conditions='square',
+                 courant_factor=0.5,
+                 plot_dir=plot_dir, file_name='06_square_time_1.0.pdf',
+                 time=1, nx=100, ylim=(-0.5, 1.5), show_plot=show_plot)
 
 
 if __name__ == '__main__':
