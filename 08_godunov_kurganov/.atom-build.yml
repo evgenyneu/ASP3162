@@ -11,3 +11,6 @@ targets:
 
     runPython:
         cmd: "/Users/evgenii/miniconda3/bin/python -u '{FILE_ACTIVE}'"
+
+    pytest:
+        cmd: "pytest '{FILE_ACTIVE}'"

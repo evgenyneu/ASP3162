@@ -15,4 +15,4 @@ def test_plot_solution():
 
     assert os.path.exists(plot_file_path)
     os.remove(plot_file_path)
-    shutil.rmtree(plot_dir) 
+    shutil.rmtree(plot_dir)
