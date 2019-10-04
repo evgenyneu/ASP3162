@@ -19,3 +19,6 @@ assignment.pdf
 
 # Sublime text
 *.sublime-workspace
+
+# iPython
+.ipynb_checkpoints
