@@ -4,30 +4,6 @@ from step_integrate import StepIntegrate
 class EulerIntegrator(StepIntegrate):
     """Perform integration using the Euler method"""
 
-    def __init__(self, f, h=0.001):
-        """
-        Parameters
-        ----------
-
-        f : function
-            Calculates derivatives.
-
-            Parameters of f
-            --------------
-
-            x : float
-                A value of independent variable
-
-            y_vector : list
-                Contains a list of dependent variables
-
-        h : float
-            Contains the step size for the independent variable.
-        """
-
-        self.f = f
-        self.h = h
-
     def advance(self, x, y):
         """
         Calcualte one step of integration using the Euler method.

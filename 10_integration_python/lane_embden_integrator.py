@@ -5,9 +5,10 @@ Integration of Lane-Emden-Equation
 
 import numpy as np
 from float_utils import is_zero
+from integrand import Integrand
 
 
-class LaneEmbdenIntegrator(object):
+class LaneEmbdenIntegrator(Integrand):
     """
     Integrate Lane Emden Equation
 
