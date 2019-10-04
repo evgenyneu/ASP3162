@@ -1,3 +1,6 @@
+import numpy as np
+
+
 class Integrate(object):
     """
     Do all integration steps
@@ -76,8 +79,8 @@ class Integrate(object):
         yi = []
 
         while not self.final(x, y):
-            xi += [x]
-            yi += [y]
+            xi.append(x)
+            yi.append(y)
             x, y = self.advance(x, y)
 
         return np.array(xi), np.array(yi)

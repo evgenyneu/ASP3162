@@ -1,4 +1,9 @@
-class EulerIntegrator(object):
+from step_integrate import StepIntegrate
+
+
+class EulerIntegrator(StepIntegrate):
+    """Perform integration using the Euler method"""
+
     def __init__(self, f, h=0.001):
         """
         Parameters

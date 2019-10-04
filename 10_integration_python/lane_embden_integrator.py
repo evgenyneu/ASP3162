@@ -55,7 +55,6 @@ class LaneEmbdenIntegrator(object):
             message = "ERROR: can not calculate derivative: y is negative"
             raise Exception(message)
 
-
         if is_zero(x):
             # Use initial condition dy/dx = 0 at x = 0.
             # This means derivative of density is zero at the center.
