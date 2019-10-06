@@ -67,29 +67,87 @@ def task2(plot_dir, figsize, show):
         to files (used in unit tests)
     """
 
+    h = 0.1
+    n = 3
+    subtitle = f"Solution to Lane-Embden equation, h={h}, n={n}"
+
     plot_density_and_its_derivative_lane_embden(
         plot_dir=plot_dir,
         filename="02a_density_vs_radius_h_0.1.pdf",
-        h=0.1,
-        n=3,
+        h=h,
+        n=n,
         figsize=figsize,
+        title=f"Task 2 (a)\n{subtitle}",
         show=show)
+
+    h = 0.01
+    subtitle = f"Solution to Lane-Embden equation, h={h}, n={n}"
 
     plot_density_and_its_derivative_lane_embden(
         plot_dir=plot_dir,
-        filename="02a_density_vs_radius_h_0.01.pdf",
+        filename="02b_density_vs_radius_h_0.01.pdf",
         h=0.01,
         n=3,
         figsize=figsize,
+        title=f"Task 2 (b)\n{subtitle}",
         show=show)
+
+    h = 0.001
+    subtitle = f"Solution to Lane-Embden equation, h={h}, n={n}"
 
     plot_density_and_its_derivative_lane_embden(
         plot_dir=plot_dir,
-        filename="02a_density_vs_radius_h_0.001.pdf",
+        filename="02c_density_vs_radius_h_0.001.pdf",
         h=0.001,
         n=3,
         figsize=figsize,
+        title=f"Task 2 (c)\n{subtitle}",
         show=show)
+
+
+def task3(plot_dir, figsize, show):
+    """
+    Make plots second task
+
+    Parameters
+    ----------
+
+    plot_dir : str
+        Directory where the plot files will be saved
+
+    figsize : tuple
+        Figure size (width, height)
+
+    show : bool
+        If False the plots are not shown on screen but only saved
+        to files (used in unit tests)
+    """
+
+    h = 0.01
+    n = 0
+    subtitle = f"Solution to Lane-Embden equation, h={h}, n={n}"
+
+    plot_density_and_its_derivative_lane_embden(
+        plot_dir=plot_dir,
+        filename="03a_density_vs_radius_n_0.pdf",
+        h=h,
+        n=n,
+        figsize=figsize,
+        title=f"Task 3 (a)\n{subtitle}",
+        show=show)
+
+    n = 1
+    subtitle = f"Solution to Lane-Embden equation, h={h}, n={n}"
+
+    plot_density_and_its_derivative_lane_embden(
+        plot_dir=plot_dir,
+        filename="03b_density_vs_radius_n_1.pdf",
+        h=h,
+        n=n,
+        figsize=figsize,
+        title=f"Task 3 (b)\n{subtitle}",
+        show=show)
+
 
 
 def make_plots(plot_dir, show):
@@ -109,8 +167,9 @@ def make_plots(plot_dir, show):
 
     figsize = (8, 6)
 
-    task1(plot_dir=plot_dir, figsize=figsize, show=show)
-    task2(plot_dir=plot_dir, figsize=figsize, show=show)
+    # task1(plot_dir=plot_dir, figsize=figsize, show=show)
+    # task2(plot_dir=plot_dir, figsize=figsize, show=show)
+    task3(plot_dir=plot_dir, figsize=figsize, show=show)
 
 
 if __name__ == '__main__':

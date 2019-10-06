@@ -6,7 +6,7 @@ from plot_utils import save_plot
 
 def plot_density_and_its_derivative_lane_embden(plot_dir,
                                                 filename, h, n, figsize,
-                                                show):
+                                                title, show):
 
     """
     Show plot of solution to Lane-Embden equation.
@@ -31,6 +31,9 @@ def plot_density_and_its_derivative_lane_embden(plot_dir,
 
     filename : str
         Path to the file where the plot will be saved.
+
+    title : str
+        Plot title.
 
     show : bool
         If False the plots are not shown on screen but only saved
@@ -62,12 +65,6 @@ def plot_density_and_its_derivative_lane_embden(plot_dir,
     )
 
     plt.ylabel(ylabel)
-
-    title = (
-        "Task 2\n"
-        f"Solution to Lane-Embden equation, h={h}, n={n}"
-    )
-
     plt.title(title)
     plt.legend()
     plt.tight_layout()
