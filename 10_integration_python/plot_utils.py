@@ -2,19 +2,26 @@
 import os
 
 
-def create_dir_for_path(path_to_file):
+def save_plot(plt, plot_dir, filename):
     """
-    Make sure the directory specified in `path_to_file` exists
+    Saves plot figure to a file.
 
     Parameters
     ----------
 
-    path_to_file : str
-        A path to a file
+    plt :
+        Matplotlib's plot object
+
+    plot_dir : str
+        Directory where the plot files will be saved
+
+    filename : str
+        Name of the plot file where the plot will be saved
     """
 
-    dir = os.path.dirname(path_to_file)
-    create_dir(dir)
+    create_dir(plot_dir)
+    plot_file = os.path.join(plot_dir, filename)
+    plt.savefig(plot_file)
 
 
 def create_dir(dir):

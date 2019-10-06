@@ -1,15 +1,24 @@
 from euler_integrator import EulerIntegrator
 from lane_embden_integrator import LaneEmbdenIntegrator
 import matplotlib.pyplot as plt
-from plot_utils import create_dir_for_path
+from plot_utils import save_plot
 
 
-def plot_density_and_its_derivative_lane_embden(h, n, figsize, filename):
+def plot_density_and_its_derivative_lane_embden(plot_dir,
+                                                filename, h, n, figsize,
+                                                show):
+
     """
     Show plot of solution to Lane-Embden equation.
 
     Parameters
     -----------
+
+    plot_dir : str
+        Directory where the plot files will be saved
+
+    filename : str
+        Name of the plot file where the plot will be saved
 
     h : float
         Step size (radius x variable)
@@ -22,20 +31,23 @@ def plot_density_and_its_derivative_lane_embden(h, n, figsize, filename):
 
     filename : str
         Path to the file where the plot will be saved.
+
+    show : bool
+        If False the plots are not shown on screen but only saved
+        to files (used in unit tests)
     """
 
     le = LaneEmbdenIntegrator(n=n)
     x, y = le.integrate(method=EulerIntegrator, h=h)
-    fig = plt.figure(figsize=figsize)
-    ax = fig.add_subplot(111)
+    plt.figure(figsize=figsize)
 
     label_radius = (
         "Scaled density, "
         r'$\theta$'
     )
 
-    ax.plot(x, y[:, 0], label=label_radius, color='r')
-    ax.plot(x, y[:, 1], label=r'$\theta^\prime$', color='g')
+    plt.plot(x, y[:, 0], label=label_radius, color='r')
+    plt.plot(x, y[:, 1], label=r'$\theta^\prime$', color='g')
 
     xlabel = (
         'Scaled radius, '
@@ -52,13 +64,14 @@ def plot_density_and_its_derivative_lane_embden(h, n, figsize, filename):
     plt.ylabel(ylabel)
 
     title = (
+        "Task 2\n"
         f"Solution to Lane-Embden equation, h={h}, n={n}"
     )
 
     plt.title(title)
+    plt.legend()
+    plt.tight_layout()
+    save_plot(plt=plt, plot_dir=plot_dir, filename=filename)
 
-    ax.legend(loc='best')
-    fig.tight_layout()
-    create_dir_for_path(filename)
-    fig.savefig(filename)
-    fig.show()
+    if show:
+        plt.show()

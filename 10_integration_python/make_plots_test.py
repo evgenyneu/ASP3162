@@ -11,7 +11,7 @@ def test_plot_solution():
     if os.path.exists(plot_file_path):
         os.remove(plot_file_path)
 
-    make_plots(plot_dir=plot_dir, show=False)
+    make_plots(plot_dir=plot_dir, show=True)
 
     assert os.path.exists(plot_file_path)
     os.remove(plot_file_path)
