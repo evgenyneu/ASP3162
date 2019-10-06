@@ -1,7 +1,4 @@
-"""
-ASP 3162 - Workshop 10
-Integration of Lane-Emden-Equation
-"""
+"""Integration of Lane-Emden equation"""
 
 import numpy as np
 from float_utils import is_zero

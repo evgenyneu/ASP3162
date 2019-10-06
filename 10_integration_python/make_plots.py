@@ -4,7 +4,9 @@ import matplotlib.pyplot as plt
 from lane_embden_integrator import LaneEmbdenIntegrator
 from euler_integrator import EulerIntegrator
 from plot_utils import save_plot
-from plotter import plot_density_and_its_derivative_lane_embden
+
+from plotter import plot_density_and_its_derivative_lane_embden, \
+                    plot_density_and_its_derivative_modified_lane_embden
 
 
 def task1(plot_dir, figsize, show):
@@ -127,7 +129,7 @@ def task3(plot_dir, figsize, show):
     n = 0
     subtitle = f"Solution to Lane-Embden equation, h={h}, n={n}"
 
-    plot_density_and_its_derivative_lane_embden(
+    plot_density_and_its_derivative_modified_lane_embden(
         plot_dir=plot_dir,
         filename="03a_density_vs_radius_n_0.pdf",
         h=h,
@@ -139,7 +141,7 @@ def task3(plot_dir, figsize, show):
     n = 1
     subtitle = f"Solution to Lane-Embden equation, h={h}, n={n}"
 
-    plot_density_and_its_derivative_lane_embden(
+    plot_density_and_its_derivative_modified_lane_embden(
         plot_dir=plot_dir,
         filename="03b_density_vs_radius_n_1.pdf",
         h=h,
@@ -148,6 +150,17 @@ def task3(plot_dir, figsize, show):
         title=f"Task 3 (b)\n{subtitle}",
         show=show)
 
+    n = 5
+    subtitle = f"Solution to Lane-Embden equation, h={h}, n={n}"
+
+    plot_density_and_its_derivative_modified_lane_embden(
+        plot_dir=plot_dir,
+        filename="03c_density_vs_radius_n_5.pdf",
+        h=h,
+        n=n,
+        figsize=figsize,
+        title=f"Task 3 (c)\n{subtitle}",
+        show=show)
 
 
 def make_plots(plot_dir, show):
