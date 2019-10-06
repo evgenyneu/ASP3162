@@ -4,7 +4,7 @@ from lane_embden_integrator import LaneEmbdenIntegrator
 from lane_embden_integrator_limited_x import LaneEmbdenIntegratorLimitedX
 
 import matplotlib.pyplot as plt
-from plot_utils import save_plot
+from plot_utils import save_plot, get_linestyles_cycler
 
 
 def plot_density_and_its_derivative_lane_embden(plot_dir,
@@ -52,8 +52,11 @@ def plot_density_and_its_derivative_lane_embden(plot_dir,
         r'$\theta$'
     )
 
-    plt.plot(x, y[:, 0], label=label_radius, color='r')
-    plt.plot(x, y[:, 1], label=r'$\theta^\prime$', color='g')
+    cycler = get_linestyles_cycler()
+    plt.plot(x, y[:, 0], label=label_radius, color='r', linestyle=next(cycler))
+
+    plt.plot(x, y[:, 1], label=r'$\theta^\prime$', color='g',
+             linestyle=next(cycler))
 
     xlabel = (
         'Scaled radius, '
@@ -121,8 +124,11 @@ def plot_density_and_its_derivative_modified_lane_embden(
         r'$\theta$'
     )
 
-    plt.plot(x, y[:, 0], label=label_radius, color='r')
-    plt.plot(x, y[:, 1], label=r'$\theta^\prime$', color='g')
+    cycler = get_linestyles_cycler()
+    plt.plot(x, y[:, 0], label=label_radius, color='r', linestyle=next(cycler))
+
+    plt.plot(x, y[:, 1], label=r'$\theta^\prime$', color='g',
+             linestyle=next(cycler))
 
     xlabel = (
         'Scaled radius, '

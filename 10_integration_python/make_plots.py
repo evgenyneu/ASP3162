@@ -180,8 +180,8 @@ def make_plots(plot_dir, show):
 
     figsize = (8, 6)
 
-    # task1(plot_dir=plot_dir, figsize=figsize, show=show)
-    # task2(plot_dir=plot_dir, figsize=figsize, show=show)
+    task1(plot_dir=plot_dir, figsize=figsize, show=show)
+    task2(plot_dir=plot_dir, figsize=figsize, show=show)
     task3(plot_dir=plot_dir, figsize=figsize, show=show)
 
 
