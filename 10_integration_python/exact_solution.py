@@ -21,7 +21,7 @@ def exact(x, n):
     """
 
     if n == 0:
-        return 1 - 1/6 * x**2
+        return 1 - 1/6 * np.power(x, 2)
     elif n == 1:
         return np.sin(x) / x
     elif n == 5:

@@ -10,3 +10,15 @@ def test_exact_solution__single_values():
 
     with pytest.raises(ValueError):
         exact(x=1.2, n=3)
+
+
+def test_exact_solution__multiple_values_n_0():
+    result = exact(x=[1.2, -0.1], n=0)
+
+    assert result == approx([0.76, 0.998333333333333], rel=1e-15)
+
+
+def test_exact_solution__multiple_values_n_1():
+    result = exact(x=[1.2, -0.1], n=1)
+    assert result == approx(
+        [0.7766992383060219, 0.9983341664682815], rel=1e-15)
