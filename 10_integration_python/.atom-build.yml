@@ -1,22 +1,9 @@
 # errorMatch: "ERROR at "
-cmd: "cd '{FILE_ACTIVE_PATH}' && cd .. && make test && build/test"
-name: "Fortran Build and Test"
+cmd: "/Users/evgenii/miniconda3/bin/python -u '{FILE_ACTIVE}'"
+name: "Run Python"
 errorMatch:
-    - .?ERROR at (?<file>[\\/0-9a-zA-Z\\._]+):(?<line>\d+).*
-    - (?<file>[\\/0-9a-zA-Z\\._]+):(?<line>\d+):(?<col>\d+):.*
+    - \s+File \"(?<file>.*)\", line (?<line>\d+).*?\n(?:[\s|\S]+)\n(?<message>.*rror:.*)
 
 targets:
-    makeClean:
-        cmd: "cd '{FILE_ACTIVE_PATH}' && cd .. && make clean"
-
-    runPython:
-        cmd: "/Users/evgenii/miniconda3/bin/python -u '{FILE_ACTIVE}'"
-
     pytest:
         cmd: "pytest '{FILE_ACTIVE}'"
-
-    LaTeX:
-        cmd: "cd '{FILE_ACTIVE_PATH}' && cd .. && /Library/TeX/texbin/pdflatex assignment.tex && open -a Skim.app assignment.pdf"
-
-    LeTeXRemoveAux:
-        cmd: "rm -f '{FILE_ACTIVE_PATH}/{FILE_ACTIVE_NAME_BASE}.aux'"
