@@ -124,7 +124,7 @@ def task3(plot_dir, figsize, show):
         to files (used in unit tests)
     """
 
-    h = 0.01
+    h = 0.1
     n = 0
     subtitle = f"Solution to Lane-Embden equation, h={h}, n={n}"
 
@@ -179,8 +179,8 @@ def make_plots(plot_dir, show):
 
     figsize = (8, 6)
 
-    # task1(plot_dir=plot_dir, figsize=figsize, show=show)
-    # task2(plot_dir=plot_dir, figsize=figsize, show=show)
+    task1(plot_dir=plot_dir, figsize=figsize, show=show)
+    task2(plot_dir=plot_dir, figsize=figsize, show=show)
     task3(plot_dir=plot_dir, figsize=figsize, show=show)
 
 
