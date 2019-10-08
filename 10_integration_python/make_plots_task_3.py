@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 from euler_integrator import EulerIntegrator
 from plot_utils import save_plot, get_linestyles_cycler
 from lane_embden_integrator_limited_x import LaneEmbdenIntegratorLimitedX
+from exact_solution import exact
 
 
 def plot_lane_embden_task_3(
@@ -42,6 +43,7 @@ def plot_lane_embden_task_3(
 
     le = LaneEmbdenIntegratorLimitedX(n=n)
     x, y = le.integrate(method=EulerIntegrator, h=h)
+
     plt.figure(figsize=figsize)
 
     label_radius = (
@@ -50,9 +52,10 @@ def plot_lane_embden_task_3(
     )
 
     cycler = get_linestyles_cycler()
-    plt.plot(x, y[:, 0], label=label_radius, color='r', linestyle=next(cycler))
+    plt.plot(x, y[:, 0], label=label_radius, linestyle=next(cycler))
+    plt.plot(x, exact(x, n), label=r"Exact $\theta$", linestyle=next(cycler))
 
-    plt.plot(x, y[:, 1], label=r'$\theta^\prime$', color='g',
+    plt.plot(x, y[:, 1], label=r'$\theta^\prime$',
              linestyle=next(cycler))
 
     xlabel = (
