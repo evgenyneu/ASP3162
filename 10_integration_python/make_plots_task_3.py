@@ -46,13 +46,13 @@ def plot_lane_embden_task_3(plot_dir, filename,
 
     plt.figure(figsize=figsize)
 
-    label_radius = (
+    label_density = (
         "Scaled density, "
         r'$\theta$'
     )
 
     cycler = get_linestyles_cycler()
-    plt.plot(x, y[:, 0], label=label_radius, linestyle=next(cycler))
+    plt.plot(x, y[:, 0], label=label_density, linestyle=next(cycler))
     plt.plot(x, exact(x, n), label=r"Exact $\theta$", linestyle=next(cycler))
 
     plt.plot(x, y[:, 1], label=r'$\theta^\prime$',
