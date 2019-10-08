@@ -1,6 +1,9 @@
 import pytest
 from pytest import approx
-from exact_solution import exact
+from exact_solution import exact, exact_derivative
+
+# Exact solutions
+# --------------
 
 
 def test_exact_solution__single_values():
@@ -37,3 +40,19 @@ def test_exact_solution__multiple_values_n_5():
 
     assert result == approx(
         [0.8219949365267865, 0.9983374884595826], rel=1e-15)
+
+
+# Exact solutions of derivative
+# --------------
+
+def test_exact_derivative_solution__single_values():
+    assert exact_derivative(x=1.2, n=0) == approx(-0.4, rel=1e-15)
+
+    assert exact_derivative(x=1.2, n=1) == \
+        approx(-0.34528456985779027, rel=1e-15)
+
+    assert exact_derivative(x=1.2, n=5) \
+        == approx(-0.2221607936558882, rel=1e-15)
+
+    with pytest.raises(ValueError):
+        exact_derivative(x=1.2, n=3)

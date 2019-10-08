@@ -32,3 +32,41 @@ def exact(x, n):
         return np.power(1 + 1/3 * np.power(x, 2), -0.5)
     else:
         raise ValueError(f"Incorrect n value: {n}")
+
+def exact_derivative(x, n):
+    """
+    Calculate exact derivatives of the solutions of Lane-Embden equation.
+
+    Parameters
+    ----------
+
+    x : float or ndarray
+        Value or values of independent variable
+
+    n : integer
+        Parameter 'n' of the Lane-Embden equation
+
+    Returns : float or ndarray
+    -------
+
+    Value or values of the exact solution
+    """
+
+    if n == 0:
+        return -x/3
+    elif n == 1:
+        # We need to calculate sin(x)/x
+        # when x=0, this is equal to 1
+        a = np.cos(x)
+        b = np.array(x)
+        term1 = np.divide(a, b, out=np.zeros_like(a), where=b != 0)
+
+        a = np.sin(x)
+        b = np.power(x, 2)
+        term2 = np.divide(a, b, out=np.zeros_like(a), where=b != 0)
+
+        return term1 - term2
+    elif n == 5:
+        return -x / (3 * np.power(1 + np.power(x, 2) / 3, 3/2))
+    else:
+        raise ValueError(f"Incorrect n value: {n}")
