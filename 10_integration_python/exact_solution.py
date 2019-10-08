@@ -23,8 +23,12 @@ def exact(x, n):
     if n == 0:
         return 1 - 1/6 * np.power(x, 2)
     elif n == 1:
-        return np.sin(x) / x
+        # We need to calculate sin(x)/x
+        # when x=0, this is equal to 1
+        a = np.sin(x)
+        b = np.array(x)
+        return np.divide(a, b, out=np.ones_like(a), where=b != 0)
     elif n == 5:
-        return (1 + 1/3 * x**2)**(-0.5)
+        return np.power(1 + 1/3 * np.power(x, 2), -0.5)
     else:
         raise ValueError(f"Incorrect n value: {n}")

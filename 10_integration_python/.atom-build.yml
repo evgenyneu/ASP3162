@@ -6,4 +6,4 @@ errorMatch:
 
 targets:
     pytest:
-        cmd: "pytest '{FILE_ACTIVE}'"
+        cmd: "pytest -s '{FILE_ACTIVE}'"

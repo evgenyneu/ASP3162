@@ -20,5 +20,20 @@ def test_exact_solution__multiple_values_n_0():
 
 def test_exact_solution__multiple_values_n_1():
     result = exact(x=[1.2, -0.1], n=1)
+
     assert result == approx(
         [0.7766992383060219, 0.9983341664682815], rel=1e-15)
+
+
+def test_exact_solution__multiple_values_n_1__include_zero():
+    result = exact(x=[1.2, 0.0, -0.1], n=1)
+
+    assert result == approx(
+        [0.7766992383060219, 1, 0.9983341664682815], rel=1e-15)
+
+
+def test_exact_solution__multiple_values_n_5():
+    result = exact(x=[1.2, -0.1], n=5)
+
+    assert result == approx(
+        [0.8219949365267865, 0.9983374884595826], rel=1e-15)
