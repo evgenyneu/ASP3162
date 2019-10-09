@@ -6,6 +6,7 @@ from euler_integrator import EulerIntegrator
 from plot_utils import save_plot
 from make_plots_task_2 import plot_lane_embden_task_2
 from make_plots_task_3 import plot_lane_embden_task_3
+from plot_lane_embden_task_6 import plot_lane_embden_task_6_improved_euler
 
 
 def task1(plot_dir, figsize, show):
@@ -162,6 +163,81 @@ def task3(plot_dir, figsize, show):
         show=show)
 
 
+def task6(plot_dir, figsize, show):
+    """
+    Make plots second task
+
+    Parameters
+    ----------
+
+    plot_dir : str
+        Directory where the plot files will be saved
+
+    figsize : tuple
+        Figure size (width, height)
+
+    show : bool
+        If False the plots are not shown on screen but only saved
+        to files (used in unit tests)
+    """
+
+    n = 1
+
+    # ------------------
+
+    h = 0.1
+
+    subtitle = (
+        f"Solution to Lane-Embden equation,\n"
+        f"using improved Euler method, h={h}, n={n}"
+    )
+
+    plot_lane_embden_task_6_improved_euler(
+        plot_dir=plot_dir,
+        filename="06a_h_0.1_improved_euler.pdf",
+        h=h,
+        n=n,
+        figsize=figsize,
+        title=f"Task 6 (a)\n{subtitle}",
+        show=show)
+
+    # ------------------
+
+    h = 0.01
+
+    subtitle = (
+        f"Solution to Lane-Embden equation,\n"
+        f"using improved Euler method, h={h}, n={n}"
+    )
+
+    plot_lane_embden_task_6_improved_euler(
+        plot_dir=plot_dir,
+        filename="06b_h_0.01_improved_euler.pdf",
+        h=h,
+        n=n,
+        figsize=figsize,
+        title=f"Task 6 (a)\n{subtitle}",
+        show=show)
+
+    # ------------------
+
+    h = 0.001
+
+    subtitle = (
+        f"Solution to Lane-Embden equation,\n"
+        f"using improved Euler method, h={h}, n={n}"
+    )
+
+    plot_lane_embden_task_6_improved_euler(
+        plot_dir=plot_dir,
+        filename="06c_h_0.001_improved_euler.pdf",
+        h=h,
+        n=n,
+        figsize=figsize,
+        title=f"Task 6 (a)\n{subtitle}",
+        show=show)
+
+
 def make_plots(plot_dir, show):
     """
     Make plots for all the tasks in the lab.
@@ -179,9 +255,10 @@ def make_plots(plot_dir, show):
 
     figsize = (8, 6)
 
-    task1(plot_dir=plot_dir, figsize=figsize, show=show)
-    task2(plot_dir=plot_dir, figsize=figsize, show=show)
-    task3(plot_dir=plot_dir, figsize=figsize, show=show)
+    # task1(plot_dir=plot_dir, figsize=figsize, show=show)
+    # task2(plot_dir=plot_dir, figsize=figsize, show=show)
+    # task3(plot_dir=plot_dir, figsize=figsize, show=show)
+    task6(plot_dir=plot_dir, figsize=figsize, show=show)
 
 
 if __name__ == '__main__':

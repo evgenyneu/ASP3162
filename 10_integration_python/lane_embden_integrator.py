@@ -50,8 +50,10 @@ class LaneEmbdenIntegrator(Integrand):
         z = y_vector[1]
 
         if y < 0:
-            message = "ERROR: can not calculate derivative: y is negative"
-            raise Exception(message)
+            # Ooooooooooooooo, y is negative, how wonderful....
+            # What should we do?
+            # Answer: absolutely nothing!
+            pass
 
         if is_zero(x):
             # Use initial condition dy/dx = 0 at x = 0.

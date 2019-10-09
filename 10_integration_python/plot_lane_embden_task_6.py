@@ -1,17 +1,16 @@
-# Show plot of solution to Lane-Embden equation
-from euler_integrator import EulerIntegrator
-from lane_embden_integrator import LaneEmbdenIntegrator
-
+# Show plots of approximate and exact solutions to Lane-Embden equation.
 import matplotlib.pyplot as plt
+from improved_euler_integrator import ImprovedEulerIntegrator
 from plot_utils import save_plot, get_linestyles_cycler
+from lane_embden_integrator_limited_x import LaneEmbdenIntegratorLimitedX
+from exact_solution import exact, exact_derivative
 
 
-def plot_lane_embden_task_2(plot_dir,
-                            filename, h, n, figsize,
-                            title, show):
+def plot_lane_embden_task_6_improved_euler(plot_dir, filename,
+                                           h, n, figsize, title, show):
 
     """
-    Show plot of solution to Lane-Embden equation.
+    Show plots of approximate and exact solutions to Lane-Embden equation.
 
     Parameters
     -----------
@@ -42,20 +41,25 @@ def plot_lane_embden_task_2(plot_dir,
         to files (used in unit tests)
     """
 
-    le = LaneEmbdenIntegrator(n=n)
-    x, y = le.integrate(method=EulerIntegrator, h=h)
+    le = LaneEmbdenIntegratorLimitedX(n=n)
+    x, y = le.integrate(method=ImprovedEulerIntegrator, h=h)
+
     plt.figure(figsize=figsize)
 
-    label_radius = (
+    label_density = (
         "Scaled density, "
         r'$\theta$'
     )
 
     cycler = get_linestyles_cycler()
-    plt.plot(x, y[:, 0], label=label_radius, color='r', linestyle=next(cycler))
+    plt.plot(x, y[:, 0], label=label_density, linestyle=next(cycler))
+    plt.plot(x, exact(x, n), label=r"Exact $\theta$", linestyle=next(cycler))
 
-    plt.plot(x, y[:, 1], label=r'$\theta^\prime$', color='g',
+    plt.plot(x, y[:, 1], label=r'$\theta^\prime$',
              linestyle=next(cycler))
+
+    plt.plot(x, exact_derivative(x, n),
+             label=r'Exact $\theta^\prime$', linestyle=next(cycler))
 
     xlabel = (
         'Scaled radius, '
