@@ -1,19 +1,21 @@
 # Show plots of approximate and exact solutions to Lane-Embden equation.
 import matplotlib.pyplot as plt
-from improved_euler_integrator import ImprovedEulerIntegrator
 from plot_utils import save_plot, get_linestyles_cycler
 from lane_embden_integrator_limited_x import LaneEmbdenIntegratorLimitedX
 from exact_solution import exact, exact_derivative
 
 
-def plot_lane_embden_task_6_improved_euler(plot_dir, filename,
-                                           h, n, figsize, title, show):
+def plot_with_integrator(integrator, plot_dir, filename,
+                         h, n, figsize, title, show):
 
     """
     Show plots of approximate and exact solutions to Lane-Embden equation.
 
     Parameters
     -----------
+
+    integrator : Integrate
+        Integrator that will be used to calculate the solution.
 
     plot_dir : str
         Directory where the plot files will be saved
@@ -42,7 +44,7 @@ def plot_lane_embden_task_6_improved_euler(plot_dir, filename,
     """
 
     le = LaneEmbdenIntegratorLimitedX(n=n)
-    x, y = le.integrate(method=ImprovedEulerIntegrator, h=h)
+    x, y = le.integrate(method=integrator, h=h)
 
     plt.figure(figsize=figsize)
 

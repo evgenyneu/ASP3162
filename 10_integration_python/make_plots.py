@@ -6,7 +6,9 @@ from euler_integrator import EulerIntegrator
 from plot_utils import save_plot
 from make_plots_task_2 import plot_lane_embden_task_2
 from make_plots_task_3 import plot_lane_embden_task_3
-from plot_lane_embden_task_6 import plot_lane_embden_task_6_improved_euler
+from plot_lane_embden_task_6 import plot_with_integrator
+from improved_euler_integrator import ImprovedEulerIntegrator
+from runge_kutta_integrator import RungeKuttaIntegrator
 
 
 def task1(plot_dir, figsize, show):
@@ -183,6 +185,7 @@ def task6(plot_dir, figsize, show):
 
     n = 1
 
+    # Plot with Improved Euler method
     # ------------------
 
     h = 0.1
@@ -192,7 +195,8 @@ def task6(plot_dir, figsize, show):
         f"using improved Euler method, h={h}, n={n}"
     )
 
-    plot_lane_embden_task_6_improved_euler(
+    plot_with_integrator(
+        integrator=ImprovedEulerIntegrator,
         plot_dir=plot_dir,
         filename="06a_h_0.1_improved_euler.pdf",
         h=h,
@@ -210,7 +214,8 @@ def task6(plot_dir, figsize, show):
         f"using improved Euler method, h={h}, n={n}"
     )
 
-    plot_lane_embden_task_6_improved_euler(
+    plot_with_integrator(
+        integrator=ImprovedEulerIntegrator,
         plot_dir=plot_dir,
         filename="06b_h_0.01_improved_euler.pdf",
         h=h,
@@ -228,7 +233,8 @@ def task6(plot_dir, figsize, show):
         f"using improved Euler method, h={h}, n={n}"
     )
 
-    plot_lane_embden_task_6_improved_euler(
+    plot_with_integrator(
+        integrator=ImprovedEulerIntegrator,
         plot_dir=plot_dir,
         filename="06c_h_0.001_improved_euler.pdf",
         h=h,
@@ -237,6 +243,25 @@ def task6(plot_dir, figsize, show):
         title=f"Task 6 (a)\n{subtitle}",
         show=show)
 
+    # Plot with Runge Kutta method
+    # ------------------
+
+    h = 0.1
+
+    subtitle = (
+        f"Solution to Lane-Embden equation,\n"
+        f"using Runge-Kutta method, h={h}, n={n}"
+    )
+
+    plot_with_integrator(
+        integrator=RungeKuttaIntegrator,
+        plot_dir=plot_dir,
+        filename="06a_h_0.1_improved_euler.pdf",
+        h=h,
+        n=n,
+        figsize=figsize,
+        title=f"Task 6 (d)\n{subtitle}",
+        show=show)
 
 def make_plots(plot_dir, show):
     """
