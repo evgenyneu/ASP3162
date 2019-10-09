@@ -6,9 +6,7 @@ from euler_integrator import EulerIntegrator
 from plot_utils import save_plot
 from make_plots_task_2 import plot_lane_embden_task_2
 from make_plots_task_3 import plot_lane_embden_task_3
-from plot_lane_embden_task_6 import plot_with_integrator
-from improved_euler_integrator import ImprovedEulerIntegrator
-from runge_kutta_integrator import RungeKuttaIntegrator
+from plot_lane_embden_task_6 import plot_errors
 
 
 def task1(plot_dir, figsize, show):
@@ -41,7 +39,8 @@ def task1(plot_dir, figsize, show):
 
     title = (
         "Task 1\n"
-        f"Solution to Lane-Embden equation, h={h}, n={n}"
+        f"Solution to Lane-Embden equation\n"
+        f"Euler method, h={h}, n={n}"
     )
 
     plt.title(title)
@@ -73,7 +72,11 @@ def task2(plot_dir, figsize, show):
 
     h = 0.1
     n = 3
-    subtitle = f"Solution to Lane-Embden equation, h={h}, n={n}"
+
+    subtitle = (
+        "Solution to Lane-Embden equation\n"
+        f"Euler method, h={h}, n={n}"
+    )
 
     plot_lane_embden_task_2(
         plot_dir=plot_dir,
@@ -85,7 +88,11 @@ def task2(plot_dir, figsize, show):
         show=show)
 
     h = 0.01
-    subtitle = f"Solution to Lane-Embden equation, h={h}, n={n}"
+
+    subtitle = (
+        "Solution to Lane-Embden equation\n"
+        f"Euler method, h={h}, n={n}"
+    )
 
     plot_lane_embden_task_2(
         plot_dir=plot_dir,
@@ -97,7 +104,11 @@ def task2(plot_dir, figsize, show):
         show=show)
 
     h = 0.001
-    subtitle = f"Solution to Lane-Embden equation, h={h}, n={n}"
+
+    subtitle = (
+        "Solution to Lane-Embden equation\n"
+        f"Euler method, h={h}, n={n}"
+    )
 
     plot_lane_embden_task_2(
         plot_dir=plot_dir,
@@ -129,7 +140,11 @@ def task3(plot_dir, figsize, show):
 
     h = 0.1
     n = 0
-    subtitle = f"Solution to Lane-Embden equation, h={h}, n={n}"
+
+    subtitle = (
+        "Solution to Lane-Embden equation\n"
+        f"Euler method, h={h}, n={n}"
+    )
 
     plot_lane_embden_task_3(
         plot_dir=plot_dir,
@@ -141,7 +156,11 @@ def task3(plot_dir, figsize, show):
         show=show)
 
     n = 1
-    subtitle = f"Solution to Lane-Embden equation, h={h}, n={n}"
+
+    subtitle = (
+        "Solution to Lane-Embden equation\n"
+        f"Euler method, h={h}, n={n}"
+    )
 
     plot_lane_embden_task_3(
         plot_dir=plot_dir,
@@ -153,7 +172,11 @@ def task3(plot_dir, figsize, show):
         show=show)
 
     n = 5
-    subtitle = f"Solution to Lane-Embden equation, h={h}, n={n}"
+
+    subtitle = (
+        "Solution to Lane-Embden equation\n"
+        f"Euler method, h={h}, n={n}"
+    )
 
     plot_lane_embden_task_3(
         plot_dir=plot_dir,
@@ -188,36 +211,15 @@ def task6(plot_dir, figsize, show):
     # Plot with Improved Euler method
     # ------------------
 
-    h = 0.1
-
-    subtitle = (
-        f"Solution to Lane-Embden equation,\n"
-        f"using improved Euler method, h={h}, n={n}"
-    )
-
-    plot_with_integrator(
-        integrator=ImprovedEulerIntegrator,
-        plot_dir=plot_dir,
-        filename="06a_h_0.1_improved_euler.pdf",
-        h=h,
-        n=n,
-        figsize=figsize,
-        title=f"Task 6 (a)\n{subtitle}",
-        show=show)
-
-    # ------------------
-
     h = 0.01
 
     subtitle = (
-        f"Solution to Lane-Embden equation,\n"
-        f"using improved Euler method, h={h}, n={n}"
+        f"Errors of solutions to Lane-Embden equation, h={h}, n={n}"
     )
 
-    plot_with_integrator(
-        integrator=ImprovedEulerIntegrator,
+    plot_errors(
         plot_dir=plot_dir,
-        filename="06b_h_0.01_improved_euler.pdf",
+        filename="06a_errors_h_0.1.pdf",
         h=h,
         n=n,
         figsize=figsize,
@@ -226,42 +228,38 @@ def task6(plot_dir, figsize, show):
 
     # ------------------
 
-    h = 0.001
+    # h = 0.01
+    #
+    # subtitle = (
+    #     f"Errors of solutions to Lane-Embden equation, h={h}, n={n}"
+    # )
+    #
+    # plot_errors(
+    #     plot_dir=plot_dir,
+    #     filename="06b_errors_h_0.01.pdf",
+    #     h=h,
+    #     n=n,
+    #     figsize=figsize,
+    #     title=f"Task 6 (a)\n{subtitle}",
+    #     show=show)
+    #
+    # # ------------------
+    #
+    # h = 0.001
+    #
+    # subtitle = (
+    #     f"Errors of solutions to Lane-Embden equation, h={h}, n={n}"
+    # )
+    #
+    # plot_errors(
+    #     plot_dir=plot_dir,
+    #     filename="06c_errors_h_0.001.pdf",
+    #     h=h,
+    #     n=n,
+    #     figsize=figsize,
+    #     title=f"Task 6 (a)\n{subtitle}",
+    #     show=show)
 
-    subtitle = (
-        f"Solution to Lane-Embden equation,\n"
-        f"using improved Euler method, h={h}, n={n}"
-    )
-
-    plot_with_integrator(
-        integrator=ImprovedEulerIntegrator,
-        plot_dir=plot_dir,
-        filename="06c_h_0.001_improved_euler.pdf",
-        h=h,
-        n=n,
-        figsize=figsize,
-        title=f"Task 6 (a)\n{subtitle}",
-        show=show)
-
-    # Plot with Runge Kutta method
-    # ------------------
-
-    h = 0.1
-
-    subtitle = (
-        f"Solution to Lane-Embden equation,\n"
-        f"using Runge-Kutta method, h={h}, n={n}"
-    )
-
-    plot_with_integrator(
-        integrator=RungeKuttaIntegrator,
-        plot_dir=plot_dir,
-        filename="06a_h_0.1_improved_euler.pdf",
-        h=h,
-        n=n,
-        figsize=figsize,
-        title=f"Task 6 (d)\n{subtitle}",
-        show=show)
 
 def make_plots(plot_dir, show):
     """

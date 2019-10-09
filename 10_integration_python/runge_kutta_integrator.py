@@ -38,3 +38,10 @@ class RungeKuttaIntegrator(StepIntegrate):
         x += h
 
         return x, y
+
+    def name():
+        """
+        Returns human-readable name of the integrator.
+        """
+
+        return "Runge-Kutta"

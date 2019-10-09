@@ -1,6 +1,33 @@
 # Various shared functions used by plotting scripts
 import os
 from itertools import cycle
+import numpy as np
+
+
+def find_nearest_index(array, value):
+    """
+    Returns the index of an array element that is closes to the supplied `value`.
+
+    Parameters
+    ----------
+
+    array : list
+        An array of numbers
+
+    value : int or float
+        A value.
+
+    Returns
+    -------
+
+    int
+
+    Index of the `array` element.
+    """
+
+    array = np.asarray(array)
+    idx = (np.abs(array - value)).argmin()
+    return idx
 
 
 def save_plot(plt, plot_dir, filename):
