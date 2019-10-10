@@ -1,5 +1,36 @@
-from surface import calculate_exact_values_at_surface, calculate_surface_values
+import os
 from pytest import approx
+import pandas as pd
+
+from surface import calculate_exact_values_at_surface, \
+                    calculate_surface_values, save_surface_values_to_csv
+
+
+def test_save_surface_values_to_csv():
+
+    filename = "surface_test.csv"
+
+    if os.path.exists(filename):
+        os.remove(filename)
+
+    df = calculate_surface_values(n=1)
+    save_surface_values_to_csv(df=df, filename=filename)
+
+    # Verify CSV
+    # -----------
+
+    df = pd.read_csv(filename)
+
+    values = df.loc[
+        (df['Step size'] == 0.1) & (df['Method'] == 'Improved Euler')]
+
+    assert values['Radius, xi'].iloc[0] == approx(3.1, rel=1e-15)
+
+    assert values['Density derivative, d(theta)/d(xi)'].iloc[0] == \
+        approx(-0.3259175013015985, rel=1e-15)
+
+    assert os.path.exists(filename)
+    os.remove(filename)
 
 
 def test_calculate_exact_values_at_surface():

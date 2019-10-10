@@ -104,3 +104,25 @@ def calculate_surface_values(n):
         items.append(item)
 
     return pd.DataFrame(items)
+
+
+def save_surface_values_to_csv(df, filename):
+    """
+    Save value for the surface in csv
+
+    Parameters
+    ----------
+
+    df : Panda's dataframe
+
+    filename : str
+        Path to the CSV file.
+    """
+
+    df.to_csv(
+        filename,
+        index=False,
+        columns=["h", "method", "x_surface", "density_derivative_surface"],
+        header=[
+            "Step size", "Method", "Radius, xi",
+            "Density derivative, d(theta)/d(xi)"])
