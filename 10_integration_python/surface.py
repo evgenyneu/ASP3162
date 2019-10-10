@@ -1,12 +1,13 @@
 # Calculate parameters at the surface
 import numpy as np
 import pandas as pd
+import os
 from lane_embden_integrator import LaneEmbdenIntegrator
 from exact_solution import exact, exact_derivative
 from euler_integrator import EulerIntegrator
 from improved_euler_integrator import ImprovedEulerIntegrator
 from runge_kutta_integrator import RungeKuttaIntegrator
-from plot_utils import find_nearest_index
+from plot_utils import find_nearest_index, create_dir
 
 
 def calculate_exact_values_at_surface(x_surface_estimate, n):
@@ -106,7 +107,7 @@ def calculate_surface_values(n):
     return pd.DataFrame(items)
 
 
-def save_surface_values_to_csv(df, filename):
+def save_surface_values_to_csv(df, data_dir, filename):
     """
     Save value for the surface in csv
 
@@ -115,12 +116,18 @@ def save_surface_values_to_csv(df, filename):
 
     df : Panda's dataframe
 
+    data_dir : str
+        Directory for the data.
+
     filename : str
-        Path to the CSV file.
+        Name of the CSV file.
     """
 
+    create_dir(data_dir)
+    file_path = os.path.join(data_dir, filename)
+
     df.to_csv(
-        filename,
+        file_path,
         index=False,
         columns=["h", "method", "x_surface", "density_derivative_surface"],
         header=[

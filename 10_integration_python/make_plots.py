@@ -6,6 +6,7 @@ from euler_integrator import EulerIntegrator
 from plot_utils import save_plot
 from make_plots_task_2 import plot_lane_embden_task_2
 from make_plots_task_3 import plot_lane_embden_task_3
+from surface import calculate_surface_values, save_surface_values_to_csv
 
 
 def task1(plot_dir, figsize, show):
@@ -205,58 +206,8 @@ def task6(plot_dir, figsize, show):
         to files (used in unit tests)
     """
 
-    n = 1
-
-    # Plot with Improved Euler method
-    # ------------------
-
-    # h = 0.01
-    #
-    # subtitle = (
-    #     f"Errors of solutions to Lane-Embden equation, h={h}, n={n}"
-    # )
-    #
-    # plot_errors(
-    #     plot_dir=plot_dir,
-    #     filename="06a_errors_h_0.1.pdf",
-    #     n=n,
-    #     figsize=figsize,
-    #     title=f"Task 6 (a)\n{subtitle}",
-    #     show=show)
-
-    # ------------------
-
-    # h = 0.01
-    #
-    # subtitle = (
-    #     f"Errors of solutions to Lane-Embden equation, h={h}, n={n}"
-    # )
-    #
-    # plot_errors(
-    #     plot_dir=plot_dir,
-    #     filename="06b_errors_h_0.01.pdf",
-    #     h=h,
-    #     n=n,
-    #     figsize=figsize,
-    #     title=f"Task 6 (a)\n{subtitle}",
-    #     show=show)
-    #
-    # # ------------------
-    #
-    # h = 0.001
-    #
-    # subtitle = (
-    #     f"Errors of solutions to Lane-Embden equation, h={h}, n={n}"
-    # )
-    #
-    # plot_errors(
-    #     plot_dir=plot_dir,
-    #     filename="06c_errors_h_0.001.pdf",
-    #     h=h,
-    #     n=n,
-    #     figsize=figsize,
-    #     title=f"Task 6 (a)\n{subtitle}",
-    #     show=show)
+    # df = calculate_surface_values(n=1)
+    # save_surface_values_to_csv(df=df, filename="filename")
 
 
 def make_plots(plot_dir, show):

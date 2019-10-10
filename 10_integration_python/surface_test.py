@@ -1,4 +1,5 @@
 import os
+import shutil
 from pytest import approx
 import pandas as pd
 
@@ -10,16 +11,22 @@ def test_save_surface_values_to_csv():
 
     filename = "surface_test.csv"
 
-    if os.path.exists(filename):
-        os.remove(filename)
+    data_dir = "data_test"
+    filename = "surface_test.csv"
+    data_file_path = os.path.join(data_dir, filename)
+
+    if os.path.exists(data_file_path):
+        os.remove(data_file_path)
 
     df = calculate_surface_values(n=1)
-    save_surface_values_to_csv(df=df, filename=filename)
+
+    save_surface_values_to_csv(df=df, data_dir=data_dir,
+                               filename=filename)
 
     # Verify CSV
     # -----------
 
-    df = pd.read_csv(filename)
+    df = pd.read_csv(data_file_path)
 
     values = df.loc[
         (df['Step size'] == 0.1) & (df['Method'] == 'Improved Euler')]
@@ -29,8 +36,9 @@ def test_save_surface_values_to_csv():
     assert values['Density derivative, d(theta)/d(xi)'].iloc[0] == \
         approx(-0.3259175013015985, rel=1e-15)
 
-    assert os.path.exists(filename)
-    os.remove(filename)
+    assert os.path.exists(data_file_path)
+    os.remove(data_file_path)
+    shutil.rmtree(data_dir)
 
 
 def test_calculate_exact_values_at_surface():
