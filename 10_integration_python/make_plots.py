@@ -188,7 +188,7 @@ def task3(plot_dir, figsize, show):
         show=show)
 
 
-def task6(plot_dir, figsize, show):
+def task6(data_dir, figsize, show):
     """
     Make plots second task
 
@@ -206,8 +206,9 @@ def task6(plot_dir, figsize, show):
         to files (used in unit tests)
     """
 
-    # df = calculate_surface_values(n=1)
-    # save_surface_values_to_csv(df=df, filename="filename")
+    df = calculate_surface_values(n=1)
+    save_surface_values_to_csv(df=df, data_dir=data_dir,
+                               filename="surface_values.csv")
 
 
 def make_plots(plot_dir, show):
@@ -227,10 +228,10 @@ def make_plots(plot_dir, show):
 
     figsize = (8, 6)
 
-    # task1(plot_dir=plot_dir, figsize=figsize, show=show)
-    # task2(plot_dir=plot_dir, figsize=figsize, show=show)
-    # task3(plot_dir=plot_dir, figsize=figsize, show=show)
-    task6(plot_dir=plot_dir, figsize=figsize, show=show)
+    task1(plot_dir=plot_dir, figsize=figsize, show=show)
+    task2(plot_dir=plot_dir, figsize=figsize, show=show)
+    task3(plot_dir=plot_dir, figsize=figsize, show=show)
+    task6(data_dir=plot_dir, figsize=figsize, show=show)
 
 
 if __name__ == '__main__':
