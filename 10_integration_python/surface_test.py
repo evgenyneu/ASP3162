@@ -49,3 +49,91 @@ def test_calculate_surface_values():
 
     assert values['density_derivative_surface'].iloc[0] == \
         approx(-0.31830988091450385, rel=1e-15)
+
+    # Euler, h=0.01
+    # ----------
+
+    values = df.loc[(df['h'] == 0.01) & (df['method'] == 'Euler')]
+
+    assert values['x_surface'].iloc[0] == \
+        approx(3.1299999999999772, rel=1e-15)
+
+    assert values['density_derivative_surface'].iloc[0] == \
+        approx(-0.3217329656403775, rel=1e-15)
+
+    # Improved Euler, h=0.01
+    # ----------
+
+    values = df.loc[(df['h'] == 0.01) & (df['method'] == 'Improved Euler')]
+
+    assert values['x_surface'].iloc[0] == \
+        approx(3.139999999999977, rel=1e-15)
+
+    assert values['density_derivative_surface'].iloc[0] == \
+        approx(-0.31862568823046306, rel=1e-15)
+
+    # Runge-Kutta, h=0.01
+    # ----------
+
+    values = df.loc[(df['h'] == 0.01) & (df['method'] == 'Runge-Kutta')]
+
+    assert values['x_surface'].iloc[0] == \
+        approx(3.139999999999977, rel=1e-15)
+
+    assert values['density_derivative_surface'].iloc[0] == \
+        approx(-0.31863244893617887, rel=1e-15)
+
+    # Exact, h=0.01
+    # ----------
+
+    values = df.loc[(df['h'] == 0.01) & (df['method'] == 'Exact')]
+
+    assert values['x_surface'].iloc[0] == \
+        approx(3.1415926723926493, rel=1e-15)
+
+    assert values['density_derivative_surface'].iloc[0] == \
+        approx(-0.31830988237353536, rel=1e-15)
+
+    # Euler, h=0.001
+    # ----------
+
+    values = df.loc[(df['h'] == 0.001) & (df['method'] == 'Euler')]
+
+    assert values['x_surface'].iloc[0] == \
+        approx(3.140999999999765, rel=1e-15)
+
+    assert values['density_derivative_surface'].iloc[0] == \
+        approx(-0.318535712203409, rel=1e-15)
+
+    # Improved Euler, h=0.001
+    # ----------
+
+    values = df.loc[(df['h'] == 0.001) & (df['method'] == 'Improved Euler')]
+
+    assert values['x_surface'].iloc[0] == \
+        approx(3.140999999999765, rel=1e-15)
+
+    assert values['density_derivative_surface'].iloc[0] == \
+        approx(-0.3184298939191397, rel=1e-15)
+
+    # Runge-Kutta, h=0.001
+    # ----------
+
+    values = df.loc[(df['h'] == 0.001) & (df['method'] == 'Runge-Kutta')]
+
+    assert values['x_surface'].iloc[0] == \
+        approx(3.140999999999765, rel=1e-15)
+
+    assert values['density_derivative_surface'].iloc[0] == \
+        approx(-0.3184299609685312, rel=1e-15)
+
+    # Exact, h=0.001
+    # ----------
+
+    values = df.loc[(df['h'] == 0.001) & (df['method'] == 'Exact')]
+
+    assert values['x_surface'].iloc[0] == \
+        approx(3.1415927072924723, rel=1e-15)
+
+    assert values['density_derivative_surface'].iloc[0] == \
+        approx(-0.31830987530135246, rel=1e-15)
