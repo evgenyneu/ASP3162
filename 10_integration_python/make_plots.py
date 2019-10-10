@@ -207,8 +207,9 @@ def task6(data_dir, figsize, show):
     """
 
     df = calculate_surface_values(n=1)
+
     save_surface_values_to_csv(df=df, data_dir=data_dir,
-                               filename="surface_values.csv")
+                               filename="06_surface_values.csv")
 
 
 def make_plots(plot_dir, show):
