@@ -1,10 +1,15 @@
 from surface import calculate_exact_values_at_surface, calculate_surface_values
 from pytest import approx
 
+
 def test_calculate_exact_values_at_surface():
-    result = calculate_exact_values_at_surface(x_surface_estimate=3, n=1)
-    # print(result)
-    # assert 2 == 3
+    result = calculate_exact_values_at_surface(x_surface_estimate=3.1, n=1)
+
+    assert result["method"] == "Exact"
+    assert result["x_surface"] == approx(3.14159267959268, rel=1e-15)
+
+    assert result["density_derivative_surface"] == \
+        approx(-0.3183098809145041, rel=1e-15)
 
 
 def test_calculate_surface_values():
