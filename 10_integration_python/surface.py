@@ -53,6 +53,36 @@ def calculate_exact_values_at_surface(x_surface_estimate, n):
     return item
 
 
+def surface_values_single_method(method, h, n):
+    """
+    Calculates values of radius and derivative of density at the surface
+    for a single integration method
+
+    Parameters
+    -----------
+
+    method : class
+        Method to be used.
+
+    h : float
+        Step size for the radius.
+
+    n : int
+        Parameter in the Lane-Embden equation.
+    """
+
+    le = LaneEmbdenIntegrator(n=n)
+    item = {}
+    x, y = le.integrate(method=method, h=h)
+    item["h"] = h
+    item["method"] = method.name()
+    x_surface = x[-1]
+    item["x_surface"] = x_surface
+    item["density_derivative_surface"] = y[-1, 1]
+
+    return item
+
+
 def calculate_surface_values(n):
     """
     Calculates values of radius and derivative of density at the surface
@@ -82,24 +112,17 @@ def calculate_surface_values(n):
         Density derivative at the surface
     """
 
-    le = LaneEmbdenIntegrator(n=n)
     items = []
 
     for h in [0.1, 0.01, 0.001]:
         for method in [EulerIntegrator,
                        ImprovedEulerIntegrator, RungeKuttaIntegrator]:
 
-            item = {}
-            x, y = le.integrate(method=method, h=h)
-            item["h"] = h
-            item["method"] = method.name()
-            x_surface = x[-1]
-            item["x_surface"] = x_surface
-            item["density_derivative_surface"] = y[-1, 1]
+            item = surface_values_single_method(method=method, h=h, n=n)
             items.append(item)
 
-        item = calculate_exact_values_at_surface(x_surface_estimate=x_surface,
-                                                 n=n)
+        item = calculate_exact_values_at_surface(
+            x_surface_estimate=item["x_surface"], n=n)
 
         item["h"] = h
         items.append(item)
