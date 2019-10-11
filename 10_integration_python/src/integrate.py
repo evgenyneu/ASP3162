@@ -2,7 +2,7 @@ import numpy as np
 from float_utils import is_zero
 
 
-def lane_embden_derivatives(x, y_vector, polytropic_index):
+def lane_embden_derivatives(x, y_vector, data):
     """
     Compute derivatives of Lane Emden Equation (Eq. 30)
 
@@ -40,13 +40,14 @@ def lane_embden_derivatives(x, y_vector, polytropic_index):
         f0 = 0
         f1 = 0
     else:
+        polytropic_index = data["polytropic_index"]
         f0 = z
         f1 = -2 * z / x - y**polytropic_index
 
     return np.array((f0, f1))
 
 
-def euler_integrator(h, derivative, polytropic_index, x, y):
+def euler_integrator(h, derivative, data, x, y):
     """
     Calcualte one step of integration using the Euler method.
 
@@ -74,13 +75,13 @@ def euler_integrator(h, derivative, polytropic_index, x, y):
 
     """
 
-    y = y + h * derivative(x=x, y_vector=y, polytropic_index=polytropic_index)
+    y = y + h * derivative(x, y, data)
     x += h
 
     return x, y
 
 
-def improved_euler_integrator(h, derivative, polytropic_index, x, y):
+def improved_euler_integrator(h, derivative, data, x, y):
     """
     Calcualte one step of integration using the Emproved Euler method.
 
@@ -108,17 +109,16 @@ def improved_euler_integrator(h, derivative, polytropic_index, x, y):
 
     """
 
-    f = lambda x, y: derivative(x=x, y_vector=y,
-                                polytropic_index=polytropic_index)
+    f = derivative
 
-    y_bar = y + h * f(x, y)
-    y = y + h * (f(x, y) + f(x + h, y_bar)) / 2
+    y_bar = y + h * f(x, y, data)
+    y = y + h * (f(x, y, data) + f(x + h, y_bar, data)) / 2
     x += h
 
     return x, y
 
 
-def runge_kutta_integrator(h, derivative, polytropic_index, x, y):
+def runge_kutta_integrator(h, derivative, data, x, y):
     """
     Calcualte one step of integration using the Emproved Euler method.
 
@@ -146,13 +146,11 @@ def runge_kutta_integrator(h, derivative, polytropic_index, x, y):
 
     """
 
-    f = lambda x, y: derivative(x=x, y_vector=y,
-                                polytropic_index=polytropic_index)
-
-    k1 = f(x, y)
-    k2 = f(x + h / 2, y + h * k1 / 2)
-    k3 = f(x + h / 2, y + h * k2 / 2)
-    k4 = f(x + h, y + h * k3)
+    f = derivative
+    k1 = f(x, y, data)
+    k2 = f(x + h / 2, y + h * k1 / 2, data)
+    k3 = f(x + h / 2, y + h * k2 / 2, data)
+    k4 = f(x + h, y + h * k3, data)
     phi = 1 / 6 * (k1 + 2 * k2 + 2 * k3 + k4)
     y = y + h * phi
     x += h
@@ -169,13 +167,14 @@ def integrate(step_size,
     y = np.array([1, 0])
     xi = []
     yi = []
+    derivative_data = {"polytropic_index": polytropic_index}
 
     while not (y[0] <= 0 or x > xmax):
         xi.append(x)
         yi.append(y)
         x, y = integrator(h=step_size,
                           derivative=lane_embden_derivatives,
-                          polytropic_index=polytropic_index,
+                          data=derivative_data,
                           x=x, y=y)
 
     return np.array(xi), np.array(yi)

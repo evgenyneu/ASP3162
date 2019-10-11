@@ -7,8 +7,7 @@ from surface import calculate_exact_values_at_surface, \
                     calculate_surface_values, save_surface_values_to_csv, \
                     surface_values_single_method
 
-from integrate import integrate, euler_integrator,\
-                      improved_euler_integrator, runge_kutta_integrator
+from integrate import improved_euler_integrator
 
 
 def test_save_surface_values_to_csv():
