@@ -3,7 +3,20 @@ from astropy import units as u
 from pytest import approx
 
 from stellar_structure import calculate_stellar_parameters, \
-                              find_alpha
+                              find_alpha,\
+                              find_k
+
+
+def test_find_k():
+    alpha = 116177708.60712494
+    polytropic_index = 3
+    central_density = 1e5 * u.kg / u.meter**3
+
+    result = find_k(alpha=alpha,
+                    polytropic_index=polytropic_index,
+                    central_density=central_density)
+
+    assert result.value == approx(6097056608.050699, rel=1e-15)
 
 
 def test_find_alpha():

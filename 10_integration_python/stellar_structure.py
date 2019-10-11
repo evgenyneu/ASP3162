@@ -1,4 +1,5 @@
 import numpy as np
+from astropy import constants
 from surface import surface_values_single_method
 from runge_kutta_integrator import RungeKuttaIntegrator
 
@@ -84,3 +85,32 @@ def find_alpha(xi1, dtheta_dxi_at_xi1, stellar_mass, central_density):
     alpha = stellar_mass / (4 * np.pi * central_density * a)
     alpha = alpha**(1/3)
     return alpha
+
+
+def find_k(alpha, polytropic_index, central_density):
+    """
+    Calculate parameter L using Eq. 6 (doc/lane_embden_equations.png)
+
+    Parameters
+    -----------
+
+    alpha : float
+        Alpha parameter from Eq. 8 (doc/lane_embden_equations.png)
+
+    polytropic_index : int
+        Parameter used in Lane-Embden model
+
+    central_density : float
+        Density at the center of the star [kg/m^3]
+
+    Returns : float
+    ---------------
+
+    Alpha parameter from Eq. 8 (doc/lane_embden_equations.png)
+    """
+
+    n = polytropic_index
+    k = (alpha**2) * 4 * np.pi * constants.G
+    k = k / (n + 1)
+    k = k / (central_density ** (1 / n - 1))
+    return k
