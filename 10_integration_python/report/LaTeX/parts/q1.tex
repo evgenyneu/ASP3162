@@ -1,0 +1,157 @@
+\section{Writing Fortran code}
+
+We write a Python program that solves Lane-Emden equation. Instructions for running the unit tests and making plots can be found in the README.md file that comes with the source code.
+
+For simplicity we wrote our program using functions and not classes. If classes are required for assessment of these work, the code is located in \code{classes.zip} file.
+
+
+\section{Plots}
+
+\subsection*{Task 1}
+
+On \autoref{fig_task_1} we plot solution to Lane-Emden equation for scaled density, calculated using Euler method.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\textwidth]{figures/{01_lane_emden}.pdf}
+    \vspace*{-10mm}
+    \caption{Solution to Lane-Emden equation.}
+    \label{fig_task_1}
+\end{figure}
+\pagebreak
+
+
+\subsection*{Task 2: changing step size}
+
+On Fig. \ref{fig_task_2a}-\ref{fig_task_2c} we plot solutions to Lane-Emden equation for scaled density and its derivative. The solutions were calculated using different step sizes.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\textwidth]{figures/{02a_density_vs_radius_h_0.1}.pdf}
+    \vspace*{-10mm}
+    \caption{Solutions to Lane-Emden equation for step size $h=0.1$.}
+    \label{fig_task_2a}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\textwidth]{figures/{02b_density_vs_radius_h_0.01}.pdf}
+    \vspace*{-10mm}
+    \caption{Solutions to Lane-Emden equation for step size $h=0.01$.}
+    \label{fig_task_2b}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\textwidth]{figures/{02c_density_vs_radius_h_0.001}.pdf}
+    \vspace*{-10mm}
+    \caption{Solutions to Lane-Emden equation for step size $h=0.001$.}
+    \label{fig_task_2c}
+\end{figure}
+\pagebreak
+
+\subsection*{Task 3: approximate and exact solutions}
+
+On Fig. \ref{fig_task_3a}-\ref{fig_task_3c} we plot approximate and exact solutions to Lane-Emden for values of polytropic index $n=0, 1, 5$.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\textwidth]{figures/{03a_density_vs_radius_n_0}.pdf}
+    \vspace*{-10mm}
+    \caption{Solutions to Lane-Emden equation for polytropic index $n=0$.}
+    \label{fig_task_3a}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\textwidth]{figures/{03b_density_vs_radius_n_1}.pdf}
+    \vspace*{-10mm}
+    \caption{Solutions to Lane-Emden equation for polytropic index $n=1$.}
+    \label{fig_task_3b}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\textwidth]{figures/{03c_density_vs_radius_n_5}.pdf}
+    \vspace*{-10mm}
+    \caption{Solutions to Lane-Emden equation for polytropic index $n=5$.}
+    \label{fig_task_3c}
+\end{figure}
+\pagebreak
+
+\subsection*{Task 6: comparing integrators}
+
+Next, we calculate radius and density derivative at the surface of stellar model using Euler, Improved Euler and Runge-Kutta integrators, as well as exact solutions to Lane-Emden equation. Results are shown in \autoref{q6_comparing_integrators}.
+
+
+\begin{table}[!ht]
+\centering
+\caption{Radius and density derivatives at the surface of a stellar model calculated with Euler, Improved Euler, Runge-Kutta integrators and exact solutions to Lane-Emden equation.}
+\begin{tabular}{|c|c|c|c|}
+\hline
+\textbf{Step size} & \textbf{Method}  & \textbf{Radius at surface, $\xi_1$}   & \textbf{Density derivative at surface $\frac{d \theta}{d \xi} \big|_{\xi_1}$} \\
+\hline
+0.1       & Euler          & 3.10000 &  -0.338832 \\
+\hline
+0.1       & Improved Euler & 3.10000 &  -0.325917 \\
+\hline
+0.1       & Runge-Kutta    & 3.10000 &  -0.326620 \\
+\hline
+0.1       & Exact          & 3.14159 &  -0.318309 \\
+\hline
+0.01      & Euler          & 3.12999 &  -0.321732 \\
+\hline
+0.01      & Improved Euler & 3.13999  & -0.318625 \\
+\hline
+0.01      & Runge-Kutta    & 3.13999  & -0.318632 \\
+\hline
+0.01      & Exact          & 3.14159 &  -0.318309 \\
+\hline
+0.001     & Euler          & 3.14099  & -0.318535 \\
+\hline
+0.001     & Improved Euler & 3.14099  & -0.318429 \\
+\hline
+0.001     & Runge-Kutta    & 3.14099  & -0.318429 \\
+\hline
+0.001     & Exact          & 3.14159 &  -0.318309 \\
+\hline
+\end{tabular}
+\label{q6_comparing_integrators}
+\end{table}
+
+\pagebreak
+
+
+\subsection*{Task 7: stellar model with physical units}
+
+Finally, we calculate density, temperature and pressure for a two-solar-mass stellar model with polytropic index $n=3$, central density $\rho_c = \SI{1e5}{\kg \ \m^{-3}}$ and mean molecular weight $\mu = 1.4$. Results are shown on Fig. \ref{fig_task_7a}-\ref{fig_task_7c}.
+
+In our calculations and plots we are using SI and not CGS units because SI units are recommended by International Astronomical Union:
+
+\footnotesize{ \url{https://www.iau.org/publications/proceedings_rules/units/} }
+
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\textwidth]{figures/{07a_density}.pdf}
+    \vspace*{-10mm}
+    \caption{Density of a stellar model calculated using Lane-Emden equation.}
+    \label{fig_task_7a}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\textwidth]{figures/{07b_temperature}.pdf}
+    \vspace*{-10mm}
+    \caption{Temperature of a stellar model calculated using Lane-Emden equation.}
+    \label{fig_task_7b}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\textwidth]{figures/{07c_pressure}.pdf}
+    \vspace*{-10mm}
+    \caption{Pressure of a stellar model calculated using Lane-Emden equation.}
+    \label{fig_task_7c}
+\end{figure}
+\pagebreak

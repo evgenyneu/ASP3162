@@ -7,3 +7,9 @@ errorMatch:
 targets:
     pytest:
         cmd: "pytest -s '{FILE_ACTIVE}'"
+
+    LaTeX:
+        cmd: "cd '{FILE_ACTIVE_PATH}' && cd .. && /Library/TeX/texbin/pdflatex assignment.tex && open -a Skim.app assignment.pdf"
+
+    LeTeXRemoveAux:
+        cmd: "rm -f '{FILE_ACTIVE_PATH}/{FILE_ACTIVE_NAME_BASE}.aux'"
