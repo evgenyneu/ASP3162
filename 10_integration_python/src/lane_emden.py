@@ -13,7 +13,7 @@ import numpy as np
 from float_utils import is_zero
 
 
-def lane_embden_derivatives(x, dependent_variables, data):
+def lane_emden_derivatives(x, dependent_variables, data):
     """
     Eq. 1 is rearranged into two first-order differential equations:
 
@@ -30,7 +30,7 @@ def lane_embden_derivatives(x, dependent_variables, data):
         A value of x variable
 
     dependent_variables : tuple
-        Contains two elements: (y, z)
+        Contains two variables: (y, z)
 
     Returns : numpy.ndarray
     -------
@@ -117,7 +117,7 @@ def solve_lane_emden(step_size,
 
         x, dependent_variables = integrator(
             h=step_size,
-            derivative=lane_embden_derivatives,
+            derivative=lane_emden_derivatives,
             data=derivative_data,
             x=x, y=dependent_variables)
 
