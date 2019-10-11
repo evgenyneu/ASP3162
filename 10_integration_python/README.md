@@ -13,5 +13,5 @@ Note: Requires *pytest* Python package.
 ## Make plots
 
 ```
-python make_plots.py
+python src/make_plots.py
 ```
