@@ -70,7 +70,6 @@ def improved_euler_integrator(h, derivative, data, x, y):
     """
 
     f = derivative
-
     y_bar = y + h * f(x, y, data)
     y = y + h * (f(x, y, data) + f(x + h, y_bar, data)) / 2
     x += h
@@ -80,7 +79,7 @@ def improved_euler_integrator(h, derivative, data, x, y):
 
 def runge_kutta_integrator(h, derivative, data, x, y):
     """
-    Calculate one step of integration using the Emproved Euler method.
+    Calculate one step of integration using Runge-Kutta method.
 
     Parameters
     ----------
