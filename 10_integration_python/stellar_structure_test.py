@@ -7,7 +7,8 @@ from stellar_structure import calculate_stellar_parameters, \
                               find_k, \
                               find_gamma, \
                               find_central_pressure, \
-                              calculate_scaled_parameters
+                              calculate_scaled_parameters, \
+                              find_pressure
 
 
 def test_find_k():
@@ -96,8 +97,18 @@ def test_calculate_scaled_parameters():
 
 
 def test_find_pressure():
-    central_pressure = 2.8300029869833104e16
-    # polytropic_index = 3
-    # theta = []
+    central_pressure = 2.8300029869833104e16 * u.pascal
+    polytropic_index = 3
 
-    # find_pressure(central_pressure)
+    xi, theta, dtheta_dxi = calculate_scaled_parameters(
+        polytropic_index=3, step_size=0.001)
+
+    result = find_pressure(polytropic_index=polytropic_index,
+                           central_pressure=central_pressure,
+                           theta=theta)
+
+    assert len(result) == 6897
+    assert result[0].unit == u.pascal
+    assert result[0].value == approx(2.8300029869833104e+16, rel=1e-15)
+    assert result[1400].value == approx(8833847448329003, rel=1e-15)
+    assert result[-1].value == approx(0.04759224978521558, rel=1e-15)

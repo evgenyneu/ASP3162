@@ -197,3 +197,32 @@ def calculate_scaled_parameters(polytropic_index, step_size):
     dtheta_dxi = y[:, 1]
 
     return (xi, theta, dtheta_dxi)
+
+
+def find_pressure(polytropic_index, central_pressure, theta):
+    """
+    Calcualates scaled stellar parameter
+    using Eq. 4 (doc/lane_embden_equations.png)
+
+    Parameters
+    -----------
+
+    polytropic_index : int
+        Parameter used in Lane-Embden model
+
+    central_pressure : float
+        Central pressure [Pa]
+
+    theta : list of float
+        List of scaled density values from Lane-Embden equation,
+        corresponding to positions from the center to the surface.
+
+    Returns : list of float
+    -----------
+
+    Pressure values [Pa] for the stellar model,
+    corresponding to positions from the center to the surface.
+
+    """
+
+    return central_pressure * np.power(theta, polytropic_index + 1)
