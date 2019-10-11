@@ -72,6 +72,7 @@ def plot_lane_emden_task_2(plot_dir,
 
     plt.ylabel(ylabel)
     plt.title(title)
+    plt.grid()
     plt.legend()
     plt.tight_layout()
     save_plot(plt=plt, plot_dir=plot_dir, filename=filename)

@@ -49,6 +49,7 @@ def task1(plot_dir, figsize, show):
 
     plt.title(title)
     plt.plot(x, y[:, 0], label="Density")
+    plt.grid()
     plt.tight_layout()
     save_plot(plt=plt, plot_dir=plot_dir, filename="01_lane_emden.pdf")
 

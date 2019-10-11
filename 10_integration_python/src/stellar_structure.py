@@ -493,6 +493,7 @@ def plot_density(plot_dir, filename, figsize,
                        title_prefix=title_prefix)
 
     plt.title(title)
+    plt.grid()
     plt.tight_layout()
     save_plot(plt=plt, plot_dir=plot_dir, filename=filename)
 
@@ -579,6 +580,7 @@ def plot_temperature(plot_dir, filename, figsize,
                        title_prefix=title_prefix)
 
     plt.title(title)
+    plt.grid()
     plt.tight_layout()
     save_plot(plt=plt, plot_dir=plot_dir, filename=filename)
 
@@ -665,6 +667,7 @@ def plot_pressure(plot_dir, filename, figsize,
                        title_prefix=title_prefix)
 
     plt.title(title)
+    plt.grid()
     plt.tight_layout()
     save_plot(plt=plt, plot_dir=plot_dir, filename=filename)
 
