@@ -9,11 +9,12 @@ from stellar_structure import calculate_stellar_parameters, \
                               find_central_pressure, \
                               calculate_scaled_parameters, \
                               find_pressure, \
-                              find_density
+                              find_density, \
+                              find_radius
 
 
 def test_find_k():
-    alpha = 116177708.60712494
+    alpha = 116177708.60712494 * u.meter
     polytropic_index = 3
     central_density = 1e5 * u.kg / u.meter**3
 
@@ -22,6 +23,7 @@ def test_find_k():
                     central_density=central_density)
 
     assert result.value == approx(6097056608.050699, rel=1e-15)
+    assert result.unit == u.m**3 / (u.kg**(1/3) * u.s**2)
 
 
 def test_find_alpha():
@@ -131,3 +133,18 @@ def test_find_density():
     assert result[0].value == approx(100000, rel=1e-15)
     assert result[1400].value == approx(41761.130899912016, rel=1e-15)
     assert result[-1].value == approx(4.669947584135971e-9, rel=1e-15)
+
+
+def test_find_radius():
+    alpha = 116177708.60712494 * u.meter
+
+    xi, theta, dtheta_dxi = calculate_scaled_parameters(
+        polytropic_index=3, step_size=0.001)
+
+    result = find_radius(alpha=alpha, xi=xi)
+
+    assert len(result) == 6897
+    assert result[0].unit == u.m
+    assert result[0].value == approx(0, rel=1e-15)
+    assert result[1400].value == approx(162648792.04996988, rel=1e-15)
+    assert result[-1].value == approx(801161478.5548077, rel=1e-15)

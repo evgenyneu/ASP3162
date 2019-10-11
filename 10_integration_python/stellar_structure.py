@@ -229,7 +229,8 @@ def find_pressure(polytropic_index, central_pressure, theta):
 
 def find_density(polytropic_index, central_density, theta):
     """
-    Calculate density in kg/m^3 units Eq. 3 (doc/lane_embden_equations.png)
+    Calculate density in kg/m^3 units using
+    Eq. 3 (doc/lane_embden_equations.png)
 
     Parameters
     -----------
@@ -253,3 +254,25 @@ def find_density(polytropic_index, central_density, theta):
     """
 
     return central_density * np.power(theta, polytropic_index)
+
+
+def find_radius(alpha, xi):
+    """
+    Calculate radius in meters using Eq. 2 (doc/lane_embden_equations.png)
+
+    Parameters
+    -----------
+
+    alpha : float
+        Parameter used in Lane-Embden model
+
+    xi : list of float
+        Scaled radius using in Lane-Embden equation.
+
+    Returns : list of float
+    -----------
+
+    Distances from the center of the star [m]
+    """
+
+    return alpha * xi
