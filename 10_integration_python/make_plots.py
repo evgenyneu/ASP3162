@@ -220,6 +220,7 @@ def task7(plot_dir, figsize, show):
     central_density = 1e5 * u.kg / u.meter**3
     step_size = 0.001
     polytropic_index = 3
+    mean_molecular_weight = 1.4
 
     plot_density(plot_dir=plot_dir,
                  filename="07a_density.pdf",
@@ -228,6 +229,7 @@ def task7(plot_dir, figsize, show):
                  central_density=central_density,
                  step_size=step_size,
                  polytropic_index=polytropic_index,
+                 mean_molecular_weight=mean_molecular_weight,
                  show=show)
 
 

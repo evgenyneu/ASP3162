@@ -1,5 +1,6 @@
 import numpy as np
 from astropy import constants
+from astropy.visualization import quantity_support
 from lane_emden_integrator_limited_x import LaneEmdenIntegratorLimitedX
 from runge_kutta_integrator import RungeKuttaIntegrator
 import matplotlib.pyplot as plt
@@ -364,36 +365,49 @@ def find_temperature(mean_molecular_weight, pressures, densities):
 
 def plot_density(plot_dir, filename, figsize,
                  stellar_mass, central_density,
-                 step_size, polytropic_index, show):
+                 step_size, polytropic_index,
+                 mean_molecular_weight,
+                 show):
 
     result = calculate_stellar_parameters(
         step_size=step_size,
         polytropic_index=polytropic_index,
         stellar_mass=stellar_mass,
         central_density=central_density,
-        mean_molecular_weight=1.4)
+        mean_molecular_weight=mean_molecular_weight)
 
     radii = result["radii"]
     densities = result["densities"]
 
-    plt.plot(radii, densities)
-    plt.xlabel("Radius R [m]")
-    plt.ylabel(r"Density $\rho$ [$kg \ m^{-3}$]")
+    # with quantity_support():
+    plt.plot(radii.value, densities.value)
+    xunit = radii[0].unit.to_string('latex_inline')
+    plt.xlabel(f"Radius R [{xunit}]")
+
+    density_unit = densities[0].unit.to_string('latex_inline')
+
+    ylabel = (
+        r"Density $\rho$ "
+        f"[{density_unit}]"
+    )
+    plt.ylabel(ylabel)
 
     title = (
         "Solution of Lane-Emden equation,\n"
-        "M={stellar_mass} kg,"
-        "$\rho_c=$"
-        "{central_density} "
-        r"$kg \ m^{-3}$, "
-        r"h={step_size}, "
-        r"n={polytropic_index}"
+        f"M={stellar_mass:.2G}, "
+        r"$\rho_c=$"
+        f"{central_density.value:.2G} "
+        f"{density_unit}, "
+        f"h={step_size}, "
+        f"n={polytropic_index}, "
+        r"$\mu=$"
+        f"{mean_molecular_weight}"
     )
 
     plt.title(title)
-    plt.figure(figsize=figsize)
+    # plt.figure(figsize=figsize)
     plt.tight_layout()
-    save_plot(plt=plt, plot_dir=plot_dir, filename=filename)
-
+    # save_plot(plt=plt, plot_dir=plot_dir, filename=filename)
+    #
     if show:
         plt.show()
