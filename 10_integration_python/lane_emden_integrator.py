@@ -5,7 +5,7 @@ from float_utils import is_zero
 from integrand import Integrand
 
 
-class LaneEmbdenIntegrator(Integrand):
+class LaneEmdenIntegrator(Integrand):
     """
     Integrate Lane Emden Equation
 

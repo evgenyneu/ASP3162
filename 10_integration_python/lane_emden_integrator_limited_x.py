@@ -1,12 +1,12 @@
 """
-Modified integrator for Lane_Embden equation that fixes
+Modified integrator for Lane_Emden equation that fixes
 infinite loop for n=5 by creating a modified termination condition.
 """
 
-from lane_embden_integrator import LaneEmbdenIntegrator
+from lane_emden_integrator import LaneEmdenIntegrator
 
 
-class LaneEmbdenIntegratorLimitedX(LaneEmbdenIntegrator):
+class LaneEmdenIntegratorLimitedX(LaneEmdenIntegrator):
     def __init__(self, n, xmax=10):
         self.xmax = xmax
         super().__init__(n)

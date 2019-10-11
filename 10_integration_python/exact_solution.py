@@ -3,7 +3,7 @@ import numpy as np
 
 def exact(x, n):
     """
-    Calculate exact solution of Lane-Embden equation.
+    Calculate exact solution of Lane-Emden equation.
 
     Parameters
     ----------
@@ -12,7 +12,7 @@ def exact(x, n):
         Value or values of independent variable
 
     n : integer
-        Parameter 'n' of the Lane-Embden equation
+        Parameter 'n' of the Lane-Emden equation
 
     Returns : float or ndarray
     -------
@@ -37,7 +37,7 @@ def exact(x, n):
 def exact_derivative(x, n):
     """
     Calculate exact values for the derivatives of the solutions
-    of Lane-Embden equation.
+    of Lane-Emden equation.
 
     Parameters
     ----------
@@ -46,7 +46,7 @@ def exact_derivative(x, n):
         Value or values of independent variable
 
     n : integer
-        Parameter 'n' of the Lane-Embden equation
+        Parameter 'n' of the Lane-Emden equation
 
     Returns : float or ndarray
     -------

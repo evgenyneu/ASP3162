@@ -2,7 +2,7 @@
 import numpy as np
 import pandas as pd
 import os
-from lane_embden_integrator import LaneEmbdenIntegrator
+from lane_emden_integrator import LaneEmdenIntegrator
 from exact_solution import exact, exact_derivative
 from euler_integrator import EulerIntegrator
 from improved_euler_integrator import ImprovedEulerIntegrator
@@ -22,7 +22,7 @@ def calculate_exact_values_at_surface(x_surface_estimate, n):
         Estimate of radius at the surface
 
     n : int
-        Parameter in the Lane-Embden equation.
+        Parameter in the Lane-Emden equation.
 
     Returns : dict
     -------
@@ -68,10 +68,10 @@ def surface_values_single_method(method, h, n):
         Step size for the radius.
 
     n : int
-        Parameter in the Lane-Embden equation.
+        Parameter in the Lane-Emden equation.
     """
 
-    le = LaneEmbdenIntegrator(n=n)
+    le = LaneEmdenIntegrator(n=n)
     item = {}
     x, y = le.integrate(method=method, h=h)
     item["h"] = h
@@ -92,7 +92,7 @@ def calculate_surface_values(n):
     -----------
 
     n : int
-        Parameter in the Lane-Embden equation.
+        Parameter in the Lane-Emden equation.
 
     Returns : Panda's DataFrame
     -------

@@ -1,17 +1,17 @@
-# Show plot of solution to Lane-Embden equation
+# Show plot of solution to Lane-Emden equation
 from euler_integrator import EulerIntegrator
-from lane_embden_integrator import LaneEmbdenIntegrator
+from lane_emden_integrator import LaneEmdenIntegrator
 
 import matplotlib.pyplot as plt
 from plot_utils import save_plot, get_linestyles_cycler
 
 
-def plot_lane_embden_task_2(plot_dir,
-                            filename, h, n, figsize,
-                            title, show):
+def plot_lane_emden_task_2(plot_dir,
+                           filename, h, n, figsize,
+                           title, show):
 
     """
-    Show plot of solution to Lane-Embden equation.
+    Show plot of solution to Lane-Emden equation.
 
     Parameters
     -----------
@@ -26,7 +26,7 @@ def plot_lane_embden_task_2(plot_dir,
         Step size (radius x variable)
 
     n : float
-        Parameter in the Lane-Embden equation.
+        Parameter in the Lane-Emden equation.
 
     figsize : tuple
         Figure size (width, height)
@@ -42,7 +42,7 @@ def plot_lane_embden_task_2(plot_dir,
         to files (used in unit tests)
     """
 
-    le = LaneEmbdenIntegrator(n=n)
+    le = LaneEmdenIntegrator(n=n)
     x, y = le.integrate(method=EulerIntegrator, h=h)
     plt.figure(figsize=figsize)
 

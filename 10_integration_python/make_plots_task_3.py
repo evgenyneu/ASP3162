@@ -1,16 +1,16 @@
-# Show plots of approximate and exact solutions to Lane-Embden equation.
+# Show plots of approximate and exact solutions to Lane-Emden equation.
 import matplotlib.pyplot as plt
 from euler_integrator import EulerIntegrator
 from plot_utils import save_plot, get_linestyles_cycler
-from lane_embden_integrator_limited_x import LaneEmbdenIntegratorLimitedX
+from lane_emden_integrator_limited_x import LaneEmdenIntegratorLimitedX
 from exact_solution import exact, exact_derivative
 
 
-def plot_lane_embden_task_3(plot_dir, filename,
+def plot_lane_emden_task_3(plot_dir, filename,
                             h, n, figsize, title, show):
 
     """
-    Show plots of approximate and exact solutions to Lane-Embden equation.
+    Show plots of approximate and exact solutions to Lane-Emden equation.
 
     Parameters
     -----------
@@ -25,7 +25,7 @@ def plot_lane_embden_task_3(plot_dir, filename,
         Step size (radius x variable)
 
     n : float
-        Parameter in the Lane-Embden equation.
+        Parameter in the Lane-Emden equation.
 
     figsize : tuple
         Figure size (width, height)
@@ -41,7 +41,7 @@ def plot_lane_embden_task_3(plot_dir, filename,
         to files (used in unit tests)
     """
 
-    le = LaneEmbdenIntegratorLimitedX(n=n)
+    le = LaneEmdenIntegratorLimitedX(n=n)
     x, y = le.integrate(method=EulerIntegrator, h=h)
 
     plt.figure(figsize=figsize)
