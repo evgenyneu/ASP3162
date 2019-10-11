@@ -2,10 +2,9 @@
 
 import numpy as np
 from astropy import constants
-from lane_emden_integrator_limited_x import LaneEmdenIntegratorLimitedX
-from runge_kutta_integrator import RungeKuttaIntegrator
 import matplotlib.pyplot as plt
 from plot_utils import save_plot
+from integrate import integrate, runge_kutta_integrator
 
 
 def calculate_stellar_parameters(step_size,
@@ -238,8 +237,9 @@ def calculate_scaled_parameters(polytropic_index, step_size):
         Derivative of theta with respect to xi.
     """
 
-    le = LaneEmdenIntegratorLimitedX(n=polytropic_index)
-    x, y = le.integrate(method=RungeKuttaIntegrator, h=step_size)
+    x, y = integrate(step_size=step_size,
+                     polytropic_index=polytropic_index,
+                     integrator=runge_kutta_integrator)
 
     xi = x
     theta = y[:, 0]

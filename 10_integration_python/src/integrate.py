@@ -80,6 +80,86 @@ def euler_integrator(h, derivative, polytropic_index, x, y):
     return x, y
 
 
+def improved_euler_integrator(h, derivative, polytropic_index, x, y):
+    """
+    Calcualte one step of integration using the Emproved Euler method.
+
+    Parameters
+    ----------
+
+    h : float
+        Step size
+
+    derivative : function
+        Function that calculates derivatives
+
+    x : float
+        Value of independent variable
+
+    y : numpy.ndarray
+        A 1D array containing dependent variable
+
+    Returns
+    -------
+
+    tuple
+
+    (x, y)
+
+    """
+
+    f = lambda x, y: derivative(x=x, y_vector=y,
+                                polytropic_index=polytropic_index)
+
+    y_bar = y + h * f(x, y)
+    y = y + h * (f(x, y) + f(x + h, y_bar)) / 2
+    x += h
+
+    return x, y
+
+
+def runge_kutta_integrator(h, derivative, polytropic_index, x, y):
+    """
+    Calcualte one step of integration using the Emproved Euler method.
+
+    Parameters
+    ----------
+
+    h : float
+        Step size
+
+    derivative : function
+        Function that calculates derivatives
+
+    x : float
+        Value of independent variable
+
+    y : numpy.ndarray
+        A 1D array containing dependent variable
+
+    Returns
+    -------
+
+    tuple
+
+    (x, y)
+
+    """
+
+    f = lambda x, y: derivative(x=x, y_vector=y,
+                                polytropic_index=polytropic_index)
+
+    k1 = f(x, y)
+    k2 = f(x + h / 2, y + h * k1 / 2)
+    k3 = f(x + h / 2, y + h * k2 / 2)
+    k4 = f(x + h, y + h * k3)
+    phi = 1 / 6 * (k1 + 2 * k2 + 2 * k3 + k4)
+    y = y + h * phi
+    x += h
+
+    return x, y
+
+
 def integrate(step_size,
               polytropic_index,
               integrator,
@@ -99,88 +179,3 @@ def integrate(step_size,
                           x=x, y=y)
 
     return np.array(xi), np.array(yi)
-
-
-class Integrate(object):
-    """
-    Do all integration steps
-    """
-
-    def __init__(self, f, initial, final):
-        """
-        Parameters
-        ----------
-
-        f : function
-            Calculates derivatives.
-
-            Parameters of `f`
-            --------------
-
-            x : float
-                A value of independent variable
-
-            y_vector : list
-                Contains a list of dependent variables
-
-            Returns (`f` function)
-            ---------
-
-            numpy.ndarray
-
-            List containing two elements, which are derivatives:
-                1. dy/dx.
-                2. dz/dx.
-
-        initial : function
-            Calculates initial conditions.
-
-            Returns (`initial` function)
-            --------------
-
-            tuple (x, y)
-
-                x : float
-                    Independent variable
-
-                y : list
-                    Dependent variables
-
-        final : function
-            Checks if integration should be ended.
-
-            Parameters of `final`
-            ----------
-
-            x : float
-                Independent variable
-
-            y : list
-                Dependent variables
-
-            Returns (`final` function)
-            --------
-
-            bool
-
-            True if integration needs to be finished.
-        """
-        self.f = f
-        self.initial = initial
-        self.final = final
-
-    def run(self):
-        """
-        Start the integration
-        """
-
-        x, y = self.initial()
-        xi = []
-        yi = []
-
-        while not self.final(x, y):
-            xi.append(x)
-            yi.append(y)
-            x, y = self.advance(x, y)
-
-        return np.array(xi), np.array(yi)

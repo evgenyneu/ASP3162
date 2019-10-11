@@ -3,8 +3,6 @@
 import matplotlib.pyplot as plt
 from astropy import units as u
 from astropy import constants
-from lane_emden_integrator import LaneEmdenIntegrator
-from euler_integrator import EulerIntegrator
 from plot_utils import save_plot
 from make_plots_task_2 import plot_lane_emden_task_2
 from make_plots_task_3 import plot_lane_emden_task_3
@@ -275,11 +273,11 @@ def make_plots(plot_dir, show):
 
     figsize = (8, 6)
 
-    # task1(plot_dir=plot_dir, figsize=figsize, show=show)
-    # task2(plot_dir=plot_dir, figsize=figsize, show=show)
+    task1(plot_dir=plot_dir, figsize=figsize, show=show)
+    task2(plot_dir=plot_dir, figsize=figsize, show=show)
     task3(plot_dir=plot_dir, figsize=figsize, show=show)
-    # task6(data_dir=plot_dir, figsize=figsize, show=show)
-    # task7(plot_dir=plot_dir, figsize=figsize, show=show)
+    task6(data_dir=plot_dir, figsize=figsize, show=show)
+    task7(plot_dir=plot_dir, figsize=figsize, show=show)
 
 
 if __name__ == '__main__':

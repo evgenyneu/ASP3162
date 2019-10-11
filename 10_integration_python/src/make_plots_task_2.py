@@ -1,6 +1,4 @@
 # Show plot of solution to Lane-Emden equation
-from euler_integrator import EulerIntegrator
-from lane_emden_integrator import LaneEmdenIntegrator
 from integrate import integrate, euler_integrator
 
 import matplotlib.pyplot as plt

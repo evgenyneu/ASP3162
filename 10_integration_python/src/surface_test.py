@@ -2,11 +2,13 @@ import os
 import shutil
 from pytest import approx
 import pandas as pd
-from improved_euler_integrator import ImprovedEulerIntegrator
 
 from surface import calculate_exact_values_at_surface, \
                     calculate_surface_values, save_surface_values_to_csv, \
                     surface_values_single_method
+
+from integrate import integrate, euler_integrator,\
+                      improved_euler_integrator, runge_kutta_integrator
 
 
 def test_save_surface_values_to_csv():
@@ -55,9 +57,8 @@ def test_calculate_exact_values_at_surface():
 
 def test_surface_values_single_method():
     result = surface_values_single_method(
-        method=ImprovedEulerIntegrator, h=0.01, n=1)
+        integrator=improved_euler_integrator, h=0.01, n=1)
 
-    assert result["method"] == "Improved Euler"
     assert result["x_surface"] == approx(3.139999999999977, rel=1e-15)
 
     assert result["density_derivative_surface"] == \

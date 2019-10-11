@@ -2,12 +2,11 @@
 import numpy as np
 import pandas as pd
 import os
-from lane_emden_integrator import LaneEmdenIntegrator
 from exact_solution import exact, exact_derivative
-from euler_integrator import EulerIntegrator
-from improved_euler_integrator import ImprovedEulerIntegrator
-from runge_kutta_integrator import RungeKuttaIntegrator
 from plot_utils import find_nearest_index, create_dir
+
+from integrate import integrate, euler_integrator,\
+                      improved_euler_integrator, runge_kutta_integrator
 
 
 def calculate_exact_values_at_surface(x_surface_estimate, n):
@@ -53,7 +52,7 @@ def calculate_exact_values_at_surface(x_surface_estimate, n):
     return item
 
 
-def surface_values_single_method(method, h, n):
+def surface_values_single_method(integrator, h, n):
     """
     Calculates values of radius and derivative of density at the surface
     for a single integration method
@@ -61,8 +60,8 @@ def surface_values_single_method(method, h, n):
     Parameters
     -----------
 
-    method : class
-        Method to be used.
+    integrator : function
+        An integrator function to be used (i.e. Euler or Runge-Kutta)
 
     h : float
         Step size for the radius.
@@ -71,11 +70,12 @@ def surface_values_single_method(method, h, n):
         Parameter in the Lane-Emden equation.
     """
 
-    le = LaneEmdenIntegrator(n=n)
+    x, y = integrate(step_size=h,
+                     polytropic_index=n,
+                     integrator=integrator)
+
     item = {}
-    x, y = le.integrate(method=method, h=h)
     item["h"] = h
-    item["method"] = method.name()
     x_surface = x[-1]
     item["x_surface"] = x_surface
     item["density_derivative_surface"] = y[-1, 1]
@@ -114,11 +114,28 @@ def calculate_surface_values(n):
 
     items = []
 
-    for h in [0.1, 0.01, 0.001]:
-        for method in [EulerIntegrator,
-                       ImprovedEulerIntegrator, RungeKuttaIntegrator]:
+    integrators = [
+        {
+            "name": "Euler",
+            "integrator": euler_integrator
+        },
+        {
+            "name": "Improved Euler",
+            "integrator": improved_euler_integrator
+        },
+        {
+            "name": "Runge-Kutta",
+            "integrator": runge_kutta_integrator
+        }
+    ]
 
-            item = surface_values_single_method(method=method, h=h, n=n)
+    for h in [0.1, 0.01, 0.001]:
+        for integrator in integrators:
+            item = surface_values_single_method(
+                integrator=integrator["integrator"], h=h, n=n)
+
+            item["method"] = integrator["name"]
+
             items.append(item)
 
         item = calculate_exact_values_at_surface(
