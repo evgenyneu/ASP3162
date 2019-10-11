@@ -1,7 +1,7 @@
 # Show plot of solution to Lane-Emden equation
-from integrate import integrate, euler_integrator
-
 import matplotlib.pyplot as plt
+from lane_emden import solve_lane_emden
+from integrators import euler_integrator
 from plot_utils import save_plot, get_linestyles_cycler
 
 
@@ -41,9 +41,9 @@ def plot_lane_emden_task_2(plot_dir,
         to files (used in unit tests)
     """
 
-    x, y = integrate(step_size=h,
-                     polytropic_index=n,
-                     integrator=euler_integrator)
+    x, y = solve_lane_emden(step_size=h,
+                            polytropic_index=n,
+                            integrator=euler_integrator)
 
     plt.figure(figsize=figsize)
 

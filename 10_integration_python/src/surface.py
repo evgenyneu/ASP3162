@@ -4,9 +4,10 @@ import pandas as pd
 import os
 from exact_solution import exact, exact_derivative
 from plot_utils import find_nearest_index, create_dir
+from lane_emden import solve_lane_emden
 
-from integrate import integrate, euler_integrator,\
-                      improved_euler_integrator, runge_kutta_integrator
+from integrators import euler_integrator,\
+                        improved_euler_integrator, runge_kutta_integrator
 
 
 def calculate_exact_values_at_surface(x_surface_estimate, n):
@@ -70,9 +71,9 @@ def surface_values_single_method(integrator, h, n):
         Parameter in the Lane-Emden equation.
     """
 
-    x, y = integrate(step_size=h,
-                     polytropic_index=n,
-                     integrator=integrator)
+    x, y = solve_lane_emden(step_size=h,
+                            polytropic_index=n,
+                            integrator=integrator)
 
     item = {}
     item["h"] = h

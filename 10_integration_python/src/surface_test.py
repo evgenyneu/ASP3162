@@ -2,12 +2,11 @@ import os
 import shutil
 from pytest import approx
 import pandas as pd
+from integrators import improved_euler_integrator
 
 from surface import calculate_exact_values_at_surface, \
                     calculate_surface_values, save_surface_values_to_csv, \
                     surface_values_single_method
-
-from integrate import improved_euler_integrator
 
 
 def test_save_surface_values_to_csv():

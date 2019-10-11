@@ -8,7 +8,8 @@ from make_plots_task_2 import plot_lane_emden_task_2
 from make_plots_task_3 import plot_lane_emden_task_3
 from surface import calculate_surface_values, save_surface_values_to_csv
 from stellar_structure import plot_density, plot_temperature, plot_pressure
-from integrate import integrate, euler_integrator
+from lane_emden import solve_lane_emden
+from integrators import euler_integrator
 
 
 def task1(plot_dir, figsize, show):
@@ -32,9 +33,9 @@ def task1(plot_dir, figsize, show):
     n = 3
     h = 0.01
 
-    x, y = integrate(step_size=h,
-                     polytropic_index=n,
-                     integrator=euler_integrator)
+    x, y = solve_lane_emden(step_size=h,
+                            polytropic_index=n,
+                            integrator=euler_integrator)
 
     plt.figure(figsize=figsize)
     plt.xlabel(r'Scaled radius, $\xi$')

@@ -2,7 +2,8 @@
 import matplotlib.pyplot as plt
 from plot_utils import save_plot, get_linestyles_cycler
 from exact_solution import exact, exact_derivative
-from integrate import integrate, euler_integrator
+from lane_emden import solve_lane_emden
+from integrators import euler_integrator
 
 
 def plot_lane_emden_task_3(plot_dir, filename,
@@ -40,9 +41,9 @@ def plot_lane_emden_task_3(plot_dir, filename,
         to files (used in unit tests)
     """
 
-    x, y = integrate(step_size=h,
-                     polytropic_index=n,
-                     integrator=euler_integrator)
+    x, y = solve_lane_emden(step_size=h,
+                            polytropic_index=n,
+                            integrator=euler_integrator)
 
     plt.figure(figsize=figsize)
 
