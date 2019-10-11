@@ -1,6 +1,7 @@
 import numpy as np
 from astropy import constants
 from surface import surface_values_single_method
+from lane_embden_integrator_limited_x import LaneEmbdenIntegratorLimitedX
 from runge_kutta_integrator import RungeKuttaIntegrator
 
 
@@ -154,7 +155,45 @@ def find_central_pressure(k, central_density, gamma):
     Returns : float
     ---------------
 
-    Central pressure from Eq. 4 (doc/lane_embden_equations.png)
+    Central pressure [Pa] from Eq. 4 (doc/lane_embden_equations.png)
     """
 
     return k * central_density**gamma
+
+
+def calculate_scaled_parameters(polytropic_index, step_size):
+    """
+    Calcualates scaled stellar parameter.
+
+    Parameters
+    -----------
+
+    polytropic_index : int
+        Parameter used in Lane-Embden model
+
+    step_size : float
+        Size of the radius step used in integration
+
+    Returns : tuple (xi, theta, dtheta_dxi)
+    -----------
+
+    All lists in the tuple have the same size.
+
+    xi : list of float
+        Scaled radius parameter from Lane-Embden equation.
+
+    theta : list of float
+        Scaled density parameter from Lane-Embden equation.
+
+    dtheta_dxi : list of float
+        Derivative of theta with respect to xi.
+    """
+
+    le = LaneEmbdenIntegratorLimitedX(n=polytropic_index)
+    x, y = le.integrate(method=RungeKuttaIntegrator, h=step_size)
+
+    xi = x
+    theta = y[:, 0]
+    dtheta_dxi = y[:, 1]
+
+    return (xi, theta, dtheta_dxi)
