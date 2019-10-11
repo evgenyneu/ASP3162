@@ -365,6 +365,39 @@ def find_temperature(mean_molecular_weight, pressures, densities):
 def plot_title(stellar_mass, central_density, density_unit,
                step_size, polytropic_index, mean_molecular_weight,
                title_prefix):
+    """
+    Make a plot of pressure vs radius.
+
+    Parameters
+    ----------
+
+    stellar_mass : float
+        Mass of the stellar modal [kg]
+
+    central_density : float
+        Density at the center of the stellar modal [kg / m^3]
+
+    density_unit : str
+        Unit for the density.
+
+    step_size : float
+        Size of the radius step used in the integration
+
+    polytropic_index : int
+        Parameter n used in Lane-Emden equation
+
+    mean_molecular_weight : float
+        Mean molecular weight of the stellar model
+
+    title_prefix : str
+        Text that will be added at the start of the plot title
+
+    Returns : str
+    -------
+
+    Plot title
+    """
+
     title = (
         f"{title_prefix}"
         "Solution of Lane-Emden equation,\n"
@@ -387,6 +420,43 @@ def plot_density(plot_dir, filename, figsize,
                  mean_molecular_weight,
                  title_prefix,
                  show):
+    """
+    Make a plot of density vs radius.
+
+    Parameters
+    ----------
+
+    plot_dir : str
+        Directory where the plot files will be saved
+
+    filename : str
+        Name of the plot file where the plot will be saved
+
+    figsize : tuple
+        Figure size (width, height)
+
+    stellar_mass : float
+        Mass of the stellar modal [kg]
+
+    central_density : float
+        Density at the center of the stellar modal [kg / m^3]
+
+    step_size : float
+        Size of the radius step used in the integration
+
+    polytropic_index : int
+        Parameter n used in Lane-Emden equation
+
+    mean_molecular_weight : float
+        Mean molecular weight of the stellar model
+
+    title_prefix : str
+        Text that will be added at the start of the plot title
+
+    show : bool
+        If False, the plot will not be shown on screen, but only
+        save to the file (used in unit tests)
+    """
 
     result = calculate_stellar_parameters(
         step_size=step_size,
@@ -433,6 +503,43 @@ def plot_temperature(plot_dir, filename, figsize,
                      mean_molecular_weight,
                      title_prefix,
                      show):
+    """
+    Make a plot of temperature vs radius.
+
+    Parameters
+    ----------
+
+    plot_dir : str
+        Directory where the plot files will be saved
+
+    filename : str
+        Name of the plot file where the plot will be saved
+
+    figsize : tuple
+        Figure size (width, height)
+
+    stellar_mass : float
+        Mass of the stellar modal [kg]
+
+    central_density : float
+        Density at the center of the stellar modal [kg / m^3]
+
+    step_size : float
+        Size of the radius step used in the integration
+
+    polytropic_index : int
+        Parameter n used in Lane-Emden equation
+
+    mean_molecular_weight : float
+        Mean molecular weight of the stellar model
+
+    title_prefix : str
+        Text that will be added at the start of the plot title
+
+    show : bool
+        If False, the plot will not be shown on screen, but only
+        save to the file (used in unit tests)
+    """
 
     result = calculate_stellar_parameters(
         step_size=step_size,
@@ -482,6 +589,44 @@ def plot_pressure(plot_dir, filename, figsize,
                   mean_molecular_weight,
                   title_prefix,
                   show):
+
+    """
+    Make a plot of pressure vs radius.
+
+    Parameters
+    ----------
+
+    plot_dir : str
+        Directory where the plot files will be saved
+
+    filename : str
+        Name of the plot file where the plot will be saved
+
+    figsize : tuple
+        Figure size (width, height)
+
+    stellar_mass : float
+        Mass of the stellar modal [kg]
+
+    central_density : float
+        Density at the center of the stellar modal [kg / m^3]
+
+    step_size : float
+        Size of the radius step used in the integration
+
+    polytropic_index : int
+        Parameter n used in Lane-Emden equation
+
+    mean_molecular_weight : float
+        Mean molecular weight of the stellar model
+
+    title_prefix : str
+        Text that will be added at the start of the plot title
+
+    show : bool
+        If False, the plot will not be shown on screen, but only
+        save to the file (used in unit tests)
+    """
 
     result = calculate_stellar_parameters(
         step_size=step_size,
