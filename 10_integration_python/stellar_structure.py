@@ -1,6 +1,5 @@
 import numpy as np
 from astropy import constants
-from surface import surface_values_single_method
 from lane_embden_integrator_limited_x import LaneEmbdenIntegratorLimitedX
 from runge_kutta_integrator import RungeKuttaIntegrator
 
@@ -33,13 +32,15 @@ def calculate_stellar_parameters(step_size,
         Mean molecular weight of the star
 
     Returns : dict
+    -----------
+
+    Dictionary structure:
         {
             "radii" :
             "temperatures" :
             "pressures" :
             "densities" :
         }
-    -----------
 
     Radii, temperatures, pressures and densities are lists of the same size.
 
@@ -59,11 +60,8 @@ def calculate_stellar_parameters(step_size,
     xi, theta, dtheta_dxi = calculate_scaled_parameters(
         polytropic_index=polytropic_index, step_size=step_size)
 
-    surface_values = surface_values_single_method(
-        method=RungeKuttaIntegrator, h=step_size, n=polytropic_index)
-
-    xi1 = surface_values["x_surface"]
-    dtheta_dxi_at_xi1 = surface_values["density_derivative_surface"]
+    xi1 = xi[-1]
+    dtheta_dxi_at_xi1 = dtheta_dxi[-1]
 
     alpha = find_alpha(xi1=xi1,
                        dtheta_dxi_at_xi1=dtheta_dxi_at_xi1,
