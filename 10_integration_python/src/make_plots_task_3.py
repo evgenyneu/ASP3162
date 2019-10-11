@@ -4,6 +4,7 @@ from euler_integrator import EulerIntegrator
 from plot_utils import save_plot, get_linestyles_cycler
 from lane_emden_integrator_limited_x import LaneEmdenIntegratorLimitedX
 from exact_solution import exact, exact_derivative
+from integrate import integrate, euler_integrator
 
 
 def plot_lane_emden_task_3(plot_dir, filename,
@@ -41,8 +42,9 @@ def plot_lane_emden_task_3(plot_dir, filename,
         to files (used in unit tests)
     """
 
-    le = LaneEmdenIntegratorLimitedX(n=n)
-    x, y = le.integrate(method=EulerIntegrator, h=h)
+    x, y = integrate(step_size=h,
+                     polytropic_index=n,
+                     integrator=euler_integrator)
 
     plt.figure(figsize=figsize)
 

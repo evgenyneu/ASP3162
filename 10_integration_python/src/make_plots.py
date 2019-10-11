@@ -10,6 +10,7 @@ from make_plots_task_2 import plot_lane_emden_task_2
 from make_plots_task_3 import plot_lane_emden_task_3
 from surface import calculate_surface_values, save_surface_values_to_csv
 from stellar_structure import plot_density, plot_temperature, plot_pressure
+from integrate import integrate, euler_integrator
 
 
 def task1(plot_dir, figsize, show):
@@ -33,8 +34,10 @@ def task1(plot_dir, figsize, show):
     n = 3
     h = 0.01
 
-    lane_emden = LaneEmdenIntegrator(n=n)
-    x, y = lane_emden.integrate(method=EulerIntegrator, h=h)
+    x, y = integrate(step_size=h,
+                     polytropic_index=n,
+                     integrator=euler_integrator)
+
     plt.figure(figsize=figsize)
     plt.xlabel(r'Scaled radius, $\xi$')
     plt.ylabel(r'Scaled density, $\theta$')
@@ -272,11 +275,11 @@ def make_plots(plot_dir, show):
 
     figsize = (8, 6)
 
-    task1(plot_dir=plot_dir, figsize=figsize, show=show)
-    task2(plot_dir=plot_dir, figsize=figsize, show=show)
+    # task1(plot_dir=plot_dir, figsize=figsize, show=show)
+    # task2(plot_dir=plot_dir, figsize=figsize, show=show)
     task3(plot_dir=plot_dir, figsize=figsize, show=show)
-    task6(data_dir=plot_dir, figsize=figsize, show=show)
-    task7(plot_dir=plot_dir, figsize=figsize, show=show)
+    # task6(data_dir=plot_dir, figsize=figsize, show=show)
+    # task7(plot_dir=plot_dir, figsize=figsize, show=show)
 
 
 if __name__ == '__main__':

@@ -46,7 +46,7 @@ def lane_embden_derivatives(x, y_vector, polytropic_index):
     return np.array((f0, f1))
 
 
-def euler_advance(h, derivative, polytropic_index, x, y):
+def euler_integrator(h, derivative, polytropic_index, x, y):
     """
     Calcualte one step of integration using the Euler method.
 
@@ -82,8 +82,7 @@ def euler_advance(h, derivative, polytropic_index, x, y):
 
 def integrate(step_size,
               polytropic_index,
-              derivative,
-              advance,
+              integrator,
               xmax=10):
 
     x = 0
@@ -94,10 +93,10 @@ def integrate(step_size,
     while not (y[0] <= 0 or x > xmax):
         xi.append(x)
         yi.append(y)
-        x, y = advance(h=step_size,
-                       derivative=derivative,
-                       polytropic_index=polytropic_index,
-                       x=x, y=y)
+        x, y = integrator(h=step_size,
+                          derivative=lane_embden_derivatives,
+                          polytropic_index=polytropic_index,
+                          x=x, y=y)
 
     return np.array(xi), np.array(yi)
 
