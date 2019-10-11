@@ -363,8 +363,10 @@ def find_temperature(mean_molecular_weight, pressures, densities):
 
 
 def plot_title(stellar_mass, central_density, density_unit,
-               step_size, polytropic_index, mean_molecular_weight):
+               step_size, polytropic_index, mean_molecular_weight,
+               title_prefix):
     title = (
+        f"{title_prefix}"
         "Solution of Lane-Emden equation,\n"
         f"n={polytropic_index}, "
         f"M={stellar_mass:.2G}, "
@@ -383,6 +385,7 @@ def plot_density(plot_dir, filename, figsize,
                  stellar_mass, central_density,
                  step_size, polytropic_index,
                  mean_molecular_weight,
+                 title_prefix,
                  show):
 
     result = calculate_stellar_parameters(
@@ -413,7 +416,8 @@ def plot_density(plot_dir, filename, figsize,
                        density_unit=density_unit,
                        step_size=step_size,
                        polytropic_index=polytropic_index,
-                       mean_molecular_weight=mean_molecular_weight)
+                       mean_molecular_weight=mean_molecular_weight,
+                       title_prefix=title_prefix)
 
     plt.title(title)
     plt.tight_layout()
@@ -427,6 +431,7 @@ def plot_temperature(plot_dir, filename, figsize,
                      stellar_mass, central_density,
                      step_size, polytropic_index,
                      mean_molecular_weight,
+                     title_prefix,
                      show):
 
     result = calculate_stellar_parameters(
@@ -446,7 +451,8 @@ def plot_temperature(plot_dir, filename, figsize,
     plt.xlabel(f"Radius R [{xunit}]")
 
     density_unit = densities[0].unit.to_string('latex_inline')
-    temperature_unit = temperatures[0].unit.decompose().to_string('latex_inline')
+    temperature_unit = temperatures[0].unit.decompose()\
+        .to_string('latex_inline')
 
     ylabel = (
         r"Temperature T "
@@ -459,7 +465,8 @@ def plot_temperature(plot_dir, filename, figsize,
                        density_unit=density_unit,
                        step_size=step_size,
                        polytropic_index=polytropic_index,
-                       mean_molecular_weight=mean_molecular_weight)
+                       mean_molecular_weight=mean_molecular_weight,
+                       title_prefix=title_prefix)
 
     plt.title(title)
     plt.tight_layout()
@@ -473,6 +480,7 @@ def plot_pressure(plot_dir, filename, figsize,
                   stellar_mass, central_density,
                   step_size, polytropic_index,
                   mean_molecular_weight,
+                  title_prefix,
                   show):
 
     result = calculate_stellar_parameters(
@@ -505,7 +513,8 @@ def plot_pressure(plot_dir, filename, figsize,
                        density_unit=density_unit,
                        step_size=step_size,
                        polytropic_index=polytropic_index,
-                       mean_molecular_weight=mean_molecular_weight)
+                       mean_molecular_weight=mean_molecular_weight,
+                       title_prefix=title_prefix)
 
     plt.title(title)
     plt.tight_layout()

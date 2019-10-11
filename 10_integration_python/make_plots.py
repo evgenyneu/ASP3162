@@ -35,7 +35,6 @@ def task1(plot_dir, figsize, show):
 
     lane_emden = LaneEmdenIntegrator(n=n)
     x, y = lane_emden.integrate(method=EulerIntegrator, h=h)
-    plt.rc('font', size=14)
     plt.figure(figsize=figsize)
     plt.xlabel(r'Scaled radius, $\xi$')
     plt.ylabel(r'Scaled density, $\theta$')
@@ -230,6 +229,7 @@ def task7(plot_dir, figsize, show):
                  step_size=step_size,
                  polytropic_index=polytropic_index,
                  mean_molecular_weight=mean_molecular_weight,
+                 title_prefix="Task 7 (a)\n",
                  show=show)
 
     plot_temperature(plot_dir=plot_dir,
@@ -240,6 +240,7 @@ def task7(plot_dir, figsize, show):
                      step_size=step_size,
                      polytropic_index=polytropic_index,
                      mean_molecular_weight=mean_molecular_weight,
+                     title_prefix="Task 7 (b)\n",
                      show=show)
 
     plot_pressure(plot_dir=plot_dir,
@@ -250,6 +251,7 @@ def task7(plot_dir, figsize, show):
                   step_size=step_size,
                   polytropic_index=polytropic_index,
                   mean_molecular_weight=mean_molecular_weight,
+                  title_prefix="Task 7 (c)\n",
                   show=show)
 
 
@@ -270,10 +272,10 @@ def make_plots(plot_dir, show):
 
     figsize = (8, 6)
 
-    # task1(plot_dir=plot_dir, figsize=figsize, show=show)
-    # task2(plot_dir=plot_dir, figsize=figsize, show=show)
-    # task3(plot_dir=plot_dir, figsize=figsize, show=show)
-    # task6(data_dir=plot_dir, figsize=figsize, show=show)
+    task1(plot_dir=plot_dir, figsize=figsize, show=show)
+    task2(plot_dir=plot_dir, figsize=figsize, show=show)
+    task3(plot_dir=plot_dir, figsize=figsize, show=show)
+    task6(data_dir=plot_dir, figsize=figsize, show=show)
     task7(plot_dir=plot_dir, figsize=figsize, show=show)
 
 
