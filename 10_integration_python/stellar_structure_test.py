@@ -4,7 +4,8 @@ from pytest import approx
 
 from stellar_structure import calculate_stellar_parameters, \
                               find_alpha,\
-                              find_k
+                              find_k, \
+                              find_gamma
 
 
 def test_find_k():
@@ -43,3 +44,9 @@ def test_calculate_stellar_parameters():
         stellar_mass=stellar_mass,
         central_density=central_density,
         mean_molecular_weight=1.4)
+
+
+def test_find_gamma():
+    result = find_gamma(polytropic_index=3)
+
+    assert float(result) == approx(1.3333333333333333, rel=1e-15)

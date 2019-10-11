@@ -114,3 +114,22 @@ def find_k(alpha, polytropic_index, central_density):
     k = k / (n + 1)
     k = k / (central_density ** (1 / n - 1))
     return k
+
+
+def find_gamma(polytropic_index):
+    """
+    Calculate gamma parameter Eq. 5 (doc/lane_embden_equations.png)
+
+    Parameters
+    -----------
+
+    polytropic_index : int
+        Parameter used in Lane-Embden model
+
+    Returns : float
+    ---------------
+
+    Gamma parameter Eq. 5 (doc/lane_embden_equations.png)
+    """
+
+    return 1 / polytropic_index + 1
