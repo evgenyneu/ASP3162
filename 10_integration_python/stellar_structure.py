@@ -276,3 +276,40 @@ def find_radius(alpha, xi):
     """
 
     return alpha * xi
+
+
+def find_temperature(mean_molecular_weight, pressures, densities):
+    """
+    Calculate temperatures [K] using ideal gas equation:
+
+        P = rho * k * T / (mu * m_u),
+
+    where
+        rho : density
+        k : Boltzmann constant
+        T : temperature
+        mu : mean molecular weight
+        m_u : atomic mass unit
+
+    Parameters
+    -----------
+
+    mean_molecular_weight : float
+        Mean molecular weight
+
+    pressures : list of float
+        Pressure values [Pa] for the stellar model,
+        corresponding to positions from the center to the surface.
+
+    densities : list of float
+        Density values [kg/m^3] for the stellar model,
+        corresponding to positions from the center to the surface.
+
+    Returns : list of float
+    -----------
+
+    Temperature values [K] from the center of the star to the surface.
+    """
+
+    return pressures * mean_molecular_weight * constants.u / densities \
+        / constants.k_B

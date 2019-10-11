@@ -10,7 +10,8 @@ from stellar_structure import calculate_stellar_parameters, \
                               calculate_scaled_parameters, \
                               find_pressure, \
                               find_density, \
-                              find_radius
+                              find_radius, \
+                              find_temperature
 
 
 def test_find_k():
@@ -148,3 +149,34 @@ def test_find_radius():
     assert result[0].value == approx(0, rel=1e-15)
     assert result[1400].value == approx(162648792.04996988, rel=1e-15)
     assert result[-1].value == approx(801161478.5548077, rel=1e-15)
+
+
+def test_find_temperature():
+    mean_molecular_weight = 1.4
+    central_pressure = 2.8300029869833104e16 * u.pascal
+    central_density = 1e5 * u.kg / u.meter**3
+    polytropic_index = 3
+
+    xi, theta, dtheta_dxi = calculate_scaled_parameters(
+        polytropic_index=3, step_size=0.001)
+
+    pressures = find_pressure(
+        polytropic_index=polytropic_index,
+        central_pressure=central_pressure,
+        theta=theta)
+
+    densities = find_density(polytropic_index=polytropic_index,
+                             central_density=central_density,
+                             theta=theta)
+
+    result = find_temperature(
+        mean_molecular_weight=mean_molecular_weight,
+        pressures=pressures,
+        densities=densities
+    )
+
+    assert len(result) == 6897
+    assert result[0].unit == u.K
+    assert result[0].value == approx(47651973.15014945, rel=1e-15)
+    assert result[1400].value == approx(35618172.978462696, rel=1e-15)
+    assert result[-1].value == approx(1716.0037151077242, rel=1e-15)
