@@ -14,6 +14,60 @@ from stellar_structure import calculate_stellar_parameters, \
                               find_temperature
 
 
+def test_calculate_stellar_parameters():
+    stellar_mass = 2 * constants.M_sun
+    central_density = 1e5 * u.kg / u.meter**3
+
+    result = calculate_stellar_parameters(
+        step_size=0.001,
+        polytropic_index=3,
+        stellar_mass=stellar_mass,
+        central_density=central_density,
+        mean_molecular_weight=1.4)
+
+    radii = result["radii"]
+    temperatures = result["temperatures"]
+    pressures = result["pressures"]
+    densities = result["densities"]
+
+    assert len(radii) == 6897
+    assert len(temperatures) == 6897
+    assert len(pressures) == 6897
+    assert len(densities) == 6897
+
+    # radii
+    # ---------
+
+    assert radii[0].unit == u.m
+    assert radii[0].value == approx(0, rel=1e-15)
+    assert radii[1400].value == approx(162648792.04996988, rel=1e-13)
+    assert radii[-1].value == approx(801161478.5548077, rel=1e-13)
+
+    # temperatures
+    # ---------
+
+    assert temperatures[0].unit == u.K
+    assert temperatures[0].value == approx(47651973.15014357, rel=1e-15)
+    assert temperatures[1400].value == approx(35618172.97845829, rel=1e-15)
+    assert temperatures[-1].value == approx(1716.003715107512, rel=1e-15)
+
+    # pressures
+    # ---------
+
+    assert pressures[0].unit == u.Pa
+    assert pressures[0].value == approx(2.8300029869829612e+16, rel=1e-15)
+    assert pressures[1400].value == approx(8833847448327913.0, rel=1e-15)
+    assert pressures[-1].value == approx(0.04759224978521558, rel=1e-15)
+
+    # densities
+    # ---------
+
+    assert densities[0].unit == u.kg / u.m**3
+    assert densities[0].value == approx(100000, rel=1e-15)
+    assert densities[1400].value == approx(41761.130899912016, rel=1e-15)
+    assert densities[-1].value == approx(4.669947584135971e-9, rel=1e-15)
+
+
 def test_find_k():
     alpha = 116177708.60712494 * u.meter
     polytropic_index = 3
@@ -39,18 +93,6 @@ def test_find_alpha():
                         central_density=central_density)
 
     assert result.value == approx(116177708.60712494, rel=1e-15)
-
-
-def test_calculate_stellar_parameters():
-    stellar_mass = 2 * constants.M_sun
-    central_density = 1e5 * u.kg / u.meter**3
-
-    radii, temperatures, pressures, densities = calculate_stellar_parameters(
-        step_size=0.001,
-        polytropic_index=3,
-        stellar_mass=stellar_mass,
-        central_density=central_density,
-        mean_molecular_weight=1.4)
 
 
 def test_find_gamma():

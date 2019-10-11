@@ -32,7 +32,13 @@ def calculate_stellar_parameters(step_size,
     mean_molecular_weight : float
         Mean molecular weight of the star
 
-    Returns : tuple (radii, temperatures, pressures, densities)
+    Returns : dict
+        {
+            "radii" :
+            "temperatures" :
+            "pressures" :
+            "densities" :
+        }
     -----------
 
     Radii, temperatures, pressures and densities are lists of the same size.
@@ -50,10 +56,51 @@ def calculate_stellar_parameters(step_size,
         Density [kg/m^3]
     """
 
+    xi, theta, dtheta_dxi = calculate_scaled_parameters(
+        polytropic_index=polytropic_index, step_size=step_size)
+
     surface_values = surface_values_single_method(
         method=RungeKuttaIntegrator, h=step_size, n=polytropic_index)
 
-    return (0, 0, 0, 0)
+    xi1 = surface_values["x_surface"]
+    dtheta_dxi_at_xi1 = surface_values["density_derivative_surface"]
+
+    alpha = find_alpha(xi1=xi1,
+                       dtheta_dxi_at_xi1=dtheta_dxi_at_xi1,
+                       stellar_mass=stellar_mass,
+                       central_density=central_density)
+
+    k = find_k(alpha=alpha,
+               polytropic_index=polytropic_index,
+               central_density=central_density)
+
+    gamma = find_gamma(polytropic_index=polytropic_index)
+
+    central_pressure = find_central_pressure(
+        k=k, central_density=central_density, gamma=gamma)
+
+    pressure = find_pressure(polytropic_index=polytropic_index,
+                             central_pressure=central_pressure,
+                             theta=theta)
+
+    density = find_density(polytropic_index=polytropic_index,
+                           central_density=central_density,
+                           theta=theta)
+
+    radius = find_radius(alpha=alpha, xi=xi)
+
+    temperature = find_temperature(
+        mean_molecular_weight=mean_molecular_weight,
+        pressures=pressure,
+        densities=density
+    )
+
+    return {
+        "radii": radius,
+        "temperatures": temperature,
+        "pressures": pressure,
+        "densities": density
+    }
 
 
 def find_alpha(xi1, dtheta_dxi_at_xi1, stellar_mass, central_density):
