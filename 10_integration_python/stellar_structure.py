@@ -89,13 +89,13 @@ def find_alpha(xi1, dtheta_dxi_at_xi1, stellar_mass, central_density):
 
 def find_k(alpha, polytropic_index, central_density):
     """
-    Calculate parameter L using Eq. 6 (doc/lane_embden_equations.png)
+    Calculate parameter K using Eq. 6 (doc/lane_embden_equations.png)
 
     Parameters
     -----------
 
     alpha : float
-        Alpha parameter from Eq. 8 (doc/lane_embden_equations.png)
+        Alpha parameter from Eq. 6 (doc/lane_embden_equations.png)
 
     polytropic_index : int
         Parameter used in Lane-Embden model
@@ -106,7 +106,7 @@ def find_k(alpha, polytropic_index, central_density):
     Returns : float
     ---------------
 
-    Alpha parameter from Eq. 8 (doc/lane_embden_equations.png)
+    K parameter from Eq. 6 (doc/lane_embden_equations.png)
     """
 
     n = polytropic_index
@@ -118,7 +118,7 @@ def find_k(alpha, polytropic_index, central_density):
 
 def find_gamma(polytropic_index):
     """
-    Calculate gamma parameter Eq. 5 (doc/lane_embden_equations.png)
+    Calculate gamma parameter from Eq. 5 (doc/lane_embden_equations.png)
 
     Parameters
     -----------
@@ -129,7 +129,32 @@ def find_gamma(polytropic_index):
     Returns : float
     ---------------
 
-    Gamma parameter Eq. 5 (doc/lane_embden_equations.png)
+    Gamma parameter from Eq. 5 (doc/lane_embden_equations.png)
     """
 
     return 1 / polytropic_index + 1
+
+
+def find_central_pressure(k, central_density, gamma):
+    """
+    Calculate central pressure using Eq. 4 (doc/lane_embden_equations.png)
+
+    Parameters
+    -----------
+
+    k : float
+        K parameter from Eq. 6 (doc/lane_embden_equations.png)
+
+    central_density : float
+        Density at the center of the star [kg/m^3]
+
+    gamma : float
+        Gamma parameter from Eq. 5 (doc/lane_embden_equations.png)
+
+    Returns : float
+    ---------------
+
+    Central pressure from Eq. 4 (doc/lane_embden_equations.png)
+    """
+
+    return k * central_density**gamma

@@ -5,7 +5,8 @@ from pytest import approx
 from stellar_structure import calculate_stellar_parameters, \
                               find_alpha,\
                               find_k, \
-                              find_gamma
+                              find_gamma, \
+                              find_central_pressure
 
 
 def test_find_k():
@@ -50,3 +51,14 @@ def test_find_gamma():
     result = find_gamma(polytropic_index=3)
 
     assert float(result) == approx(1.3333333333333333, rel=1e-15)
+
+
+def test_find_central_pressure():
+    k = 6097056608.050699
+    central_density = 1e5 * u.kg / u.meter**3
+    gamma = 1.3333333333333333
+
+    result = find_central_pressure(
+        k=k, central_density=central_density, gamma=gamma)
+
+    assert result.value == approx(2.8300029869833104e16, rel=1e-15)
