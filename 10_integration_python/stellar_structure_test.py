@@ -8,7 +8,8 @@ from stellar_structure import calculate_stellar_parameters, \
                               find_gamma, \
                               find_central_pressure, \
                               calculate_scaled_parameters, \
-                              find_pressure
+                              find_pressure, \
+                              find_density
 
 
 def test_find_k():
@@ -112,3 +113,21 @@ def test_find_pressure():
     assert result[0].value == approx(2.8300029869833104e+16, rel=1e-15)
     assert result[1400].value == approx(8833847448329003, rel=1e-15)
     assert result[-1].value == approx(0.04759224978521558, rel=1e-15)
+
+
+def test_find_density():
+    central_density = 1e5 * u.kg / u.meter**3
+    polytropic_index = 3
+
+    xi, theta, dtheta_dxi = calculate_scaled_parameters(
+        polytropic_index=3, step_size=0.001)
+
+    result = find_density(polytropic_index=polytropic_index,
+                          central_density=central_density,
+                          theta=theta)
+
+    assert len(result) == 6897
+    assert result[0].unit == u.kg / u.m**3
+    assert result[0].value == approx(100000, rel=1e-15)
+    assert result[1400].value == approx(41761.130899912016, rel=1e-15)
+    assert result[-1].value == approx(4.669947584135971e-9, rel=1e-15)
