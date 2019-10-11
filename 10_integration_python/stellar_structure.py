@@ -1,6 +1,5 @@
 import numpy as np
 from astropy import constants
-from astropy.visualization import quantity_support
 from lane_emden_integrator_limited_x import LaneEmdenIntegratorLimitedX
 from runge_kutta_integrator import RungeKuttaIntegrator
 import matplotlib.pyplot as plt
@@ -363,6 +362,23 @@ def find_temperature(mean_molecular_weight, pressures, densities):
         / constants.k_B
 
 
+def plot_title(stellar_mass, central_density, density_unit,
+               step_size, polytropic_index, mean_molecular_weight):
+    title = (
+        "Solution of Lane-Emden equation,\n"
+        f"n={polytropic_index}, "
+        f"M={stellar_mass:.2G}, "
+        r"$\rho_c=$"
+        f"{central_density.value:.2G} "
+        f"{density_unit}, "
+        f"h={step_size}, "
+        r"$\mu=$"
+        f"{mean_molecular_weight}"
+    )
+
+    return title
+
+
 def plot_density(plot_dir, filename, figsize,
                  stellar_mass, central_density,
                  step_size, polytropic_index,
@@ -379,7 +395,7 @@ def plot_density(plot_dir, filename, figsize,
     radii = result["radii"]
     densities = result["densities"]
 
-    # with quantity_support():
+    plt.figure(figsize=figsize)
     plt.plot(radii.value, densities.value)
     xunit = radii[0].unit.to_string('latex_inline')
     plt.xlabel(f"Radius R [{xunit}]")
@@ -392,22 +408,108 @@ def plot_density(plot_dir, filename, figsize,
     )
     plt.ylabel(ylabel)
 
-    title = (
-        "Solution of Lane-Emden equation,\n"
-        f"M={stellar_mass:.2G}, "
-        r"$\rho_c=$"
-        f"{central_density.value:.2G} "
-        f"{density_unit}, "
-        f"h={step_size}, "
-        f"n={polytropic_index}, "
-        r"$\mu=$"
-        f"{mean_molecular_weight}"
-    )
+    title = plot_title(stellar_mass=stellar_mass,
+                       central_density=central_density,
+                       density_unit=density_unit,
+                       step_size=step_size,
+                       polytropic_index=polytropic_index,
+                       mean_molecular_weight=mean_molecular_weight)
 
     plt.title(title)
-    # plt.figure(figsize=figsize)
     plt.tight_layout()
-    # save_plot(plt=plt, plot_dir=plot_dir, filename=filename)
-    #
+    save_plot(plt=plt, plot_dir=plot_dir, filename=filename)
+
+    if show:
+        plt.show()
+
+
+def plot_temperature(plot_dir, filename, figsize,
+                     stellar_mass, central_density,
+                     step_size, polytropic_index,
+                     mean_molecular_weight,
+                     show):
+
+    result = calculate_stellar_parameters(
+        step_size=step_size,
+        polytropic_index=polytropic_index,
+        stellar_mass=stellar_mass,
+        central_density=central_density,
+        mean_molecular_weight=mean_molecular_weight)
+
+    radii = result["radii"]
+    densities = result["densities"]
+    temperatures = result["temperatures"]
+
+    plt.figure(figsize=figsize)
+    plt.plot(radii.value, temperatures.value)
+    xunit = radii[0].unit.to_string('latex_inline')
+    plt.xlabel(f"Radius R [{xunit}]")
+
+    density_unit = densities[0].unit.to_string('latex_inline')
+    temperature_unit = temperatures[0].unit.decompose().to_string('latex_inline')
+
+    ylabel = (
+        r"Temperature T "
+        f"[{temperature_unit}]"
+    )
+    plt.ylabel(ylabel)
+
+    title = plot_title(stellar_mass=stellar_mass,
+                       central_density=central_density,
+                       density_unit=density_unit,
+                       step_size=step_size,
+                       polytropic_index=polytropic_index,
+                       mean_molecular_weight=mean_molecular_weight)
+
+    plt.title(title)
+    plt.tight_layout()
+    save_plot(plt=plt, plot_dir=plot_dir, filename=filename)
+
+    if show:
+        plt.show()
+
+
+def plot_pressure(plot_dir, filename, figsize,
+                  stellar_mass, central_density,
+                  step_size, polytropic_index,
+                  mean_molecular_weight,
+                  show):
+
+    result = calculate_stellar_parameters(
+        step_size=step_size,
+        polytropic_index=polytropic_index,
+        stellar_mass=stellar_mass,
+        central_density=central_density,
+        mean_molecular_weight=mean_molecular_weight)
+
+    radii = result["radii"]
+    densities = result["densities"]
+    pressures = result["pressures"]
+
+    plt.figure(figsize=figsize)
+    plt.plot(radii.value, pressures.value)
+    xunit = radii[0].unit.to_string('latex_inline')
+    plt.xlabel(f"Radius R [{xunit}]")
+
+    density_unit = densities[0].unit.to_string('latex_inline')
+    pressures_unit = pressures[0].unit.compose()[0].to_string('latex_inline')
+
+    ylabel = (
+        r"Pressure P "
+        f"[{pressures_unit}]"
+    )
+    plt.ylabel(ylabel)
+
+    title = plot_title(stellar_mass=stellar_mass,
+                       central_density=central_density,
+                       density_unit=density_unit,
+                       step_size=step_size,
+                       polytropic_index=polytropic_index,
+                       mean_molecular_weight=mean_molecular_weight)
+
+    plt.title(title)
+    plt.tight_layout()
+    save_plot(plt=plt, plot_dir=plot_dir, filename=filename)
+
     if show:
         plt.show()

@@ -9,7 +9,7 @@ from plot_utils import save_plot
 from make_plots_task_2 import plot_lane_emden_task_2
 from make_plots_task_3 import plot_lane_emden_task_3
 from surface import calculate_surface_values, save_surface_values_to_csv
-from stellar_structure import plot_density
+from stellar_structure import plot_density, plot_temperature, plot_pressure
 
 
 def task1(plot_dir, figsize, show):
@@ -231,6 +231,26 @@ def task7(plot_dir, figsize, show):
                  polytropic_index=polytropic_index,
                  mean_molecular_weight=mean_molecular_weight,
                  show=show)
+
+    plot_temperature(plot_dir=plot_dir,
+                     filename="07b_temperature.pdf",
+                     figsize=figsize,
+                     stellar_mass=stellar_mass,
+                     central_density=central_density,
+                     step_size=step_size,
+                     polytropic_index=polytropic_index,
+                     mean_molecular_weight=mean_molecular_weight,
+                     show=show)
+
+    plot_pressure(plot_dir=plot_dir,
+                  filename="07c_pressure.pdf",
+                  figsize=figsize,
+                  stellar_mass=stellar_mass,
+                  central_density=central_density,
+                  step_size=step_size,
+                  polytropic_index=polytropic_index,
+                  mean_molecular_weight=mean_molecular_weight,
+                  show=show)
 
 
 def make_plots(plot_dir, show):
