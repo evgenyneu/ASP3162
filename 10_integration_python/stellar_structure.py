@@ -1,3 +1,5 @@
+# Calculate stellar structure parameters using Lane-Emden model.
+
 import numpy as np
 from astropy import constants
 from lane_emden_integrator_limited_x import LaneEmdenIntegratorLimitedX

@@ -1,4 +1,4 @@
-"""Make plots for the lab"""
+"""Show all plots"""
 
 import matplotlib.pyplot as plt
 from astropy import units as u
