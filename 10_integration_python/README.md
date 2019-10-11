@@ -15,3 +15,5 @@ Note: Requires *pytest* Python package.
 ```
 python src/make_plots.py
 ```
+
+This will create plots and a CSV file in `plots` directory.
