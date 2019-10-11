@@ -12,7 +12,8 @@ def euler_integrator(h, derivative, data, x, y):
         Step size
 
     derivative : function
-        Function that calculates derivatives
+        Function that calculates derivatives. See description
+        in `runge_kutta_integrator` function.
 
     data : anything
         Additional data that is passed to the derivative function
@@ -47,7 +48,8 @@ def improved_euler_integrator(h, derivative, data, x, y):
         Step size
 
     derivative : function
-        Function that calculates derivatives
+        Function that calculates derivatives. See description
+        in `runge_kutta_integrator` function.
 
     data : anything
         Additional data that is passed to the derivative function
@@ -84,7 +86,40 @@ def runge_kutta_integrator(h, derivative, data, x, y):
         Step size
 
     derivative : function
-        Function that calculates derivatives
+        Function that calculates derivatives for the system of
+        differential equation.
+
+        For example, suppose we have a system
+
+            dy/dx = f(x, y, z)              (1)
+
+            dz/dx = g(x, y, z),             (2)
+
+        where
+                x : independent variable
+                y, z : dependent variables.
+
+        The `derivative` function calculates and returns [dy/dx, dz/dx].
+
+        `derivative` parameters
+        ------------------------
+
+            x : float
+                Value of the independent variable
+
+            dependent_variables : list of float
+                List of values for dependent variables. In Eq. 1 and 2,
+                it will be [y, z]
+
+            data : any type (optional)
+
+                Additional data that may be needed to calcualte derivatives.
+
+        `derivative` returns : np.array of float
+        ---------------------
+
+            Values of derivatives of all variables.
+            For example from Eq. 2 and 3, it will return [dy/dx, dz/dx].
 
     data : anything
         Additional data that is passed to the derivative function
