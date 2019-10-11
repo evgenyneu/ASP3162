@@ -21,14 +21,12 @@ def euler_integrator(h, derivative, data, x, y):
         Value of independent variable
 
     y : numpy.ndarray
-        A 1D array containing dependent variable
+        A 1D array containing dependent variables
 
-    Returns
+    Returns : tuple (x, y)
     -------
 
-    tuple
-
-    (x, y)
+    Updated variables
 
     """
 
@@ -58,14 +56,12 @@ def improved_euler_integrator(h, derivative, data, x, y):
         Value of independent variable
 
     y : numpy.ndarray
-        A 1D array containing dependent variable
+        A 1D array containing dependent variables
 
-    Returns
+    Returns : tuple (x, y)
     -------
 
-    tuple
-
-    (x, y)
+    Updated variables
 
     """
 
@@ -97,14 +93,12 @@ def runge_kutta_integrator(h, derivative, data, x, y):
         Value of independent variable
 
     y : numpy.ndarray
-        A 1D array containing dependent variable
+        A 1D array containing dependent variables
 
-    Returns
+    Returns : tuple (x, y)
     -------
 
-    tuple
-
-    (x, y)
+    Updated variables
 
     """
 
