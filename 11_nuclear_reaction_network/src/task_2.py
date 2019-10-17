@@ -88,6 +88,6 @@ def taks_2(plot_dir, figsize, show):
         r"$ + \gamma$"
     )
 
-    plot_rates(filename="02.3_c_to_he.pdf",
+    plot_rates(filename="02.4_c_to_he.pdf",
                x=t9, y=[reverse_rate1, reverse_rate2], title=title,
                plot_dir=plot_dir, figsize=figsize, show=show)

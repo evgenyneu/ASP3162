@@ -15,6 +15,7 @@
 \usepackage{float} % Forcing text after image https://stackoverflow.com/a/2828029/297131
 \usepackage{listings} % Source code
 \usepackage{hyperref} % Hightlight hyperlinks https://www.overleaf.com/learn/latex/Hyperlinks
+\usepackage{siunitx} % Physical numbers and units
 
 
 
@@ -86,6 +87,13 @@
 
 \begin{document}
 
+
+\setcounter{secnumdepth}{-1}
+\renewcommand{\thepart}{}
+\renewcommand{\thesection}{Part \Alph{section}}
+\renewcommand{\thesubsection}{\Alph{section}.\arabic{subsection}}
+\renewcommand{\partname}{}
+
 \maketitle
 \thispagestyle{empty} % Remove page number from title page
 \vspace{3.5cm} % Add space between the title and table of contents
@@ -100,8 +108,8 @@
 
 \input{parts/q1}
 \pagebreak
-%
-% \input{parts/q2}
-% \pagebreak
+
+\input{parts/q2}
+\pagebreak
 
 \end{document}
