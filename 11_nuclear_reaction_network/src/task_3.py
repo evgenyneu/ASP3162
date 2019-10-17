@@ -2,9 +2,8 @@ import matplotlib.pyplot as plt
 from runge_kutta_integrator import RungeKuttaIntegrator
 from network import Network
 from plot_utils import save_plot, get_linestyles_cycler
-from elements import mole_fractions_to_mass_fractions
+from elements import all_mole_fractions_to_mass_fractions
 from elements import id_helium, id_carbon, id_magnesium
-import numpy as np
 
 
 def plot_mass_fractions(plot_dir, figsize, show):
@@ -15,19 +14,8 @@ def plot_mass_fractions(plot_dir, figsize, show):
     integrator = Network(t9=1.5, rho=1, tmax=tmax, y0=[0.25, 0, 0])
     x, all_mole_fractions = integrator.integrate(method=RungeKuttaIntegrator,
                                                  h=h)
-
-    all_mass_fractions = [
-        mole_fractions_to_mass_fractions(mole_fractions)
-        for mole_fractions in all_mole_fractions
-    ]
-
-    all_mass_fractions = np.array(all_mass_fractions)
-
-    print(type(all_mass_fractions))
-
-    # print(mole_fractions[0, :])
-    # print(mole_fractions.shape[0])
-    # mass_fractions = mole_fractions_to_mass_fractions(mole_fractions)
+    all_mass_fractions = \
+        all_mole_fractions_to_mass_fractions(all_mole_fractions)
 
     linestyle_cycler = get_linestyles_cycler()
     plt.figure(figsize=figsize)

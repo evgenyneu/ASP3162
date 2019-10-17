@@ -5,7 +5,33 @@ from r_3a import r_3a
 from plot_utils import save_plot, get_linestyles_cycler
 
 
-def plot_rates(filename, x, y, title, plot_dir, figsize, show):
+def plot_rates(plot_dir, filename, figsize, x, y, title, show):
+    """
+    Make plots for the second task
+
+    Parameters
+    ----------
+
+    plot_dir : str
+        Directory where the plot files will be saved
+
+    filename : str
+        Name of the file where the plot will be saved
+
+    figsize : tuple
+        Tuple (width, height) that specifies the size of the plot
+
+    x, y : list
+        Data for the x and y axes
+
+    title : str
+        Plot title
+
+    show : bool
+        If False the plots are not shown on screen but only saved
+        to files (used in unit tests)
+    """
+
     plt.figure(figsize=figsize)
     plt.xlabel(r'Scaled temperature $T_9 \  [K / 10^9]$')
     plt.ylabel(r'Reaction rate [mole faction / s]')
@@ -31,6 +57,23 @@ def plot_rates(filename, x, y, title, plot_dir, figsize, show):
 
 
 def taks_2(plot_dir, figsize, show):
+    """
+    Make plots for the second task
+
+    Parameters
+    ----------
+
+    plot_dir : str
+        Directory where the plot files will be saved
+
+    figsize : tuple
+        Tuple (width, height) that specifies the size of the plot
+
+    show : bool
+        If False the plots are not shown on screen but only saved
+        to files (used in unit tests)
+    """
+
     t9_min = 0.1
     t9_max = 10
     t9 = np.linspace(t9_min, t9_max, 100)
