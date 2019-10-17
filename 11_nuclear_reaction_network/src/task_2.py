@@ -76,7 +76,7 @@ def taks_2(plot_dir, figsize, show):
 
     t9_min = 0.1
     t9_max = 10
-    t9 = np.linspace(t9_min, t9_max, 100)
+    t9 = np.logspace(np.log10(t9_min), np.log10(t9_max), 200)
 
     forward_rate1, reverse_rate1 = r_2c(t9=t9, rho=1)
     forward_rate2, reverse_rate2 = r_2c(t9=t9, rho=1e7)
