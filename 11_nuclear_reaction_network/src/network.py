@@ -43,3 +43,13 @@ class Network(Integrand):
 
         b = np.array([da, dc, dm])
         return b
+
+    def initial(self):
+        """provide initial values for integration"""
+        t = 0
+        y = self.y0
+        return t, y
+
+    def final(self, t, y):
+        """termination for t <= tmax"""
+        return t > self.tmax
