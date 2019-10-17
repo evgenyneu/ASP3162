@@ -4,6 +4,7 @@ from r_2c import r_2c
 from r_3a import r_3a
 from plot_utils import save_plot, get_linestyles_cycler
 
+
 def plot_rates(filename, x, y, title, plot_dir, figsize, show):
     plt.figure(figsize=figsize)
     plt.xlabel(r'Scaled temperature $T_9 \  [K / 10^9]$')
