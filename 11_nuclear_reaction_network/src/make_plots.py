@@ -19,7 +19,7 @@ def make_plots(plot_dir, show):
 
     figsize = (8, 6)
 
-    taks_2(plot_dir=plot_dir, figsize=figsize, show=show)
+    # taks_2(plot_dir=plot_dir, figsize=figsize, show=show)
 
     plot_mass_fractions(plot_dir=plot_dir, figsize=figsize, show=show)
 

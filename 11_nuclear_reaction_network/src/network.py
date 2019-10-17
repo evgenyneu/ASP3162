@@ -37,9 +37,9 @@ class Network(Integrand):
         y_mg = y[2]
 
         # Equations for reaction rates from Task 1
-        da = -0.5 * fa * y_a**3 + 3 * ra * y_c
-        dc = 1/6 * fa * y_a**3 - fc * y_c**2 - ra * y_c + 2 * rc * y_mg
-        dm = 0.5 * fc * y_c**2 - rc * y_mg
+        da = -3 * fa * y_a**3 + 3 * ra * y_c
+        dc = fa * y_a**3 - 2 * fc * y_c**2 - ra * y_c + 2 * rc * y_mg
+        dm = fc * y_c**2 - rc * y_mg
 
         b = np.array([da, dc, dm])
         return b
