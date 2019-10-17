@@ -1,20 +1,27 @@
-# Dealing with mole fractions
+# Dealing with elements
 
-# IDs of the elements in the arrays used for integration
+# IDs of the elements in the arrays
 id_helium = 0
 id_carbon = 1
 id_magnesium = 2
 
+
 def mole_fractions_to_mass_fractions(mole_fractions):
     """
-    Convert the mole fractions to mass fractions
+    Convert the mole fractions to mass fractions.
 
     Parameters
     ----------
 
-    mole_fractions : array
+    mole_fractions : list of float
 
-    Contains mole fractions for He, C and Mg
+    Mole fractions for the elements.
+
+
+    Returns : list of float
+    -------
+
+    Array of mass fractions for the elements.
     """
 
     return [

@@ -10,10 +10,12 @@ def plot_mass_fractions(plot_dir, figsize, show):
     h = tmax / number_of_steps  # Step size
 
     integrator = Network(t9=1.5, rho=1, tmax=tmax, y0=[0.25, 0, 0])
-    x, y = integrator.integrate(method=RungeKuttaIntegrator, h=h)
-    helium_mole_fractions = y[:, 0]
-    carbon_mole_fractions = y[:, 1]
-    magnesium_mole_fractions = y[:, 2]
+    x, mole_fractions = integrator.integrate(method=RungeKuttaIntegrator, h=h)
+
+
+    helium_mole_fractions = mole_fractions[:, 0]
+    carbon_mole_fractions = mole_fractions[:, 1]
+    magnesium_mole_fractions = mole_fractions[:, 2]
 
     linestyle_cycler = get_linestyles_cycler()
     plt.figure(figsize=figsize)

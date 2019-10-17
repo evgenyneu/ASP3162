@@ -1,5 +1,5 @@
-from moles import mole_fractions_to_mass_fractions
-from moles import id_helium, id_carbon, id_magnesium
+from elements import mole_fractions_to_mass_fractions
+from elements import id_helium, id_carbon, id_magnesium
 
 
 def test_mole_fractions_to_mass_fractions():
