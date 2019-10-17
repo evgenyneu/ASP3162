@@ -1,0 +1,9 @@
+# errorMatch: "ERROR at "
+cmd: "/Users/evgenii/miniconda3/bin/python -u '{FILE_ACTIVE}'"
+name: "Run Python"
+errorMatch:
+    - \s+File \"(?<file>.*)\", line (?<line>\d+).*?\n(?:[\s|\S]+)\n(?<message>.*rror:.*)
+
+targets:
+    pytest:
+        cmd: "pytest -s '{FILE_ACTIVE}'"
