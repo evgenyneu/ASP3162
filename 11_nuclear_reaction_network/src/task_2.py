@@ -38,15 +38,13 @@ def plot_rates(plot_dir, filename, figsize, x, y, title, show):
     plt.title(title)
     linestyle_cycler = get_linestyles_cycler()
 
-    plt.plot(x, y[0], label=r"$\rho$ = 1 g/cm",
-             linestyle=next(linestyle_cycler))
+    plt.loglog(x, y[0], label=r"$\rho$ = 1 g/cm",
+               linestyle=next(linestyle_cycler))
 
-    plt.plot(x, y[1], label=r"$\rho = 10^7$ g/cm",
-             linestyle=next(linestyle_cycler))
+    plt.loglog(x, y[1], label=r"$\rho = 10^7$ g/cm",
+               linestyle=next(linestyle_cycler))
 
     plt.ylim(1e-30, 1e20)
-    plt.xscale("log")
-    plt.yscale("log")
     plt.legend()
     plt.grid()
     plt.tight_layout()
