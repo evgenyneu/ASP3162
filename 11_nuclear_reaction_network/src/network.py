@@ -26,10 +26,13 @@ class Network(Integrand):
 
     def __call__(self, t, y, return_jacobian=False):
         """Compute derivatives of the reaction network"""
-        t9 = self.t9
-        rho = self.rho
+        t9, rho = self.thermo(t, y)
+        print(f't9={t9} rho={rho}')
+        # print(f'fa={fa} ra={ra}')
+        # print(f'fc={fc} rc={rc}')
         fa, ra = r_3a(t9, rho)
         fc, rc = r_2c(t9, rho)
+        raise Exception('An error occurred')
 
         # Shortcut variables to keep us sane
         y_a = y[0]
@@ -63,3 +66,7 @@ class Network(Integrand):
     def final(self, t, y):
         """termination for t <= tmax"""
         return t > self.tmax
+
+    def thermo(self, t, y):
+        """return thermodynamics conditions"""
+        return self.t9, self.rho
