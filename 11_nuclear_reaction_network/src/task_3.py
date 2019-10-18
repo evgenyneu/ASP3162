@@ -40,7 +40,7 @@ def plot_mass_fractions_for_temperature(temperature9, number_of_steps,
         r"$3 {}^{4}\mathrm{He} \longleftrightarrow {}^{12}\mathrm{C}$, "
         r"$2 {}^{12}\mathrm{C} \longleftrightarrow {}^{24}\mathrm{Mg}$,"
         "\n"
-        f"for {temperature_kelvin:.2G} K, "
+        f"for T={temperature_kelvin:.2G} K, "
         f"step size h={h:.2G} s"
     )
 
