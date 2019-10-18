@@ -24,7 +24,7 @@ class Network(Integrand):
         self.tmax = tmax
         self.y0 = y0
 
-    def __call__(self, t, y):
+    def __call__(self, t, y, return_jacobian=False):
         """Compute derivatives of the reaction network"""
         t9 = self.t9
         rho = self.rho
@@ -42,6 +42,16 @@ class Network(Integrand):
         dm = fc * y_c**2 - rc * y_mg
 
         b = np.array([da, dc, dm])
+
+        if return_jacobian:
+            jacobian = np.array([
+                    [-9 * fa * y_a**2,  3 * ra,                 0],
+                    [3 * fa * y_a**2,   -ra - 4 * fc * y_c,  2 * rc],
+                    [0,                 2 * fc * y_c,           -rc],
+                ])
+
+            return b, jacobian
+
         return b
 
     def initial(self):
