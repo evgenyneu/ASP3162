@@ -14,14 +14,20 @@ class RungeKuttaAdaptiveIntegrator(RungeKuttaIntegrator):
         """adaptive advancing"""
 
         yp = self.f(x, y)
-        hnew = np.min((y + self.thres) / (np.abs(yp) + 1e-99)) * self.rmax
-        self.h = hnew
-        xn, yn = super().advance(x, y)
 
-        # while True:
-        #     xn, yn = super().advance(x, y)
-        #     if np.all(yn >= 0):
-        #         break
-        #
-        #     self.h *= 0.5
+        # Estimate the time step
+        hnew = np.min((y + self.thres) / (np.abs(yp) + 1e-99)) * self.rmax
+
+        # Prevent step size from increasing too fast
+        self.h = np.minimum(hnew, 2 * self.h)
+
+        while True:
+            xn, yn = super().advance(x, y)
+
+            if np.all(yn >= 0):
+                break
+
+            # Abundances are negative, repeat with a smaller time step
+            self.h *= 0.5
+
         return xn, yn

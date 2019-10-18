@@ -9,8 +9,6 @@ from elements import id_helium, id_carbon, id_magnesium
 
 def show_mass_fraction_with_adaptive_solver(plot_dir, figsize, show):
     tmax = 1e19
-    h = 1e5  # Step size
-
     temperature9 = 1
     initial_abundances = np.array([0.25, 0, 0])
 
@@ -18,7 +16,7 @@ def show_mass_fraction_with_adaptive_solver(plot_dir, figsize, show):
                          y0=initial_abundances)
 
     x, all_mole_fractions = integrator.integrate(
-        method=RungeKuttaAdaptiveIntegrator, h=h)
+        method=RungeKuttaAdaptiveIntegrator, h=1e99)
 
     all_mass_fractions = \
         all_mole_fractions_to_mass_fractions(all_mole_fractions)
@@ -45,15 +43,12 @@ def show_mass_fraction_with_adaptive_solver(plot_dir, figsize, show):
         r"$3 {}^{4}\mathrm{He} \longleftrightarrow {}^{12}\mathrm{C}$, "
         r"$2 {}^{12}\mathrm{C} \longleftrightarrow {}^{24}\mathrm{Mg}$,"
         "\n"
-        f"for T={temperature_kelvin:.2G} K, "
-        f"step size h={h:.2G} s"
+        f"for T={temperature_kelvin:.2G} K"
     )
 
     plt.title(title)
     plt.xlabel(r'Time t [s]')
     plt.ylabel(r'Mass fractions [unitless]')
-    # plt.ylim(1e-5, 5)
-    # plt.xlim(2e8)
     plt.xscale("log")
     plt.yscale("log")
     plt.legend()
