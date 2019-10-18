@@ -28,8 +28,8 @@ def make_plots(plot_dir, show):
     # show_mass_fraction_with_adaptive_solver(plot_dir=plot_dir, figsize=figsize,
     #                                         show=show)
 
-    show_mass_fraction_with_implicit_solver(plot_dir=plot_dir, figsize=figsize,
-                                            show=show)
+    # show_mass_fraction_with_implicit_solver(plot_dir=plot_dir, figsize=figsize,
+    #                                         show=show)
 
 
 if __name__ == '__main__':
