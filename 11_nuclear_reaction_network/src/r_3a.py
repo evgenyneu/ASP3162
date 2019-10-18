@@ -1,5 +1,6 @@
 import numpy as np
 
+
 def r_3a(t9, rho = 1, sc = 1):
     """Compute lambda for 3a rate and its reverse"""
     # q = 7.275 MeV

@@ -1,5 +1,6 @@
 import numpy as np
 
+
 def r_2c(t9, rho = 1, sc = 1):
     # q = 13.933 MeV
     t9a = t9 / (1 + 0.0396e0 * t9)
