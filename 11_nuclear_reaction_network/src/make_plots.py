@@ -1,5 +1,6 @@
 from task_2 import taks_2
 from task_3 import plot_mass_fractions
+from task_4 import show_mass_fraction_with_adaptive_solver
 
 
 def make_plots(plot_dir, show):
@@ -19,9 +20,12 @@ def make_plots(plot_dir, show):
 
     figsize = (8, 6)
 
-    taks_2(plot_dir=plot_dir, figsize=figsize, show=show)
+    # taks_2(plot_dir=plot_dir, figsize=figsize, show=show)
 
-    plot_mass_fractions(plot_dir=plot_dir, figsize=figsize, show=show)
+    # plot_mass_fractions(plot_dir=plot_dir, figsize=figsize, show=show)
+
+    show_mass_fraction_with_adaptive_solver(plot_dir=plot_dir, figsize=figsize,
+                                            show=show)
 
 
 if __name__ == '__main__':
