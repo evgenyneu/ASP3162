@@ -23,18 +23,18 @@ def make_plots(plot_dir, show):
 
     figsize = (8, 6)
 
-    # taks_2(plot_dir=plot_dir, figsize=figsize, show=show)
+    taks_2(plot_dir=plot_dir, figsize=figsize, show=show)
 
-    # plot_mass_fractions(plot_dir=plot_dir, figsize=figsize, show=show)
+    plot_mass_fractions(plot_dir=plot_dir, figsize=figsize, show=show)
 
-    # show_mass_fraction_with_adaptive_solver(plot_dir=plot_dir, figsize=figsize,
-    #                                         show=show)
+    show_mass_fraction_with_adaptive_solver(plot_dir=plot_dir, figsize=figsize,
+                                            show=show)
 
-    # show_mass_fraction_with_implicit_solver(plot_dir=plot_dir, figsize=figsize,
-    #                                         show=show)
+    show_mass_fraction_with_implicit_solver(plot_dir=plot_dir, figsize=figsize,
+                                            show=show)
 
-    # show_mass_fraction_with_adaptive_implicit_solver(
-    #     plot_dir=plot_dir, figsize=figsize, show=show)
+    show_mass_fraction_with_adaptive_implicit_solver(
+        plot_dir=plot_dir, figsize=figsize, show=show)
 
     show_mass_fraction_with_thermo_network(
         plot_dir=plot_dir, figsize=figsize, show=show)
